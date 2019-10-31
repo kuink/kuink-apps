@@ -666,7 +666,7 @@
 				</Var>
 
 				<Var name="id_file" dump="true">
-					<DoPDF_v2 register="false" filename="$fileName" download="true" override="true" marginleft="20" marginTop="10" marginright="15">
+					<DoPDF_v2 register="false" filename="$fileName" download="true" override="true" marginleft="20" marginTop="10" marginright="15" >
 						<Param name="content"><Var name="contentToPdf"/></Param>
 						<Meta name="creator"><Var name="pdfData" key="creator"/></Meta>
 					</DoPDF_v2>
