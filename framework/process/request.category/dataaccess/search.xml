@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+  <Doc>
+    Search all fw_request_category
+  </Doc>
+  <Params>
+    <Param name="id"/>
+    <Param name="name"/>
+    <Param name="short_name"/>
+    <Param name="code"/>
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            *
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_request_category t
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>1 = 1</XCondition>
+          <XCondition optional="id">AND t.id = {param->id}</XCondition>
+          <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+          <XCondition optional="short_name">AND t.short_name like '{param->short_name}'</XCondition>
+          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+        </XWhere>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

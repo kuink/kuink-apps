@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+        Get a controlled document data
+    </Doc>
+  <Params>
+    <Param name="id"/>
+    <Param name="code"/>
+    <Param name="guid_object"/>
+  </Params>
+  <Body>
+    <Load>
+      <XSql>
+        <XSelect>
+          <XField >
+            cd.id,
+            cd.code,
+            cd.code_name,
+            cd.guid_object,
+            cd.id_class,
+            cd.name,
+            cd.description,
+            cd.is_active,  
+            cd.id_current_version,          
+            cd.id_controlled_document_type,
+            CONCAT(cd.code, '-', cdv.code) as code_complete,
+            cd.current_version_number,
+            cdv.code as version_code,
+            cdv.reason as version_reason,
+            cdv.approval_date as version_approval_date,
+            cdt.name as type_name,
+            cdt.wf_code as type_wf_code,
+            cdt.wf_params as type_wf_params,
+            cdv.template as version_template,
+            f.id as version_file_id,
+            f.guid as version_file_guid
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_rm_controlled_document cd
+            INNER JOIN fw_rm_controlled_document_type cdt ON (cdt.id = cd.id_controlled_document_type)
+            LEFT OUTER JOIN fw_rm_controlled_document_version cdv ON (cdv.id = cd.id_current_version)
+            LEFT OUTER JOIN fw_file f on (f.id = cdv.id_file)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition optional="id">cd.id = {param->id}</XCondition>
+          <XCondition optional="code">cd.code = '{param->code}'</XCondition>
+          <XCondition optional="guid_object">cd.guid_object = '{param->guid_object}'</XCondition>
+        </XWhere>
+      </XSql>
+    </Load>
+  </Body>
+</Method>

@@ -1,0 +1,40 @@
+<?xml version='1.0'?>
+<Method>
+  <Doc>
+    Gets the users inbox
+  </Doc>
+  <Params>
+    <Param name="text" />
+    <Param name="is_completed" />
+    <Param name="started_by_me" />
+    <Param name="id_person" />
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            wfi.*,
+            IF(wfi.id_person = {param->id_person} AND wfi.is_completed = 0, 1, 0) as can_handle
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_wf_inbox_task wfi
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>1 = 1</XCondition>
+          <XCondition optional="text">AND (wfi.name like '{param->text}' OR wfi.description like '{param->text}')</XCondition>
+          
+          <XCondition condition="$started_by_me == 0">AND wfi.is_completed = {param->is_completed} AND wfi.id_person = {param->id_person} </XCondition>          
+          <XCondition condition="$started_by_me == 1">AND wfi.is_completed = {param->is_completed} AND wfi._id_creator = {param->id_person} </XCondition>
+        </XWhere>
+        <XOrderBy>
+          <XOrder>id desc</XOrder>
+
+        </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

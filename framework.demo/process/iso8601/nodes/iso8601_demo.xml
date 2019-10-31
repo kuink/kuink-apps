@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions />
+    <Doc lang="pt-PT">
+    </Doc>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="FormatterLib" type="lib"/>
+    </Libraries>
+    <Configuration />
+    <Screens>
+        
+        <Screen id="screen001">
+            <Form name="form001">
+                <DateTime id="dt001" />
+                <Date id="dt002" />
+            </Form>
+            <Grid id="grid000" name="grid000" title="Default Formats">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="f1" label="longDateTime">
+                            <Formatter name="DateTime" method="longDateTime"/>
+                        </Column>
+                        <Column id="f2" name="f2" label="shortDateTime">
+                            <Formatter name="DateTime" method="shortDateTime"/>
+                        </Column>
+                        <Column id="f3" name="f3" label="shortDateTimeStamp">
+                            <Formatter name="DateTime" method="shortDateTimeStamp"/>
+                        </Column>
+                        <Column id="f4" name="f4" label="longDate">
+                            <Formatter name="DateTime" method="longDate"/>
+                        </Column>
+                        <Column id="f5" name="f5" label="shortDate">
+                            <Formatter name="DateTime" method="shortDate"/>
+                        </Column>
+                        <Column id="f6" name="f6" label="shortTime">
+                            <Formatter name="DateTime" method="shortTime"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+            <Grid id="grid000a" name="grid000a" title="Default Formats Week">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="f1" label="shortWeekDay">
+                            <Formatter name="DateTime" method="shortWeekDay"/>
+                        </Column>
+                        <Column id="f2" name="f2" label="longWeekDay">
+                            <Formatter name="DateTime" method="longWeekDay"/>
+                        </Column>
+                        <Column id="f3" name="f3" label="weekDayString">
+                            <Formatter name="DateTime" method="weekDayString"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+            <Grid id="grid001" name="grid001" title="Week Test">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="iso8601_week1">
+                            <Formatter name="DateTime" method="iso8601_week1"/>
+                        </Column>
+                        <Column id="f2" name="iso8601_week2">
+                            <Formatter name="DateTime" method="iso8601_week2"/>
+                        </Column>
+                        <Column id="f3" name="iso8601_week3">
+                            <Formatter name="DateTime" method="iso8601_week3"/>
+                        </Column>
+                        <Column id="f4" name="iso8601_week4">
+                            <Formatter name="DateTime" method="iso8601_week4"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+            <Grid id="grid002" name="grid002" title="Time Test">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="iso8601_time1">
+                            <Formatter name="DateTime" method="iso8601_time1"/>
+                        </Column>
+                        <Column id="f2" name="iso8601_time2">
+                            <Formatter name="DateTime" method="iso8601_time2"/>
+                        </Column>
+                        <Column id="f3" name="iso8601_time3">
+                            <Formatter name="DateTime" method="iso8601_time3"/>
+                        </Column>
+                        <Column id="f4" name="iso8601_time4">
+                            <Formatter name="DateTime" method="iso8601_time4"/>
+                        </Column>
+                        <Column id="f5" name="iso8601_time5">
+                            <Formatter name="DateTime" method="iso8601_time5"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+            <Grid id="grid003" name="grid003" title="Time UTC Test">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="iso8601_time_utc1">
+                            <Formatter name="DateTime" method="iso8601_time_utc1"/>
+                        </Column>
+                        <Column id="f2" name="iso8601_time_utc2">
+                            <Formatter name="DateTime" method="iso8601_time_utc2"/>
+                        </Column>
+                        <Column id="f3" name="iso8601_time_utc3">
+                            <Formatter name="DateTime" method="iso8601_time_utc3"/>
+                        </Column>
+                        <Column id="f4" name="iso8601_time_utc4">
+                            <Formatter name="DateTime" method="iso8601_time_utc4"/>
+                        </Column>
+                        <Column id="f5" name="iso8601_time_utc5">
+                            <Formatter name="DateTime" method="iso8601_time_utc5"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+            <Grid id="grid004" name="grid004" title="Time UTC Diff Test">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="iso8601_time_utc_diff1">
+                            <Formatter name="DateTime" method="iso8601_time_utc_diff1"/>
+                        </Column>
+                        <Column id="f2" name="iso8601_time_utc_diff2">
+                            <Formatter name="DateTime" method="iso8601_time_utc_diff2"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+            <Grid id="grid005" name="grid005" title="DateTime Test">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="iso8601_datetime1">
+                            <Formatter name="DateTime" method="iso8601_datetime1"/>
+                        </Column>
+                        <Column id="f2" name="iso8601_datetime2">
+                            <Formatter name="DateTime" method="iso8601_datetime2"/>
+                        </Column>
+                        <Column id="f3" name="iso8601_datetime3">
+                            <Formatter name="DateTime" method="iso8601_datetime3"/>
+                        </Column>
+                        <Column id="f4" name="iso8601_datetime4">
+                            <Formatter name="DateTime" method="iso8601_datetime4"/>
+                        </Column>
+                        <Column id="f5" name="iso8601_datetime5">
+                            <Formatter name="DateTime" method="iso8601_datetime5"/>
+                        </Column>
+                        <Column id="f6" name="iso8601_datetime6">
+                            <Formatter name="DateTime" method="iso8601_datetime6"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+            <Grid id="grid006" name="grid006" title="DateTime Reduced Test">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="ts" name="f10"/>
+                        <Column id="f1" name="iso8601_datetime_reduced1">
+                            <Formatter name="DateTime" method="iso8601_datetime_reduced1"/>
+                        </Column>
+                        <Column id="f2" name="iso8601_datetime_reduced2">
+                            <Formatter name="DateTime" method="iso8601_datetime_reduced2"/>
+                        </Column>
+                        <Column id="f3" name="iso8601_datetime_reduced3">
+                            <Formatter name="DateTime" method="iso8601_datetime_reduced3"/>
+                        </Column>
+                        <Column id="f4" name="iso8601_datetime_reduced4">
+                            <Formatter name="DateTime" method="iso8601_datetime_reduced4"/>
+                        </Column>
+                        <Column id="f5" name="iso8601_datetime_reduced5">
+                            <Formatter name="DateTime" method="iso8601_datetime_reduced5"/>
+                        </Column>
+                        <Column id="f6" name="iso8601_datetime_reduced6">
+                            <Formatter name="DateTime" method="iso8601_datetime_reduced6"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="screen001">
+            <Control method="bind" object="grid000">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            <Control method="bind" object="grid000a">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            <Control method="bind" object="grid001">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            <Control method="bind" object="grid002">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            <Control method="bind" object="grid003">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            <Control method="bind" object="grid004">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            <Control method="bind" object="grid005">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            <Control method="bind" object="grid006">
+                <Param>
+                    <Execute method="this,this,test.data"/>
+                </Param>
+            </Control>
+            
+            
+            <Var name="localtime" ><DateTimeLib method="now"/></Var>
+            <Var name="localtimeY" ><DateTimeLib method="year">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            
+            </Var>
+            <Var name="localtimeD" ><DateTimeLib method="day">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="localtimeM" ><DateTimeLib method="month">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="todayEnd" ><DateTimeLib method="TodayEnd">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="todayStart" ><DateTimeLib method="TodayStart">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="today" ><DateTimeLib method="Today">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="NextMonthEnd" ><DateTimeLib method="NextMonthEnd">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="NextMonthStart" ><DateTimeLib method="NextMonthStart">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="ThisMonthEnd" ><DateTimeLib method="ThisMonthEnd">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="ThisMonthStart" ><DateTimeLib method="ThisMonthStart">
+                <Param><Var name="localtime"/></Param>
+            </DateTimeLib>
+            </Var>
+            <Var name="getTzOffset" >
+                <DateTimeLib method="getTzOffset" />
+            </Var>
+            
+            
+            
+            
+            <Var name="localtimeF" >
+                <FormatterLib method="format">
+                        <Param>DateTime</Param>
+                        <Param>iso8601_datetime6</Param>
+                </FormatterLib>
+            </Var>
+            <Var name="utcF" >
+                <FormatterLib method="format">
+                        <Param>DateTime</Param>
+                        <Param>iso8601_datetime4</Param>
+                </FormatterLib>
+            </Var>
+            
+            <!--
+            <Var name="test__" >
+                <FormatterLib method="format">
+                        <Param>DateTime</Param>
+                        <Param>test__</Param>
+                </FormatterLib>
+            </Var>
+            -->
+        </Action>
+    </Actions>
+</Node>
+

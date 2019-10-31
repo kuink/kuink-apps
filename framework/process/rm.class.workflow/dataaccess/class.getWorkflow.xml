@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get all class workflows
+  </Doc>
+  <Params>
+    <param name="id_class" doc="The class id"/>
+    <param name="type_code" doc="The class workflow type_code"/>
+  </Params>
+  <Body>
+    <Load>
+      <XSql>
+        <XSelect>
+        	<XField>
+            cwf.id,
+            cwft.id as id_type,
+            cwftl.name,
+            cwft.code as type_code,
+            cwf.params as class_workflow_params,
+            wfp.code as process_code,
+            wfp.params as process_params,
+            wfpc.params as configuration_params
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+        <XTable>
+          fw_rm_class_workflow cwf
+          INNER JOIN fw_rm_class_workflow_type cwft ON (cwft.id = cwf.id_type)    
+          INNER JOIN fw_rm_class_workflow_type_lang cwftl ON (cwftl.id = cwft.id AND cwftl.lang = '{param->lang}')    
+          INNER JOIN fw_wf_process_configuration wfpc ON (wfpc.id = cwf.id_workflow_configuration)
+          INNER JOIN fw_wf_process wfp ON (wfp.id = wfpc.id_process)
+        </XTable>
+    </XFrom>
+	    <XWhere>
+         <XCondition>
+          cwf.id_class = {param->id_class} and cwft.code = '{param->type_code}'
+         </XCondition>  
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[ cwft.code asc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </Load>
+  </Body>
+</Method>

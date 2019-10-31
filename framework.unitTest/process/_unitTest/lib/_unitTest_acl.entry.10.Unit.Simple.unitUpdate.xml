@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="prepare" doc="prepare">
+      <Params/>
+      <Return type="text" doc="Test documentation"/>
+      <Begin>
+        <Var name="context" key="message">framework::framework.unitTest::Unit.Simple.unitUpdate</Var>
+        <Return>
+          <Var name="context"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="run" doc="Run the test">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="single" doc="The result">
+        <External name="code" type="int" doc="The result code"/>
+        <External name="data" type="text" doc="Data returned by the function"/>
+      </Return>
+      <Errors>
+        <Error code="-1" doc="Test failed"/>
+      </Errors>
+      <Begin>
+        <Transaction>
+          <Var name="test" key="result">
+            <String/>
+          </Var>
+          <Try>
+            <Instructions>
+              <Var name="test" key="resultAdd">
+                <Call library="framework.unitTest,_unitTest,acl.entry.10.aux" function="addTestData"/>
+              </Var>
+            </Instructions>
+            <Catch>
+										
+									
+									</Catch>
+          </Try>
+          <Var name="newData">
+            <Set/>
+          </Var>
+          <Var name="newData" key="id_acl">
+            <Int>2</Int>
+          </Var>
+          <Var name="newData" key="id_permission">
+            <Int>2</Int>
+          </Var>
+          <Var name="newData" key="id_person_group">
+            <Int>2</Int>
+          </Var>
+          <Var name="newData" key="id_person">
+            <Int>2</Int>
+          </Var>
+          <Var name="test" key="resultUpdate">
+            <Call library="framework,acl.entry,api" function="update" params="newData"/>
+          </Var>
+          <Var name="record">
+            <Call library="framework,acl.entry,api" function="getById">
+              <Param name="id">
+                <Var name="test" key="resultAdd"/>
+              </Param>
+            </Call>
+          </Var>
+          <Var name="allOk">
+            <Int>1</Int>
+          </Var>
+          <Var name="testValue">
+            <Int>2</Int>
+          </Var>
+          <Var name="testField">
+            <Var name="newData" key="id_acl"/>
+          </Var>
+          <If condition="$testField != $testValue">
+            <Then>
+              <Var name="allOk">
+                <Int>0</Int>
+              </Var>
+            </Then>
+          </If>
+          <Var name="testValue">
+            <Int>2</Int>
+          </Var>
+          <Var name="testField">
+            <Var name="newData" key="id_permission"/>
+          </Var>
+          <If condition="$testField != $testValue">
+            <Then>
+              <Var name="allOk">
+                <Int>0</Int>
+              </Var>
+            </Then>
+          </If>
+          <Var name="testValue">
+            <Int>2</Int>
+          </Var>
+          <Var name="testField">
+            <Var name="newData" key="id_person_group"/>
+          </Var>
+          <If condition="$testField != $testValue">
+            <Then>
+              <Var name="allOk">
+                <Int>0</Int>
+              </Var>
+            </Then>
+          </If>
+          <Var name="testValue">
+            <Int>2</Int>
+          </Var>
+          <Var name="testField">
+            <Var name="newData" key="id_person"/>
+          </Var>
+          <If condition="$testField != $testValue">
+            <Then>
+              <Var name="allOk">
+                <Int>0</Int>
+              </Var>
+            </Then>
+          </If>
+          <Var name="result" key="data">
+            <String/>
+          </Var>
+          <If condition="$allOk == 1">
+            <Then>
+              <Var name="code">0</Var>
+            </Then>
+            <Else>
+              <Var name="code">-1</Var>
+            </Else>
+          </If>
+          <Var name="result" key="code">
+            <Var name="code"/>
+          </Var>
+          <RollBack/>
+        </Transaction>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="clean" doc="Removes the data added">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+            </Begin>
+    </Function>
+  </Library>
+</Node>

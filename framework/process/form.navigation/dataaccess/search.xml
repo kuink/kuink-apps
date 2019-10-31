@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all fw_form_navigation
+    </Doc>
+    <Params>
+                      <Param name="id_form"/>
+                  <Param name="page_from"/>
+                  <Param name="page_to"/>
+                                                                            </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_form_navigation t
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>1 = 1</XCondition>
+                                                                                                                                                                                                        <XCondition optional="id_form">AND t.id_form = {param->id_form}</XCondition>
+                                                                                                                                <XCondition optional="page_from">AND t.page_from = {param->page_from}</XCondition>
+                                                                                                                                <XCondition optional="page_to">AND t.page_to = {param->page_to}</XCondition>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </XWhere>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

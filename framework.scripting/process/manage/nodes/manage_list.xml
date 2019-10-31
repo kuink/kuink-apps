@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+    <Allow>
+        <Capability name="framework/script::manage"/>
+    </Allow>
+  </Permissions>      
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen id="listScreen">
+      <Grid name="listGrid" title="scriptList">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="description"/>
+            <Column name="_creation">
+              <Formatter name="DateTime" method="longDateTime"/>
+            </Column>
+            <Column name="_creation_ip"/>
+            <Column name="_modification">
+              <Formatter name="DateTime" method="longDateTime"/>            
+            </Column>
+            <Column name="_modification_ip"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" actionvalue="id"/>
+            <Action name="delete" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+      <Form name="addForm">
+        <ButtonGroup>
+          <Button id="add" type="add" label="add" action="add"/>
+        </ButtonGroup>
+      </Form>      
+    </Screen>
+  </Screens>	
+	
+  <Actions>
+    <Action name="init" screen="listScreen"> 
+      <Var name="scriptId" session="true"><Null/></Var>
+      <Control method="bind" object="listGrid">
+        <Param>
+          <Call library="framework,script,api" function="list"/>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="view">
+      <RaiseEvent name="view">
+        <Param name="id"><ActionValue/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="add">
+      <RaiseEvent name="view"/>
+    </Action>        
+
+    <Action name="delete" >
+        <Call library="framework,script,api" function="delete">
+          <Param name="id"><ActionValue/></Param>
+        </Call>      
+      <Action name="init"/>
+    </Action>                                              
+                                                                                                                                                                                                                                                                        
+  </Actions>
+  <Library/>
+</Node>
+

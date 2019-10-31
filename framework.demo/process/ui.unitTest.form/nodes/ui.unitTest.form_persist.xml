@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+    <Params>
+      <Param name="id_feedback"/>
+    </Params>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+      <Use name="FormatterLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+      <Screen id="screen001" >
+          <Form name="form01" title="changePassword" persist="true">
+            <Text id="id" label="id"/>
+            <Text id="name" label="name"/>
+            <Date id="date"/>
+            <DateTime id="datetime"/>
+            <Int id="int"/>
+            <Real id="real"/>
+            <Static id="st" label="st"/>
+            <Checkbox id="check"/>
+            <ButtonGroup>
+              <Button id="search" type="search" action="search" confirm="confirm"/>
+              <Button id="next" type="submit" action="next" confirm="true"/>
+            </ButtonGroup>
+          </Form>
+       </Screen>
+       <Screen id="screen002" >
+          <Form name="form02" title="changePassword" >
+            <ButtonGroup>
+              <Button id="back" type="cancel" action="search"/>
+            </ButtonGroup>
+          </Form>
+       </Screen>    
+	</Screens>
+  
+  
+	<Actions>
+      <Action name="init" screen="screen001">
+        <Var name="data" dump="true">
+          <Control method="getCurrentData" object="form01"/>
+        </Var>
+        <Var name="now"><Now/></Var>
+        <Var name="newData" key="datetime" value="$now"></Var>
+        <Var name="newData" key="date" value="$now"></Var>
+        <Control method="bind" object="form01">
+        	<Param><Var name="newData"/></Param>
+        </Control>
+      </Action>
+      
+      <Action name="search" screen="screen001">
+        <Var name="data" dump="true">
+          <Control method="getCurrentData" object="form01"/>
+        </Var>
+      </Action>
+
+      <Action name="next" screen="screen002">
+        
+      </Action>
+      
+	</Actions>
+</Node>
+

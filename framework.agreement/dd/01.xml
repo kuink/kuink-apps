@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Agreement entities">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_agreement" doc="Defines the agreement. This is the committed agreement. Only non temporary agreements are valid.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" required="false" doc="The unique identifier of this agreement" />
+        <Attribute name="guid_object" domain="guid" required="true" doc="The object where this agreement is linked"/>
+				<Attribute name="id_record" domain="foreign" refentity="agreement_statement" refattr="id" required="false" doc="The record witle the proof of the agreement. Only for committed agreements"/>
+				<Attribute name="is_temporary" domain="bool" default="1" required="true" doc="This agreement is waiting for a commit, so its not valid while temporary." />
+				<Attribute name="is_active" domain="bool" default="0" required="true" doc="This agreement is still active or there is a new one that will override it?" />
+				<Attribute name="_validation" domain="timestamp" required="false" doc="The timestamp of the commitment (validation)" />
+				<Attribute name="id_validator" domain="foreign" required="false" doc="The id of the person who validates this agreement"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

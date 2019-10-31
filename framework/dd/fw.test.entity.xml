@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+<!-- Override domain inherited definitions or add local definitions here -->
+  </Domains>
+  <Templates>
+<!-- Override template inherited definitions or add local definitions here -->
+  </Templates>
+  <Entities>
+    <Entity doc="Test the creation of a multilang entity" name="fw_test_entity">
+      <Attributes>
+        <Attribute domain="id" name="id"/>
+        <Attribute type="string" size="200" name="name" default="ABCDEFG" />        
+        <Attribute domain="int" name="value" required="true" default="11"/>
+        <Attribute domain="string" name="test" default="ZZZ"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <!--Entity doc="Test the creation of a multilang entity" name="fw_test_entity_more">
+      <Attributes>
+        <Attribute domain="id" name="id"/>
+        <Attribute domain="string" name="another"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity doc="Test the creation of a multilang entity" name="fw_test_entity_more_one">
+      <Attributes>
+        <Attribute domain="id" name="id"/>
+        <Attribute domain="int" name="anotherone"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity-->
+
+  </Entities>
+</Node>

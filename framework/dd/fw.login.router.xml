@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Router at login">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <!-- Workflow Module -->
+    <Entity name="fw_login_router_rule" doc="Login router rule. Rules are appliyed in sequence">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="condition" domain="longString" required="true" doc="The condition to apply to this rule"/>        
+        <Attribute name="name" domain="name" required="false" doc="The rule name"/>
+        <Attribute name="code" domain="code" required="false" doc="The rule code"/>
+        <Attribute name="url" domain="url" required="false" doc="The url to redirect"/>
+		    <Attribute name="direction" domain="bool" required="true" doc="1-login 0-logout"/>        
+        <Attribute name="order" domain="int" required="false" doc="The rule order"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this rule active?"/>
+        <Attribute name="inject_rule_order" domain="bool" required="true" doc="Inject the rule order in the url?"/>
+        <Attribute name="start_date" domain="timestamp" required="false" doc="When this rule starts, if null can start now and never terminate"/>
+        <Attribute name="end_date" domain="timestamp" required="false" doc="When this rule ends"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+  </Entities>
+</Node>

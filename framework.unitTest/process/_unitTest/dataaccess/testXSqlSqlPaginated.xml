@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Test for a SQL QUERY
+    </Doc>
+    <Params>
+      <Param name="tableName"/>
+			<Param name="id"/>
+   </Params>
+   <Body>
+       <SqlPaginated>
+           <XSql>
+               <XSelect>
+                   <XField >
+                       id,
+                       id_acl,
+                       name
+                   </XField>
+               </XSelect>
+               <XFrom>
+                   <XTable>
+                       {param->tableName}
+                   </XTable>
+               </XFrom>
+               <XWhere>
+                 <XCondition>1 = 1</XCondition>
+							 </XWhere>
+           </XSql>
+       </SqlPaginated>
+    </Body>
+</Method>

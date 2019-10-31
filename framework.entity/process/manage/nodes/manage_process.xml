@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Params>
+    <Param name="application"/>
+    <Param name="node"/>
+    <Param name="createForeignIndexes"/>
+    <Param name="createForeignKeys"/>
+    <Param name="dropTablesBeforeCreate"/>
+  </Params>
+  <Doc></Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens>
+    <Screen id="scr002">
+      <Grid name="changesGrid" title="result">
+        <Template>
+          <Columns>
+            <Column name="entity"/>
+            <Column name="change" label="operation"/>            
+            <Column name="attributes">
+              <Formatter name="ArrayKey" key="debug"/>
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>    
+      <Form name="actions">
+        <ButtonGroup>
+          <Button id="back" type="back" action="back" />
+          <Button id="apply" type="add" action="applyChanges" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+    <Screen id="scr003">
+      <Grid name="logGrid" infer="true" title="log"/>      
+      <Form name="actions">
+        <ButtonGroup>
+          <Button id="back" type="back" action="back" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+
+    <Action name="init" screen="scr002">
+      <Var name="changes">
+        <DataAccess method="getEntityChanges">
+          <Param name="application"><Var name="PARAMS" key="application"/></Param>
+          <Param name="node"><Var name="PARAMS" key="node"/></Param>
+          <Param name="dropTablesBeforeCreate"><Var name="PARAMS" key="dropTablesBeforeCreate"/></Param>          
+        </DataAccess>
+      </Var>
+      <Control method="bind" object="changesGrid">
+        <Param> 
+          <Var name="changes"/>
+        </Param>        
+      </Control>
+      <If condition="@dropTablesBeforeCreate == '1'">
+        <Then>
+          <UserMessage type="warning">
+            <Lang key="tablesWillBeErased"/>
+          </UserMessage>        
+        </Then>
+      </If>
+    </Action>
+
+    <Action name="applyChanges" screen="scr003">
+      <Var name="log">
+        <DataAccess method="applyEntityChanges">
+          <Param name="application"><Var name="PARAMS" key="application"/></Param>
+          <Param name="node"><Var name="PARAMS" key="node"/></Param>
+          <Param name="createForeignIndexes"><Var name="PARAMS" key="createForeignIndexes"/></Param>
+          <Param name="createForeignKeys"><Var name="PARAMS" key="createForeignKeys"/></Param>          
+          <Param name="dropTablesBeforeCreate"><Var name="PARAMS" key="dropTablesBeforeCreate"/></Param>          
+        </DataAccess>
+      </Var>
+      <Control method="bind" object="logGrid">
+        <Param> 
+          <Var name="log"/>
+        </Param>        
+      </Control>      
+    </Action>
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+
+  </Actions>
+</Node>
+

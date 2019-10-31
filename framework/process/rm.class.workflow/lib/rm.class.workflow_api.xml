@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getWorkflowTypes" doc="Get all workflow types available to classes">
+      <Params/>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Var name="result">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_rm_class_workflow_type</Param>
+            <Param name="_attributes">e.id,code,name</Param>
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getWorkflows" doc="Get all the class workflows">
+      <Params>
+       <Param name="id" type="int" doc="The class id"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Var name="PARAMS" dump="true"/>
+        <Var name="result" dump="true">
+          <DataAccess method="this,this,class.getWorkflows">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getWorkflow" doc="Get all the class workflows">
+      <Params>
+       <Param name="id_class" type="int" doc="The class id"/>
+       <Param name="type_code" type="string" doc="The workflow type code"/>
+      </Params>
+      <Return type="single" doc="">
+      </Return>
+      <Begin>
+        <Var name="result">
+          <DataAccess method="this,this,class.getWorkflow">
+            <Param name="id_class"><Var name="PARAMS" key="id_class"/></Param>
+            <Param name="type_code"><Var name="PARAMS" key="type_code"/></Param>
+            <Param name="lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <Function scope="private" name="getRecursiveWorkflowParams" doc="Get all recursive workflow params">
+      <Params>
+       <Param name="id_class" type="int" doc="The class id"/>
+       <Param name="id_type" type="int" doc="The class workflow type id. Only get parents that share the same class workflow type"/>
+       <Param name="wf_params" type="string" doc="json: The workflow params"/>       
+      </Params>
+      <Return type="single" doc="">
+      </Return>
+      <Begin>
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="PARAMS" key="id_class"/></Param>
+          </DataAccess>
+        </Var>
+        <Var name="paramsSet"><Set/></Var>
+        <Var name="paramsSet" key=""><Var name="PARAMS" key="wf_params"/></Var>
+        <While condition="$class->id_parent != 0">
+          <!-- Class parent -->          
+          <Var name="classParent">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class</Param>
+              <Param name="id"><Var name="class" key="id_parent"/></Param>
+            </DataAccess>
+          </Var>
+          <Var name="classWorkflowParent">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class_workflow</Param>
+              <Param name="id_class"><Var name="classParent" key="id"/></Param>
+              <Param name="id_type"><Var name="PARAMS" key="id_type"/></Param>
+            </DataAccess>
+          </Var>
+          <If condition="$classWorkflowParent->params !== null">
+            <Then>
+              <Var name="paramsSet" key=""><Var name="classWorkflowParent" key="params"/></Var>              
+            </Then>
+          </If>
+          <!-- Recursive -->
+          <Var name="class"><Var name="classParent"/></Var>
+        </While>
+        <!-- Reverse the array and start the concatenation -->
+        <Var name="resultParams"><Set/></Var>
+        <Var name="paramsSet"><Set.reverse><Param><Var name="paramsSet"/></Param></Set.reverse></Var> 
+        <ForEach var="paramsSet" item="params">
+            <Var name="paramsInSet"><JsonToSet><Var name="params"/></JsonToSet></Var> 
+            <ForEach var="paramsInSet" key="key" item="item">
+              <Var name="resultParams" key="$key"><Var name="item"/></Var> 
+            </ForEach>
+        </ForEach>
+        <Return><SetToJson><Var name="resultParams"/></SetToJson></Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="getWorkflowConfiguration" doc="Get class workflow definition">
+      <Params>
+       <Param name="id" type="int" doc="The class workflow id"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Var name="classWorkflow">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class_workflow</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="workflowType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class_workflow_type</Param>
+            <Param name="id"><Var name="classWorkflow" key="id_type"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="processParams">
+          <Call library="framework,wf.process.configuration,api" function="get">
+            <Param name="id"><Var name="classWorkflow" key="id_workflow_configuration"/></Param>
+          </Call>
+        </Var>
+
+        <Var name="result"><Set/></Var>
+        <Var name="result" key="id"><Var name="classWorkflow" key="id"/></Var>
+        <Var name="result" key="wf_id_process"><Var name="processParams" key="wf_id_process"/></Var>
+        <Var name="result" key="wf_params_process"><Var name="processParams" key="wf_params_process"/></Var>
+        <Var name="result" key="wf_params_process_configuration"><Var name="processParams" key="params"/></Var>
+        <Var name="result" key="wf_type_code"><Var name="workflowType" key="code"/></Var>
+        <Var name="result" key="wf_params_class"><Var name="classWorkflow" key="params"/></Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getWorkflowTypeConfigurationKey" doc="Returns a json with the workflow type configuration">
+      <Params>
+       <Param name="id_type" type="int" doc="The workflow type id"/>
+       <Param name="key" type="string" doc="The configuration key to get"/>
+      </Params>
+      <Return type="string" doc="json: full process configuration from fw_rm_class_workflow_type and fw_wf_process_configuration">
+      </Return>
+      <Begin>
+          <!-- Get the workflow type configuration-->
+          <Var name="workflowType">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class_workflow_type</Param>
+              <Param name="id"><Var name="PARAMS" key="id_type"/></Param>
+            </DataAccess>
+          </Var>
+          <Var name="configurationSet"><JsonToSet><Var name="workflowType" key="configuration"/></JsonToSet></Var>
+        <Return>
+          <Var name="configurationSet" key="$PARAMS->key"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function scope="private" name="buildWorkflowConfigurationParams" doc="Returns a json with the workflow configuration from workflow_type and wf_process">
+      <Params>
+      <Param name="id_class" type="int" doc="The class id"/>
+       <Param name="id_type" type="int" doc="The workflow type id"/>
+       <Param name="wf_id_process" type="string" doc="The workflow process to implement"/>
+       <Param name="wf_params" type="string" doc="json: The workflow params"/>
+      </Params>
+      <Return type="string" doc="json: full process configuration from fw_rm_class_workflow_type and fw_wf_process_configuration">
+      </Return>
+      <Begin>
+          <!-- Get the class workflow type configuration-->
+          <Var name="typeConfiguration">
+            <Call library="framework,rm.class.workflow,api" function="getWorkflowTypeConfigurationKey">
+                <Param name="id_type"><Var name="PARAMS" key="id_type"/></Param>
+                <Param name="key"><String>process.configuration</String></Param>
+            </Call>
+          </Var>          
+
+          <!-- Get the wf process params-->
+          <Var name="processParams">
+            <Call library="framework,wf.process,api" function="getProcessParams">
+                <Param name="id"><Var name="PARAMS" key="wf_id_process"/></Param>
+            </Call>
+          </Var>
+          <!-- Get recursive params from parents to class tree root -->
+          <Var name="classWorkflowParams">
+            <JsonToSet>
+              <Call function="getRecursiveWorkflowParams">
+                <Param name="id_class"><Var name="PARAMS" key="id_class"/></Param>
+                <Param name="id_type"><Var name="PARAMS" key="id_type"/></Param>
+                <Param name="wf_params"><Var name="PARAMS" key="wf_params"/></Param>
+              </Call>
+            </JsonToSet>
+          </Var>
+
+          <!-- Expand type params in the class workflow type configuration -->
+          <ForEach var="typeConfiguration" key="confKey" item="confValue">
+            <Var name="processParams">
+              <String.replace>
+                <Param>
+                  <String.concatenate>
+                    <Param><String>$</String></Param>
+                    <Param><Var name="confKey"/></Param>
+                  </String.concatenate>
+                </Param>
+                <Param><Var name="confValue"/></Param>              
+                <Param><Var name="processParams"/></Param>                
+              </String.replace>
+            </Var>
+          </ForEach>
+          <!--Class workflow params will override the type configuration -->
+          <ForEach var="classWorkflowParams" key="confKey" item="confValue">
+            <Var name="processParams">
+              <String.replace>
+                <Param>
+                  <String.concatenate>
+                    <Param><String>$</String></Param>
+                    <Param><Var name="confKey"/></Param>
+                  </String.concatenate>
+                </Param>
+                <Param><Var name="confValue"/></Param>              
+                <Param><Var name="processParams"/></Param>                
+              </String.replace>
+            </Var>
+          </ForEach>          
+        <Return>
+          <Var name="processParams"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="addWorkflowConfiguration" doc="Adds a new workflow configuration linked to this class">
+      <Params>
+       <Param name="code" type="string" doc="The class code to add this wf configuration"/> 
+       <Param name="wf_type_code" type="string" doc="The workflow type code like disposal|approval|..."/>
+       <Param name="wf_params" type="string" doc="The class workflow params"/>
+       <Param name="wf_id_process" type="string" doc="The workflow process to implement"/>
+      </Params>
+      <Return type="int" doc="">
+      </Return>
+      <Begin>
+        <Transaction>
+          <Var name="workflowType">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class_workflow_type</Param>
+              <Param name="code"><Var name="PARAMS" key="wf_type_code"/></Param>
+            </DataAccess>
+          </Var>
+          <Exception condition="$workflowType->__length == 0"><String.parse>WorkflowType $PARAMS->wf_type_code not found</String.parse></Exception>
+
+          <Var name="class">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class</Param>
+              <Param name="code"><Var name="PARAMS" key="code"/></Param>
+            </DataAccess>
+          </Var>
+          <Exception condition="$class->__length == 0"><String.parse>Class $PARAMS->code not found</String.parse></Exception>
+
+          <!--First add the workflow configuration in wf module -->
+          <Var name="processConfigurationParams">
+            <Call library="framework,rm.class.workflow,api" function="buildWorkflowConfigurationParams">
+              <Param name="id_class"><Var name="class" key="id"/></Param>
+              <Param name="id_type"><Var name="workflowType" key="id"/></Param>
+              <Param name="wf_id_process"><Var name="PARAMS" key="wf_id_process"/></Param>
+              <Param name="wf_params"><Var name="PARAMS" key="wf_params"/></Param>
+            </Call>
+          </Var>
+
+          <Var name="id_workflow_configuration">
+            <Call library="framework,wf.process.configuration,api" function="add">
+              <Param name="id_process"><Var name="PARAMS" key="wf_id_process"/></Param>
+              <Param name="params"><Var name="processConfigurationParams"/></Param>
+              <Param name="guid_object"><Var name="class" key="uuid"/></Param>
+            </Call>
+          </Var>
+          <Var name="id_class_workflow">
+            <DataAccess method="insert">
+              <Param name="_entity">fw_rm_class_workflow</Param>
+              <Param name="id_class"><Var name="class" key="id"/></Param>
+              <Param name="id_type"><Var name="workflowType" key="id"/></Param>
+              <Param name="id_workflow_configuration"><Var name="id_workflow_configuration"/></Param>
+              <Param name="params"><Var name="PARAMS" key="wf_params"/></Param>
+              <Param name="_base">true</Param>
+            </DataAccess>
+          </Var>
+          <!-- Update all childs  class workflow configuration -->
+          <Call function="updateChildsWorkflowConfiguration">
+            <Param name="id_class"><Var name="class" key="id_class"/></Param>
+            <Param name="id_type"><Var name="workflowType" key="id"/></Param>
+          </Call>          
+        </Transaction>
+        <Return>
+          <Var name="id_class_workflow"/>
+        </Return>
+      </Begin>
+    </Function>    
+
+    <Function name="saveWorkflowConfiguration" doc="Adds a new workflow configuration linked to this class">
+      <Params>
+       <Param name="id" type="id" doc="The class workflow configuration id"/> 
+       <Param name="wf_type_code" type="string" doc="The workflow type code like disposal|approval|..."/>
+       <Param name="wf_params" type="string" doc="The class workflow params"/>
+       <Param name="wf_id_process" type="string" doc="The workflow process to implement"/>
+      </Params>
+      <Return type="int" doc="">
+      </Return>
+      <Begin>
+        <Transaction>
+          <Var name="classWorkflow">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class_workflow</Param>
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            </DataAccess>
+          </Var>
+          <Exception condition="$classWorkflow->__length == 0"><String.parse>classWorkflow $PARAMS->id not found</String.parse></Exception>
+
+          <Var name="workflowType">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class_workflow_type</Param>
+              <Param name="code"><Var name="PARAMS" key="wf_type_code"/></Param>
+            </DataAccess>
+          </Var>
+          <Exception condition="$workflowType->__length == 0"><String.parse>WorkflowType $PARAMS->wf_type_code not found</String.parse></Exception>
+          
+          <!--First build the workflow configuration params -->
+          <Var name="processConfigurationParams">
+            <Call library="framework,rm.class.workflow,api" function="buildWorkflowConfigurationParams">
+              <Param name="id_class"><Var name="classWorkflow" key="id_class"/></Param>
+              <Param name="id_type"><Var name="workflowType" key="id"/></Param>
+              <Param name="wf_id_process"><Var name="PARAMS" key="wf_id_process"/></Param>
+              <Param name="wf_params"><Var name="PARAMS" key="wf_params"/></Param>
+            </Call>
+          </Var>
+          <Var name="id_workflow_configuration">
+            <Call library="framework,wf.process.configuration,api" function="update">
+              <Param name="id"><Var name="classWorkflow" key="id_workflow_configuration"/></Param>
+              <Param name="id_process"><Var name="PARAMS" key="wf_id_process"/></Param>
+              <Param name="params"><Var name="processConfigurationParams"/></Param>
+            </Call>
+          </Var>
+          <Var name="id_class_workflow">
+            <DataAccess method="update">
+              <Param name="_entity">fw_rm_class_workflow</Param>
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              <Param name="id_type"><Var name="workflowType" key="id"/></Param>
+              <Param name="params"><Var name="PARAMS" key="wf_params"/></Param>
+              <Param name="_base">true</Param>
+            </DataAccess>
+          </Var>
+          <!-- Update all childs  class workflow configuration -->
+          <Call function="updateChildsWorkflowConfiguration">
+            <Param name="id_class"><Var name="classWorkflow" key="id_class"/></Param>
+            <Param name="id_type"><Var name="workflowType" key="id"/></Param>
+          </Call>
+        </Transaction>
+        <Return>
+          <Var name="id_class_workflow"/>
+        </Return>
+      </Begin>
+    </Function>    
+
+
+    <Function scope="private" name="updateChildsWorkflowConfiguration" doc="Updates all childs configuration">
+      <Params>
+       <Param name="id_class" type="int" doc="The class to update all childs"/> 
+       <Param name="id_type" type="int" doc="The class workflow type id"/> 
+      </Params>
+      <Return type="void" doc="">
+      </Return>
+      <Begin>
+        <Transaction>
+          <Var name="childs">
+            <DataAccess method="getAll">
+              <Param name="_entity">fw_rm_class</Param>
+              <Param name="id_parent"><Var name="PARAMS" key="id_class"/></Param>
+            </DataAccess>
+          </Var>
+          <ForEach var="childs" item="class">
+            <Var name="classWorkflow">
+              <DataAccess method="load">
+                <Param name="_entity">fw_rm_class_workflow</Param>
+                <Param name="id_class"><Var name="class" key="id"/></Param>
+                <Param name="id_type"><Var name="PARAMS" key="id_type"/></Param>
+              </DataAccess>
+            </Var>
+            <If condition="$classWorkflow->__length != 0">
+              <Then>
+                <Var name="workflowType">
+                  <DataAccess method="load">
+                    <Param name="_entity">fw_rm_class_workflow_type</Param>
+                    <Param name="id"><Var name="classWorkflow" key="id"/></Param>
+                  </DataAccess>
+                </Var>
+                <Var name="workflowConfiguration">
+                  <Call library="framework,wf.process.configuration,api" function="get">
+                    <Param name="id"><Var name="classWorkflow" key="id_workflow_configuration"/></Param>
+                  </Call>
+                </Var>
+                <!-- Call the save configuration for each child with its own params in class workflow, this way everything is updated -->
+                <Call function="saveWorkflowConfiguration">
+                  <Param name="id"><Var name="classWorkflow" key="id"/></Param>
+                  <Param name="wf_type_code"><Var name="workflowType" key="code"/></Param>
+                  <Param name="wf_params"><Var name="classWorkflow" key="params"/></Param>
+                  <Param name="wf_id_process"><Var name="workflowConfiguration" key="id_process"/></Param>
+                </Call>
+              </Then>
+            </If>
+          </ForEach>
+        </Transaction>
+        <Return></Return>
+      </Begin>
+    </Function> 
+
+
+    <Function name="deleteWorkflowConfiguration" doc="Deletes a workflow definition for a given class">
+      <Params>
+       <Param name="id" type="int" doc="The class workflow id"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Transaction>
+          <Var name="classWorkflow">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_class_workflow</Param>
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            </DataAccess>
+          </Var>
+
+          <Var name="workflowConfiguration">
+            <Call library="framework,wf.process.configuration,api" function="delete">
+              <Param name="id"><Var name="classWorkflow" key="id_workflow_configuration"/></Param>
+            </Call>
+          </Var>
+
+          <Var name="result">
+            <DataAccess method="delete">
+              <Param name="_entity">fw_rm_class_workflow</Param>
+              <Param name="id"><Var name="classWorkflow" key="id"/></Param>
+            </DataAccess>
+          </Var>
+        </Transaction>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getWorkflowConfiguration" doc="Get a class workflow configuration">
+      <Params>
+       <Param name="id_class" type="string" doc="The class code"/>
+       <Param name="wf_code" type="string" doc="The workflow type code"/>
+       <Param name="wf_params" type="json" doc="The wf params to expand to the configuration like $id_director -> 999999"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="PARAMS" key="id_class"/></Param>
+          </DataAccess>
+        </Var>
+        <Exception condition="$class->__length == 0"><String.parse>Class $PARAMS->id_class not found</String.parse></Exception>
+
+         <Var name="workflowType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class_workflow_type</Param>
+            <Param name="code"><Var name="PARAMS" key="wf_code"/></Param>
+          </DataAccess>
+        </Var>
+        <Exception condition="$workflowType->__length == 0"><String.parse>WorkflowType $PARAMS->wf_code not found</String.parse></Exception>
+
+         <Var name="classWorkflow">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class_workflow</Param>
+            <Param name="id_type"><Var name="workflowType" key="id"/></Param>
+            <Param name="id_class"><Var name="PARAMS" key="id_class"/></Param>
+          </DataAccess>
+        </Var>
+        <Exception name="framework\workflow::notFound" condition="$classWorkflow->__length == 0"><String.parse>ClassWorflow not found $PARAMS->wf_code $PARAMS->id_class not found</String.parse></Exception>
+
+        <!-- Get the workflow definition and expand the pams in the workflow params so the job will go to the right person -->
+        <Var name="workflowConfiguration">
+          <Call library="framework,wf.process.configuration,api" function="get">
+            <Param name="id"><Var name="classWorkflow" key="id_workflow_configuration"/></Param>
+            <Param name="params"><Var name="classWorkflow" key="params"/></Param>
+          </Call>
+        </Var>
+        <!-- Now, replace in configuration params, the json params received in this function like $id_director -> 999999-->
+        <Var name="paramsSet"><JsonToSet><Var name="PARAMS" key="params"/></JsonToSet></Var>
+        <!-- Insert each param from $PARAMS->params in one separate variable so String.parse can use them to replace values-->
+        <ForEach var="paramsSet" key="key" item="item">
+          <Var name="$key"><Var name="item"/></Var>
+        </ForEach>
+        <!-- Replace the configurations params with the ones in the PARAMS passed to this function, like id_person_1level -> id_director -->
+        <!-- Then the caller can use their own params configuration -->
+        <Var name="workflowConfiguration" key="params"><String.parse>$workflowConfiguration->params</String.parse></Var>
+        <Return>
+          <Var name="workflowConfiguration"/>
+        </Return>
+      </Begin>
+    </Function>    
+
+  </Library>
+</Node>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Params>
+  </Params>
+  <Doc lang="pt-PT">
+    This is a test application for imap datasource
+  </Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens>
+    <Screen id="scr001">
+      <Grid name="grdResults" infer="true"/>
+      <Form name="frmResult" infer="true" freeze="true"/>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scr001">
+
+     <Print>
+      <DataAccess method="update" datasource="googleAPIAdminSDK">
+        <Param name="uid">aapaulo.tavares@in.cscm-lx.pt</Param>
+        <Param name="password">xxxxxxxx</Param>
+      </DataAccess>
+     </Print>     
+      
+             
+    </Action>
+  </Actions>
+</Node>
+

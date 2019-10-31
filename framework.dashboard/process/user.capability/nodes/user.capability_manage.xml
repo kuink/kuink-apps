@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen" template="1col_LeftMenu">
+      <Form name="frmSearch" persist="true">
+        <Int id="id"/>
+        <Text id="name"/>
+        <Text id="code"/>
+        <Checkbox id="is_global"/>
+        <ButtonGroup>
+          <Button id="search" type="search" label="search" action="search"/>
+          <Button id="insert" type="add" label="insert" action="insert"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="name" label="name"/>
+            <Column name="code" label="code"/>
+            <Column name="is_global" label="is_global"/>
+            <Column name="_creation" label="_creation"/>
+            <Column name="_creation_ip" label="_creation_ip"/>
+            <Column name="_modification" label="_modification"/>
+            <Column name="_modification_ip" label="_modification_ip"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" actionvalue="id"/>
+            <Action name="edit" actionvalue="id"/>
+            <Action name="delete" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen id="scrView" doc="View Screen" template="1col_LeftMenu">
+      <Form name="frmView">
+        <Static id="id"/>
+        <Static id="name"/>
+        <Static id="code"/>
+        <Static id="is_global"/>
+        <Static id="_creation"/>
+        <Static id="_creation_ip"/>
+        <Static id="_modification"/>
+        <Static id="_modification_ip"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+          <Button id="edit" type="update" label="edit" action="edit"/>
+          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    <Screen id="scrEdit" doc="Edit Screen" template="1col_LeftMenu">
+      <Form name="frmEdit">
+        <Static id="id" label="id" required="true"/>
+        <Text id="name" label="name" required="true"/>
+        <Text id="code" label="code" required="true"/>
+        <Checkbox id="is_global" label="is_global" required="false"/>
+        <Int id="_creation" label="_creation" required="false"/>
+        <Text id="_creation_ip" label="_creation_ip" required="false"/>
+        <Int id="_modification" label="_modification" required="false"/>
+        <Text id="_modification_ip" label="_modification_ip" required="false"/>
+        <ButtonGroup>
+          <Button id="cancel" type="cancel" label="cancel" action="search"/>
+          <Button id="save" type="update" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+    <Action name="search" screen="scrSearch">
+      <If condition="$defaultData-&gt;__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param>
+              <Var name="defaultData"/>
+            </Param>
+          </Control>
+        </Then>
+      </If>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Call library="framework,user.capability,api" function="search">
+            <Param name="id">
+              <Var name="currentData" key="id"/>
+            </Param>
+            <Param name="name">
+              <Var name="currentData" key="name"/>
+            </Param>
+            <Param name="code">
+              <Var name="currentData" key="code"/>
+            </Param>
+            <Param name="is_global">
+              <Var name="currentData" key="is_global"/>
+            </Param>
+            <Param name="pagesize">
+              <Control method="getPageSize" object="grdSearchResult"/>
+            </Param>
+            <Param name="pagenum">
+              <Control method="getCurrentPage" object="grdSearchResult"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="view" screen="scrView">
+      <Var name="selectedId" process="true">
+        <ActionValue/>
+      </Var>
+      <Control method="bind" object="frmView">
+        <Param>
+          <Call library="framework,user.capability,api" function="getById">
+            <Param name="id">
+              <ActionValue/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="save">
+      <If condition="@selectedId == ''">
+        <Then>
+          <Call library="framework,user.capability,api" function="add" params="POSTDATA"/>
+        </Then>
+        <Else>
+          <Call library="framework,user.capability,api" function="update" params="POSTDATA">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Else>
+      </If>
+      <Action name="search"/>
+    </Action>
+    <Action name="insert" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <Null/>
+      </Var>
+    </Action>
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Call library="framework,user.capability,api" function="delete">
+        <Param name="id">
+          <Var name="selectedId" process="true"/>
+        </Param>
+      </Call>
+      <Action name="search"/>
+    </Action>
+    <Action name="edit" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Control method="bind" object="frmEdit">
+        <Param>
+          <Call library="framework,user.capability,api" function="getById">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

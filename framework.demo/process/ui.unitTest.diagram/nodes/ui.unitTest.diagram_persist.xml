@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+    <Params>
+      <Param name="id_feedback"/>
+    </Params>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+      <Use name="FormatterLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+      <Screen id="screen001" >
+          <Diagram name="diagram1" title="sample">
+          </Diagram>
+       </Screen>
+	</Screens>
+  
+	<Actions>
+      <Action name="init" screen="screen001">
+      </Action>      
+	</Actions>
+</Node>
+

@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+  
+  <Function name="addTestData" doc="Adds a test record in table ">
+  <Params>
+  </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_access_control_list</Param>
+            <Param name="_base">true</Param>
+            <Param name="id_parent">
+              <Int>1</Int>
+            </Param>
+            <Param name="is_inherited">
+              <Int>1</Int>
+            </Param>
+            <Param name="uuid">
+              <String>A</String>
+            </Param>
+            <Param name="code">
+              <String>A</String>
+            </Param>
+            <Param name="name">
+              <String>A</String>
+            </Param>
+            <Param name="description">
+              <String>A</String>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="prepare" doc="prepare">
+      <Params/>
+      <Return type="text" doc="Test documentation"/>
+      <Begin>
+        <Var name="context" key="message">framework::framework.unitTest::</Var>
+        <Return>
+          <Var name="context"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="run" doc="Run the test">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="single" doc="The result">
+        <External name="code" type="int" doc="The result code"/>
+        <External name="data" type="text" doc="Data returned by the function"/>
+      </Return>
+      <Errors>
+        <Error code="-1" doc="Test failed"/>
+      </Errors>
+      <Begin>
+        <Var name="result" key="code">
+          <Int>0</Int>
+        </Var>
+        <Var name="result" key="data">
+          <String/>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="clean" doc="Removes the data added">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+            </Begin>
+    </Function>
+    
+    <Function scope="public" name="addAclPerson" doc="Adds a complete acl with an entry to a person">
+			<Params>
+				<Param name="id_person" type="int" doc="The person to add the acl"/>
+			</Params>
+			<Return type="int" doc="The acl entry id"/>
+			<Begin>
+				<!-- Add Role -->
+				<Var name="id_role">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestRole</Param>
+						<Param name="name">Unit test Role</Param>
+						<Param name="description">Unit test Role</Param>
+						<Param name="is_role">1</Param>
+					</Call>
+				</Var>
+
+				<!-- Add capability -->
+				<Var name="id_capability">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestCapability</Param>
+						<Param name="name">Unit test Capability</Param>
+						<Param name="description">Unit test Capability</Param>
+						<Param name="is_role">0</Param>
+					</Call>
+				</Var>
+				<!-- Add the relation -->
+				<Call library="framework,permission,api" function="addRelation">
+					<Param name="id_role"><Var name="id_role"/></Param>
+					<Param name="id_permission"><Var name="id_capability"/></Param>
+				</Call>
+
+				<!-- Add capability -->
+				<Var name="id_capability">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestCapability2</Param>
+						<Param name="name">Unit test Capability2</Param>
+						<Param name="description">Unit test Capability2</Param>
+						<Param name="is_role">0</Param>
+					</Call>
+				</Var>
+				<!-- Add the relation -->
+				<Call library="framework,permission,api" function="addRelation">
+					<Param name="id_role"><Var name="id_role"/></Param>
+					<Param name="id_permission"><Var name="id_capability"/></Param>
+				</Call>
+
+
+
+				<!-- Add the acl -->        	
+       	<Var name="id_acl">
+					<Call library="framework,acl,api" function="add">
+						<Param name="id_parent"><Null/></Param>
+						<Param name="is_inherited"><Int>0</Int></Param>
+						<Param name="code">test</Param>
+						<Param name="name">test</Param>
+						<Param name="description">test</Param>
+					</Call>        	
+				</Var>
+
+				<!-- Add the acl entry to a person -->
+				<Var name="id_acl_entry">				
+					<Call library="framework,acl,api" function="addEntry">
+						<Param name="id"><Var name="id_acl"/></Param>
+						<Param name="id_permission"><Var name="id_role"/></Param>
+						<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+						<Param name="id_person_group"><Null/></Param>
+					</Call>					
+				</Var>				
+				<Return>
+					<Var name="id_acl_entry"/>
+				</Return>
+			</Begin>
+		</Function>
+    
+    <Function scope="public" name="addAclGroup" doc="Adds a complete acl with an entry to a person">
+			<Params>
+				<Param name="id_person_group" type="int" doc="The person to add the acl"/>
+				<Param name="id_person" type="int" doc="to include this person in the group"/>
+				<Param name="with_permission" type="int" doc="Add this acl to a group with ou without id_permission in acl"/>
+			</Params>
+			<Return type="int" doc="The acl entry id"/>
+			<Begin>
+				<!-- Add Role -->
+				<Var name="id_role">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestRole</Param>
+						<Param name="name">Unit test Role</Param>
+						<Param name="description">Unit test Role</Param>
+						<Param name="is_role">1</Param>
+					</Call>
+				</Var>
+				<Var name="id_role3">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestRole3</Param>
+						<Param name="name">Unit test Role3</Param>
+						<Param name="description">Unit test Role3</Param>
+						<Param name="is_role">1</Param>
+					</Call>
+				</Var>
+
+				<!-- Add capability -->
+				<Var name="id_capability">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestCapability</Param>
+						<Param name="name">Unit test Capability</Param>
+						<Param name="description">Unit test Capability</Param>
+						<Param name="is_role">0</Param>
+					</Call>
+				</Var>
+				<!-- Add the relation -->
+				<Call library="framework,permission,api" function="addRelation">
+					<Param name="id_role"><Var name="id_role"/></Param>
+					<Param name="id_permission"><Var name="id_capability"/></Param>
+				</Call>
+
+				<!-- Add capability -->
+				<Var name="id_capability">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestCapability2</Param>
+						<Param name="name">Unit test Capability2</Param>
+						<Param name="description">Unit test Capability2</Param>
+						<Param name="is_role">0</Param>
+					</Call>
+				</Var>
+				<!-- Add the relation -->
+				<Call library="framework,permission,api" function="addRelation">
+					<Param name="id_role"><Var name="id_role"/></Param>
+					<Param name="id_permission"><Var name="id_capability"/></Param>
+				</Call>
+
+				<!-- Add capability -->
+				<Var name="id_capability3">
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestCapability3</Param>
+						<Param name="name">Unit test Capability3</Param>
+						<Param name="description">Unit test Capability3</Param>
+						<Param name="is_role">0</Param>
+					</Call>
+				</Var>
+				<!-- Add the relation -->
+				<Call library="framework,permission,api" function="addRelation">
+					<Param name="id_role"><Var name="id_role3"/></Param>
+					<Param name="id_permission"><Var name="id_capability3"/></Param>
+				</Call>
+
+
+				<!-- Add the person to the group with the role 3-->
+				<DataAccess method="delete">
+					<Param name="_entity">fw_person_rel_group</Param>
+					<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+					<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+					<Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+				</DataAccess>
+				<DataAccess method="insert">
+					<Param name="_entity">fw_person_rel_group</Param>
+					<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+					<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+					<Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+					<Param name="id_person_role"><Var name="id_role3"/></Param>
+				</DataAccess>
+
+				<!-- Add the acl -->        	
+       	<Var name="id_acl">
+					<Call library="framework,acl,api" function="add">
+						<Param name="id_parent"><Null/></Param>
+						<Param name="is_inherited"><Int>0</Int></Param>
+						<Param name="code">test</Param>
+						<Param name="name">test</Param>
+						<Param name="description">test</Param>
+					</Call>        	
+				</Var>
+
+				<!-- Add the acl entry to a person -->
+				<If condition="$PARAMS->with_permission == 1">
+					<Then>
+						<Var name="id_acl_entry">				
+							<Call library="framework,acl,api" function="addEntry">
+								<Param name="id"><Var name="id_acl"/></Param>
+								<Param name="id_permission"><Var name="id_role"/></Param>
+								<Param name="id_person"><Null/></Param>
+								<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+							</Call>					
+						</Var>				
+					</Then>
+					<Else>
+						<Var name="id_acl_entry">				
+							<Call library="framework,acl,api" function="addEntry">
+								<Param name="id"><Var name="id_acl"/></Param>
+								<Param name="id_person"><Null/></Param>
+								<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+							</Call>					
+						</Var>				
+					</Else>
+				</If>
+				<Return>
+					<Var name="id_acl"/>
+				</Return>
+			</Begin>
+		</Function>
+
+    <Function scope="public" name="addScenaryAcl" doc="Adds a scenary completly defined by caller">
+			<Params>
+				<Param name="roles" type="array" doc="The person to add the acl"/>
+				<Param name="acl" type="array" doc="Acl entries"/>
+				<Param name="allocations" type="array" doc="Allocates persons to groups"/>
+				<Param name="records" type="array" doc="Records to insert in the tmp table"/>
+			</Params>
+			<Return type="string" doc="The temporary table name"/>
+			<Begin>
+			
+				<ForEach var="roles" item="capabilities" key="roleCode">
+					<Var name="id_role">
+						<Call library="framework,permission,api" function="add">
+							<Param name="code"><Var name="roleCode"/></Param>
+							<Param name="name"><Var name="roleCode"/></Param>
+							<Param name="description"><Var name="roleCode"/></Param>
+							<Param name="is_role">1</Param>
+						</Call>
+					</Var>
+					<!-- Add the capabilities -->
+					<Var name="capSplited">
+						<StringLib method="explode">
+							<Param>,</Param>
+							<Param><Var name="capabilities"/></Param>
+						</StringLib>
+					</Var>
+					<ForEach var="capSplited" item="capability">
+						<Var name="id_capability">
+							<Call library="framework,permission,api" function="add">
+								<Param name="code"><Var name="capability"/></Param>
+								<Param name="name"><Var name="capability"/></Param>
+								<Param name="description"><Var name="capability"/></Param>
+								<Param name="is_role">0</Param>
+							</Call>
+						</Var>
+						<Call library="framework,permission,api" function="addRelation">
+							<Param name="id_role"><Var name="id_role"/></Param>
+							<Param name="id_permission"><Var name="id_capability"/></Param>
+						</Call>
+					</ForEach>
+				</ForEach>
+				
+				<ForEach var="allocations" item="allocation">
+					<DataAccess method="delete">
+						<Param name="_entity">fw_person_rel_group</Param>
+						<Param name="id_person_group"><Var name="allocation" key="id_person_group"/></Param>
+						<Param name="id_person"><Var name="allocation" key="id_person"/></Param>
+						<Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+					</DataAccess>
+					<DataAccess method="insert">
+						<Param name="_entity">fw_person_rel_group</Param>
+						<Param name="id_person_group"><Var name="allocation" key="id_person_group"/></Param>
+						<Param name="id_person"><Var name="allocation" key="id_person"/></Param>
+						<Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+						<Param name="id_person_role">
+							<If condition="$allocation->role != null">
+								<Then>
+									<Call library="framework,permission,api" function="getIdByCode">
+										<Param name="code"><Var name="allocation" key="role"/></Param>
+									</Call>									
+								</Then>
+								<Else>
+									<Null/>
+								</Else>
+							</If>
+						</Param>
+					</DataAccess>
+				</ForEach>
+
+				<ForEach var="acl" item="aclItem" key="aclCode">
+					<!-- Add the acl -->        	
+	       	<Var name="aclCodes" key="$aclCode">
+						<Call library="framework,acl,api" function="add">
+							<Param name="id_parent"><Null/></Param>
+							<Param name="is_inherited"><Int>0</Int></Param>
+							<Param name="code"><Var name="aclCode"/></Param>
+							<Param name="name"><Var name="aclCode"/></Param>
+							<Param name="description"><Var name="aclCode"/></Param>
+						</Call>        	
+					</Var>
+					<ForEach var="aclItem" item="entry">
+						<Var name="entry"/>
+						<Call library="framework,acl,api" function="addEntry">
+							<Param name="id"><Var name="aclCodes" key="$aclCode"/></Param>
+							<Param name="id_permission">
+								<If condition="$entry->role != null">
+									<Then>
+										<Call library="framework,permission,api" function="getIdByCode">
+											<Param name="code"><Var name="entry" key="role"/></Param>
+										</Call>									
+									</Then>
+									<Else>
+										<Null/>
+									</Else>
+								</If>
+							</Param>
+							<Param name="id_person"><Var name="entry" key="id_person"/></Param>
+							<Param name="id_person_group"><Var name="entry" key="id_person_group"/></Param>
+						</Call>
+					</ForEach>
+				</ForEach>
+
+
+				<!-- Create a test table with an id_acl field -->
+				<Var name="tableName">
+					<Call library="framework.unitTest,_unitTest,acl.10.aux" function="createAuxTable"/>
+				</Var>
+				
+				<!-- Insert a field in the table with the preivously defined acl -->
+				<ForEach var="records" item="record">
+					<DataAccess method="insert">
+						<Param name="_entity"><Var name="tableName"/></Param>
+						<Param name="id"><Var name="record" key="id"/></Param>
+						<Param name="id_acl"><Var name="aclCodes" key="$record->acl_code"/></Param>
+					</DataAccess>				
+				</ForEach>
+				
+				<!--Var name="fw_permission" dump="true">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_permission</Param>
+					</DataAccess>
+				</Var>
+				<Var name="fw_permission_relation" dump="true">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_permission_relation</Param>
+					</DataAccess>
+				</Var-->
+				<Var name="acl">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_access_control_list</Param>
+					</DataAccess>
+				</Var>
+				<Var name="acl_entry">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_access_control_list_entry</Param>
+					</DataAccess>
+				</Var>
+				<Var name="table">
+					<DataAccess method="getAll">
+						<Param name="_entity"><Var name="tableName"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Var name="person_capability">
+					<DataAccess method="getAll">
+						<Param name="_entity">_fw_access_control_list_capability</Param>
+						<Param name="id_person"><Var name="USER" key="id"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Var name="fw_person_rel_group">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_person_rel_group</Param>
+						<Param name="id_person"><Var name="USER" key="id"/></Param>
+					</DataAccess>
+				</Var>			
+				<Return>
+					<Var name="tableName"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		
+		<Function scope="public" name="createAuxTable" doc="Creates an auxiliary table used throughout the unit tests">
+			<Params>
+			</Params>
+			<Return type=""/>
+			<Begin>
+				<Var name="time"><MicroTime/></Var>
+				<Var name="time"><String.replace>
+					<Param>.</Param>
+					<Param>_</Param>
+					<Param><Var name="time"/></Param>
+				</String.replace></Var>
+				<Var name="tableName"><String.parse>fw_acl_tmp_aux_$time</String.parse></Var>
+			  <DataAccess method="execute">
+			  	<Param name="tableName"><Var name="tableName"/></Param>
+			    <Param name="_sql">
+			    <Xml><Sql>
+			      <![CDATA[
+							CREATE TEMPORARY TABLE `{param->tableName}` (
+							  `id` bigint(10) NOT NULL,
+							  `id_acl` bigint(10) DEFAULT NULL,
+							  `name` varchar(64) DEFAULT NULL
+							) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+			      ]]>
+			    </Sql></Xml></Param>
+			  </DataAccess>					
+				<Return>
+					<Var name="tableName"/>
+				</Return>			
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="dropAuxTable" doc="Drops an auxiliary table used throughout the unit tests">
+			<Params>
+				<Param name="tableName" type="string" doc="The table name to drop"/>
+			</Params>
+			<Return type="int"/>
+			<Begin>
+				<Return>
+					  <DataAccess method="execute">
+					  	<Param name="tableName"><Var name="PARAMS" key="tableName"/></Param>
+					    <Param name="_sql"><Xml><Sql>
+					      <![CDATA[
+									DROP TEMPORARY TABLE `{param->tableName}`;
+					      ]]>
+					    </Sql></Xml></Param>
+					  </DataAccess>					
+				</Return>			
+			</Begin>
+		</Function>
+    
+  </Library>
+</Node>

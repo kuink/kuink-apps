@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+	</Libraries>
+	<Configuration />
+	<Screens>
+		<Screen id="screen001">
+		</Screen>
+	</Screens>
+	<Actions>
+		<Action name="init" screen="screen001">
+		<Print>Hello World</Print>		  
+		<Call library="framework,message,api" function="createMessage"/>
+		
+		</Action>
+	</Actions>
+</Node>
+

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens />
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="add" doc="Add a new physycal archive">
+      <Params>
+        <Param name="id_record" type="int" required="true"/>
+        <Param name="id_component" type="int" required="true"/>
+        <Param name="settings" type="array" required="true" doc="The physical array of settings"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm::invalidComponentSettings" doc="The component settings are invalid"/>
+      </Exceptions>
+      <Return type="array" doc="The settings validated" />
+      <Begin>
+        <!-- Validate settings -->
+        <Var name="safeSettings" key="date_from"><Var name="settings" key="date_from"/></Var>
+        <Var name="safeSettings" key="date_to"><Var name="settings" key="date_to"/></Var>
+        <Var name="safeSettings" key="original_location"><Var name="settings" key="original_location"/></Var>
+        <Var name="safeSettings" key="current_location"><Var name="settings" key="current_location"/></Var>
+
+        <Return><Var name="safeSettings"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getStream" doc="Not implemented">
+      <Params>
+      </Params>
+      <Begin>
+        <Return></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getURI" doc="">
+      <Params>
+      </Params>
+      <Begin>
+        <Return></Return>
+      </Begin>
+    </Function>
+
+    <Function name="handleArchive" doc="handle component for archiving">
+      <Params>
+        <Param name="id_component" required="true" />
+        <Param name="path" required="true" />
+      </Params>
+      <Return type="int" doc="1 if done, 0 if errors" />
+      <Begin>
+        <Return><Int>1</Int></Return>
+      </Begin>
+    </Function>
+
+    <Function name="destroy" doc="destroy component">
+      <Params>
+        <Param name="id_component" required="true" />
+      </Params>
+      <Return type="int" doc="1 if done, 0 if errors" />
+      <Begin>
+        <Return>1</Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="getSettingsDefinition" doc="Get the component settings definition data to build forms.">
+      <Params>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+       <Var name="setting" key="id">current_location</Var>
+       <Var name="setting" key="type">Text</Var>
+       <Var name="settings" key=""><Var name="setting"/></Var>
+       <Return><Var name="settings"/></Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+		Give all entries of an acl
+	</Doc>
+	<Params>
+		<Param name="id" />
+		<Param name="id_person" />
+		<Param name="id_person_group" />		
+		<Param name="id_permission" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				
+				<XSelect>
+					<XField>
+						acle.id,
+						acle.id_person,
+						acle.id_person_group,
+						acle.id_permission,
+						p.display_name as person_display_name,
+						pg.name as person_group_name,
+						pg.code as person_group_code,
+						pm.name as permission_name,
+						pm.code as permission_code
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						fw_access_control_list_entry acle
+						LEFT OUTER JOIN person p ON (p.id=acle.id_person)
+						LEFT OUTER JOIN person_group pg ON (pg.id=acle.id_person_group)
+						LEFT OUTER JOIN fw_permission pm ON (pm.id=acle.id_permission)
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>acle.id_acl = {param->id}</XCondition>
+					<XCondition optional="id_person">AND id_person = {param->id_person}</XCondition>
+					<XCondition optional="id_person_group">AND id_person_group = {param->id_person_group}</XCondition>
+					<XCondition optional="id_permission">AND id_permission = {param->id_permission}</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder>p.display_name asc, pg.code asc, pm.code asc</XOrder>
+				</XOrderBy>	
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
+

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+    <Allow>
+        <Capability name="framework/unitTests:run"/>
+    </Allow>
+  </Permissions>      
+
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="ReflectionLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+  </Libraries>
+  <Configuration>
+    <!--Config key="application" value="gecol.core"/-->
+    <Config key="application" value="framework"/>
+    <Config key="process" value="user"/>
+  </Configuration>
+  <Screens>
+    <Screen id="runScreen">
+      <Form name="runForm">
+      	<Select id="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
+        <ButtonGroup>
+          <Button id="run" label="runTests" type="submit" icon="play" action="run"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+		
+    <Screen id="resultsScreen">
+      <Form name="runForm">
+	      <Select id="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
+        <ButtonGroup>
+          <Button id="run" label="runTests" type="submit" icon="play" action="run"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="resultGrid" title="testResult">
+        <Template>
+          <Columns>
+            <Column name="number"/>
+            <Column name="library"/>
+            <Column name="doc"/>
+            <Column name="result">
+              <Formatter name="Icon" size="24">
+                <Param name="-2">bug.png</Param>              
+                <Param name="-1">error.png</Param>
+                <Param name="0">success.png</Param>
+              </Formatter>              
+            </Column>
+            <Column name="data">
+              <Formatter name="Xml"/>
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>
+  </Screens>	
+	
+  <Actions>
+    <Action name="init" screen="runScreen">
+      <Var name="applications">
+				<Call library="framework,application,api" function="getAllWithUpdateState"/>
+      </Var>
+      <Control method="addDatasource" object="runForm">
+      	<Param>applications</Param>
+      	<Param><Var name="applications"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="run" screen="resultsScreen">
+      <Var name="errorsFound">0</Var>
+      <Var name="testNumber">1</Var>
+      <Try>
+	      <Instructions>
+		      <Var name="applications">
+						<Call library="framework,application,api" function="getAllWithUpdateState"/>
+		      </Var>
+	      </Instructions>
+      </Try>
+      <Control method="addDatasource" object="runForm">
+      	<Param>applications</Param>
+      	<Param><Var name="applications"/></Param>
+      </Control>
+      
+      <If condition="$POSTDATA->application != ''">
+				<Then>
+					<Var name="applications"><Set/></Var>
+					<Var name="element" key="name"><Var name="POSTDATA" key="application"/></Var>
+					<Var name="applications" key=""><Var name="element"/></Var>
+				</Then>
+			</If>
+      
+      <ForEach var="applications" item="application">
+        <Var name="applicationName"><Var name="application" key="name"/></Var>
+        <Var name="processes">
+          <ReflectionLib method="getApplicationProcesses">
+            <Param name="application"><Var name="applicationName"/></Param>
+          </ReflectionLib>
+        </Var>
+        <ForEach var="processes" item="process">
+          <Var name="processName"><Var name="process" key="name"/></Var>
+          <If condition="$processName == '_unitTest'">
+            <Then>
+              <!-- Found one unit test process -->
+              <Var name="libraries">
+                <ReflectionLib method="getProcessLibraries">
+                  <Param name="application"><Var name="applicationName"/></Param>
+                  <Param name="process"><Var name="processName"/></Param>
+                </ReflectionLib>
+              </Var>
+              <ForEach var="libraries" item="library">
+                <Var name="libraryName"><Var name="library" key="name"/></Var>
+                <Var name="callLibrary">
+                  <StringLib method="concatenate">
+                    <Param><Var name="applicationName"/></Param>
+                    <Param>,</Param>
+                    <Param><Var name="processName"/></Param>
+                    <Param>,</Param>
+                    <Param><Var name="libraryName"/></Param>
+                  </StringLib>
+                </Var>
+                <!-- Execute prepare -->
+                <Try>
+                  <Instructions>
+                  <Trace><String.parse>CALLING::$callLibrary</String.parse></Trace>
+                    <Var name="context">
+                      <Call library="$callLibrary" function="prepare"/>
+                    </Var>
+                  </Instructions>
+                </Try>
+                <!-- Execute run -->
+                <!-- Check to see if this unit test is to iterate or not-->
+                <If condition="$context->_iterate != ''">
+                  <Then>
+                    <!-- Iterate and execute the tests -->
+                    <Var name="iterationKey"><Var name="context" key="_iterate"/></Var>
+                    <Var name="iterationData"><Var name="context" key="$iterationKey"/></Var>
+                    <ForEach var="iterationData" item="iterationDataItem" key="iterationDataKey">
+                      <Var name="context" key="_iterateKey"><Var name="iterationDataKey"/></Var>
+                      <!-- Execute this test -->
+                      <Try>
+                        <Instructions>
+                          <Var name="run">
+                            <Call library="$callLibrary" function="run">
+                                <Param name="context"><Var name="context"/></Param>
+                            </Call>
+                          </Var>
+                        </Instructions>
+                        <Catch>
+                          <Var name="run" key="code"><Int>-2</Int></Var>
+                          <Var name="run" key="data"><String.parse>Uncatched Exception detected $EXCEPTION->name $EXCEPTION->message</String.parse></Var>
+                          <RollBack/>
+                        </Catch>
+                      </Try>
+                      <!-- Execute clean -->                    
+                      <Try>
+                        <Instructions>
+                          <Var name="clean">
+                            <Call library="$callLibrary" function="clean">
+                                <Param name="context"><Var name="context"/></Param>
+                            </Call>
+                          </Var>
+                        </Instructions>
+                      </Try>                    
+                      <Var name="code"><Var name="run" key="code"/></Var>
+                      <If condition="$code &lt; 0">
+                        <Then>
+                          <Var name="errorsFound" sum="1"/>
+                        </Then>
+                      </If>
+                      <Var name="testResult" key="number">
+                        <Var name="testNumber"/>
+                      </Var>
+                      <Var name="data">
+                        <UtilsLib method="jsonEncode">
+                          <Param><Var name="run" key="data"/></Param>
+                        </UtilsLib>
+                      </Var>
+                      <Var name="testResult" key="library"><Var name="callLibrary"/></Var>
+                      <Var name="testResult" key="doc"><String.parse>$context->message :: $iterationDataKey</String.parse></Var>
+                      <Var name="testResult" key="result"><Var name="run" key="code"/></Var>
+                      <Var name="testResult" key="data"><Var name="data"/></Var>
+                      <Var name="testResults" key="$testNumber"><Var name="testResult"/></Var>
+                      <Var name="testNumber" sum="1"/>
+                    </ForEach>
+                  </Then>
+                  <Else>
+                    <!-- Execute this single test -->
+                    <Try>
+                      <Instructions>
+                        <Var name="run">
+                          <Call library="$callLibrary" function="run">
+                              <Param name="context"><Var name="context"/></Param>
+                          </Call>
+                        </Var>
+                      </Instructions>
+                      <Catch>
+                        <Var name="run" key="code"><Int>-2</Int></Var>
+                        <Var name="run" key="data"><String.parse>Uncatched Exception detected $EXCEPTION->name $EXCEPTION->message</String.parse></Var>
+                        <RollBack/>
+                      </Catch>
+                    </Try>
+                    <!-- Execute clean -->                    
+                    <Try>
+                      <Instructions>
+                        <Var name="clean">
+                          <Call library="$callLibrary" function="clean">
+                              <Param name="context"><Var name="context"/></Param>
+                          </Call>
+                        </Var>
+                      </Instructions>
+                    </Try>                    
+                    <Var name="code"><Var name="run" key="code"/></Var>
+                    <If condition="$code &lt; 0">
+                      <Then>
+                        <Var name="errorsFound" sum="1"/>
+                      </Then>
+                    </If>
+                    <Var name="testResult" key="number">
+                      <Var name="testNumber"/>
+                    </Var>
+                    <Var name="data">
+                      <UtilsLib method="jsonEncode">
+                        <Param><Var name="run" key="data"/></Param>
+                      </UtilsLib>
+                    </Var>
+                    <Var name="testResult" key="library"><Var name="callLibrary"/></Var>
+                    <Var name="testResult" key="doc"><Var name="context" key="message"/></Var>
+                    <Var name="testResult" key="result"><Var name="run" key="code"/></Var>
+                    <Var name="testResult" key="data"><Var name="data"/></Var>
+                    <Var name="testResults" key="$testNumber"><Var name="testResult"/></Var>
+                    <Var name="testNumber" sum="1"/>
+                  </Else>
+                </If>
+              </ForEach>
+            </Then>
+          </If>
+        </ForEach>
+      </ForEach>
+      <Control method="bind" object="resultGrid">
+        <Param>
+          <Var name="testResults"/>
+        </Param>
+      </Control>
+      <If condition="$errorsFound != 0">
+        <Then>
+          <UserMessage type="error">
+            <Lang key="errorsFound">
+              <Param><Var name="errorsFound"/></Param>
+            </Lang>
+          </UserMessage>
+        </Then>
+        <Else>
+          <UserMessage type="success">
+            <Lang key="errorsNotFound"/>
+          </UserMessage>
+        </Else>
+      </If>  
+    </Action>
+                
+  </Actions>
+  <Library/>
+</Node>
+

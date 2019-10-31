@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+	</Libraries>
+	<Params>
+		<Param name="idTask"/>
+	</Params>
+	<Configuration />
+	<Screens>
+		<Screen id="scTaskHistory">
+			<Grid name="grdTaskHistory" title="taskHistory" pageable="true" pagingaction="init" pagesize="10">
+				<Template>
+					<Columns>
+						<Column name="id"/>
+						<Column name="id_task"/>
+						<Column name="_creation">
+							<Formatter name="DateTime" method="shortDateTime"/>
+						</Column>
+						<Column name="elapsed_time">
+							<Formatter name="Number" decimals="3"/>
+						</Column>						
+						<Column name="result"/>
+						<Column name="result_code"/>
+						<Column name="result_code" inline="true">
+							<Formatter name="Icon" size="32">
+								<Param name="OK">success.png</Param>
+								<Param name="default">error.png</Param>
+							</Formatter>
+						</Column>
+						<Column name="result_message"/>
+					</Columns>
+				</Template>
+			</Grid>
+			<Form name="frmOptions">
+			 <ButtonGroup>
+			   <Button type="cancel" id="back" label="back" action="back"/>
+			 </ButtonGroup>
+			</Form>
+		</Screen>
+	</Screens>
+	<Actions>
+		<Action name="init" screen="scTaskHistory">
+			<Var name="taskHistory">
+				<Execute method="this,this,task.listHistory">
+					<Param name="idTask"><Var name="PARAMS" key="idTask"/></Param>
+	                <Param name="pagesize"> <Control method="getPageSize" object="grdTaskHistory"/></Param>
+	                <Param name="pagenum"><Control method="getCurrentPage" object="grdTaskHistory"/></Param>           		
+				</Execute>
+			</Var>
+			<Control method="bind" object="grdTaskHistory">
+				<Param><Var name="taskHistory"/></Param>
+			</Control>
+		</Action>
+		
+		<Action name="back">
+			<RaiseEvent name="back"/>
+		</Action>
+	</Actions>
+</Node>
+

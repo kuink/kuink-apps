@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+  <Strings>
+    <!-- stateMachine -->
+    <String key="framework.stateMachine" value="Máquina de Estados"/>
+    <String key="stateMachine" value="Máquina de Estados"/>
+    <String key="id_state_machine" value="Máquina de Estados"/>
+    <String key="manage" value="Gerir"/>
+    <String key="transitions" value="Transições"/>
+    <String key="forms" value="Campos"/>
+    <String key="states" value="Estados"/>
+    <String key="is_active" value="Ativo"/>
+    <String key="code" value="Código"/>
+
+    <!-- State -->
+    <String key="name_public" value="Nome Público"/>
+    <String key="description_public" value="Descrição Pública"/>
+    <String key="is_bulk" value="Em bloco"/>
+    <String key="is_start_state" value="Estado Inicial"/>
+    <String key="is_end_state" value="Estado Final"/>
+    <String key="default_to_roles" value="Omissão para"/>
+    <String key="visible_to_roles" value="Visível para"/>
+    
+    <!-- Transitions -->
+    <String key="id_start_state" value="Estado Inicial"/>
+    <String key="id_end_state" value="Estado Final"/>
+    <String key="event" value="Evento"/>
+    <String key="event_description" value="Evento Descrição"/>
+    <String key="role_list" value="Permitido a"/>
+    <String key="id_form" value="Campos"/>
+    <String key="id_action" value="Ação"/>
+    <String key="notify_role_list" value="Notificar"/>
+    <String key="duplicate" value="Duplicar"/>
+
+  </Strings>
+  <HelpStrings>              
+    <!--Help key="example">Isto é um exemplo para o campo example</Help-->
+  </HelpStrings>
+</Lang>

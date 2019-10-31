@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="get" scope="protected" doc="Get a record aggregation">
+            <Params>
+                <Param name="id"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="id_record" type="text" doc=""/>
+                <External name="id_aggregation_type" type="text" doc=""/>
+                <External name="guid" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_aggregation</Param>
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </Execute>
+                </Return>
+            </Begin>
+        </Function>
+        
+        <!-- @author: André Bittencourt 20150316 -->
+        <Function name="getRecordsByAggregations" scope="protected" doc="return records by given aggregations guids">
+            <Params>
+                <Param name="aggregations" type="text" required="true" doc="Aggregations guids" />
+                <Param name="classificationItems" type="text" doc="Type of documents" />
+                <Param name="amountOfRelations" type="text" required="true" doc="Amount of relatios to check" />
+                <Param name="comparison" type="text" required="true" doc="Type of comparison" />
+            </Params>
+            <Return type="multiple" doc="return none if the record isn't created, return one if created, multiples if duplicated"></Return>
+            <Begin>
+                <Var name="aggr"></Var>
+                <ForEach var="aggregations" item="aggregation">
+                    <Var name="aggr" key=""><Var name="aggregation" key="guid" /></Var>
+                </ForEach>
+                <Var name="aggregations"><Var name="aggr" /></Var>
+                <Return>
+                    <DataAccess method="this,this,record.aggregation_getRecordsByAggregations">
+                        <Param name="guids">
+                            <Var name="aggregations"/>
+                        </Param>
+                        <Param name="classificationItems">
+                            <Var name="classificationItems" />
+                        </Param>
+                        <Param name="amountOfRelations">
+                            <Var name="amountOfRelations" />
+                        </Param>
+                        <Param name="comparison">
+                            <Var name="comparison" />
+                        </Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function> 
+
+        <Function name="add" scope="protected" doc="Add a record aggregation">
+            <Params>
+                <Param name="id_record" type="int" required="true"/>
+                <Param name="id_aggregation_type" type="int" required="true"/>
+                <Param name="guid" type="text" required="true"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="id_record" type="text" doc=""/>
+                <External name="id_aggregation_type" type="text" doc=""/>
+                <External name="guid" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Var name="newId" >
+                    <Execute method="framework,generic,insert">
+                        <Param name="table">fw_aggregation</Param>
+                        <Param name="id_record"><Var name="PARAMS" key="id_record"/></Param>
+                        <Param name="id_aggregation_type"><Var name="PARAMS" key="id_aggregation_type"/></Param>
+                        <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                        <Param name="_creation"><DateTimeLib method="now"/></Param>
+                        <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                    </Execute>
+                </Var>
+                <Return>
+                    <Call function="get">
+                        <Param name="id"><Var name="newId"/></Param>
+                    </Call>
+                </Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+		Give the response to an agreement
+	</Doc>
+	<Params>
+		<Param name="id_agreement" />
+		<Param name="startDate" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+							ags.code,
+					    agr.agreement_statement_response,
+							agr.agreement_statement_context
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						fw_agreement ag
+				    INNER JOIN fw_agreement_response agr ON (agr.id_agreement = ag.id)
+				    INNER JOIN fw_agreement_statement ags ON (ags.id = agr.id_agreement_statement)
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>ag.id = {param->id_agreement}</XCondition>
+					<XCondition optional="startDate">
+							AND ag.start_date = {param->startDate}
+					</XCondition>					
+				</XWhere>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
+

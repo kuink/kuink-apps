@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<DataAcess datasource="imap">
+    <Params>
+      <Param name="id" required="true" doc="objectId"/>
+    </Params>
+    <Begin>
+        <GetAll/>
+    </Begin>
+</DataAcess>

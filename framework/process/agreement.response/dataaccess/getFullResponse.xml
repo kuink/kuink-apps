@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+		Give the response to an agreement, with statement names and type
+	</Doc>
+	<Params>
+		<Param name="id_agreement" />
+		<Param name="startDate"/>
+		<Param name="_lang" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						agr.id as id_agreement_response,
+						agstl.name,
+					  agsl.statement as statement,
+						ags.code,
+						ags.expire_date_expression,
+						agr.agreement_statement_response,
+						agr.expire_date,
+						agr.agreement_statement_context
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						fw_agreement ag
+						INNER JOIN fw_agreement_response agr ON (agr.id_agreement = ag.id)
+						INNER JOIN fw_agreement_statement ags ON (ags.id = agr.id_agreement_statement)
+					  INNER JOIN fw_agreement_statement_lang agsl ON (agsl.id = ags.id AND agsl.lang='{param->_lang}')
+					  INNER JOIN fw_agreement_statement_type agst ON (agst.id = ags.id_agreement_statement_type)
+						INNER JOIN fw_agreement_statement_type_lang agstl ON (agstl.id = agst.id AND agstl.lang='{param->_lang}')
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>ag.id = {param->id_agreement} AND ag.is_temporary = 1</XCondition>
+					<XCondition optional="startDate">
+							AND ag.start_date = {param->startDate}
+					</XCondition>					
+				</XWhere>
+				<XOrderBy>
+					<XOrder>agst.order, agr.agreement_statement_context, ags.code</XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
+

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get all childs disposal schedule action data
+  </Doc>
+  <Params>
+	  <Param name="id_parent" required="true"/>
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+	          ac.name as action_name, 
+            CONCAT(ds.action_duration,' ', ic.name) as action_duration
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	          fw_rm_class c
+	          LEFT OUTER JOIN fw_rm_disposal_schedule ds ON (ds.id = c.id_disposal_schedule)
+            LEFT OUTER JOIN fw_rm_code_map ac ON (ac.id = ds.id_action_code)
+            LEFT OUTER JOIN fw_rm_code_map ic ON (ic.id = ds.id_action_interval_code)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+         <XCondition>
+            c.id_parent = '{param->id_parent}'
+         </XCondition>  
+	    </XWhere>
+	    <XGroupBy>
+	       <XCondition><![CDATA[ac.id]]></XCondition>
+	    </XGroupBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

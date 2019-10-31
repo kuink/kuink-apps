@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Ticket Management System">
+  <Domains/>
+  <Templates/>
+  <Entities>
+  
+    <Entity name="fw_tms_group_type" doc="TMS ticket group type">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity"/>        
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this group type active?"/>
+        <Attribute name="fields" domain="json" required="false" doc="The fields to add to a tiket"/>
+        <Attribute name="id_state_machine" domain="foreign" doc="The state machine to control the action plan"/>
+        <Attribute name="id_manager_group" domain="foreign" doc="The manager person group"/>
+        <Attribute name="id_requester_group" domain="foreign" doc="Who can create tickets for this group?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_group" doc="TMS ticket group type">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_group_type" domain="foreign" required="true" refentity="fw_tms_group_type" refattr="id" doc="The type this group belongs"/>
+				<Template name="fw.identity"/>        
+        <Template name="fw.dateRestriction"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_group_ticket_type" doc="TMS ticket type defined by group. Each group can have associated several ticket types">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_group" domain="foreign" required="true" refentity="fw_tms_group" refattr="id" doc="The group this ticket belongs"/>        
+				<Template name="fw.identity"/>        
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this group ticket type active?"/>        
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_ticket" doc="TMS ticket">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_group" domain="foreign" required="true" refentity="fw_tms_group" refattr="id" doc="The group this ticket belongs"/>        
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The ticket description"/>
+        <Attribute name="is_recurrent" domain="bool" required="true" doc="Is this ticket recurrent?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_action_plan" doc="TMS ticket">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_group" domain="foreign" required="true" refentity="fw_tms_group" refattr="id" doc="The group this ticket belongs"/>        
+				<Attribute name="id_group_ticket_type" domain="foreign" required="true" refentity="fw_tms_group_ticket_type" refattr="id" doc="The type of this ticket"/>
+        <Attribute name="id_state_machine_instance" domain="foreign" doc="The state machine to control this process"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The ticket description"/>
+        <Attribute name="is_recurrent" domain="bool" required="true" doc="Is this ticket recurrent?"/>
+        <Attribute name="data" domain="xml" required="false" doc="The ticket data which can be different by group"/>        
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+  </Entities>
+</Node>

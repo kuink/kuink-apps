@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<Method>
+  <Doc>
+    Gets the token context
+  </Doc>
+  <Params>
+    <Param name="id_process_instance" />
+  </Params>
+  <Body>
+    <Load>
+      <XSql>
+        <XSelect>
+          <XField>
+            wfp.*
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_wf_process_instance wfpi
+            INNER JOIN fw_wf_process wfp ON (wfp.id = wfpi.id_process)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>wfpi.id = {param->id_process_instance}</XCondition>
+        </XWhere>
+      </XSql>
+    </Load>
+  </Body>
+</Method>

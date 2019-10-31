@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<Method>
+    <Params></Params>
+    <Body>
+        <GetRecords/>
+    </Body>
+    <!-- sample: get_records("booklibrary_author",$field="", $value="", $sort="last_name asc", $fields='id, first_name, last_name'); -->
+</Method>

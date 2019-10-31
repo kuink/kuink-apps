@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+		<Doc>This is a generic custom control to display a list of agreements given a list of guidObjects.
+		As this is a generic control, the control does not know from which entity (table) the guidobject belongs.
+		So we need to pass context for the guidObjectList:
+		</Doc>
+    <Libraries>
+     <Use name="FormatterLib" type="lib"/>   
+		 <Use name="UtilsLib" type="lib"/>   
+    </Libraries>
+    <Configuration>
+    </Configuration>
+	  <Params>
+			<Param name="guidObjectList" type="string" doc="Comma separated list of guidObjects"/>
+			<Param name="entity" type="string" doc="Entity to retrieve the context data. The guidobject belongs to this entity (person,...)"/>
+			<Param name="entityGuidObjectKey" type="string" doc="In that entity, which attribute refers to guidObject (for instance in a person the guid is the private_key)"/>
+			<Param name="entityAttributeList" type="string" doc="In the list of agreements these attributes will identify each one (person: id, display_name and public_key for photo)"/>
+			<Param name="entitySort" type="string" doc="The sorting of the agreements, for instance for the person could be by name"/>
+			<Param name="idAgreementStatementType" type="int" doc="Filter the agreements by it's type. Like I just want the agreement related to the image usage"/>			
+			<Param name="formatters" type="json" doc="The list of formatters to apply to the entity attributes (for the person the public_key will have an image formatter"/>			
+			<Param name="labels" type="json" doc="Start date of the agreement"/>
+			<Param name="startDate" type="json" doc=""/>
+	  </Params>
+    <Screens>
+    	<Screen id="showScreen">
+				<!-- This grid is not dynamic because the columns and formatters must be here-->
+				<Grid name="agreementsPivot" exportable="true" infer="true">
+					<Template>
+						<Columns>
+							<Column name="id_agreement" visible="false"/>
+							<Column name="dynContainer" type="container" />
+							<Column name="__infer_statement_response_dup" visible="false"/>
+							<Column name="__infer_statement_response" label="yes">
+								<Formatter name="YesNo"/>
+								<Formatter name="Badge" min="0" max="1" method="format" field="$__infer_statement_response" showvalue="true" pallete="success">
+									<Param name="$field == 1">info</Param>
+									<Param name="$field == 0">important</Param>
+								</Formatter>
+							</Column>
+						</Columns>
+						<Actions>
+							<Action name="removeAgreementFromList" icon="times" actionvalue="id_agreement"/>
+							<Action name="downloadAgreement" icon="download" actionvalue="id_agreement"/>
+						</Actions>
+					</Template>
+					<Actions>
+						<Action name="clearAgreementsList"/>
+					</Actions>					
+				</Grid>
+    	</Screen>
+    </Screens>
+    <Actions>
+      <Action name="init" screen="showScreen">
+				<If condition="$PARAMS->guidObjectList == ''">
+					<Then>
+						<!-- Do nothing... -->
+						<Exit/>
+					</Then>
+				</If>
+				<Var name="agreements">
+					<Call library="framework,agreement.response,api" function="getCurrentResponseForGroup">
+						<Param name="guidObjectList"><Var name="PARAMS" key="guidObjectList"/></Param>
+						<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+						<Param name="entity"><Var name="PARAMS" key="entity"/></Param>
+						<Param name="entityGuidObjectKey"><Var name="PARAMS" key="entityGuidObjectKey"/></Param>
+						<Param name="entityAttributeList"><Var name="PARAMS" key="entityAttributeList"/></Param>
+						<Param name="entitySort"><Var name="PARAMS" key="entitySort"/></Param>
+						<Param name="idAgreementStatementType"><Var name="PARAMS" key="idAgreementStatementType"/></Param>
+					</Call>
+				</Var>
+				<Var name="entityAttributeListClean">
+					<String.replace>
+						<Param><String>e.</String></Param>
+						<Param><String/></Param>
+						<Param><Var name="PARAMS" key="entityAttributeList"/></Param>
+					</String.replace>
+				</Var>
+				<Var name="splitedAttributeList" dump="true">
+					<String.explode>
+						<Param>,</Param>
+						<Param><Var name="entityAttributeListClean"/></Param>
+					</String.explode>
+				</Var>
+				<!-- Add custom, columns to the grid-->
+				<Var name="labels"><JsonToSet><Var name="PARAMS" key="labels"/></JsonToSet></Var>
+				<ForEach var="splitedAttributeList" item="column">
+					<Var name="label"><Var name="labels" key="$column"/></Var>
+					<If condition="$label == ''">
+						<Then>
+							<Var name="label"><Var name="column"/></Var>
+						</Then>
+					</If>
+					<Control method="addColumn" object="agreementsPivot">
+							<Param name="container">dynContainer</Param>
+							<Param name="name"><Var name="column"/></Param>
+							<Param name="label"><String><Var name="label"/></String></Param>
+					</Control>
+				</ForEach>
+
+				<Var name="pivotTable">
+					<UtilsLib method="pivotTable">
+						<Param><Var name="agreements"/></Param>
+						<Param><String.parse>id_agreement,$entityAttributeListClean</String.parse></Param>
+						<Param>statement_name</Param>
+						<Param>statement_response,statement_response_dup</Param>
+					</UtilsLib>
+				</Var>          
+
+				<!-- Applying formatters -->
+				<Var name="formatters"><JsonToSet><Var name="PARAMS" key="formatters"/></JsonToSet></Var>
+				<If condition="$formatters->__length != 0">
+					<Then>
+						<Var name="agreements"><Set/></Var>
+						<ForEach var="pivotTable" item="agreement">
+
+							<ForEach var="formatters" item="formatter" key="column">
+								<Var name="agreement" key="$column">
+									<FormatterLib method="format">
+										<Param><Var name="formatter" key="name"/></Param>
+										<Param><Var name="formatter" key="method"/></Param>
+										<Param><Var name="agreement" key="$column"/></Param>
+										<Param><Var name="formatter" key="params"/></Param>
+									</FormatterLib>
+								</Var>
+							</ForEach>
+							<Var name="agreements" key=""><Var name="agreement"/></Var>
+						</ForEach>
+					</Then>
+					<Else>
+						<Var name="agreements"><Var name="pivotTable"/></Var>
+					</Else>
+				</If>
+
+				<Control method="bind" object="agreementsPivot">
+					<Param><Var name="agreements"/></Param>
+				</Control>
+      </Action>
+
+			<Action name="clearAgreementsList">
+					<!-- This action must be overriden in the node that includes this custom-->
+			</Action>
+
+			<Action name="removeAgreementFromList">
+					<!-- This action must be overriden in the node that includes this custom-->
+			</Action>
+
+			<Action name="downloadAgreement">
+					<!-- This action must be overriden in the node that includes this custom-->
+			</Action>
+  </Actions>
+</Node>

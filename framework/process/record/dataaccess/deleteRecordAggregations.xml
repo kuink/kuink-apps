@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <![CDATA[ Delete a record aggregation ]]>
+    </Doc>
+    <Params>
+        <Param name="ParamName" doc="" />
+        
+    </Params>
+    <Body>
+        <Execute>
+            <![CDATA[
+                delete r, a
+                from fw_record r
+                left outer join fw_aggregation a on (a.id_record=r.id)
+                where 
+                    r.guid='{param->guid}'
+            
+            ]]>
+        </Execute>
+    </Body>
+</Method>

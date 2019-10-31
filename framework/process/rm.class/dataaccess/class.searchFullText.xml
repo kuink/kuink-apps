@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search all class
+  </Doc>
+  <Params>
+	  <Param name="text" required="true"/>
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+        	<XField>
+	            c.id as id,
+	            c.code as code,
+              c.name as name,
+	            c.uuid as uuid,
+	            CONCAT(c.code,'-',c.name) as codename
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_rm_class c
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              1=1 AND '{param->text}' != ''
+            </XCondition>
+	        <XCondition optional="text">
+	            <![CDATA[
+					AND ( c.name like '{param->text}' OR c.code like '{param->text}' OR c.uuid like '{param->text}')  
+				]]>
+	        </XCondition>
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[c.code asc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

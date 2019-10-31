@@ -1,0 +1,784 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="MetadataLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+    <Use name="FileLib" type="lib" />
+    <Use name="FormatterLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="add" doc="Add a record in the rm system">
+      <Params>
+        <Param name="class_code" type="string" required="true" doc="The code of the class the record belongs to" />
+        <Param name="is_final" type="bool" doc="Flag that indicates whether or not a record is final" />
+        <Param name="data" type="array" required="true" doc="The data needed to produce the record metadata" />
+        <Param name="componentArray" type="array" required="false" doc="The array containing the components" />
+        <Param name="aggregationArray" type="array" required="false" doc="The aggregations where to put the record in"/>
+        <!--Param name="creator_code" type="string" required="true" doc="Who produced the record" /-->
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.record::invalidClassCode" doc="The classification code does not exist in the classification tree" />
+        <Exception name="framework/rm.record::noPermission" doc="The user cannot declare records in the given class" />
+        <Exception name="framework/rm.record::invalidPlugin" doc="Invalid plugin defined in the component array" />
+      </Exceptions>
+      <Return type="int" doc="The id_record in the system"/>
+      <Begin>
+        <Transaction>      
+	        <!-- get the class -->
+	        <Var name="class">
+	            <DataAccess method="load">
+	                <Param name="_entity">fw_rm_class</Param>
+	                <Param name="code"><Var name="class_code" /></Param>
+	            </DataAccess>
+	        </Var>
+           <!-- get Access level classification of the class if it i defined there -->
+          <Var name="peALC">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_access_level_classification</Param>
+              <Param name="id"><Var name="class" key="id_access_level_classification"/></Param>
+            </DataAccess>
+          </Var>
+          	        
+	        <!-- Add automatically the classification to the data -->
+          <Var name="class" key="accessLevelClassification"><Var name="peALC" key="name"/></Var>	        
+	        <Var name="system" key="now">
+              <FormatterLib method="format">
+                <Param>DateTime</Param>
+                <Param>shortDateTime</Param>
+                <Param><Now/></Param>
+              </FormatterLib>	        
+	        </Var>
+          <Var name="system" key="lang"><Var name="USER" key="lang"/></Var>	        
+	        <Var name="data" key="_class"><Var name="class"/></Var>
+
+	        <Var name="data" key="_system"><Var name="system"/></Var>
+	        
+	        <Var name="data" dump="true"/>
+	        	
+	        <!-- if class was not found, throw an exception -->
+	        <If condition="$class->__length &lt;= 0">
+	            <Then><Exception><String parse="true">framework/rm.record::invalidClassCode $PARAMS->class_code</String></Exception></Then>
+	        </If>
+	
+	        <!-- get the user's acl -->
+	        <Var name="classACL">1</Var>
+	
+	        <If condition="$classACL != '1'">
+	            <Then><Exception><String parse="true">framework/rm.record::noPermission</String></Exception></Then>
+	        </If>
+	
+	        <Var name="entityType">
+	          <DataAccess method="load">
+	              <Param name="_entity">fw_rm_entity_type</Param>
+	              <Param name="code">class</Param>
+	          </DataAccess>
+	        </Var>
+	        <Var name="id_entity_type"><Var name="entityType" key="id" /></Var>
+	
+	        <Var name="entityTypeRelation">
+	          <DataAccess method="load">
+	              <Param name="_entity">fw_rm_entity_type</Param>
+	              <Param name="code">template</Param>
+	          </DataAccess>
+	        </Var>
+	        <Var name="id_entity_type_relation"><Var name="entityTypeRelation" key="id" /></Var>
+	
+	        <!-- get relation between class and template -->
+	        <Var name="classTemplateRelation">
+	            <DataAccess method="load">
+	                <Param name="_entity">fw_rm_entity_relation</Param>
+	                <Param name="id_entity"><Var name="class" key="id" /></Param>
+	                <Param name="id_entity_type"><Var name="id_entity_type" /></Param>
+	                <Param name="id_entity_type_relation"><Var name="id_entity_type_relation" /></Param>
+	            </DataAccess>
+	        </Var>
+	
+	        <!-- get the template related to the class -->
+	        <Var name="classTemplate">
+	            <DataAccess method="load">
+	              <Param name="_entity">fw_rm_template</Param>
+	              <Param name="id"><Var name="classTemplateRelation" key="id_entity_relation" /></Param>
+	            </DataAccess>
+	        </Var>
+	
+	        <!-- update template last_xml field -->
+	        <Call library="framework,rm.template,api" function="updateXml">
+	          <Param name="id_template"><Var name="classTemplate" key="id" /></Param>
+	        </Call>
+	
+	        <!-- get the disposal schedule related to the class -->
+	        <Var name="classDisposalSchedule">
+	            <DataAccess method="load">
+	              <Param name="_entity">fw_rm_disposal_schedule</Param>
+	              <Param name="id"><Var name="class" key="id_disposal_schedule" /></Param>
+	            </DataAccess>
+	        </Var>
+	
+	        <!-- get the disposal hold related to the class -->
+	        <Var name="classDisposalHold">
+	            <DataAccess method="load">
+	              <Param name="_entity">fw_rm_disposal_hold</Param>
+	              <Param name="id"><Var name="class" key="id_disposal_hold" /></Param>
+	            </DataAccess>
+	        </Var>
+	
+
+	
+	
+	        <!-- calculate disposal schedule's action due date -->
+	        <If condition="$classDisposalSchedule->id_action_interval_code != ''">
+	          <Then>
+	            <Var name="disposalDueDate">
+	                <Call function="getActionDueDate">
+	                    <Param name="id_action_interval_code"><Var name="classDisposalSchedule" key="id_action_interval_code" /></Param>
+	                    <Param name="action_duration"><Var name="classDisposalSchedule" key="action_duration" /></Param>
+	                </Call>
+	            </Var>
+	          </Then>
+	        </If>
+	
+	        <!-- calculate the disposal schedule's retention due date -->
+	        <If condition="$classDisposalSchedule->id_retention_interval_code != ''">
+	          <Then>
+	            <Var name="retentionDueDate">
+	                <Call function="getActionDueDate">
+	                    <Param name="id_action_interval_code"><Var name="classDisposalSchedule" key="id_retention_interval_code" /></Param>
+	                    <Param name="action_duration"><Var name="classDisposalSchedule" key="retention_duration" /></Param>
+	                </Call>
+	            </Var>
+	          </Then>
+	        </If>
+	
+	        <!-- calculate the disposal schedule's confirmation due date -->
+	        <If condition="$classDisposalSchedule->id_confirmation_interval_code != ''">
+	          <Then>
+	            <Var name="confirmationDueDate">
+	                <Call function="getActionDueDate">
+	                    <Param name="id_action_interval_code"><Var name="classDisposalSchedule" key="id_confirmation_interval_code" /></Param>
+	                    <Param name="action_duration"><Var name="classDisposalSchedule" key="confirmation_duration" /></Param>
+	                </Call>
+	            </Var>
+	          </Then>
+	        </If>
+	
+	
+	        <!-- create and get the record's id -->
+	        <Var name="id_record">
+	            <DataAccess method="insert">
+	                <Param name="_entity">fw_rm_record</Param>
+	                <Param name="uuid"><UtilsLib method="Uuid" /></Param>
+	                <Param name="name"><Var name="class" key="name" /></Param>
+	                <Param name="description"><Var name="class" key="description" /></Param>
+	                <Param name="id_class"><Var name="class" key="id" /></Param>
+	                <Param name="id_disposal_schedule"><Var name="classDisposalSchedule" key="id" /></Param>
+	                <Param name="id_access_level_classification">
+	                  <If condition="$peALC->__length != 0">
+											<Then><Var name="peALC" key="id"/></Then>
+											<Else><Null/></Else>
+										</If>
+	                </Param>
+	                <Param name="retention_date"><Var name="retentionDueDate" /></Param>
+	                <Param name="disposal_due_date"><Var name="disposalDueDate" /></Param>
+	                <Param name="disposal_confirmation_date"><Var name="confirmationDueDate" /></Param>
+	                <Param name="originated"><DateTimeLib method="now" /></Param>
+	                <Param name="is_final"><Var name="is_final" /></Param>
+	                <Param name="_base">true</Param>
+	            </DataAccess>
+	        </Var>
+	
+	        <Var name="record">
+	          <DataAccess method="load">
+	            <Param name="_entity">fw_rm_record</Param>
+	            <Param name="id"><Var name="id_record" /></Param>
+	          </DataAccess>
+	        </Var>
+	
+	        <!-- record's folder path -->
+	        <Var name="path">
+	          <String parse="true">records/$record->uuid/</String>
+	        </Var>
+	
+	        <!-- create record's folder -->
+	        <FileLib method="createFolder">
+	          <Param name="path"><Var name="path" /></Param>
+	        </FileLib>
+	
+	
+	        <!-- Handle components -->
+	        <Var name="_components"><Set/></Var>
+	        <ForEach var="componentArray" item="component">
+	          <If condition="$component->id_plugin != ''">
+							<Then>
+							  <Var name="id_plugin"><Var name="component" key="id_plugin"/></Var>
+							</Then>
+							<Else>
+				        <Var name="rm_plugin">
+				          <DataAccess method="load">
+				            <Param name="_entity">fw_rm_component_plugin</Param>
+				            <Param name="code"><Var name="component" key="plugin"/></Param>
+				          </DataAccess>
+				        </Var>
+		            <If condition="$rm_plugin->__length == 0">
+		                <Then><Exception><String parse="true">framework/rm.record::invalidPlugin $component->plugin $component->id_plugin</String></Exception></Then>
+		            </If>
+				        <Var name="id_plugin"><Var name="rm_plugin" key="id"/></Var>
+							</Else>
+						</If>
+						
+	          <Var name="id_component">
+							<Call library="framework,rm.component,api" function="add">
+								<Param name="id_class"><Var name="class" key="id" /></Param>
+								<Param name="id_record"><Var name="id_record" /></Param>
+								<Param name="settings"><Var name="component" key="settings" /></Param>
+								<Param name="id_plugin"><Var name="id_plugin" /></Param>
+							</Call>
+						</Var>
+						<Var name="component">
+	            <Call library="framework,rm.component,api" function="getById">
+	              <Param name="id_component"><Var name="id_component" /></Param>
+	            </Call>
+ 						</Var>
+ 						
+ 						<!-- _components used to inject components in metadata -->
+ 						<Var name="_component"><Set/></Var>
+ 						<Var name="_component" key="uuid"><Var name="component" key="uuid"/></Var>
+            <Var name="_component" key="extension">
+              <Call library="framework,rm.component,api" function="getExtension">
+                <Param name="id_component"><Var name="id_component" /></Param>
+              </Call>            
+            </Var>
+            <Var name="_component" key="medium">
+              <Call library="framework,rm.component,api" function="getMedium">
+                <Param name="id_component"><Var name="id_component" /></Param>
+              </Call>            
+            </Var>            
+             						
+ 						<Var name="_components" key=""><Var name="_component"/></Var>
+	        </ForEach>
+	        <Var name="data" key="_components"><Var name="_components"/></Var>
+	        
+	        <!-- Handle aggregations -->
+	        <ForEach var="aggregationArray" item="aggregation">
+              <Var name="rm_id_aggregation">
+                <Call library="framework,rm.aggregation,api" function="add">
+                  <Param name="uuid"><Var name="aggregation" key="uuid"/></Param>
+                  <Param name="name"><Var name="aggregation" key="name"/></Param>
+                  <Param name="type_code"><Var name="aggregation" key="type"/></Param>
+                  <Param name="id_class"><Var name="class" key="id" /></Param>
+                  <Param name="description"><Var name="aggregation" key="description"/></Param>
+                </Call>
+              </Var>
+              <Call library="framework,rm.aggregation,api" function="addRecord">
+                <Param name="uuid_aggregation"><Var name="aggregation" key="uuid"/></Param>
+                <Param name="id_record"><Var name="id_record"/></Param>
+              </Call>
+          </ForEach>
+          
+          <!-- Inject producers in metadata -->
+          <Var name="producers" dump="true">
+						<Call library="framework,rm.class,api" function="getProducersData">
+						 <Param name="id"><Var name="class" key="id"/></Param>
+						</Call>
+					</Var>
+					<Var name="_producers"><Set/></Var>
+					<ForEach var="producers" item="producer">
+					 <Var name="_producer" key="uuid"><Var name="producer" key="uuid"/></Var>
+					 <Var name="_producer" key="name"><Var name="producer" key="name"/></Var>
+					 
+					 <Var name="_producers" key=""><Var name="_producer"/></Var>
+          </ForEach>
+					
+					<!-- Get producers that are injected in the object -->
+					<Var name="objectProducers" dump="true"><Var name="data" key="_producers"/></Var>
+					<ForEach var="objectProducers" item="objectProducer">
+					 <Var name="_producer" key="uuid"><Var name="objectProducer" key="uuid"/></Var>
+           <Var name="_producer" key="name"><Var name="objectProducer" key="name"/></Var>
+           <Var name="_producers" key=""><Var name="_producer"/></Var>
+          </ForEach>
+
+          <Var name="data" key="_producers"><Var name="_producers"/></Var>
+          
+
+          <!-- Handle METADATA -->
+          <!-- get all parent classes -->
+          <Var name="parentClasses">
+            <StringLib method="explode">
+              <Param>;</Param>
+              <Param>
+                <Var name="class" key="tree_path" />
+              </Param>
+            </StringLib>
+          </Var>
+          <!-- concatenate all classes metadata xml -->
+          <Var name="parentClassesXml"></Var>
+          <ForEach var="parentClasses" item="parentClassCode">
+            <Var name="parentClass">
+              <DataAccess method="load">
+                <Param name="_entity">fw_rm_class</Param>
+                <Param name="code"><Var name="parentClassCode" /></Param>
+              </DataAccess>
+            </Var>
+            <If condition="$parentClass->code != $class->code">
+              <Then>
+                <Var name="parentClassesXml">
+                  <StringLib method="concatenate">
+                    <Param><Var name="parentClassesXml" /></Param>
+                    <Param><Var name="parentClass" key="last_xml" /></Param>
+                  </StringLib>
+                </Var>
+              </Then>
+            </If>
+          </ForEach>
+          <Var name="parentClassesXml" />
+  
+          <!-- concatenate final metadata xml -->
+          <Var name="expandedMetadata">
+            <StringLib method="concatenate">
+              <Param><Var name="parentClassesXml" /></Param>
+              <Param><Var name="class" key="last_xml" /></Param>
+            </StringLib>
+          </Var>
+  
+          <!-- concatenate open xml tag -->
+          <Var name="expandedMetadata">
+            <StringLib method="concatenate">
+              <!--Param><Lang key="metaTagOpening" /></Param-->
+              <Param><String><![CDATA[<?xml version="1.0"?><Metadata>]]></String></Param>
+              <Param><Var name="expandedMetadata" /></Param>
+            </StringLib>
+          </Var>
+  
+          <!-- concatenate close xml tag -->
+          <Var name="expandedMetadata" dump="true">
+            <StringLib method="concatenate">
+              <Param><Var name="expandedMetadata" /></Param>
+              <Param><String><![CDATA[</Metadata>]]></String></Param>
+              <!--Param><Lang key="metaTagClosing" /></Param-->
+            </StringLib>
+          </Var>
+  
+          <!-- expand the metadata -->
+          <Var name="expandedMetadata" dump="true">
+            <If condition="$expandedMetadata != ''">
+                <Then>
+                    <MetadataLib method="expand">
+                        <Param name="matchMetadata">
+                          <Var name="expandedMetadata"/>
+                        </Param>
+                        <Param name="objectData">
+                          <Var name="data" />
+                        </Param>
+                    </MetadataLib>
+                </Then>
+              </If>
+          </Var>
+  
+          <!-- update class last_xml -->
+          <DataAccess method="update">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="record" key="id" /></Param>
+            <Param name="last_xml"><Var name="expandedMetadata" /></Param>
+          </DataAccess>
+
+
+          <!-- create expanded xml file -->
+          <Var name="metadataFile">
+            <FileLib method="createFile">
+              <Param name="filename"><Var name="record" key="uuid" /></Param>
+              <Param name="ext">metadata.xml</Param>
+              <Param name="content">
+                <Var name="expandedMetadata" />
+              </Param>
+              <Param name="path">
+                <Var name="path" />
+              </Param>
+            </FileLib>
+          </Var>
+  
+          <!-- get metadata file -->
+          <Var name="metadataFileData">
+            <DataAccess method="load">
+              <Param name="_entity">fw_file</Param>
+              <Param name="id"><Var name="metadataFile" /></Param>
+            </DataAccess>
+          </Var>
+  
+          <!-- checksum of metadata file -->
+          <Var name="checksumFile" >
+            <FileLib method="createFile">
+              <Param name="filename">
+                <Var name="metadataFileData" key="name" />
+              </Param>
+              <Param name="ext">checksum.md5</Param>
+              <Param name="content">
+                <FileLib method="getFileChecksum">
+                    <Param name="id">
+                      <Var name="metadataFile" />
+                    </Param>
+                </FileLib>
+              </Param>
+              <Param name="path">
+                <Var name="path" />
+              </Param>
+            </FileLib>
+          </Var>
+	        
+        </Transaction>
+        <Return><Var name="id_record" /></Return>
+      </Begin>
+    </Function>
+
+    <!--Function name="addToAggregation" doc="Adds the record to an aggregation">
+      <Params>
+        <Param name="id_record" type="int" required="true" doc="The id of the record to add the component to"/>
+        <Param name="id_aggregation" type="int" required="true" doc="The id of the created aggregation to add the record to"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.record::invalidRecord" doc="The record given is invalid"/>
+        <Exception name="framework/rm.record::invalidAggregation" doc="The aggregation given is invalid"/>
+        <Exception name="framework/rm.record::cannotAddToAggregation" doc="The record cannot be added to the aggregation at this time"/>
+      </Exceptions>
+      <Return type="int" doc="Returns the id of the created relation"/>
+      <Begin>
+
+        <Var name="record">
+            <DataAccess method="load">
+                <Param name="_entity">fw_rm_record</Param>
+                <Param name="id"><Var name="PARAMS" key="id_record" /></Param>
+            </DataAccess>
+        </Var>
+
+        <If condition="$record->__length &lt;= 0">
+            <Then><Exception><String parse="true">framework/rm.record::invalidRecord $PARAMS->id_record</String></Exception></Then>
+        </If>
+
+        <Var name="aggregation">
+            <DataAccess method="load">
+                <Param name="_entity">fw_rm_aggregation</Param>
+                <Param name="id"><Var name="PARAMS" key="id_aggregation" /></Param>
+            </DataAccess>
+        </Var>
+
+        <If condition="$aggregation->__length &lt;= 0">
+            <Then><Exception><String parse="true">framework/rm.record::invalidAggregationt</String></Exception></Then>
+        </If>
+
+        < check to see if the record can be added right now >
+        <Var name="check">1</Var>
+        <If condition="$check != '1'">
+            <Then><Exception><String parse="true">framework/rm.record::cannotAddToAggregation</String></Exception></Then>
+        </If>
+
+        < Add the record to the aggregation >
+        <Var name="entityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code">aggregation</Param>
+          </DataAccess>
+        </Var>
+        <Var name="entityTypeRelation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code">record</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="idRelation">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_entity_relation</Param>
+            <Param name="id_entity"><Var name="aggregation" key="id" /></Param>
+            <Param name="id_entity_type"><Var name="entityType" key="id" /></Param>
+            <Param name="id_entity_relation"><Var name="record"  key="id" /></Param>
+            <Param name="id_entity_type_relation"><Var name="entityTypeRelation" key="id" /></Param>
+            <Param name="_creation"><Now /></Param>
+            <Param name="_creation_ip"><Var name="USER" key="ip" /></Param>
+            <Param name="_modification"><Now /></Param>
+            <Param name="_modification_ip"><Var name="USER" key="ip" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Return><Var name="idRelation" /></Return>
+      </Begin>
+    </Function-->
+
+    <Function name="getActionDueDate" doc="Get the action due date">
+        <Params>
+            <Param name="id_action_interval_code" required="true" doc="id for the code of the action's interval duration (days/weeks/months/years)"/>
+            <Param name="action_duration" required="true" doc="The duration until the action's due date in (days/weeks/months/years), depending on the interval code"/>
+        </Params>
+        <Exceptions>
+            <Exception name="framework/rm.record::invalidActionIntervalCode" doc="The action interval code does not exist in the code map"/>
+        </Exceptions>
+        <Return type="int" doc="Returns the due date of the action"/>
+        <Begin>
+          <Var name="PARAMS" dump="true" />
+            <!-- get the action interval code -->
+            <Var name="actionIntervalCode">
+                <DataAccess method="load">
+                    <Param name="_entity">fw_rm_code_map</Param>
+                    <Param name="id"><Var name="PARAMS" key="id_action_interval_code" /></Param>
+                </DataAccess>
+            </Var>
+            <If condition="$actionIntervalCode->__length &lt;= 0">
+                <Then><Exception><String parse="true">framework/rm.record::invalidActionIntervalCode $actionIntervalCode</String></Exception></Then>
+            </If>
+            <Var name="actionIntervalCode">
+                <Var name="actionIntervalCode" key="code" />
+            </Var>
+
+            <!-- calculate the action number of days -->
+            <If condition="$actionIntervalCode == 'days'">
+                <Then><Var name="daysToAction" value="$PARAMS->action_duration" /></Then>
+                <Else>
+                    <If condition="$actionIntervalCode == 'weeks'">
+                        <Then><Var name="daysToAction" value="$PARAMS->action_duration*7" /></Then>
+                        <Else>
+                            <If condition="$actionIntervalCode == 'months'">
+                                <Then><Var name="daysToAction" value="$PARAMS->action_duration*30" /></Then>
+                                <Else>
+                                    <If condition="$actionIntervalCode == 'years'">
+                                        <Then><Var name="daysToAction" value="$PARAMS->action_duration*365" /></Then>
+                                    </If>
+                                </Else>
+                            </If>
+                        </Else>
+                    </If>
+                </Else>
+            </If>
+
+            <!-- get the due date -->
+            <Var name="actionDueDate">
+                <DateTimeLib method="addDays">
+                    <Param><DateTimeLib method="now" /></Param>
+                    <Param><Var name="daysToAction" /></Param>
+                </DateTimeLib>
+            </Var>
+
+            <Return><Var name="actionDueDate" /></Return>
+        </Begin>
+    </Function>
+
+    <Function name="search" doc="Search records from table fw_rm_record">
+      <Params>
+        <Param name="text" type="string"/>
+        <Param name="class_code" type="string"/>
+        <Param name="dateFrom" type="int"/>
+        <Param name="dateTo" type="int"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="guid" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="id_request_category" type="int" doc=""/>
+        <External name="id_request_status" type="int" doc=""/>
+        <External name="ttl" type="int" doc=""/>
+        <External name="data" type="text" doc=""/>
+        <External name="attempts" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+      <Var name="PARAMS" dump="true"/>
+        <Var name="result" dump="true">
+          <DataAccess method="this,this,record.search">
+            <Param name="text" wildcard="full">
+              <Var name="PARAMS" key="text"/>
+            </Param>
+            <Param name="class_code">
+              <Var name="PARAMS" key="class_code"/>
+            </Param>
+            <Param name="dateFrom">
+              <Var name="PARAMS" key="dateFrom"/>
+            </Param>
+            <Param name="dateTo">
+              <Var name="PARAMS" key="dateTo"/>
+            </Param>
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getComponents" doc="Get all record components">
+      <Params>
+        <Param name="id_record" type="int"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+      <Var name="PARAMS" dump="true"/>
+        <Var name="result" dump="true">
+          <DataAccess method="this,this,record.getComponents">
+            <Param name="id_record"><Var name="PARAMS" key="id_record"/></Param>
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAggregations" doc="Get all record aggregations">
+      <Params>
+        <Param name="id_record" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+      <Var name="PARAMS" dump="true"/>
+        <Var name="result" dump="true">
+					<Call library="framework,rm.entity.relation,api" function="getRelations">
+						<Param name="id_entity"><Var name="id_record"/></Param>
+						<Param name="entity_type"><String>record</String></Param>
+						<Param name="entity_type_relation"><String>aggregation</String></Param>
+					</Call>        
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAllWithDisposalDueDate" doc="Get all records with disposal due date">
+      <Params>
+        <Param name="date" required="true" />
+      </Params>
+      <Return type="multiple" doc="Records with disposal due date today">
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,getAllWithDisposalDueDate">
+            <Param name="today"><Var name="date" /></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getById" doc="Get record by given id">
+      <Params>
+        <Param name="id" required="true" />
+      </Params>
+      <Return type="single" doc="Record with given id">
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="id" /></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="archive" doc="Archive record">
+      <Params>
+        <Param name="id_record" type="int" />
+        <Param name="id_class" type="int" />
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Return>
+          <Call library="framework,rm.component.plugin,archivematica" function="add">
+            <Param name="id_record"><Var name="id_record" /></Param>
+          </Call>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="destroy" doc="Destroy record">
+      <Params>
+        <Param name="id_record" type="int" />
+        <Param name="id_class" type="int" />
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+          <Var name="components">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_component</Param>
+              <Param name="id_record"><Var name="id_record" /></Param>
+            </DataAccess>
+          </Var>
+          <ForEach var="components" item="component">
+            <Var name="plugin">
+              <DataAccess method="load">
+                <Param name="_entity">fw_rm_component_plugin</Param>
+                <Param name="id"><Var name="component" key="id_component_plugin" /></Param>
+              </DataAccess>
+            </Var>
+            <Var name="library">
+              <String parse="true">framework,rm.component.plugin,$plugin->code</String>
+            </Var>
+            <Call library="$library" function="destroy">
+              <Param name="id_component"><Var name="component" key="id" /></Param>
+            </Call>
+          </ForEach>
+          <DataAccess method="update">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="id_record" /></Param>
+            <Param name="destroyed"><Int>1</Int></Param>
+          </DataAccess>
+        <Return />
+      </Begin>
+    </Function>
+
+    <Function name="getContent" doc="If there's only one component, get the content. TODO: Else get a zip will all content">
+      <Params>
+        <Param name="id_record" type="int" />
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+          <Var name="component">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_component</Param>
+              <Param name="id_record"><Var name="id_record" /></Param>
+            </DataAccess>
+          </Var>
+          <If condition="$component->__length != 0">
+						<Then>
+							<!-- Download it directly from the first component-->
+							<Call library="framework,rm.component,api" function="getContent">
+								<Param name="id_component"><Var name="component" key="id"/></Param>
+							</Call>							
+						</Then>
+					</If>
+        <Return/>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib" />
+		<Use name="FormatterLib" type="lib" />
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+	</Actions>
+	<Library forceinterface="true">
+
+		<Function name="getMyInbox" scope="public" doc="Get a list of tasks of the current user">
+			<Params>
+			 <Param name="is_completed" type="int" doc="Only completed tasks"/>
+			 <Param name="started_by_me" type="int" doc="Started by the user"/>
+			 <Param name="text" type="text" doc="Search by text"/>
+			 <Param name="pagenum"/>
+			 <Param name="pagesize"/>
+			</Params>
+			<Return type="multiple" doc="The tasks of this inbox" />
+			<Begin>
+        <Var name="tasks" dump="true">
+          <DataAccess method="this,this,inbox.getMy">
+            <Param name="text" wildcard="full"><Var name="text"/></Param>
+            <Param name="is_completed"><Var name="is_completed"/></Param>
+            <Param name="started_by_me"><Var name="started_by_me"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+            <Param name="_pageNum"><Var name="PARAMS" key="pagenum"/></Param>
+            <Param name="_pageSize"><Var name="PARAMS" key="pagesize"/></Param>
+          </DataAccess>
+        </Var>
+				
+				<Return><Var name="tasks" /></Return>
+			</Begin>
+		</Function>
+
+    <Function name="getTask" scope="public" doc="Get a task of the current user">
+      <Params>
+       <Param name="id_task"/>
+      </Params>
+      <Return type="single" doc="The task">
+				<External name="id" type="text" doc=""/>
+				<External name="id_token" type="text" doc=""/>
+				<External name="name" type="text" doc=""/>
+				<External name="description" type="text" doc=""/>
+				<External name="is_completed" type="text" doc=""/>
+				<External name="due_date" type="text" doc=""/>
+				<External name="handler" type="text" doc=""/>
+				<External name="id_object" type="text" doc=""/>
+				<External name="id_person" type="text" doc=""/>
+				<External name="id_company" type="text" doc=""/>
+				<External name="_id_creator" type="text" doc=""/>
+				<External name="_id_updater" type="text" doc=""/>
+				<External name="_creation" type="text" doc=""/>
+				<External name="_creation_ip" type="text" doc=""/>
+				<External name="_modification" type="text" doc=""/>
+				<External name="_modification_ip" type="text" doc=""/>       
+      </Return>
+      <Begin>
+        <Var name="task" dump="true">
+          <DataAccess method="load">
+            <Param name="_entity">fw_wf_inbox_task</Param>
+            <Param name="id"><Var name="id_task"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Return><Var name="task" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getTaskProcessInstanceId" scope="public" doc="Get a task process instance">
+      <Params>
+       <Param name="id_task"/>
+      </Params>
+      <Return type="int" doc="The process instance id">
+      </Return>
+      <Begin>
+        <Var name="task" dump="true">
+          <DataAccess method="load">
+            <Param name="_entity">fw_wf_inbox_task</Param>
+            <Param name="id"><Var name="id_task"/></Param>
+            <!--Param name="id_person"><Var name="USER" key="id"/></Param-->
+          </DataAccess>
+        </Var>
+        
+        <Var name="id_process_instance" dump="true">
+          <Call library="framework,wf.process,api" function="getTokenProcessIntanceId">
+						<Param name="id_token"><Var name="task" key="id_token"/></Param>
+					</Call>
+        </Var>
+        
+        <Return><Var name="id_process_instance" /></Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="getTaskHistory" scope="public" doc="Get a task of the current user">
+      <Params>
+       <Param name="id_task"/>
+      </Params>
+      <Return type="multiple" doc="The task">
+      </Return>
+      <Begin>
+        <Var name="task" dump="true">
+          <DataAccess method="load">
+            <Param name="_entity">fw_wf_inbox_task</Param>
+            <Param name="id"><Var name="id_task"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Var name="history" dump="true">
+          <DataAccess method="getAll">
+						<Param name="_entity">fw_wf_token_history</Param>
+						<Param name="id_token"><Var name="task" key="id_token"></Var></Param>
+						<Param name="_sort">started asc</Param>
+					</DataAccess>
+        </Var>
+        
+        <Return><Var name="history" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="completeTask" scope="public" doc="Completes a task">
+      <Params>
+       <Param name="id_task"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="task">
+          <DataAccess method="update">
+            <Param name="_entity">fw_wf_inbox_task</Param>
+            <Param name="id" pk="true"><Var name="id_task"/></Param>
+            <Param name="id_person" pk="true"><Var name="USER" key="id"/></Param>
+            <Param name="is_completed">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+        
+        <Return><Var name="task" /></Return>
+      </Begin>
+    </Function>
+
+
+	</Library>
+</Node>

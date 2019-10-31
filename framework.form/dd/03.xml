@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Forms">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_form_field" doc="Defines the form fields">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_form" domain="foreign" required="true" refentity="fw_form" refattr="id" doc="id of the form"/>
+        <Attribute name="id_acl" domain="foreign" required="true" refentity="access_control_list" refattr="id" doc="Who can access this field"/>
+        <Attribute name="page" domain="int" required="true" doc="The page where this num"/>
+        <Attribute name="xml_definition" domain="longString" required="true" doc="The xml definition of the field"/>
+        <Attribute name="type" domain="string" required="true" doc="int | real | string | text"/>
+        <Attribute name="is_required" domain="bool" required="true" doc="Is this field required?"/>        
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this field active?"/>
+        <Attribute name="order" domain="int" required="true" default="1" doc="The order of this field in the form"/>
+        <Template name="fw.identity"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>  
+  </Entities>
+</Node>

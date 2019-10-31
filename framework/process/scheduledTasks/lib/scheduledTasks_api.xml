@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Doc lang="pt-PT">
+    </Doc>
+    <Libraries>
+        <Use name="UtilsLib" type="lib"/>
+        <Use name="MathLib" type="lib"/>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="StringLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens>
+    </Screens>
+    <Actions>
+        <Action name="init">
+        </Action>
+    </Actions>
+    <Library>
+
+        <Function name="get" doc="Get a task" scope="protected">
+            <Params>
+                <Param name="id" doc="Task id"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc="Task id"/>
+                <External name="description" type="text" doc="Task description"/>
+                <External name="library" type="text" doc="What task executes"/>
+                <External name="params" type="text" doc="Task parameters. In kuink xml."/>
+                <External name="run_last" type="int" doc="When was the last run"/>
+                <External name="run_next" type="int" doc="When will go run for the next time"/>
+                <External name="run_interval" type="int" doc="Run interval"/>
+                <External name="log_level" type="int" doc="Log level"/>
+                <External name="result_code" type="text" doc="Task result code"/>
+                <External name="result_message" type="text" doc="Task return message"/>
+                <External name="elapsed_time" type="int" doc="Duration of last run"/>
+                <External name="active" type="bool" doc="When active, will execute automaticly"/>
+                <External name="start_date" type="int" doc="Start day"/>
+                <External name="end_date" type="int" doc="End day"/>
+                <External name="start_time" type="text" doc="Execute task from this hour"/>
+                <External name="end_time" type="text" doc="Execute task to this hour"/>
+                <External name="day_of_week" type="text"
+                          doc="What week days consider to execute the task. Comma separated. Weekdays are according to ISO 8601, 3.2.2"/>
+            </Return>
+            <Begin>
+                <Return>
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_task</Param>
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Execute>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="add" doc="Add a new task" scope="protected">
+            <Params>
+                <Param name="description" type="text" doc="Task description"/>
+                <Param name="library" type="text" required="true" doc="What task executes"/>
+                <Param name="params" type="text" doc="Task parameters. In kuink xml."/>
+                <Param name="run_last" type="int" doc="When was the last run"/>
+                <Param name="run_next" type="int" doc="When will go run for the next time"/>
+                <Param name="run_interval" type="int" doc="Run interval"/>
+                <Param name="log_level" type="int" doc="Log level"/>
+                <Param name="result_code" type="text" doc="Task result code"/>
+                <Param name="result_message" type="text" doc="Task return message"/>
+                <Param name="elapsed_time" type="int" doc="Duration of last run"/>
+                <Param name="active" type="bool" doc="When active, will execute automaticly"/>
+                <Param name="start_date" type="int" required="true" doc="Start day"/>
+                <Param name="end_date" type="int" doc="End day"/>
+                <Param name="start_time" type="text" required="true" doc="Execute task from this hour"/>
+                <Param name="end_time" type="text" doc="Execute task to this hour"/>
+                <Param name="day_of_week" type="text"
+                       doc="What week days consider to execute the task. Comma separated. Weekdays are according to ISO 8601, 3.2.2"/>
+                <Param name="run_next" type="text" doc="Next run timestamp"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc="Task id"/>
+                <External name="description" type="text" doc="Task description"/>
+                <External name="library" type="text" doc="What task executes"/>
+                <External name="params" type="text" doc="Task parameters. In kuink xml."/>
+                <External name="run_last" type="int" doc="When was the last run"/>
+                <External name="run_next" type="int" doc="When will go run for the next time"/>
+                <External name="run_interval" type="int" doc="Run interval"/>
+                <External name="log_level" type="int" doc="Log level"/>
+                <External name="result_code" type="text" doc="Task result code"/>
+                <External name="result_message" type="text" doc="Task return message"/>
+                <External name="elapsed_time" type="int" doc="Duration of last run"/>
+                <External name="active" type="bool" doc="When active, will execute automaticly"/>
+                <External name="start_date" type="int" doc="Start day"/>
+                <External name="end_date" type="int" doc="End day"/>
+                <External name="start_time" type="text" doc="Execute task from this hour"/>
+                <External name="end_time" type="text" doc="Execute task to this hour"/>
+                <External name="day_of_week" type="text"
+                          doc="What week days consider to execute the task. Comma separated. Weekdays are according to ISO 8601, 3.2.2"/>
+            </Return>
+            <Begin>
+
+                <Var name="insertParams">
+                    <UtilsLib method="filterNotNull">
+                        <Param>
+                            <Var name="PARAMS"/>
+                        </Param>
+                    </UtilsLib>
+                </Var>
+                <Var name="startDate">
+                    <DateTimeLib method="getComponents">
+                        <Param>
+                            <Var name="insertParams" key="start_date"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="insertParams" key="start_date">
+                    <DateTimeLib method="toTimestamp">
+                        <Param name="year">
+                            <Var name="startDate" key="year"/>
+                        </Param>
+                        <Param name="month">
+                            <Var name="startDate" key="month"/>
+                        </Param>
+                        <Param name="day">
+                            <Var name="startDate" key="day"/>
+                        </Param>
+                        <Param name="hour">0</Param>
+                        <Param name="minute">0</Param>
+                        <Param name="second">0</Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="startHourSplitted">
+                    <UtilsLib method="split">
+                        <Param>
+                            <Var name="insertParams" key="start_time"/>
+                        </Param>
+                        <Param>:</Param>
+                    </UtilsLib>
+                </Var>
+                <Var name="insertParams" key="run_next" >
+                    <DateTimeLib method="toTimestamp">
+                        <Param name="year">
+                            <Var name="startDate" key="year"/>
+                        </Param>
+                        <Param name="month">
+                            <Var name="startDate" key="month"/>
+                        </Param>
+                        <Param name="day">
+                            <Var name="startDate" key="day"/>
+                        </Param>
+                        <Param name="hour">
+                            <Var name="startHourSplitted" key="0"/>
+                        </Param>
+                        <Param name="minute">
+                            <Var name="startHourSplitted" key="1"/>
+                        </Param>
+                        <Param name="second">
+                            <Var name="startHourSplitted" key="2"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+
+                <Var name="endDate">
+                    <DateTimeLib method="getComponents">
+                        <Param>
+                            <Var name="insertParams" key="end_date"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="insertParams" key="end_date">
+                    <DateTimeLib method="toTimestamp">
+                        <Param name="year">
+                            <Var name="endDate" key="year"/>
+                        </Param>
+                        <Param name="month">
+                            <Var name="endDate" key="month"/>
+                        </Param>
+                        <Param name="day">
+                            <Var name="endDate" key="day"/>
+                        </Param>
+                        <Param name="hour">23</Param>
+                        <Param name="minute">59</Param>
+                        <Param name="second">59</Param>
+                    </DateTimeLib>
+                </Var>
+
+                <Var name="insertParams" />
+                <Var name="newId">
+                    <Execute method="framework,generic,insert" params="insertParams">
+                        <Param name="table">fw_task</Param>
+                    </Execute>
+                </Var>
+                <Return>
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="newId"/>
+                        </Param>
+                    </Call>
+                </Return>
+
+
+            </Begin>
+        </Function>
+
+        <Function name="update" doc="Update a task">
+            <Params>
+                <Param name="id" doc="Task id"/>
+                <Param name="description" type="text" doc="Task description"/>
+                <Param name="library" type="text" required="true" doc="What task executes"/>
+                <Param name="params" type="text" doc="Task parameters. In kuink xml."/>
+                <Param name="run_last" type="int" doc="When was the last run"/>
+                <Param name="run_next" type="int" doc="When will go run for the next time"/>
+                <Param name="run_interval" type="int" doc="Run interval"/>
+                <Param name="log_level" type="int" doc="Log level"/>
+                <Param name="result_code" type="text" doc="Task result code"/>
+                <Param name="result_message" type="text" doc="Task return message"/>
+                <Param name="elapsed_time" type="int" doc="Duration of last run"/>
+                <Param name="active" type="bool" doc="When active, will execute automaticly"/>
+                <Param name="start_date" type="int" required="true" doc="Start day"/>
+                <Param name="end_date" type="int" doc="End day"/>
+                <Param name="start_time" type="text" required="true" doc="Execute task from this hour"/>
+                <Param name="end_time" type="text" doc="Execute task to this hour"/>
+                <Param name="day_of_week" type="text"
+                       doc="What week days consider to execute the task. Comma separated. Weekdays are according to ISO 8601, 3.2.2"/>
+                <Param name="run_next" type="text" doc="Next run timestamp"/>
+            </Params>
+            <Return type="single">
+                <External name="id" type="text" doc="Task id"/>
+                <External name="description" type="text" doc="Task description"/>
+                <External name="library" type="text" doc="What task executes"/>
+                <External name="params" type="text" doc="Task parameters. In kuink xml."/>
+                <External name="run_last" type="int" doc="When was the last run"/>
+                <External name="run_next" type="int" doc="When will go run for the next time"/>
+                <External name="run_interval" type="int" doc="Run interval"/>
+                <External name="log_level" type="int" doc="Log level"/>
+                <External name="result_code" type="text" doc="Task result code"/>
+                <External name="result_message" type="text" doc="Task return message"/>
+                <External name="elapsed_time" type="int" doc="Duration of last run"/>
+                <External name="active" type="bool" doc="When active, will execute automaticly"/>
+                <External name="start_date" type="int" doc="Start day"/>
+                <External name="end_date" type="int" doc="End day"/>
+                <External name="start_time" type="text" doc="Execute task from this hour"/>
+                <External name="end_time" type="text" doc="Execute task to this hour"/>
+                <External name="day_of_week" type="text"
+                          doc="What week days consider to execute the task. Comma separated. Weekdays are according to ISO 8601, 3.2.2"/>
+            </Return>
+            <Begin>
+                <Var name="updateParams">
+                    <UtilsLib method="filterNotNull">
+                        <Param>
+                            <Var name="PARAMS"/>
+                        </Param>
+                    </UtilsLib>
+                </Var>
+                <Var name="startDate">
+                    <DateTimeLib method="getComponents">
+                        <Param>
+                            <Var name="updateParams" key="start_date"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="updateParams" key="start_date">
+                    <DateTimeLib method="toTimestamp">
+                        <Param name="year">
+                            <Var name="startDate" key="year"/>
+                        </Param>
+                        <Param name="month">
+                            <Var name="startDate" key="month"/>
+                        </Param>
+                        <Param name="day">
+                            <Var name="startDate" key="day"/>
+                        </Param>
+                        <Param name="hour">0</Param>
+                        <Param name="minute">0</Param>
+                        <Param name="second">0</Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="endDate">
+                    <DateTimeLib method="getComponents">
+                        <Param>
+                            <Var name="updateParams" key="end_date"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="updateParams" key="end_date">
+                    <DateTimeLib method="toTimestamp">
+                        <Param name="year">
+                            <Var name="endDate" key="year"/>
+                        </Param>
+                        <Param name="month">
+                            <Var name="endDate" key="month"/>
+                        </Param>
+                        <Param name="day">
+                            <Var name="endDate" key="day"/>
+                        </Param>
+                        <Param name="hour">23</Param>
+                        <Param name="minute">59</Param>
+                        <Param name="second">59</Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="updateParams"/>
+                <Execute method="framework,generic,update" params="updateParams">
+                    <Param name="table">fw_task</Param>
+                    <Param name="id">
+                        <Var name="PARAMS" key="id"/>
+                    </Param>
+                </Execute>
+
+                <Return>
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Call>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="checkValid" scope="private" doc="Check if a timestamp is valid for this task">
+            <Params>
+                <Param name="timestamp"/>
+                <Param name="id_task"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+
+
+                <!-- return value -->
+                <Var name="returnValue">0</Var>
+
+                <!--
+                    if check start-end date
+                        if check weekday
+                            if check start-end hour
+                                1
+                            else
+                                -3
+                        else
+                            -2
+                    else
+                        -1
+                -->
+                <Var name="checkStartEndDate" >
+                    <Call function="checkStartEndDate">
+                        <Param name="id_task">
+                            <Var name="id_task"/>
+                        </Param>
+                        <Param name="timestamp">
+                            <Var name="timestamp"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <If condition="$checkStartEndDate == '1'">
+                    <Then>
+                        <Var name="checkWeekDay" >
+                            <Call function="checkWeekDay">
+                                <Param name="id_task">
+                                    <Var name="id_task"/>
+                                </Param>
+                                <Param name="timestamp">
+                                    <Var name="timestamp"/>
+                                </Param>
+                            </Call>
+                        </Var>
+                        <If condition="$checkWeekDay == '1'">
+                            <Then>
+                                <Var name="checkStartEndHour" >
+                                    <Call function="checkStartEndHour">
+                                        <Param name="id_task">
+                                            <Var name="id_task"/>
+                                        </Param>
+                                        <Param name="timestamp">
+                                            <Var name="timestamp"/>
+                                        </Param>
+                                    </Call>
+                                </Var>
+                                <If condition="$checkStartEndHour == '1'">
+                                    <Then>
+                                        <Var name="returnValue">1</Var>
+                                    </Then>
+                                    <Else>
+                                        <Var name="returnValue">-3</Var>
+                                    </Else>
+                                </If>
+                            </Then>
+                            <Else>
+                                <Var name="returnValue">-2</Var>
+                            </Else>
+                        </If>
+                    </Then>
+                    <Else>
+                        <Var name="returnValue">-1</Var>
+                    </Else>
+                </If>
+
+                <Return>
+                    <Var name="returnValue"/>
+                </Return>
+
+            </Begin>
+        </Function>
+
+        <Function name="checkStartEndDate" scope="private" doc="Check a start end date">
+            <Params>
+                <Param name="id_task"/>
+                <Param name="timestamp"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="task">
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id_task"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <Return>
+                    <If condition="($task->start_date &lt;= $PARAMS->timestamp) &amp;&amp; ($task->end_date &gt;= $PARAMS->timestamp)">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="checkWeekDay" scope="private" doc="Check week day">
+            <Params>
+                <Param name="id_task"/>
+                <Param name="timestamp"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="task">
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id_task"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <Var name="weekDay">
+                    <DateTimeLib method="getWeekDay">
+                        <Param>
+                            <Var name="PARAMS" key="timestamp"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="weekDays">
+                    <UtilsLib method="split">
+                        <Param>
+                            <Var name="task" key="day_of_week"/>
+                        </Param>
+                        <Param>,</Param>
+                    </UtilsLib>
+                </Var>
+                <Var name="isInWeekDays">
+                    <UtilsLib method="inArray">
+                        <Param>
+                            <Var name="weekDay"/>
+                        </Param>
+                        <Param>
+                            <Var name="weekDays"/>
+                        </Param>
+                    </UtilsLib>
+                </Var>
+                <Return>
+                    <If condition="$isInWeekDays == 1">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="checkStartEndHour" scope="private" doc="Check start and end hour">
+            <Params>
+                <Param name="id_task"/>
+                <Param name="timestamp"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="task">
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id_task"/>
+                        </Param>
+                    </Call>
+                </Var>
+
+                <Var name="dateComponents" >
+                    <DateTimeLib method="getComponents">
+                        <Param>
+                            <Var name="timestamp"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+
+                <Var name="startHourSplitted" >
+                    <UtilsLib method="split">
+                        <Param>
+                            <Var name="task" key="start_time"/>
+                        </Param>
+                        <Param>:</Param>
+                    </UtilsLib>
+                </Var>
+                <Var name="endHourSplitted" >
+                    <UtilsLib method="split">
+                        <Param>
+                            <Var name="task" key="end_time"/>
+                        </Param>
+                        <Param>:</Param>
+                    </UtilsLib>
+                </Var>
+                <Var name="todayStartHour">
+                    <DateTimeLib method="toTimestamp">
+                        <Param name="day">
+                            <Var name="dateComponents" key="day"/>
+                        </Param>
+                        <Param name="month">
+                            <Var name="dateComponents" key="month"/>
+                        </Param>
+                        <Param name="year">
+                            <Var name="dateComponents" key="year"/>
+                        </Param>
+                        <Param name="hour">
+                            <Var name="startHourSplitted" key="0"/>
+                        </Param>
+                        <Param name="minute">
+                            <Var name="startHourSplitted" key="1"/>
+                        </Param>
+                        <Param name="second">
+                            <Var name="startHourSplitted" key="2"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+                <Var name="timestamp"/>
+                <Var name="todayEndHour">
+                    <DateTimeLib method="toTimestamp">
+                        <Param name="day">
+                            <Var name="dateComponents" key="day"/>
+                        </Param>
+                        <Param name="month">
+                            <Var name="dateComponents" key="month"/>
+                        </Param>
+                        <Param name="year">
+                            <Var name="dateComponents" key="year"/>
+                        </Param>
+                        <Param name="hour">
+                            <Var name="endHourSplitted" key="0"/>
+                        </Param>
+                        <Param name="minute">
+                            <Var name="endHourSplitted" key="1"/>
+                        </Param>
+                        <Param name="second">
+                            <Var name="endHourSplitted" key="2"/>
+                        </Param>
+                    </DateTimeLib>
+                </Var>
+                <Return>
+                    <If condition="($todayStartHour &lt;= $timestamp ) &amp;&amp; ($todayEndHour &gt;= $timestamp)">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="getNextRunTimestamp" scope="protected" doc="Get the next run timestamp">
+            <Params>
+                <Param name="id" doc="Id task"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="task" >
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <Var name="run_last"><Var name="task" key="run_last"/></Var>
+                <Var name="run_interval"><Var name="task" key="run_interval"/></Var>
+
+                <Var name="timestamp" value="$run_last + $run_interval"/>
+
+                <Var name="valid">2</Var>
+                <While condition="$valid != -1 &amp;&amp; $valid != 1">
+                    <Var name="valid" >
+                        <Call function="checkValid">
+                            <Param name="id_task">
+                                <Var name="task" key="id"/>
+                            </Param>
+                            <Param name="timestamp">
+                                <Var name="timestamp"/>
+                            </Param>
+                        </Call>
+                    </Var>
+                    <If condition="$valid==-1">
+                        <Then>
+                            <Var name="timestamp">0</Var>
+                        </Then>
+                        <Else>
+                            <If condition="$valid == -2 || $valid == -3">
+                                <Then>
+                                    <Var name="dateComponents">
+                                        <DateTimeLib method="getComponents">
+                                            <Param>
+                                                <Var name="timestamp"/>
+                                            </Param>
+                                        </DateTimeLib>
+                                    </Var>
+                                    <Var name="startHourSplitted">
+                                        <UtilsLib method="split">
+                                            <Param>
+                                                <Var name="task" key="start_time"/>
+                                            </Param>
+                                            <Param>:</Param>
+                                        </UtilsLib>
+                                    </Var>
+                                    <Var name="todayStartDate">
+                                        <DateTimeLib method="toTimestamp">
+                                            <Param name="day">
+                                                <Var name="dateComponents" key="day"/>
+                                            </Param>
+                                            <Param name="month">
+                                                <Var name="dateComponents" key="month"/>
+                                            </Param>
+                                            <Param name="year">
+                                                <Var name="dateComponents" key="year"/>
+                                            </Param>
+                                            <Param name="hour">
+                                                <Var name="startHourSplitted" key="0"/>
+                                            </Param>
+                                            <Param name="minute">
+                                                <Var name="startHourSplitted" key="1"/>
+                                            </Param>
+                                            <Param name="second">
+                                                <Var name="startHourSplitted" key="2"/>
+                                            </Param>
+                                        </DateTimeLib>
+                                    </Var>
+                                    <Var name="nextStartDay">
+                                        <DateTimeLib method="addDays">
+                                            <Param>
+                                                <Var name="todayStartDate"/>
+                                            </Param>
+                                            <Param>1</Param>
+                                        </DateTimeLib>
+                                    </Var>
+                                    <Var name="timestamp">
+                                        <Var name="nextStartDay"/>
+                                    </Var>
+                                </Then>
+                            </If>
+                        </Else>
+                    </If>
+                </While>
+                <Return>
+                    <Var name="timestamp"/>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="executeTask" scope="protected">
+            <Params>
+                <Param name="id" doc="Task id"/>
+            </Params>
+            <Begin>
+                <Var name="start">
+                    <DateTimeLib method="microtime"/>
+                </Var>
+                <Var name="taskToExecute">
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_task</Param>
+                        <Param name="id">
+                            <Var name="id"/>
+                        </Param>
+                    </Execute>
+                </Var>
+                <Var name="taskLogLevel">
+                    <Var name="taskToExecute" key="log_level"/>
+                </Var>
+                <!--Var name="taskToExecute" /-->
+
+                <Var name="library">
+                    <Var name="taskToExecute" key="library"/>
+                </Var>
+                <Var name="params">
+                    <UtilsLib method="xmlToSet">
+                        <Param>
+                            <Var name="taskToExecute" key="params"/>
+                        </Param>
+                    </UtilsLib>
+                </Var>
+
+                <!-- Execute the function -->
+                <Var name="LOG">
+                    <Null/>
+                </Var>
+                <Var name="result">
+                    <Call library="$library" function="execute" params="params">
+                        <Param name="LOG" var="LOG"/>
+                    </Call>
+                </Var>
+
+                <!-- Calculate elapsed time -->
+                <Var name="end">
+                    <DateTimeLib method="microtime"/>
+                </Var>
+                <Var name="elapsed">
+                    <MathLib method="subtract">
+                        <Param>
+                            <Var name="end"/>
+                        </Param>
+                        <Param>
+                            <Var name="start"/>
+                        </Param>
+                    </MathLib>
+                </Var>
+
+                <!-- Getting the message to log given the logLevel -->
+                <Var name="taskLog">
+                    <Null/>
+                </Var>
+                <ForEach var="LOG" item="logItem">
+                    <Var name="logItemLogLevel">
+                        <Var name="logItem" key="logLevel"/>
+                    </Var>
+                    <Var name="logItemMessage">
+                        <Var name="logItem" key="message"/>
+                    </Var>
+
+                    <If>
+                        <Condition>
+                            <Lte>
+                                <Param>
+                                    <Var name="logItemLogLevel"/>
+                                </Param>
+                                <Param>
+                                    <Var name="taskLogLevel"/>
+                                </Param>
+                            </Lte>
+                        </Condition>
+                        <Then>
+                            <Var name="taskLog">
+                                <StringLib method="concatenate">
+                                    <Param>
+                                        <Var name="taskLog"/>
+                                    </Param>
+                                    <Param>
+                                        <Var name="logItemMessage"/>
+                                    </Param>
+                                    <Param><![CDATA[<br/>]]></Param>
+                                </StringLib>
+                            </Var>
+                        </Then>
+                    </If>
+                </ForEach>
+
+
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_task</Param>
+                    <Param name="id">
+                        <Var name="taskToExecute" key="id"/>
+                    </Param>
+                    <Param name="result_code">
+                        <Var name="result"/>
+                    </Param>
+                    <Param name="result_message">
+                        <Var name="taskLog"/>
+                    </Param>
+                    <Param name="run_last">
+                        <DateTimeLib method="now"/>
+                    </Param>
+                    <Param name="elapsed_time">
+                        <Var name="elapsed"/>
+                    </Param>
+                </Execute>
+
+                <Var name="newNextRunDate">
+                    <Call function="getNextRunTimestamp">
+                        <Param name="id">
+                            <Var name="taskToExecute" key="id"/>
+                        </Param>
+                    </Call>
+                </Var>
+
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_task</Param>
+                    <Param name="id">
+                        <Var name="taskToExecute" key="id"/>
+                    </Param>
+                    <Param name="run_next">
+                        <Var name="newNextRunDate"/>
+                    </Param>
+                </Execute>
+
+                <Execute method="framework,generic,insert">
+                    <Param name="table">fw_task_history</Param>
+                    <Param name="id_task">
+                        <Var name="taskToExecute" key="id"/>
+                    </Param>
+                    <Param name="elapsed_time">
+                        <Var name="elapsed"/>
+                    </Param>
+                    <Param name="result_code">
+                        <Var name="result"/>
+                    </Param>
+                    <Param name="result_message">
+                        <Var name="taskLog"/>
+                    </Param>
+                    <Param name="_creation">
+                        <DateTimeLib method="now"/>
+                    </Param>
+                </Execute>
+            </Begin>
+        </Function>
+
+        <!-- Executes all tasks - Entry Point -->
+        <Function name="executeScheduledTasks" doc="Execute all planned tasks">
+            <Params>
+            </Params>
+            <Return type="int"></Return>
+            <Begin>
+                <Var name="tasks">
+                    <Execute method="this,this,task.listTasksToExecute">
+                        <Param name="now">
+                            <DateTimeLib method="now"/>
+                        </Param>
+                    </Execute>
+                </Var>
+
+                <Var name="taskCount">0</Var>
+
+                <ForEach var="tasks" item="task">
+                    <Call function="executeTask">
+                        <Param name="id">
+                            <Var name="task" key="id"/>
+                        </Param>
+                    </Call>
+                    <Var name="taskCount" sum="1"/>
+                </ForEach>
+
+                <!-- Store the cron status  -->
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_task_cron_status</Param>
+                    <Param name="id">1</Param>
+                    <Param name="_modification">
+                        <DateTimeLib method="now"/>
+                    </Param>
+                    <Param name="num_tasks_executed">
+                        <Var name="taskCount"/>
+                    </Param>
+                </Execute>
+
+                <Return>
+                    <Var name="USER" key="id"/>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="disableTask" scope="protected" doc="Disable a task">
+            <Params>
+                <Param name="id"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_task</Param>
+                    <Param name="id">
+                        <Var name="id"/>
+                    </Param>
+                    <Param name="active">0</Param>
+                </Execute>
+                <Return>0</Return>
+            </Begin>
+        </Function>
+
+        <Function name="enableTask" scope="protected" doc="Enable a task">
+            <Params>
+                <Param name="id"/>
+            </Params>
+            <Begin>
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_task</Param>
+                    <Param name="id">
+                        <Var name="id"/>
+                    </Param>
+                    <Param name="active">1</Param>
+                </Execute>
+                <Return>1</Return>
+            </Begin>
+        </Function>
+
+        <Function name="deleteTask" scope="protected" doc="Delete a task">
+            <Params>
+                <Param name="id"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Execute method="framework,generic,delete">
+                    <Param name="table">fw_task</Param>
+                    <Param name="id">
+                        <Var name="id"/>
+                    </Param>
+                </Execute>
+                <Return>0</Return>
+            </Begin>
+        </Function>
+
+        <Function name="getAll" scope="protected" doc="Get all tasks">
+            <Params/>
+            <Return type="multiple"/>
+            <Begin>
+                <Return>
+                    <Execute method="this,this,task.listAll"/>
+                </Return>
+            </Begin>
+        </Function>
+
+
+    </Library>
+</Node>
+

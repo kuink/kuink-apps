@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+    <Allow>
+        <Capability name="framework/script::manage"/>
+    </Allow>
+  </Permissions>
+  <Params>
+    <Param name="id"/>
+    <Param name="script"/>
+  </Params>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="FormatterLib" type="lib"/>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+
+    <Screen id="executeScreen">
+      <Grid name="resultGrid" infer="true" title="result"/>
+      <Form name="viewForm">
+        <ButtonGroup>
+          <Button id="back" type="back" action="back"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="executeScreen">
+      <Var name="errors">0</Var>
+      <Try>
+        <Instructions>
+          <Var name="result">
+            <Call library="framework,script,api" function="execute">
+              <Param name="script"><Var name="PARAMS" key="script"/></Param>
+            </Call>
+          </Var>
+        </Instructions>
+        <Catch  msg="errorMsg">
+          <Var name="errors">1</Var>
+          <UserMessage type="error">
+            <Var name="errorMsg"/>
+          </UserMessage>
+        </Catch>
+      </Try>
+
+      <Control method="bind" object="resultGrid">
+        <Param><Var name="result"/></Param>
+      </Control>
+
+      <If condition="$errors == 0">
+        <Then>
+          <UserMessage type="success">
+            <Lang key="success"/>
+          </UserMessage>
+        </Then>
+      </If>
+    </Action>
+
+    <Action name="back">
+      <RaiseEvent name="back">
+        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+      </RaiseEvent>
+    </Action>
+
+
+  </Actions>
+  <Library/>
+</Node>

@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Loads a CMS item given language, category code and item code
+    </Doc>
+    <Params>
+        <Param name="lang_code"/>
+        <Param name="category_code"/>
+        <Param name="item_code"/>
+    </Params>
+    <Body>
+        <Load>
+            <![CDATA[        
+
+							SELECT 
+							   il.content
+							FROM
+							   fw_lang l
+							   INNER JOIN fw_cms_item_lang il ON (il.id_lang = l.id)
+							   INNER JOIN fw_cms_item i ON (i.id = il.id_item)
+							   INNER JOIN fw_cms_category c ON (c.id = i.id_category)
+							WHERE
+							   l.code = '{param->lang_code}'
+							   AND c.code = '{param->category_code}'
+							   AND i.code = '{param->item_code}'   
+
+            ]]>
+        </Load>
+    </Body>
+</Method>

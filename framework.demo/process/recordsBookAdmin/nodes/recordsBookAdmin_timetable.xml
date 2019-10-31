@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Params>
+		<Param name="idSchoolYear" />
+	</Params>
+    <Permissions>
+    </Permissions>
+    <Doc lang="pt-PT">
+        Mains screen of recordsbook admin
+    </Doc>
+    <Libraries />
+    <Configuration/>
+    <Screens>
+    	<Screen id="mainScreen">
+    	
+    		<Form name="filter">
+    			<Header label="timetableFilter" />
+				<DateTime id="startDate" label="startDate" />
+				<DateTime id="endDate" label="endDate" />
+				<Select id="idClass" label="class" datasource="class.list" bindid="id" bindvalue="name" />
+				<Select id="idTeacher" label="idTeacher" datasource="teacher.list" bindid="id" bindvalue="name" />
+				<Select id="idSubject" label="idSubject" datasource="subject.list" bindid="id" bindvalue="name" />
+				<Select id="idGroup" label="idGroup">
+					<Options value="1">1</Options>
+					<Options value="2">2</Options>
+					<Options value="3">3</Options>
+				</Select>
+				<ButtonGroup id="class">
+					<Button id="back" type="cancel" label="back" action="back" />
+    				<Button id="search" type="submit" label="search" action="search" />
+    			</ButtonGroup>
+    		</Form>
+    		
+    		<Grid name="lessonTimetable">
+    			<Template>
+    				<Columns>
+    					<Column name="id" label="id" />
+    					<Column name="id_class_subject" label="id_class_subject" />
+    					<Column name="class" label="class"  />
+    					<Column name="id_group" label="id_group" />
+    					<Column name="subject" label="subject" />
+    					<Column name="room" label="room" />
+    					<Column name="week_day" label="weekDay" />
+    					<Column name="start_hour" label="startHour" />
+    					<Column name="end_hour" label="endHour" />
+    					<Column name="id_group_guid" label="guid" />
+    					<Column name="is_active" label="is_active" />
+    					<Column name="is_importable" label="is_importable" />
+    				</Columns>
+    			</Template>
+    		</Grid>
+	
+    	</Screen>
+    </Screens>
+    <Actions>
+    	<Action name="init" screen="mainScreen">
+    		<Control method="addDatasource" object="filter">
+				<Param>class.list</Param>
+				<Param>
+					<Execute method="this,this,class.list">
+						<Param name="idSchoolYear"><Var name="PARAMS" key="idSchoolYear" /></Param>
+					</Execute>
+				</Param>
+			</Control>
+			<Control method="addDatasource" object="filter">
+				<Param>teacher.list</Param>
+				<Param>
+					<Execute method="this,this,teacher.list">
+						<Param name="idSchoolYear"><Var name="PARAMS" key="idSchoolYear" /></Param>
+					</Execute>
+				</Param>
+			</Control>
+			<Control method="addDatasource" object="filter">
+				<Param>subject.list</Param>
+				<Param>
+					<Execute method="this,this,subject.list">
+						<Param name="idSchoolYear"><Var name="PARAMS" key="idSchoolYear" /></Param>
+					</Execute>
+				</Param>
+			</Control>
+    	</Action>
+    	<Action name="search" />
+    	<Action name="back">
+    		<RaiseEvent name="back" />
+    	</Action>
+    </Actions>
+</Node>

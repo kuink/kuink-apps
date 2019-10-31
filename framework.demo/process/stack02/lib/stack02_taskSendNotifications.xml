@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+	 <Function name="testOut">
+	 <Params>
+	   <Param name="in"/>
+	   <Param name="out" output="true"/>
+	 </Params>
+	 <Begin>
+      <Var name="in" />
+      <Var name="out" />
+	    <Var name="in">2</Var>
+	    <Var name="out">2</Var>
+      <Var name="in" />
+      <Var name="out" />
+      <Return>3</Return>
+	 </Begin>
+	 </Function>
+	</Library>
+</Node>
+

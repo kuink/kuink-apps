@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all legislation_type
+    </Doc>
+    <Params>
+                      <Param name="name"/>
+                  <Param name="code"/>
+                    </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        legislation_type t
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>1 = 1</XCondition>
+                                                                                                                                                                                                                                                                  <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+                                                                                                                                                                                          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+                                                                                                                                                                                                        </XWhere>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

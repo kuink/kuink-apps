@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="getById" doc="Get a record its id from entity fw_agreement">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+		  </Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_agreement</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record"/>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

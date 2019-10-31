@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getIdByCode" doc="Get id by code">
+      <Params>
+        <Param name="code" doc="The code"/>
+      </Params>
+      <Return type="int" doc="The id of code"/>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_archival_medium</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code" />
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAll" doc="Get all archival medium">
+      <Params/>
+      <Return type="multiple" doc="All the archival medium"/>
+      <Begin>
+        <Var name="records">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_rm_archival_medium</Param>
+            <Param name="_attributes">e.id, e.code, l.name, l.description</Param>
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="records"/>
+        </Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Global Workflow ">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_wf_process_instance_obs" doc="Token History observations">
+      <Attributes>
+        <Attribute name="id" domain="id"  doc="The obs id"/>
+        <Attribute name="id_process_instance" domain="foreign"  required="true" refentity="fw_wf_process_instance" refattr="id" />
+        <Attribute name="id_person" domain="foreign"  required="true" refentity="fw_person" refattr="id" doc="The person that added the observations"/>
+        <Attribute name="id_token" domain="foreign" required="false" refentity="fw_wf_token" refattr="id" doc="The process token associated"/>
+        <Attribute name="obs_public" domain="text" doc="Public observations, can be viewed by anyone with access to the history" />
+        <Attribute name="obs_private" domain="text" doc="Private observations, can be viewed by the person that have added the observations" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

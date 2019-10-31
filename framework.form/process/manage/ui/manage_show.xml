@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+        <Use name="HtmlContainerControl" type="control" />
+        <Use name="TemplateLib" type="lib"/>
+        <Use name="FormatterLib" type="lib"/>
+    </Libraries>
+    <Configuration>
+    </Configuration>
+	  <Params>
+      <Param name="idForm" doc="The form to fill used if no response is set in these params"/>
+      <Param name="idFormResponse" doc="The id of the response, it will override the form"/>
+      <Param name="guidObject" doc="The identifier of the context object used when no person is registered in the system "/>
+	  </Params>
+    <Screens>
+    	<Screen id="showScreen">
+				<HtmlContainer name="title"/>    	
+      	<Form name="viewForm" title="viewForm" freeze="true">
+      		<ButtonGroup>
+      			<Button id="back" type="back" action="back"/>
+      		</ButtonGroup>
+      	</Form>
+    	</Screen>
+    </Screens>
+    <Actions>
+      <Action name="init" screen="showScreen">
+				<Var name="form">
+					<Call library="framework,form,api" function="getById">
+		         <Param name="id"><Var name="PARAMS" key="idForm"/></Param>
+		         <Param name="id_form_response"><Var name="PARAMS" key="idFormResponse"/></Param>
+		         <Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+					</Call>
+				</Var>
+	      <Control method="bind" object="title">
+	         <Param>
+	         	<Lang key="title">
+	         		<Param><Var name="form" key="description"/></Param>
+	         		<Param><String>-</String></Param>
+	         	</Lang>
+	         </Param>
+	      </Control>
+	    	<Var name="submitedData">
+	       <Call library="framework,form,api" function="getSubmitedData">
+	         <Param name="id"><Var name="PARAMS" key="idForm"/></Param>
+	         <Param name="id_form_response"><Var name="PARAMS" key="idFormResponse"/></Param>
+	         <Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+	         <Param name="formName"><String>viewForm</String></Param>
+	       </Call>
+				</Var>
+				
+				<Control method="setDefinition" object="viewForm">
+					<Param><Var name="submitedData" key="formXml"/></Param>
+				</Control>
+				<Control method="bind" object="viewForm">
+					<Param><Var name="submitedData" key="data"/></Param>
+				</Control>
+      </Action>
+      <Action name="back">
+      	<RaiseEvent name="back"/>
+      </Action>
+    </Actions>
+</Node>

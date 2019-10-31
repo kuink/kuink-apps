@@ -1,0 +1,44 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+    returns the list of all columns of a given table
+    </Doc>
+    <Params>
+    	<Param name="table"/>
+    	<Param name="schema"/>
+    </Params>
+    <Body>
+        <Sql>
+             <![CDATA[
+ 				SELECT 
+ 					c.ordinal_position as 'id', 
+ 					c.column_name as 'name', 
+ 					c.column_default as 'default', 
+ 					IF(c.is_nullable = 'NO', 'true', 'false') as 'required',
+ 					CASE c.data_type 
+						WHEN 'varchar' then 'Text'
+						WHEN 'text' then 'Text'
+						WHEN 'longtext' then 'Text'
+						WHEN 'mediumtext' then 'Text'
+						WHEN 'int' then 'Int'
+						WHEN 'bigint' then 'Int'
+						WHEN 'tinyint' then 'Int'
+					END as 'type',
+ 					c.data_type as 'type_o', 
+ 					IF(c.character_maximum_length IS NULL, c.numeric_precision, c.character_maximum_length) as length, 
+ 					c.column_key as 'key', 
+ 					# k.referenced_table_name as 'datasource', 
+ 					# k.referenced_column_name as 'bindid',
+ 					NULL as datasource,
+ 					NULL as bindid,
+ 					c.extra 
+ 				FROM 
+ 					INFORMATION_SCHEMA.COLUMNS c
+ 					LEFT JOIN information_schema.KEY_COLUMN_USAGE k ON (c.column_name = k.column_name AND c.table_name = k.table_name AND k.constraint_schema = c.table_schema) 
+  				WHERE 
+  					c.table_name = '{param->_entity}' 
+  					AND c.table_schema = '{param->schema}'
+            ]]>
+        </Sql>
+    </Body>
+</Method>

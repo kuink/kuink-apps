@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get first class with field not empty
+  </Doc>
+  <Params>
+    <Param name="tree_path" />
+    <Param name="field" />
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+            *
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_rm_class c
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition><![CDATA[
+            '{param->tree_path}' LIKE CONCAT(c.tree_path, '%') AND c.{param->field} IS NOT NULL
+          ]]></XCondition>
+        </XWhere>
+        <XOrderBy>
+          <XOrder><![CDATA[c.tree_path DESC LIMIT 1]]></XOrder>
+        </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

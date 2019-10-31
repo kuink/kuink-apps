@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Insert access level classifications</String>
+       </Return>
+      </Begin>
+    </Function>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+        <Var name="log"><Set/></Var>
+
+				<DataAccess method="insert">
+					<Param name="_entity">fw_rm_access_level_classification</Param>
+					<Param name="name">Sem restrições de acesso</Param>
+					<Param name="short_name">Sem Restrições</Param>
+					<Param name="code">NO_RESTRICTION</Param>
+					<Param name="level">1</Param>
+					<Param name="order">1</Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+
+				<DataAccess method="insert">
+					<Param name="_entity">fw_rm_access_level_classification</Param>
+					<Param name="name">Reservado</Param>
+					<Param name="short_name">Reservado</Param>
+					<Param name="code">RESERVED</Param>
+					<Param name="level">2</Param>
+					<Param name="order">2</Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+
+				<DataAccess method="insert">
+					<Param name="_entity">fw_rm_access_level_classification</Param>
+					<Param name="name">Secreto</Param>
+					<Param name="short_name">Secreto</Param>
+					<Param name="code">SECRET</Param>
+					<Param name="level">3</Param>
+					<Param name="order">3</Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+
+				<DataAccess method="insert">
+					<Param name="_entity">fw_rm_access_level_classification</Param>
+					<Param name="name">Muito secreto</Param>
+					<Param name="short_name">Muito secreto</Param>
+					<Param name="code">TOP_SECRET</Param>
+					<Param name="level">4</Param>
+					<Param name="order">4</Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+
+				<DataAccess method="insert">
+					<Param name="_entity">fw_aggregation_type</Param>
+					<Param name="name">Ano Lectivo</Param>
+					<Param name="code">schoolYear</Param>
+					<Param name="rel_table">school_year</Param>
+					<Param name="rel_field">guid</Param>
+				</DataAccess>
+
+        <Var name="logEntry" key="message"><String>Only data definition</String></Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+
+		    <Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

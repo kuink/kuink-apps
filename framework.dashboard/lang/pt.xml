@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+        <String key="permissions"><![CDATA[Permissões]]></String>
+        <String key="users"><![CDATA[Utilizadores]]></String>
+        <String key="capabilities"><![CDATA[Capabilities]]></String>
+        <String key="roles"><![CDATA[Roles]]></String>
+        <String key="roleCapabilities"><![CDATA[Role-Capabilities]]></String>
+        <String key="allocations"><![CDATA[Allocations]]></String>
+        <String key="records"><![CDATA[Records]]></String>
+        <String key="listRecords"><![CDATA[Listar]]></String>
+    </Strings>
+    <HelpStrings>
+    </HelpStrings>
+</Lang>

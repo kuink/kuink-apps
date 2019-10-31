@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<Application name="framework.wf" version="1.0.0">
+    <Configuration>
+        <!-- Global configuration... -->
+    </Configuration>
+    <Menus>
+    </Menus>
+</Application>

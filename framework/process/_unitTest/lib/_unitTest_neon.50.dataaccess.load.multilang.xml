@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              <Var name="context" key="message">DataAccess insert::multilang</Var>
+							<Var name="context" key="tableName">
+								<Call library="framework,_unitTest,neon.00.aux" function="createAuxMultilangTable"/>
+							</Var>                    
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+							            
+              <Var name="expectedResultPT"><String>teste</String></Var>
+              <Var name="expectedResultEN"><String>test</String></Var>
+              
+              <!-- Note that insert has allready been tested before this test -->
+              <Var name="multilang"><String.parse><![CDATA[<pt>$expectedResultPT</pt><en>$expectedResultEN</en>]]></String.parse></Var>
+              <Var name="id">
+	              <DataAccess method="insert">
+									<Param name="_entity"><Var name="context" key="tableName"/></Param>
+									<Param name="id"><Int>1</Int></Param>
+									<Param name="name"><Var name="multilang"/></Param>
+									<Param name="_multilang_fields">name</Param>
+								</DataAccess>
+							</Var>
+							
+							<Var name="loadedPT">
+								<DataAccess method="load">
+									<Param name="_entity"><Var name="context" key="tableName"/></Param>
+									<Param name="id"><Var name="id"/></Param>
+									<Param name="_lang">pt</Param>
+								</DataAccess>
+							</Var>
+							<Var name="loadedEN">
+								<DataAccess method="load">
+									<Param name="_entity"><Var name="context" key="tableName"/></Param>
+									<Param name="id"><Var name="id"/></Param>
+									<Param name="_lang">en</Param>
+								</DataAccess>
+							</Var>							
+							
+              <If condition="($loadedPT->name == $expectedResultPT) &amp;&amp; ($loadedEN->name == $expectedResultEN)">
+                <Then><Var name="code">0</Var></Then>
+                <Else><Var name="code">-1</Var></Else>
+              </If>              
+              <Var name="result" key="code"><Var name="code"/></Var>
+              <Var name="result" key="data"><Var name="multilang"/></Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            	<Call library="framework,_unitTest,neon.00.aux" function="dropAuxMultilangTable">
+            		<Param name="tableName"><Var name="context" key="tableName"/></Param>
+            	</Call>             
+            </Begin>
+        </Function>
+        
+    </Library>
+</Node>
+

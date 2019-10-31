@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Search all fw_state_machine_state
+    </Doc>
+    <Params>
+                                      <Param name="name"/>
+                          <Param name="id_state_machine"/>
+                                                                                                                        
+    </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_state_machine_state t
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>1 = 1</XCondition>
+                    <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+                    <XCondition optional="id_state_machine">AND t.id_state_machine = '{param->id_state_machine}'</XCondition>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+                </XWhere>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

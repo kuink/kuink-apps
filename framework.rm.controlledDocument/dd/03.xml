@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <!-- Controlled documents RM Module -->
+    <Entity name="fw_rm_controlled_document_version" doc="Controlled document versions">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_controlled_document" domain="foreign" refentity="fw_rm_controlled_document" refattr="id" doc="id of the document template"/>
+        <Attribute name="id_wf_instance" domain="foreign" required="false" refentity="framework,fw.wf,fw_wf_process_instance" refattr="id" doc="id of the document workflow"/>
+        <Attribute name="code" domain="codeNotUnique" required="true" doc="The controlled document version code"/>
+        <Attribute name="reason" domain="text" required="true" doc="The reason for this version"/>
+        <Attribute name="id_file" domain="foreign"  refentity="fw_file" refattr="id" doc="The id_file of this version, if not presente then the template must be filled"/>
+        <Attribute name="template" domain="template" doc="The kuink template"/>
+        <Attribute name="template_src" domain="html" doc="The template source"/>
+        <Attribute name="template_config" domain="json" doc="The template configuration"/>
+        <Attribute name="test_data" domain="json" doc="The data to test on the template"/>        
+        <Attribute name="is_finished" domain="bool" default="1" doc="Is this version finished to approve or not? Used when you are building the template"/>  
+        <Attribute name="is_approved" domain="bool" doc="Is this version approved or not?"/>
+        <Attribute name="id_validator" domain="foreign" required="false" refentity="fw_person" refattr="id"  doc="The person that has validated this version"/>
+        <Attribute name="approval_date" domain="timestamp" doc="Date of the approval, chek the approval steps in workflow"/>
+        <Attribute name="is_active" domain="bool" doc="Is this version active or obsolete"/>
+        <Attribute name="is_notified" domain="bool" default="0" doc="Has this version been notified to collaborators?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+      <Rules>
+        <Rule name="validateContent" condition="((($id_file != '') &amp;&amp; ($template == '')) || (($id_file == '') &amp;&amp; ($template != '')))" doc="Exactly only one can be filled template or id_file "/>
+      </Rules>
+    </Entity>
+  </Entities>
+</Node>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+      <Use name="DateTimeLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+      <Use name="StringLib" type="lib"/>
+    </Libraries>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+        <Function name="getAuxMultipleExtParamsXml" scope="public" doc="Development Auxiliary function. Convert an array to a external parameter list." >
+            <Params>
+              <Param name="variable"/>
+            </Params>
+            <Return type="value" doc="string with xml representation of a return function value."/>
+            <Permissions>
+                <Capability>neon.developer</Capability>
+            </Permissions>
+            <Begin>
+              <Var name="output">1</Var>
+              <Var name="first">1</Var>
+              <Var name="return"><![CDATA[&lt;Return type="multiple" doc=""&gt;]]></Var>
+              <If condition="$output == 1"><Then><Print><Var name="return"/></Print></Then></If>
+              <ForEach var="variable" item="mult">
+                <If condition="$first == 1">
+                  <Then>
+		                <ForEach var="mult" item="sing" key="key">
+		                  <Var name="first">0</Var>
+		                  <Var name="external">
+                        <StringLib method="concatenate">
+                          <Param><![CDATA[&lt;External name="]]></Param>
+                          <Param><Var name="key"/></Param>
+                          <Param><![CDATA[" type="text" doc=""/&gt;]]></Param>
+                        </StringLib>
+		                  </Var>
+		                  <If condition="$output == 1"><Then><Print><Var name="external"/></Print></Then></If>
+		                  <Var name="return">
+		                    <StringLib method="concatenate">
+		                      <Param><Var name="return"/></Param>
+                          <Param><Var name="external"/></Param>
+		                    </StringLib>
+		                   </Var>
+		                </ForEach>
+                  </Then>
+                </If>
+              </ForEach>
+              <Var name="close"><![CDATA[&lt;/Return&gt;]]></Var>
+              <If condition="$output == 1"><Then><Print><Var name="close"/></Print></Then></If>
+              <Var name="return">
+                <StringLib method="concatenate">
+                  <Param><Var name="return"/></Param>
+                  <Param><Var name="close"/></Param>
+                </StringLib>
+               </Var>
+              <Return><Var name="return"/></Return>
+            </Begin>
+        </Function>
+
+
+        <Function name="getAuxSingleExtParamsXml" scope="public" doc="Development Auxiliary function. Convert an array to a external parameter list." >
+            <Params>
+              <Param name="variable"/>
+            </Params>
+            <Return type="value" doc="string with xml representation of a return function value."/>
+            <Permissions>
+                <Capability>neon.developer</Capability>
+            </Permissions>
+            <Begin>
+              <Var name="output">1</Var>
+              <Var name="first">1</Var>
+              <Var name="return"><![CDATA[<pre><Return type="single" doc="">]]></Var>
+              <If condition="$output == 1"><Then><Print><Var name="return"/></Print></Then></If>
+
+              <ForEach var="variable" item="sing" key="key">
+                <Var name="first">0</Var>
+                <Var name="external">
+                  <StringLib method="concatenate">
+                    <Param><![CDATA[&lt;External name="]]></Param>
+                    <Param><Var name="key"/></Param>
+                    <Param><![CDATA[" type="text" doc=""/&gt;]]></Param>
+                  </StringLib>
+                </Var>
+                <If condition="$output == 1"><Then><Print><Var name="external"/></Print></Then></If>
+                <Var name="return">
+                  <StringLib method="concatenate">
+                    <Param><Var name="return"/></Param>
+                    <Param><Var name="external"/></Param>
+                  </StringLib>
+                 </Var>
+              </ForEach>
+
+              <Var name="close"><![CDATA[</Return></pre>]]></Var>
+              <If condition="$output == 1"><Then><Print><Var name="close"/></Print></Then></If>
+              <Var name="return">
+                <StringLib method="concatenate">
+                  <Param><Var name="return"/></Param>
+                  <Param><Var name="close"/></Param>
+                </StringLib>
+               </Var>
+              <Return><Var name="return"/></Return>
+            </Begin>
+        </Function>
+
+        
+    </Library>
+</Node>
+

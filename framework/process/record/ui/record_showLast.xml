@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+        <Use name="HtmlContainerControl" type="control" />
+        <Use name="TemplateLib" type="lib"/>
+        <Use name="FormatterLib" type="lib"/>
+    </Libraries>
+    <Configuration>
+    </Configuration>
+    <Params> 
+        <Param name="guid"/>
+        <Param name="title"/>
+    </Params>
+    <Screens>
+        <Screen id="mainScreen">
+            <Grid name="recordDetails" title="record">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" />
+                        <Column id="guid" name="guid" />
+                        <Column id="_creation" name="_creation" >
+                            <Formatter name="DateTime" method="shortDateTimeSec"/>
+                        </Column>
+                        <Column id="id_file" name="id_file" >
+                            <Formatter name="FileDownload"/>
+                        </Column>
+                    </Columns>
+                </Template>
+            </Grid>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="mainScreen" >
+            <Var name="record">
+                <Call library="framework,record,api" function="getByGuid">
+                    <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                </Call>
+            </Var>
+            <Var name="recordsData" key="">
+                <Var name="record"/>
+            </Var>
+            <Control method="bind" object="recordDetails">
+                <Param><Var name="recordsData"/></Param>
+            </Control>
+            <If condition="$PARAMS->title != ''">
+                <Then>
+                    <Control method="setProperty" object="recordDetails">
+                        <Param>title</Param>
+                        <Param><Var name="PARAMS" key="title"/></Param>
+                    </Control>
+                </Then>
+            </If>
+        </Action>
+    </Actions>
+</Node>

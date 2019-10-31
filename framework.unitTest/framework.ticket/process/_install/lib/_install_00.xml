@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+				<Var name="name" key="pt"><String>Serviço Técnico de Informática</String></Var>
+				<Var name="description" key="pt"><String>Serviço Técnico de Informática</String></Var>
+				<Var name="name" key="en"><String>Information Technology Service</String></Var>
+				<Var name="description" key="en"><String>Information Technology Service</String></Var>
+				<DataAccess method="save">
+				  <Param name="_entity">fw_ticket_handler</Param>
+				  <Param name="code">STI</Param>
+				  <Param name="email">informatica@cscm-lx.pt</Param>
+				  <Param name="name"><Var name="name"/></Param>
+				  <Param name="description"><Var name="description"/></Param>
+				  <Param name="_multilang_fields">name, description</Param>
+				  <Param name="id_company"><Var name="USER" key="idCompany"/></Param>  
+				  <Param name="_creation"><Now/></Param>    
+				  <Param name="_modification"><Now/></Param>    
+				  <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>    
+				  <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+				</DataAccess>
+				
+				<Var name="name" key="pt"><String>Secretaria</String></Var>
+				<Var name="description" key="pt"><String>Serviços Administrativos - Secretaria</String></Var>
+				<Var name="name" key="en"><String>Administrative Services</String></Var>
+				<Var name="description" key="en"><String>Administrative Services</String></Var>
+				
+				<DataAccess method="save">
+				  <Param name="_entity">fw_ticket_handler</Param>
+				  <Param name="code">ADM</Param>
+				  <Param name="email">secretaria@cscm-lx.pt</Param>
+				  <Param name="name"><Var name="name"/></Param>
+				  <Param name="description"><Var name="description"/></Param>
+				  <Param name="_multilang_fields">name, description</Param>
+				  <Param name="id_company"><Var name="USER" key="idCompany"/></Param>  
+				  <Param name="_creation"><Now/></Param>    
+				  <Param name="_modification"><Now/></Param>    
+				  <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>    
+				  <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>  
+				</DataAccess>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

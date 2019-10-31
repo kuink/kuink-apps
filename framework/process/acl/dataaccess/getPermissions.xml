@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+		Give all permissions of an acl
+	</Doc>
+	<Params>
+		<Param name="id" />
+		<Param name="code" />
+		<Param name="id_person" />
+		<Param name="id_company" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				
+				<XSelect>
+					<XField>
+						*
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						_fw_access_control_list_capability aclc
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>1=1</XCondition>
+					<XCondition optional="id">AND id_acl = {param->id}</XCondition>
+					<XCondition optional="code">AND acl_code = '{param->code}'</XCondition>
+					<XCondition optional="id_person">AND id_person = {param->id_person}</XCondition>
+					<XCondition optional="id_company">AND id_company = {param->id_company}</XCondition>
+				</XWhere>				
+				<!--XSelect>
+					<XField>
+						IF (permc.id IS NULL, permGroupc.id, permc.id) as id, IF (permc.code IS NULL, permGroupc.code, permc.code) as code
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						`fw_access_control_list` acl
+						INNER JOIN `fw_access_control_list_entry` acle ON (acle.id_acl = acl.id)
+						LEFT OUTER JOIN fw_permission perm ON (perm.id = acle.id_permission)
+						LEFT OUTER JOIN fw_permission_relation permr ON (permr.id_role = perm.id)
+						LEFT OUTER JOIN fw_permission permc ON (permc.id = permr.id_permission)
+						LEFT OUTER JOIN fw_person p ON (p.id = acle.id_person)
+						LEFT OUTER JOIN fw_person_rel_group prg ON (prg.id_person_group = acle.id_person_group)
+            LEFT OUTER JOIN fw_permission permGroup ON (permGroup.id = prg.id_person_role)
+            LEFT OUTER JOIN fw_permission_relation permGroupr ON (permGroupr.id_role = prg.id_person_role)
+            LEFT OUTER JOIN fw_permission permGroupc ON (permGroupc.id = permGroupr.id_permission)
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>(perm.is_role = 1 OR perm.is_role IS NULL) AND acl.id = {param->id}</XCondition>
+					<XCondition optional="id_person">AND (acle.id_person = {param->id_person} OR prg.id_person = {param->id_person})</XCondition>
+				</XWhere-->				
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
+

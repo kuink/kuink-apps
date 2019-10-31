@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Global Workflow ">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_wf_token_history" doc="Workflow process instance token history. This is where all the process instance details are">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_token" domain="foreign" required="true" refentity="fw_wf_token" refattr="id" doc="The parent token"/>
+        <Attribute name="node" domain="string" required="true" doc="The node where this token has passed"/>
+        <Attribute name="started" domain="timestamp" required="false" doc="When this instance started"/>        
+        <Attribute name="ended" domain="timestamp" required="false" doc="When this instance ended"/>
+        <Attribute name="start_flow" domain="string" required="false" doc="The flow that started the node"/>
+        <Attribute name="end_flow" domain="string" required="false" doc="The flow that was raised in the end of the node"/>
+        <Attribute name="id_inbox_task" domain="foreign" required="false" refentity="fw_wf_inbox_task" refattr="id" doc="What is the current task?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+  </Entities>
+</Node>

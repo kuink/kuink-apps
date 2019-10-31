@@ -1,0 +1,234 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+ 
+    <String key="framework.rm" value="Gestão Documental"/>
+    <String key="viewClass" value="Visualizar Classe"/>
+    <String key="classification" value="Classificação"/>
+    <String key="class" value="Tabela de Seleção Documental"/>
+    <String key="manage" value="Gerir"/>
+    <String key="viewer" value="Consultar"/>
+    
+    <String key="addRecord" value="Registo"/>
+    <String key="addComponent" value="Componente"/>
+    <String key="addMetadata" value="Metadados"/>
+    <String key="archive" value="Arquivar"/>
+    <String key="declare" value="Declarar"/>
+    
+    <String key="dateFrom" value="Criação de:"/>
+    <String key="dateTo" value="Criação até:"/>
+    <String key="class_code" value="Códgo Classificação"/>
+    <String key="components" value="Componentes"/>
+    <String key="aggregations" value="Agregações"/>
+    <String key="aggName" value="Agregação"/>
+    <String key="aggDesc" value="Descrição"/>
+    <String key="recName" value="Registo"/>
+    <String key="recDesc" value="Descrição"/>
+
+    <String key="records" value="Documentos/Registos"/>
+     <String key="text" value="Texto"/>
+     
+     <String key="code" value="Cód. de Classif."/>
+     <String key="parent_name" value="Classe"/>
+     <String key="name" value="Título da Série"/>
+     <String key="description" value="Âmbito e Conteúdo"/>
+     <String key="producer" value="Produtor"/>
+     <String key="location" value="Localização"/>
+     <String key="final_destination" value="Destino Final"/>
+     <String key="disposal_duration" value="Prazo Conservação"/>
+     <String key="is_open" value="Série Aberta"/>
+     <String key="years" value="Datas Extremas"/>
+     <String key="medium" value="Suporte"/>
+     <String key="manager_photo" value="Responsabilidade"/>
+     <String key="obs_private" value="Notas"/>
+     <String key="controlled_document_code" value="Modelo"/>
+     
+     <String key="id_parent" value="Classe Pai"/>
+     <String key="id_parent" value="Classe Pai"/>
+     <String key="ref_pgd_mec" value="Nº de Ref. PGD MEC"/>
+     <String key="business_process" value="Diplomas juridico-administrativos E/ou Processo de Negócio - SGAQS"/>
+     
+     <String key="addClass" value="Adicionar"/>
+     <String key="editClass" value="Editar"/>
+     <String key="year_from" value="Datas Extremas de:"/>
+     <String key="year_to" value="Datas Extremas a:"/>
+     <String key="id_archival_medium" value="Tipo de UA"/>
+     <String key="linear_meters" value="Metragem"/>
+     <String key="id_manager" value="Responsabilidade"/>
+     
+     <String key="related_serie_num" value="Série relacionada (nº referência)"/>
+     <String key="related_serie_title" value="Série relacionada (título)"/>
+     <String key="related_serie_type" value="Série relacionada (tipo de relação)"/>
+     <String key="id_component_type" value="Tipo de componente"/>
+     <String key="id_plugin" value="Tipo de plugin"/>
+     
+     <String key="action_duration" value="Duração"/>
+     <String key="id_action_interval_code" value="Intervalo"/>
+     <String key="interval_justification" value="Justificação"/>
+     <String key="id_action_code" value="Destino final"/>
+     <String key="action_justification" value="Justificação"/>
+     <String key="metadataDefinition" value="Definição Metadados (XML)"/>
+     
+     <String key="baseData" value="Dados Base"/>
+     <String key="relatedSerieData" value="Séries Relacionadas"/>
+     <String key="componentsData" value="Componentes"/>
+     <String key="disposalInfo" value="Disposição"/>
+     <String key="metaData" value="Metadados"/>
+     <String key="filter" value="Filtrar"/>
+     <String key="result" value="Resultado"/>
+     
+     <String key="disposal_due_date" value="Data Prevista de Alienação"/>
+     <String key="disposal_date" value="Data de Alienação"/>
+     <String key="retention_date" value="Data de Retenção"/>
+     <String key="is_archived" value="Arquivado?"/>
+     <String key="last_xml" value="Metadados"/>
+     
+     <String key="noDatabaseChanges" value="Sem alterações ao esquema de base de dados"/>
+
+     <String key="classLabel">
+      <![CDATA[
+        <table cellpadding="20px">
+	        <tr>
+		        <td>
+			        <strong>Legenda:</strong><br/>
+			        <strong>Suporte</Strong><br/>
+			        <strong>» P</strong> - Papel;<br/>
+			        <strong>» EN</strong> - Eletrónico Nativo;<br/>
+			        <strong>» ED</strong> - Eletrónico Digitalizado;<br/>
+			        <strong>» O</strong> - Outro;<br/>
+		        </td>
+		        <td>
+			        <strong>Relação</Strong><br/>
+			        <strong>» S</strong> - Síntese;<br/>
+			        <strong>» D</strong> - Duplicada;<br/>
+			        <strong>» I</strong> - Complementar;<br/>
+			        <strong>» A</strong> - Antecedente;<br/>
+			        <strong>» O</strong> - Output;<br/>
+			        <strong>» X</strong> - Intput;<br/>
+		        </td>
+		        <td>
+			        <strong>Tipo de UA</Strong><br/>
+			        <strong>» P</strong> - Processo;<br/>
+			        <strong>» C</strong> - Coleção;<br/>
+			        <strong>» D</strong> - Dossier;<br/>
+			        <strong>» R</strong> - Registo;<br/>
+			        <strong>» SI</strong> - Sistema de Informação;<br/>
+		        </td>
+	        </tr>
+        </table>
+      ]]>        
+     </String>
+     
+   </Strings>
+   <HelpStrings>
+     
+     <Help key="related_serie_type">
+     <![CDATA[
+        Na sequência do preenchimento dos campos anteriores registe o tipo de relação:<br/><br/>
+        S (síntese - quando a série relacionada sintetiza o conteúdo informativo da série em análise)<br/><br/>
+        D (duplicada - verifica-se quando uma série documental contém, no todo ou em parte, o mesmo conteúdo informativo que outra(s) série(s)- não confundir com backups ou réplicas do sistema)<br/><br/>
+        I (complementar - aplicável quando o conteúdo informativo de uma série está relacionado com o de outra série  acrescentando-lhe informação adicional)<br/><br/>
+        A (antecedente - quando se trata de uma série fechada, que foi substituída pelo série em análise).<br/><br/>
+        O (Output - tipo de relação que se verifica entre um sistema de informação e os relatórios produzidos pelo sistema. Na prática, os outputs são os relatórios (reports) produzidos por um sistema informático. Uma série que seja output de outra tem sempre informação parcialmente duplicada relativamente àquela a partir da qual é produzida. Neste caso, é importante salientar que se o sistema informático que dá origem a esses relatórios (outputs) desaparecer (for destinado a eliminação) os outputs deixarão também de ser produzidos. Esta informação é importante para atribuição de destinos finais.<br/><br/>
+        X (Input - quando fornece dados ou informação ao sistema em análise.  Este tipo de relação pode existir entre dois sistemas ou entre uma série e o sistema (fornecendo a série input ao sistema. Ex: respostas a inquéritos posteriormente inseridas num sistema para processamento estatístico).<br/><br/>
+      ]]>
+     </Help> 
+     
+     <Help key="action_duration">
+     <![CDATA[
+				O prazo de conservação administrativa corresponde a um período de tempo fixado pela entidade produtora, geralmente de acordo com imperativos de natureza legal, fiscal, administrativa ou outra, durante o qual a documentação permanece sob responsabilidade do serviço produtor, no serviço de arquivo corrente ou noutro depósito de arquivo (serviço de arquivo intermédio, em regime de externalização ou outro), de acordo com a maior ou menor frequência de utilização da mesma e as disponibilidades logísticas da entidade.<br/>
+				<br/>
+				O momento e forma para inicio da contagem deste prazo deve ser fornecida no campo “Forma de contagem dos prazos”. Geralmente este prazo é contado a partir da conclusão dos processos ou da data dos documentos, quando se trate de documentos integrados em colecção, de registos ou de dossiers. Exceptuam-se os documentos dispositivos (ex. leis, despachos, regulamentos) cujos prazos de conservação são contados a partir do momento em que o documento deixa de estar em vigor.<br/>
+				<br/>
+				O prazo de conservação administrativa deverá ser registados em anos. É necessário indicar um prazo concreto. Não serão aceites informações como:<br/>
+				<ul>
+	        <li>Enquanto útil. Este tipo de informação provoca grandes constrangimentos e indefinições na sua aplicação em sistemas manuais (o que para o seleccionador não é útil para o produtor pode ser) e não é passível de ser aplicado por sistemas SEGA (Sistemas Electrónicos de Gestão de Arquivo) que necessitam de um período concreto para aplicação de prazos de conservação.</li>
+					<li>Enquanto em vigor. Este tipo de informação indica que o documento ainda se se encontra na sua fase activa. Sendo que enquanto um documento se encontra na fase activa a contagem do prazo de conservação não pode ser iniciada. Este informação deve ser fornecida no campo “Forma de contagem dos prazos”.</li>
+				</ul>
+      ]]>
+     </Help> 
+     
+     <Help key="interval_justification">
+     <![CDATA[
+				Argumentos justificativos do prazo administrativo mais comuns:<br/>
+				<ul>
+				<li> imperativos de natureza legal, fiscal, administrativa ou outra, que impliquem prazos durante os quais a documentação não pode ser eliminada. Relaciona-se directamente com a função probatória do documento. (exemplo de uma justificação: os 10 anos de PCA correspondem ao prazo para prescrição do procedimento por responsabilidades financeiras reintegratórias, nos termos do nº 1, do art. 70, da Lei de organização e processo do Tribunal de Contas, Lei 98/97, de 26 de Agosto, com as alterações introduzidas pelas Leis n.os 35/2007, de 13 de Agosto e 48/2006, de 29 de Agosto);</li>
+				<li> necessidades operacionais e/ou informativas de utilização do documento ou de acesso/processamento dos dados. (exemplo de uma justificação: os 5 anos de PCA correspondem ao período de utilização de dados para operacionalização de estatísticas quinquenais).</li>
+        <li> taxas de frequência ou outros indicadores de utilização (exemplo de uma justificação: os 5 anos de PCA correspondem ao número de anos durante em que os documentos foram acedidos, de acordo com a estatística de consultas).</li>
+        </ul>
+      ]]>
+     </Help> 
+     
+     <Help key="class_name">
+      <![CDATA[
+				Designação da série e, caso exista, da subsérie.<br/> 
+				Os documentos de cada série deverão corresponder ao exercício de uma mesma actividade, dentro de uma mesma área de actuação.<br/><br/>
+				
+				A sub série deve ser entendida como um recurso de utilização excepcional, aplicado quando há uma imperiosa necessidade de desdobramento intelectual da série, podendo corresponder, por exemplo, às mesmas fases de processos do mesmo tipo ou a subdivisões sistemáticas de um assunto, tipologias documentais ou ainda a documentação com exigências de acondicionamento e/ou preservação próprias<br/><br/>
+				
+				Quando se optar por um título atribuído, este pode incluir menção a:<br/>
+				- tipologias documentais,<br/>
+				- actividade, transacção ou assunto que está na base da criação da série,<br/>
+				- agente da acção da qual resultam os documentos da série.<br/>
+      ]]>
+     </Help>
+
+     <Help key="id_action_code">
+      <![CDATA[
+				Destino atribuído à série resultante do seu valor probatório (Valor inerente aos documentos de arquivo, na medida em que consignam ou comprovam factos, constituem direitos e obrigações e são reconhecidos como garantia e fundamento de actos, factos e acontecimentos. Também chamado valor primário) e/ou da relevância do seu valor informativo (Valor decorrente da informação veiculada por um documento de arquivo ou outra unidade arquivística para a administração produtora, assim como para outros utilizadores. São especialmente relevantes os que, independentemente do fim para que foram elaborados, testemunham a constituição e funcionamento dessa administração e/ou fornecem dados ou informações sobre pessoas, organizações, locais ou assuntos. Também chamado valor secundário).<br/>
+				Registar: C ou CP ou E<br/>
+				<br/>
+				C (CONSERVAÇÃO PERMANENTE GLOBAL quando se concluir ter a série ou sub-série valor probatório e/ou informativo que impeçam a sua eliminação. Nomeadamente que o conteúdo informativo não é recuperável noutras séries ou sub séries documentais de conservação, revela utilidade para fins de investigação, cumprindo uma função testemunhal da constituição, organização e funcionamento da entidade produtora ou de acontecimentos, pessoas, actos, etc. relevantes para a preservação da memória colectiva.<br/>
+				<br/>
+				CP (CONSERVAÇÃO PERMANENTE PARCIAL quando:<br/>
+				- Se concluir que estamos perante uma série e/ou sub série muito extensa, com conteúdo informativo significativamente homogéneo e repetitivo e cujo interesse informativo não é tão grande que justifique a sua conservação permanente global, mas também se entenda que a eliminação da totalidade da série é uma opção demasiado radical;<br/>
+				- Ou se concluir que estamos perante uma série e/ou sub série constituída por processos ou dossiers cujo interesse informativo é muito desigual.<br/>
+				Nos casos em que, por estes motivos, se optar pela conservação permanente parcial, deve ser indicado qual o tipo de amostragem que se pretende implementar (exemplar, selectiva, sistemática, aleatória). Porém, esta deve ser entendida como um procedimento excepcional, a implementar apenas quando as circunstâncias indiquem uma especial necessidade do mesmo e nunca quando haja alternativa.<br/>
+				§ N.B.: Algumas entidades produtoras costumam propor a conservação permanente parcial de séries constituídas por diferentes conjuntos documentais com distinto interesse informativo ou probatório, explicitando qual o destino proposto para a generalidade da série, que documentos constituem excepção e porquê.<br/>
+				Contudo, se a documentação se encontra bem organizada, de modo a identificar as diferentes sub-séries de uma série, deve optar-se pelo preenchimento de uma ficha para cada uma delas, com as respectivas propostas de prazo de conservação e destino final.<br/>
+				Por exemplo:<br/> 
+				Série: Processos de inspecção<br/> 
+				Sub-série: Relatórios – Conservação permanente<br/>
+				Sub-série: Documentos de apoio – Eliminação.<br/>
+				<br/>
+				E (ELIMINAÇÃO GLOBAL quando:<br/>
+				- Se concluir ter a série ou sub série valor probatório e/ou informativo arquivístico nulo;<br/>
+				- Se verificar que a informação contida na série ou sub-série é objecto de publicação, desde que à publicação tenha sido atribuído um número de depósito legal e no arquivo definitivo se conserve, pelo menos, um exemplar da publicação;<br/>
+				- Se verificar que os dados essenciais da série ou sub série estão consubstanciados noutra série ou sub série de conservação permanente no mesmo organismo ou num organismo distinto, desde que ambos pertençam à Administração Pública e o organismo que conserva, a título permanente, a série ou sub série documental, disponha já de uma tabela de selecção publicada em diploma legal, onde a mesma venha expressa.<br/>
+      ]]>
+     </Help>
+
+     <Help key="action_justification">
+      <![CDATA[
+				Argumentos justificativos do destino final indicado.<br/>
+				<strong>Exemplo -  Eliminação:</strong> o conteúdo informativo da série relatórios de actividades das unidades orgânicas, encontra-se sintetizado no relatório de actividades da instituição (Ref. Nº ---).<br/>
+				<strong>Exemplo -  Eliminação:</strong> o conteúdo informativo da série é passível de ser recuperado no sistema de informação Ref. Nº ---.<br/>
+				<strong>Exemplo -  Conservação:</strong> o conteúdo informativo evidencia a execução de competência  relevante pela entidade e não se encontra acessível noutra série de conservação permanente.<br/>
+				<strong>Exemplo - Conservação</strong> das Actas das Assembleias de Voto, ao abrigo do art. 152º, Destino da documentação, Lei orgânica das autarquias nº 1/2001, de 14/8, <br/>
+				(1 — Os cadernos de recenseamento e demais documentação presentes à assembleia de apuramento geral, bem como a acta desta, são confiados à guarda e responsabilidade do governador civil.<br/>
+ 				 2 — Terminado o prazo de recurso contencioso ou decididos os recursos que tenham sido apresentados, o governador civil procede à destruição de todos os documentos, com excepção das actas das assembleias de voto, da acta da assembleia de apuramento geral e de uma das cópias dos cadernos eleitorais.)<br/>
+	     <br/>			
+				Realce-se que a conservação em função do valor probatório implica requisitos de conservação que assegurem a manutenção desse valor probatório (informação de especial relevo para os documentos electrónicos).<br/>
+				No caso de se optar por conservação permanente parcial recorrendo a um ou à conjugação de vários métodos de amostragem, deve-se também justificar a opção tomada.<br/>       ]]>
+     </Help>
+
+     <Help key="obs_private">
+      <![CDATA[
+				Campo aberto para quaisquer considerações suplementares que se julgue pertinentes para melhor informar o processo de avaliação,<br/> 
+				<strong>Exemplo:</strong> Informação complementar ao título no caso das séries / sistemas em formato electrónico, indicando o nome mais conhecido ou de comercializada: QUIDGEST, SIC, etc.<br/> 
+				Pode ser igualmente usado para apresentar propostas de transferência de suporte, quando for essa a política da entidade em questão.<br/>
+        ]]>     
+      </Help>
+          
+     <Help key="id_archival_medium">
+      <![CDATA[
+         <strong>Tipo de UA</Strong><br/>
+         <strong>» P</strong> - Processo;<br/>
+         <strong>» C</strong> - Coleção;<br/>
+         <strong>» D</strong> - Dossier;<br/>
+         <strong>» R</strong> - Registo;<br/>
+         <strong>» SI</strong> - Sistema de Informação;<br/>
+      ]]>
+     </Help>      
+   </HelpStrings>
+</Lang>

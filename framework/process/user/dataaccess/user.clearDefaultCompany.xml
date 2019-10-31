@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Clears the default company of the user
+    </Doc>
+    <Params>
+        <Param name="id"/>
+    </Params>
+    <Body>
+        <Execute>
+            <![CDATA[        
+            UPDATE fw_user_company set is_default=0 WHERE id_user = {param->id}
+        ]]>
+        </Execute>
+    </Body>
+</Method>

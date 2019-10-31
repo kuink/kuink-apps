@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getIdByCode" doc="Get id by code">
+      <Params>
+        <Param name="code" doc="The code"/>
+      </Params>
+      <Return type="int" doc="The id of code"/>
+      <Begin>
+        <Var name="code_map_type">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_code_map_type</Param>
+            <Param name="code"><Var name="PARAMS" key="code" /></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="code_map_type" key="id" />
+        </Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

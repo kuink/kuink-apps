@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_agreement_statement">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+		  </Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_agreement_statement</Param>
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getFieldsFromStatementList" doc="Get a record id by its code from entity fw_agreement_statement">
+      <Params>
+        <Param name="statementList" type="set" required="true" doc="The statement List"/>
+        <Param name="contextFormat" type="set" required="true" doc="The statement List context"/>
+      </Params>
+      <Return type="multiple" doc="">
+		  </Return>
+      <Begin>
+      <Trace><String>*** GetFieldsFromStatementList</String></Trace>
+        <Var name="idList"><Set/></Var>
+        <ForEach var="statementList" item="statement">
+          <Var name="idList" key="$statement->id_agreement_statement"><Var name="statement" key="id_agreement_statement"/></Var>
+        </ForEach>
+
+        <!--Var name="idList" dump="true"/-->
+
+        <Var name="fields">
+          <DataAccess method="this,this,statement.getFields">
+            <Param name="idList"><Var name="idList"/></Param>
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Var>
+        <!-- Add the id as key for the fields array-->
+        <Var name="indexedFields"><Set/></Var>
+        <ForEach var="fields" item="field">
+          <Var name="indexedFields" key="$field->id"><Var name="field"/></Var>
+        </ForEach>
+
+        <!-- Expand the context for each statement by adding to context local variable-->
+        <!-- Note that statements can have variables to expand with $context->... This way they will be correctly added-->
+        <!-- In this case, the same statement can be added more then once so we have to create a workaround because the field is based on code and cannot have duplicated codes-->
+        <!-- The workaround consits in prefix the code with an order number like order__code-->
+        <Var name="statementOrder"><Int>1</Int></Var>
+        <Var name="agreementStatementExpanded"><Set/></Var>
+        <ForEach var="statementList" item="statement">
+          <Var name="context" dump="true"><Var name="statement" key="context"/></Var>
+
+          <Var name="statementField"><Var name="indexedFields" key="$statement->id_agreement_statement"/></Var>
+          <Var name="statementField" key="statement_original_code"><Var name="statementField" key="statement_code"/></Var>	
+          <Var name="statementCode"><String.parse><Var name="PARAMS" key="contextFormat"/></String.parse></Var>
+					<Var name="statementCode" dump="true"><String.parse>$statementField['statement_code']_$statementCode</String.parse></Var>          
+          <Var name="statementField" key="statement_code"><Var name="statementCode"/></Var>
+          <!--Var name="statementField" key="statement_code">
+            <String.concatenate>
+              <Param><Var name="statementField" key="statement_code"/></Param>
+              <Param><String>___</String></Param>
+              <Param><Var name="statementOrder"/></Param>
+            </String.concatenate>
+          </Var-->	
+          <Var name="statementField" key="statement"><String.parse><String.parse>$statementField->statement</String.parse></String.parse></Var>	
+          <Var name="statementField" key="statement_description"><String.parse><String.parse>$statementField->statement_description</String.parse></String.parse></Var>	
+          <Var name="statementField" key="context"><Var name="statement" key="context"/></Var>	
+          <Var name="context"><Set/></Var>
+          <Var name="agreementStatementExpanded" key="$statementField->statement_code"><Var name="statementField"/></Var>
+          <Var name="statementOrder" sum="1"></Var>
+        </ForEach>
+        <Var name="agreementStatementExpanded"/>
+        <Var name="indexedFields"><Var name="agreementStatementExpanded"/></Var>
+
+        <Return><Var name="indexedFields"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAll" doc="Get All statements">
+      <Params>
+        <Param name="id_agreement_statement_type"/>
+      </Params>
+      <Return type="multiple" doc="">
+		  </Return>
+      <Begin>
+        <Var name="records">
+          <DataAccess method="this,this,statement.search">
+            <Param name="id_agreement_statement_type"><Var name="PARAMS" key="id_agreement_statement_type"/></Param>
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="records"/>
+        </Return>
+      </Begin>
+    </Function>    
+
+
+  </Library>
+</Node>

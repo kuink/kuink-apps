@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib" />
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+	</Actions>
+	<Library forceinterface="true">
+		<Function name="prepare" doc="prepare">
+			<Params />
+			<Return type="text" doc="Test documentation" />
+			<Begin>
+				<Var name="context" key="message">framework::framework.unitTest:: Add a duplicated relation by code. It should return the existing one
+				</Var>
+				<Return>
+					<Var name="context" />
+				</Return>
+			</Begin>
+		</Function>
+		
+		<Function name="run" doc="Run the test">
+			<Params>
+				<Param name="context" doc="Context data" />
+			</Params>
+			<Return type="single" doc="The result">
+				<External name="code" type="int" doc="The result code" />
+				<External name="data" type="text" doc="Data returned by the function" />
+			</Return>
+			<Errors>
+				<Error code="-1" doc="Test failed" />
+			</Errors>
+			<Begin>
+				<Transaction>
+					<Var name="test" key="result">
+						<String />
+					</Var>
+					<!-- Add Role -->
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestRole</Param>
+						<Param name="name">Unit test Role</Param>
+						<Param name="description">Unit test Role</Param>
+						<Param name="is_role">1</Param>
+					</Call>
+
+					<!-- Add capability -->
+					<Call library="framework,permission,api" function="add">
+						<Param name="code">unitTestCapability</Param>
+						<Param name="name">Unit test Capability</Param>
+						<Param name="description">Unit test Capability</Param>
+						<Param name="is_role">0</Param>
+					</Call>
+
+					<!-- Add the relation -->
+					<Var name="relationIdOriginal">
+						<Call library="framework,permission,api" function="addRelationByCode">
+							<Param name="role_code">unitTestRole</Param>
+							<Param name="permission_code">unitTestCapability</Param>
+						</Call>
+					</Var>
+					<Var name="relationId">
+						<Call library="framework,permission,api" function="addRelationByCode">
+							<Param name="role_code">unitTestRole</Param>
+							<Param name="permission_code">unitTestCapability</Param>
+						</Call>
+					</Var>
+
+					<Var name="code">
+						<If condition="$relationIdOriginal == $relationId">
+							<Then>
+								<Int>0</Int>
+							</Then>
+							<Else>
+								<Int>-1</Int>
+							</Else>
+						</If>
+					</Var>
+
+					<Var name="result" key="code">
+						<Var name="code" />
+					</Var>
+					<Var name="result" key="data">
+						<String.parse>Relation id original $relationIdOriginal and duplicated $relationId</String.parse>
+					</Var>
+					<RollBack />
+				</Transaction>
+				<Return>
+					<Var name="result" />
+				</Return>
+			</Begin>
+		</Function>
+		
+		<Function name="clean" doc="Removes the data added">
+			<Params>
+				<Param name="context" doc="Context data" />
+			</Params>
+			<Return type="int" doc="" />
+			<Begin>
+			</Begin>
+		</Function>
+	</Library>
+</Node>

@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        update template last_xml field
+    </Doc>
+    <Params>
+        <Param name="last_xml" />
+        <Param name="id" />
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[
+                UPDATE
+                    fw_rm_template
+                set
+                    last_xml='{param->last_xml}'
+                WHERE
+                    id={param->id}
+        ]]>
+        </Sql>
+    </Body>
+</Method>

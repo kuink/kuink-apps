@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Global Workflow ">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_wf_process" multilang="true" doc="Workflow process">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="source" domain="string" required="true" doc="Process Id like app,process,bpmn"/>
+        <Attribute name="params" domain="json" required="true" doc="The process name"/>                
+        <Attribute name="id_process_engine" domain="string" required="true" doc="Process Id like app,process,bpmn"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_wf_process_configuration" doc="Workflow process configuration. It sets the parameters for the workflow configuration">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_process" domain="foreign" required="true" refentity="fw_wf_process" refattr="id" doc="The process"/>                
+        <Attribute name="params" domain="json" required="true" doc="The values to expand in the parameters"/>
+        <Attribute name="guid_object" domain="uuid" doc="The reference object that will implement this workflow"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

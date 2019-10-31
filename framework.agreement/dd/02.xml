@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Agreement entities">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_agreement_response" doc="Defines the agreement with the statement responses.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_agreement" domain="foreign" refentity="fw_agreement" refattr="id" required="true" doc="The agreement"/>        
+        <Attribute name="id_agreement_statement" domain="foreign" refentity="fw_agreement_statement" refattr="id" required="true" doc="The statement"/>
+        <Attribute name="agreement_statement_response" domain="int" required="true" doc="The value of the response"/>
+        <Attribute name="agreement_statement_context" domain="text" required="false" doc="json: The context of the statement. Some statements can have variables with values to expand. If this attribute is filled then it should be expanded in the statement"/>
+        <Attribute name="expire_date" domain="timestamp" required="false" doc="Commitment expire date. If null never expires. Based on the statement expire_date_expression" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

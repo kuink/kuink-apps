@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get entity relation
+  </Doc>
+  <Params>
+	  <Param name="id_entity" required="true"/>
+    <Param name="id_entity_type" required="true"/>
+    <Param name="id_entity_type_relation" required="true"/>
+    <Param name="entity_type_table" required="true"/>
+    <Param name="entity_type_relation_table" required="true"/>
+  </Params>
+  <Body>
+    <Sql>
+    <![CDATA[
+	    SELECT 
+	     er.id,
+	     r.*,
+	     rel.*
+	    FROM fw_rm_entity_relation er
+	    INNER JOIN {param->entity_type_table} r ON (r.id = er.id_entity)
+	    INNER JOIN {param->entity_type_relation_table} rel ON (rel.id = er.id_entity_relation)
+	    WHERE
+          er.id_entity = '{param->id_entity}'
+          AND er.id_entity_type = '{param->id_entity_type}'
+          AND er.id_entity_type_relation = '{param->id_entity_type_relation}'	    
+
+      UNION ALL
+
+      SELECT er.id,
+       r.*,
+       rel.*
+      FROM fw_rm_entity_relation er
+      INNER JOIN {param->entity_type_table} r ON (r.id = er.id_entity_relation)
+      INNER JOIN {param->entity_type_relation_table} rel ON (rel.id = er.id_entity)      
+      WHERE
+          er.id_entity_relation = '{param->id_entity}'
+          AND er.id_entity_type_relation = '{param->id_entity_type}'
+          AND er.id_entity_type = '{param->id_entity_type_relation}'     
+
+      UNION ALL
+
+      SELECT er.id,
+       r.*,
+       rel.*
+      FROM fw_rm_entity_relation er
+      INNER JOIN {param->entity_type_table} r ON (r.id = er.id_entity)
+      INNER JOIN {param->entity_type_relation_table} rel ON (rel.id = er.id_entity_relation)      
+      WHERE
+          er.id_entity = '{param->id_entity}'
+          AND er.id_entity_type_relation = '{param->id_entity_type}'
+          AND er.id_entity_type = '{param->id_entity_type_relation}'     
+
+      UNION ALL
+
+      SELECT er.id,
+       r.*,
+       rel.*
+      FROM fw_rm_entity_relation er
+      INNER JOIN {param->entity_type_table} r ON (r.id = er.id_entity_relation)
+      INNER JOIN {param->entity_type_relation_table} rel ON (rel.id = er.id_entity)
+      WHERE
+          er.id_entity_relation = '{param->id_entity}'
+          AND er.id_entity_type = '{param->id_entity_type}'
+          AND er.id_entity_type_relation = '{param->id_entity_type_relation}'     
+	    
+    ]]>
+    </Sql>
+  </Body>
+</Method>

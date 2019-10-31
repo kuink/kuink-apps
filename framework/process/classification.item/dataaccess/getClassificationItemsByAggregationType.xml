@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        <![CDATA[Get all classification items by aggregation]]>
+    </Doc>
+    <Params>
+        <Param name="id_aggregation_type"/>
+        <Param name="guid"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        ci.*
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_classification_item ci
+                        inner join fw_record r on (r.id_classification_item = ci.id)
+                        inner join fw_aggregation a on (a.id_record = r.id)
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>a.id_aggregation_type='{param->id_aggregation_type}'</XCondition>
+                    <XCondition>AND a.guid='{param->guid}'</XCondition>
+                    <XCondition optional="classification_item_code">AND ci.code like '%{param->classification_item_code}'</XCondition>
+                </XWhere>
+                <XGroupBy>
+                    <XCondition><![CDATA[ ci.id ]]></XCondition>
+                </XGroupBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

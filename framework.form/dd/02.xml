@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Forms">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_form" doc="Define the form data">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_acl" domain="foreign" required="true" refentity="access_control_list" refattr="id" doc="Who can access this form"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this form active?"/>
+        <Attribute name="on_complete" domain="string" required="false" doc="The api to call on complete of the form"/>
+        <Attribute name="on_deactivate" domain="string" required="false" doc="The api to call on deactivate the form"/>
+        <Attribute name="on_activate" domain="string" required="false" doc="The api to call on activate the form"/>
+        <Attribute name="terms_conditions_api" domain="string" required="false" doc="If this api is set, then load the terms and conditions from it"/>
+        <Template name="fw.identity"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_form_response" doc="Form responses">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_form" domain="foreign" required="true" refentity="fw_form" refattr="id" doc="id of the form"/>        
+        <Attribute name="id_person" domain="foreign" refentity="fw_person" refattr="id" doc="The person who gave the response"/>
+        <Attribute name="guid_object" domain="guid" doc="The guid object of the process that started this response. Used when the person is not registered in the system"/>
+        <Attribute name="start" domain="timestamp" required="false" doc="The timestamp when the user started filling the form"/>
+        <Attribute name="end" domain="timestamp" required="false" doc="The timestamp when the user ended filling the form"/>
+        <Attribute name="current_page" domain="int" required="true" doc="The page where the person is filling the form"/>
+        <Attribute name="is_completed" domain="bool" default="0" required="true" doc="Is this form active?"/>
+        <Attribute name="response_data" domain="xml" required="true" doc="An xml object containing all the response data"/>
+        <Attribute name="is_terms_conditions_accepted" domain="bool" default="0" required="true" doc="Are terms and conditions accepted?"/>        
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>    
+  </Entities>
+</Node>

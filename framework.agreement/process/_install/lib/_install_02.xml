@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+		<Function name="getReleaseNotes">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+				<Return>Add the response_text to an agreement response. This is mandatory over the statement text</Return>
+			</Begin>
+		</Function>
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>	
+				<Transaction>
+					<!-- Nothing to do -->
+				</Transaction>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+    <Allow>
+      <Capability name="framework/rm::manage"/>
+    </Allow>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+  </Libraries>
+  <Configuration>
+  </Configuration>
+  <Params/>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+	      <Select id="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="search"/>
+        <ButtonGroup>
+          <Button id="search" type="search" label="search" action="search"/>
+          <Button id="add" type="add" label="addClass" action="addClass"/>
+          <Button id="edit" type="update" label="editClass" action="editClass"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" collapsible="false" pagesize="10" title="result" pagingaction="search" exportable="true">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="code" action="search" actionvalue="code" condition="$childs_count > 0"/>
+            <Column name="has_workflows" label="">
+							 <Formatter name="Icon" method="simpleIcon" size="16">
+								 <Param name="1">code-branch</Param>
+							 </Formatter>            
+            </Column>            
+            <Column name="parent_name"/>
+            <Column name="name" action="search" actionvalue="code" condition="$childs_count > 0"/>
+            <Column name="description"/>
+            <Column name="business_process" hidden="true"/>
+            <Column name="controlled_document_code" hidden="true">
+              <Formatter name="Separator" method="custom">
+                <Param name="separator">-</Param>
+              </Formatter>
+            </Column>
+            <Column name="controlled_document_name" hidden="true" action="viewControlledDocument" actionvalue="controlled_document_code" inline="true"/>
+            
+            <Column name="producer" hidden="true"/>
+            <Column name="ref_pgd_mec"/>
+            <Column name="related_serie_num" hidden="true">
+              <Formatter name="Style" method="nl2list"/>
+            </Column>
+            <Column name="related_serie_title" hidden="true">
+              <Formatter name="Style" method="nl2list"/>
+            </Column>
+            <Column name="related_serie_type" hidden="true">
+              <Formatter name="Style" method="nl2list"/>
+            </Column>
+            <Column name="action_justification" hidden="true"/>
+            <Column name="interval_justification" hidden="true"/>
+            <Column name="is_open">
+              <Formatter name="Icon" size="24">
+                <Param name="0">error.png</Param>
+                <Param name="1">success.png</Param>
+                <Param name="default">error.png</Param>
+              </Formatter>            
+            </Column>
+            <Column name="years" nowrap="true"/>
+            <Column name="medium">
+              <Formatter name="Style" method="nl2list"/>
+            </Column>
+            <Column name="location" hidden="true"/>
+            <Column name="disposal_duration" />
+            <Column name="final_destination" />
+            <Column name="obs_private"/>
+            <!--Column name="manager_photo">
+              <Formatter name="Image" ext="jpg" path="photo"/>            
+            </Column-->            
+          </Columns>
+          <Actions separator="true">
+            <Action name="viewClass" label="viewClass" actionvalue="code"/>
+            <Action name="editClass" label="editClass" actionvalue="code"/>
+          </Actions>
+        </Template>
+      </Grid>
+      <HtmlContainer name="classLabel" />      
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init">
+		  <Permissions>
+		    <Allow>
+		      <Capability name="framework/rm::manage"/>
+		    </Allow>
+		  </Permissions>
+      <Action name="search"/>
+    </Action>
+
+    <Action name="search" screen="scrSearch">
+      <Var name="defaultData" key="class_code">000</Var>
+      <Control method="setDefaultData" object="frmSearch">
+        <Param>
+          <Var name="defaultData"/>
+        </Param>
+      </Control>
+        
+			<Var name="currentData" dump="true">
+			  <Control method="getCurrentData" object="frmSearch"/>
+			</Var>
+			<Var name="actionValue" dump="true"><ActionValue/></Var>
+			<If condition="$actionValue !== '' &amp;&amp; $actionValue !== null">
+			  <Then>
+			    <Var name="currentData" key="class_code"><ActionValue/></Var>
+		      <Control method="bind" object="frmSearch">
+		        <Param><Var name="currentData"/></Param>
+		      </Control>			    
+			  </Then>
+			</If>
+			<Var name="currentData" dump="true"/>
+			<Var name="currentClass" dump="true">
+				<Call library="framework,rm.class,api" function="get">
+					<Param name="code"><Var name="currentData" key="class_code"/></Param>
+				</Call>			   
+			</Var>
+
+			<!-- Add the parent before the childs to be on top-->
+      <Var name="parentClass" dump="true">
+        <Call library="framework,rm.class,api" function="get">
+          <Param name="id"><Var name="currentClass" key="id_parent"/></Param>
+        </Call>        
+      </Var>
+			<Var name="parentClass" key="childs_count">1</Var>
+      <!-- Add the search class childs to be on top-->
+      <Var name="currentClass" dump="true">
+        <Call library="framework,rm.class,api" function="get">
+          <Param name="id"><Var name="currentClass" key="id"/></Param>
+        </Call>        
+      </Var>
+      <Var name="currentClass" key="childs_count">1</Var>
+
+			<If condition="$currentClass->id_parent != 0">
+				<Then>
+          <Var name="parentClassBind" key=""><Var name="parentClass"/></Var>
+				</Then>
+			</If>
+			<Var name="parentClassBind" key=""><Var name="currentClass"/></Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param><Var name="parentClassBind"/></Param>
+      </Control>
+
+      <Var name="className"><String.parse>$currentClass->code-$currentClass->name</String.parse></Var>
+      <Control method="setProperty" object="grdSearchResult">
+        <Param>title</Param>
+        <Param><Var name="className"/></Param>
+      </Control>
+			
+      <Var name="searchResult" dump="true">
+				<Call library="framework,rm.class,api" function="getChilds">
+					<Param name="code"><Var name="currentData" key="class_code"/></Param>
+				</Call>
+			</Var>
+
+      <Control method="bind" object="classLabel">
+        <Param>
+          <Lang key="classLabel" />
+        </Param>
+      </Control>
+			
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Var name="searchResult"/>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="editClass">
+      <RaiseEvent name="edit">
+        <Param name="code"><ActionValue/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="addClass">
+      <RaiseEvent name="edit">
+        <Param name="code"><Null/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="viewControlledDocument">
+      <RaiseEvent name="showControlledDocument">
+        <Param name="code"><ActionValue/></Param>
+      </RaiseEvent>
+    </Action>
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

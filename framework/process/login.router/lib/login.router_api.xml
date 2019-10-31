@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib" />
+		<Use name="FormatterLib" type="lib" />
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+	</Actions>
+	<Library forceinterface="true">
+
+		<Function name="getRedirectUrl" scope="public" doc="Get the next redirect url rule to this user">
+			<Params>
+			 <Param name="ruleOrder" type="int" required="true" doc="The order of the last redirected url"/>
+			 <Param name="ruleDirection" type="int" required="true" doc="The direction of the action 1-login 0-logout"/>
+			</Params>
+			<Return type="single" doc="The next url" />
+			<Begin>
+			   <Var name="PARAMS" dump="true"/>
+		        <Var name="rules" dump="true">
+		          <DataAccess method="this,this,getNextRules">
+		            <Param name="ruleOrder"><Var name="ruleOrder"/></Param>
+		            <Param name="ruleDirection"><Var name="ruleDirection"/></Param>
+		          </DataAccess>
+		        </Var>
+		        <Var name="person">
+					<Call library="gecol.core,person,api" function="get">
+						<Param name="id"><Var name="USER" key="id"/></Param>
+					</Call>		        	
+		        </Var>
+		        <Var name="result" key="url"><String/></Var>
+		        <Var name="result" key="order"><Int/></Var>
+				<ForEach var="rules" item="rule">
+					<If condition="$result->url == ''">
+						<Then>
+							<!-- Execute the condition -->
+							<Var name="cond" dump="true"><EvalCondition><Var name="rule" key="condition"/></EvalCondition></Var>
+					        <If condition="$cond">
+								<Then>
+									<Var name="result" key="url"><Var name="rule" key="url"/></Var>
+									<Var name="result" key="order"><Var name="rule" key="order"/></Var>
+									<Var name="result" key="direction"><Var name="rule" key="direction"/></Var>
+									<Var name="result" key="inject_rule_order"><Var name="rule" key="inject_rule_order"/></Var>
+								</Then>
+							</If>							
+						</Then>
+					</If>
+				</ForEach>
+				<Var name="result" dump="true"/>
+				<Return><Var name="result"/></Return>
+			</Begin>
+		</Function>
+
+
+	</Library>
+</Node>

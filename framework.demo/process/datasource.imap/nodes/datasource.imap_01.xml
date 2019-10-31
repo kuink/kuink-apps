@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Params>
+  </Params>
+  <Doc lang="pt-PT">
+    This is a test application for imap datasource
+  </Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens>
+    <Screen id="scr001">
+      <Grid name="grdResults" infer="true"/>
+      <Form name="frmResult" infer="true" freeze="true"/>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scr001">
+      <DataSource name="imap" connector="ImapMailConnector">
+        <Param name="server">{10.0.1.37:993/imap/ssl/novalidate-cert}</Param>
+        <Param name="user">paulo.tavares@cscm-lx.pt</Param>
+        <Param name="passwd">Eishbym1!</Param>
+        <Param name="options"></Param>
+      </DataSource>
+            
+      <Var name="mails">
+        <DataAccess method="getAll" datasource="imap">
+          <Param name="_entity">INBOX/_Arquivar</Param>
+          <Param name="_filter">ALL</Param>
+        </DataAccess>
+      </Var>
+      
+      <Control method="bind" object="grdResults">
+        <Param>
+          <Var name="mails"/>
+        </Param>
+      </Control>
+
+      <ForEach var="mails" item="mail">
+        <Var name="mail" />
+        
+        <DataAccess method="move" datasource="imap">
+          <Param name="id"><Var name="mail" key="uid"/></Param>
+          <Param name="_entity">INBOX/_Arquivado</Param>
+        </DataAccess>
+      </ForEach>
+
+
+      <!--Var name="singleMail" >
+        <DataAccess method="load" datasource="imap">
+          <Param name="_entity">INBOX/_Arquivar</Param>
+          <Param name="id">28279</Param>
+        </DataAccess>
+      </Var>
+      <Control method="bind" object="frmResult">
+        <Param>
+          <Var name="singleMail"/>
+        </Param>
+      </Control-->
+
+
+
+
+
+    </Action>
+  </Actions>
+</Node>
+

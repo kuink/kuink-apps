@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- cms -->
+		<String key="framework.menu" value="GeCol"/>
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

@@ -1,0 +1,92 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Search all controlled documents
+    </Doc>
+    <Params>
+        <Param name="id_controlled_document_type"/>
+        <Param name="isManager"/>
+        <Param name="text"/>
+    </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                    <![CDATA[
+                      cd.id,
+                      cd.code,
+                      CONCAT(cd.code, '-', IF (cdv.code IS NULL,'',cdv.code)) as code_complete,
+                      cdv.code as version_code,
+                      cd.name,
+                      cd.id_class,
+                      cd.description,
+                      cd.is_active,
+                      cdv.reason as version_reason,
+                      cdv.approval_date as version_approval_date,
+                      cdt.name as type_name,
+                      cdv.template as version_template,
+                      f.id as version_file_id,
+                      f.guid as version_file_guid,
+                      GROUP_CONCAT(c.code SEPARATOR ',')  as class_code,
+                      GROUP_CONCAT(c.name SEPARATOR ',') as class_name,
+                      GROUP_CONCAT(CONCAT(c.code,' - ', c.name) SEPARATOR ',') as class_full_name,
+                      (
+                        SELECT 
+                            IF( COUNT(cdviii.id) = 0, 1, IF (cdviii.is_approved = 0, -1, IF(cdviii.is_approved IS NULL, 0, 1) ) )
+                        FROM 
+                            fw_rm_controlled_document_version cdviii
+                        WHERE
+                        cdviii.id IN (
+                        SELECT 
+                            MAX(cdvii.id)
+                        FROM 
+                            fw_rm_controlled_document_version cdvii
+                            INNER JOIN fw_rm_controlled_document cdii ON (cdii.id = cdvii.id_controlled_document)
+                        WHERE 
+                        cdvii.id > cdii.id_current_version
+                        AND cdvii.id_controlled_document = cd.id)
+                      ) as version_approval_status,
+                      (
+                        SELECT 
+                            count(wfpio.id)
+                        FROM 
+                            fw_wf_process_instance_obs wfpio
+                        WHERE
+                            wfpio.id_process_instance = cdv.id_wf_instance
+                            AND (wfpio.obs_public IS NOT NULL OR wfpio.obs_public <> '') 
+                      ) as comments_count
+
+                      ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                      fw_rm_controlled_document cd
+                      INNER JOIN fw_rm_controlled_document_type cdt ON (cdt.id = cd.id_controlled_document_type)
+                      LEFT OUTER JOIN fw_rm_controlled_document_version cdv ON (cdv.id = cd.id_current_version)
+                      LEFT OUTER JOIN fw_file f on (f.id = cdv.id_file)
+                      #LEFT OUTER JOIN fw_rm_controlled_document_class_template cdct ON (cdct.id_controlled_document = cd.id) 
+                      LEFT OUTER JOIN fw_rm_class c ON (c.id = cd.id_class)
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1 = 1</XCondition>
+                    <XCondition optional="id_controlled_document_type">AND id_controlled_document_type = {param->id_controlled_document_type}</XCondition>
+                    <XCondition optional="text">
+                      AND ( cd.name like '{param->text}' OR cd.description like '{param->text}' OR cdv.reason like '{param->text}' OR cdt.name like '{param->text}' OR cd.code like '{param->text}' OR cd.guid_object like '{param->text}') 
+                    </XCondition>
+                    <XCondition condition="$isManager == 0">
+                        AND cd.id_controlled_document_type != 0
+                    </XCondition>
+                </XWhere>
+                <XGroupBy>
+                  <XCondition>cd.id</XCondition>
+                </XGroupBy>
+                <XOrderBy>
+                    cd.code asc
+                </XOrderBy>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

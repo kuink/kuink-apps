@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->              
+              <Var name="context" key="message">XmlConnector::getAll</Var>
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              
+              <DataSource name="bpmnSource" connector="XmlConnector">
+			          <Param name="filename">framework,generic,approval.1level</Param>
+			          <Param name="type">bpmn</Param>
+			        </DataSource>
+			 
+			         <!-- Getting the event deficition -->
+			        <Var name="id">@id</Var>
+			        <Var name="event" dump="true">
+			          <DataAccess method="load" datasource="bpmnSource">
+			            <Param name="_entity"><String.parse>/bpmn2:definitions/bpmn2:process/*</String.parse></Param>
+			            <Param name="_filter"><String.parse>[$id='new']</String.parse></Param>
+			          </DataAccess>
+			        </Var>
+			        
+			        <!-- Getting the out flow to get the next node -->
+			        <Var name="outFlow" dump="true"><Var name="event" key="bpmn2:outgoing"/></Var>
+			        <Var name="flow" dump="true">
+			          <DataAccess method="load" datasource="bpmnSource">
+			            <Param name="_entity"><String.parse>/bpmn2:definitions/bpmn2:process/*</String.parse></Param>
+			            <Param name="_filter"><String.parse>[$id='$outFlow']</String.parse></Param>
+			          </DataAccess>
+			        </Var>
+			        <Var name="flowAttrs"><Var name="flow" key="#attributes"/></Var>
+			        <!-- Getting the next node -->
+			        <Var name="nodeToExecute" dump="true">
+			          <Var name="flowAttrs" key="targetRef"/>
+			        </Var>			        
+
+              <Var name="result" key="code">
+                <If condition="$event->__length &gt; 0">
+									<Then>0</Then>
+									<Else>-1</Else>
+								</If>
+              </Var>
+              <Var name="result" key="data"><String parse="true"></String></Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            </Begin>
+        </Function>
+        
+        <Function scope="private" name="factorial" doc="Returns before end">
+            <Params>
+              <Param name="num"/>
+            </Params>
+            <Return type="int" doc="factorial recursive"/>
+            <Begin>
+              <If condition="$num==0">
+                <Then>
+                  <Return>1</Return>
+                </Then>
+              </If>
+              <Var name="auxNum" value="$num - 1"/>
+              <Var name="factAuxNum">
+                <Call function="factorial">
+                  <Param name="num"><Var name="auxNum"/></Param>
+                </Call>
+              </Var>
+              <Var name="result" value="$num * $factAuxNum"/>
+              <Return>
+                <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

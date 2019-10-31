@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions />
+    <Libraries>
+        <Use name="StringLib" type="lib" />
+        <Use name="UtilsLib" type="lib" />
+    </Libraries>
+    <Configuration />
+    <Screens />
+    <Actions>
+        <Action name="init" />
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params />
+            <Return type="text" doc="Test documentation" />
+            <Begin>
+                <!--Permissions>
+                    <Allow>
+                    <Capability name="framework/unitTest:run"/>
+                    </Allow>
+                    </Permissions -->
+                <Var name="context" key="message">Data Connector REST</Var>
+                <Return>
+                    <Var name="context" />
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="run" doc="Run the test">
+            <Params>
+                <Param name="context" doc="Context data" />
+            </Params>
+            <Return type="single" doc="The result">
+                <External name="code" type="int" doc="The result code" />
+                <External name="data" type="text"
+                    doc="Data returned by the function" />
+            </Return>
+            <Errors>
+                <Error code="-1" doc="Test failed" />
+            </Errors>
+            <Begin>
+                <!--Permissions>
+                    <Allow>
+                    <Capability name="framework/unitTest:run"/>
+                    </Allow>
+                    </Permissions -->
+                <!--DataSource name="restSandbox" connector="RestConnector">
+                    <Param name="server">http://petstore.swagger.wordnik.com
+                    </Param>
+                    <Param name="port">80</Param>
+                    <Param name="responseType">json</Param>
+                </DataSource-->
+
+                <Var name="expectedResult">1</Var>
+                <Var name="result" key="code">0</Var>
+                <Var name="result" key="data">1</Var>
+                <!--Var name="test" dump="true">
+                    <DataAccess method="load" datasource="restSandbox">
+                        <Param name="_entity">/api/pet/findByStatus</Param>
+                    </DataAccess>
+                </Var-->
+                
+                <Return>
+                    <Var name="result"/>
+                    
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+                <Param name="context" doc="Context data" />
+            </Params>
+            <Return type="int" doc="" />
+            <Begin>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

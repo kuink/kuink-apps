@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="execute" doc="Execute all record's disposal schedules with due date">
+      <Params />
+      <Return />
+      <Begin>
+
+          <!-- get the records and respective actions, with disposal due date -->
+          <Var name="recordsAndActions">
+            <Call library="framework,rm.records,api" function="getAllWithDisposalDueDate">
+              <Param name="date"><Now /></Param>
+            </Call>
+          </Var>
+
+          <!-- create a workflow approval -->
+          <ForEach var="recordsAndActions" item="recordAndAction">
+            <Var name="class">
+              <Call library="framework,rm.class,api" function="getFirstWithFieldNotEmpty">
+                <Param name="id"><Var name="recordAndAction" key="id_class" /></Param>
+                <Param name="field"><String>wf_instance</String></Param>
+              </Call>
+            </Var>
+            <If condition="$class->wf_instance == 1">
+              <Then>
+                <!-- create workflow instance -->
+                <!-- Start the approval workflow -->
+                <Var name="wfParams">
+                  <JsonToSet><Var name="class" key="wf_params"/></JsonToSet>
+                </Var>
+                <Var name="wfParams" key="id_object"><Var name="recordAndAction" key="id" /></Var>
+                <Var name="wfParams" key="task_name">
+                  <Lang key="disposalApproval">
+                    <Param><Var name="class" key="wf_code" /></Param>
+                  </Lang>
+                </Var>
+                <Var name="id_instance">
+                  <Call library="framework,wf.process,api" function="start">
+                    <Param name="code"><Var name="class" key="wf_code"/></Param>
+                    <Param name="event">new</Param>
+                    <Param name="configuration"><Var name="wfParams"></Var></Param>
+                    <Param name="id_process_instance"></Param>
+                  </Call>
+                </Var>
+
+                <!-- Update record with the workflow instance -->
+                <DataAccess method="update">
+                  <Param name="_entity">fw_rm_record</Param>
+                  <Param name="id"><Var name="recordAndAction" key="id" /></Param>
+                  <Param name="id_wf_instance"><Var name="id_instance"/></Param>
+                </DataAccess>
+              </Then>
+              <Else>
+                <!-- create a request to trigger record's action -->
+                <Call library="framework,request,api" function="addByCode">
+                  <Param name="request_category_code"><String parse="true">record.$recordAndAction->action</String></Param>
+                  <Param name="data"><Var name="recorecordsAndActionsrd" key="id_record" /></Param>
+                  <Param name="allowDuplicates">0</Param>
+                  <Param name="attempts">-1</Param>
+                </Call>
+              </Else>
+            </If>
+          </ForEach>
+
+        <Return />
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

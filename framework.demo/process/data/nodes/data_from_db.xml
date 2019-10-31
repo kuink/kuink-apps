@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+		Demo of data from a db dataaccess d
+	</Doc>
+	<Libraries>
+		<Use name="FormControl" type="control" />
+		<Use name="GridControl" type="control" />
+		<Use name="ChartControl" type="control" />
+		<Use name="DateTimeFormatter" type="formatter" />
+		<Use name="HtmlContainerControl" type="control"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+		<Screen id="screen0000" type="bar" />
+
+		<Screen id="screen001">
+			<Chart name="chart001" type="bar" width="900" height="300"
+				label="chart" task="num_of_enrolls" />
+		</Screen>
+		
+		<Screen id="screen002">
+			<!--HtmlContainer name="pdfcontent" />
+			<HtmlContainer name="pdfcontent2" /-->
+			<Form name="test" freeze="true">
+				<Header id="testh" label="test"/>
+				<Static id="name" label="name">
+					<CurrencyFormatter method="currencyAfter"/>
+				</Static>
+				
+				<Static id="name" label="long description name">
+					<CurrencyFormatter method="currencyAfter"/>
+				</Static>
+			</Form>
+			
+			<Form name="test2" freeze="true">
+				<Header id="testh" label="test"/>
+				<Static id="name" label="name">
+					<CurrencyFormatter method="currencyAfter"/>
+				</Static>
+				
+				<Static id="name" label="long description name">
+					<CurrencyFormatter method="currencyAfter"/>
+				</Static>
+				
+				<Header label="Tabela" />
+			</Form>
+			
+			
+			<Grid name="grid001" pageable="false" collapsible="false">
+				<Template>
+					<Columns>
+						
+						<Column name="id" label="id">
+							<CurrencyFormatter method="currencyBefore" />
+						</Column>
+						<Column name="name" label="name" />
+					</Columns>
+				</Template>
+			</Grid>
+		</Screen>
+		
+	</Screens>
+	<Actions>
+		<Action name="init" screen="screen002">
+			
+			<!--HtmlContainerControl method="bind" object="pdfcontent">
+			<Param>
+				<![CDATA[	
+					<img src="http://apps.cscm-lx.pt/~docs/lib/images/cscm/website/2011/logo_site_448x54.png" height="50" />
+				]]>
+			</Param>
+			</HtmlContainerControl>
+			<HtmlContainerControl method="bind" object="pdfcontent2">
+			<Param>
+				<![CDATA[
+				]]>
+			</Param>
+			</HtmlContainerControl-->
+			 
+			<GridControl method="bind" object="grid001">
+				<Param>
+					<Execute method="this,this,demo.testDB001" />
+				</Param>
+			</GridControl> 
+			<Var name="data" key="name">213</Var>
+			<FormControl method="bind" object="test">
+				<Param><Var name="data"/></Param>
+			</FormControl>
+			
+			<FormControl method="bind" object="test2">
+				<Param><Var name="data"/></Param>
+			</FormControl>
+			
+			<Var name="file"> 
+				<DoPDF_v2 register="true" />
+			</Var>
+			<Print><Var name="file"/></Print>
+
+		</Action>
+		<Action name="init1" screen="screen001">
+
+			<ChartControl method="bind" object="chart001">
+				<Param>
+					<Execute method="this,this,demo.testDB001" />
+				</Param>
+			</ChartControl>
+
+		</Action>
+	</Actions>
+</Node>
+

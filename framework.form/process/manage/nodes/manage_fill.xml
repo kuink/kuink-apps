@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="idForm" doc="The form to fill used if no response is set in these params"/>
+      <Param name="idFormResponse" doc="The id of the response, it will override the form"/>
+      <Param name="guidObject" doc="The identifier of the context object used when no person is registered in the system "/>
+  </Params>
+  <Screens>
+    <Screen id="fillScreen" doc="Fill the form">
+			<HtmlContainer name="title"/>
+      <Form name="fillForm">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>
+        </ButtonGroup>
+      </Form>
+   	</Screen>
+		<Screen id="showScreen">
+			<HtmlContainer name="title"/>  		
+			<Custom name="inquiryCtrl" control="framework.form,manage,show"/>
+		</Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init">
+    	<Var name="PARAMS" dump="true"/>
+    	<Var name="page" process="true"><Null/></Var>
+    	<Action name="fill"/>
+    </Action>
+      
+    <Action name="fill" screen="fillScreen">
+    	<Var name="data" dump="true">
+       <Call library="framework,form,api" function="submitData">
+         <Param name="id"><Var name="PARAMS" key="idForm"/></Param>
+         <Param name="id_form_response"><Var name="PARAMS" key="idFormResponse"/></Param>
+         <Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+         <Param name="id_person"><Var name="USER" key="id"/></Param>
+         <Param name="formName"><String>fillForm</String></Param>
+         <Param name="page"><Var name="page" process="true"/></Param>
+         <Param name="data"><Var name="POSTDATA"/></Param>
+       </Call>
+			</Var>
+    	<Var name="maxPages" dump="true">
+       <Call library="framework,form,api" function="getMaxPages">
+         <Param name="id"><Var name="data" key="id_form"/></Param>
+       </Call>
+			</Var>
+
+			<If condition="$data->is_completed == 1">
+				<Then>
+					<UserMessage type="success"><Lang key="fillSuccess"/></UserMessage>
+					<Action name="showForm"/>
+					<Exit/>
+				</Then>
+			</If>
+
+    	<Var name="form">
+       <Call library="framework,form,api" function="getById">
+         <Param name="id"><Var name="data" key="id_form"/></Param>
+       </Call>
+			</Var>
+
+			
+			<Control method="setDefinition" object="fillForm">
+				<Param><Var name="data" key="formXml"/></Param>
+			</Control>
+			<!-- Bind the form with the current response data -->
+			<Control method="bind" object="fillForm">
+				<Param><Var name="data" key="data"/></Param>
+			</Control>
+			
+			<!-- update the page -->
+			<Var name="page" process="true"><Var name="data" key="page"/></Var>
+			
+      <Control method="bind" object="title">
+         <Param>
+         	<Lang key="title">
+         		<Param><Var name="form" key="description"/></Param>
+         		<Param><String.parse>$data->page / $maxPages</String.parse></Param>
+         	</Lang>
+         </Param>
+      </Control>
+			
+			<!--Control method="setProperty" object="fillForm">
+				<Param>title</Param>
+				<Param>AA</Param>
+			</Control-->
+    </Action>
+
+    <Action name="nextPage">
+    	<Action name="fill"/>
+    </Action>       
+
+    <Action name="previousPage">
+    	<!-- Force a page back -->
+			<Var name="page" process="true" value="-1"/>
+			<Action name="fill"/> 
+    </Action>       
+    
+    <Action name="submit">
+    	<Action name="fill"/>
+    </Action>       
+
+		<Action name="showForm" screen="showScreen">
+			<!--Var name="form">
+				<Call library="framework,form,api" function="getById">
+					<Param name="id"><Var name="PARAMS" key="idForm"/></Param>
+					<Param name="id_form_response"><Var name="PARAMS" key="idFormResponse"/></Param>
+					<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+				</Call>
+			</Var-->
+      <!--Control method="bind" object="title">
+         <Param>
+         	<Lang key="title">
+         		<Param><Var name="form" key="description"/></Param>
+         	</Lang>
+         </Param>
+      </Control-->
+		
+			<Control method="bind" object="inquiryCtrl">
+				<Param name="id"><Var name="PARAMS" key="idForm"/></Param>
+				<Param name="idFormResponse"><Var name="PARAMS" key="idFormResponse"/></Param>
+				<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+			</Control>
+		</Action>		
+
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>       
+  </Actions>
+  <Library/>
+</Node>

@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <!-- Controlled documents RM Module -->
+    <Entity name="fw_rm_controlled_document_type" doc="Controlled document type">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The document code"/>
+        <Attribute name="name" domain="name" required="true" doc="The name of the document"/>
+        <Attribute name="description" domain="description" required="true" doc="The document description"/>
+        <Attribute name="wf_code" domain="string" required="false" doc="Code of the approval workflow process"/>
+        <Attribute name="wf_params" domain="text" required="false" doc="Parameters of the approval workflow process"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_controlled_document" doc="Controlled documents">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_current_version" domain="foreign" required="true" refentity="fw_rm_controlled_document_version" refattr="id" doc="id of the current version of the controlled document"/>
+        <Attribute name="id_controlled_document_type" domain="foreign" required="true" refentity="fw_rm_controlled_document_type" refattr="id" doc="id of the controlled document type"/>
+        <Attribute name="current_version_number" domain="order" required="true" doc="The current version order number"/>
+        <Attribute name="code" domain="code" required="true" doc="The document code"/>
+        <Attribute name="code_name" domain="name"  doc="The coded name like with _ instead os space, etc..."/>
+        <Attribute name="name" domain="name" required="true" doc="The name of the document"/>
+        <Attribute name="description" domain="description" required="false" doc="The document description"/>
+        <Attribute name="is_active" domain="bool" default="1" doc="Is this document active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_controlled_document_version" doc="Controlled document versions">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_controlled_document" domain="foreign" refentity="fw_rm_controlled_document" refattr="id" doc="id of the document template"/>
+        <Attribute name="id_wf_instance" domain="foreign" required="false" refentity="framework,fw.wf,fw_wf_process_instance" refattr="id" doc="id of the document workflow"/>
+        <Attribute name="code" domain="codeNotUnique" required="true" doc="The controlled document version code"/>
+        <Attribute name="reason" domain="text" required="true" doc="The reason for this version"/>
+        <Attribute name="id_file" domain="foreign"  refentity="fw_file" refattr="id" doc="The id_file of this version, if not presente then the template must be filled"/>
+        <Attribute name="template" domain="template" doc="The kuink template"/>
+        <Attribute name="template_src" domain="html" doc="The template source"/>
+        <Attribute name="template_config" domain="json" doc="The template configuration"/>
+        <Attribute name="test_data" domain="json" doc="The data to test on the template"/>        
+        <Attribute name="is_finished" domain="bool" default="1" doc="Is this version finished to approve or not? Used when you are building the template"/>  
+        <Attribute name="is_approved" domain="bool" doc="Is this version approved or not?"/>
+        <Attribute name="id_validator" domain="foreign" required="false" refentity="fw_person" refattr="id"  doc="The person that has validated this version"/>
+        <Attribute name="approval_date" domain="timestamp" doc="Date of the approval, chek the approval steps in workflow"/>
+        <Attribute name="is_active" domain="bool" doc="Is this version active or obsolete"/>
+        <Template name="fw.base"/>
+      </Attributes>
+      <Rules>
+        <Rule name="validateContent" condition="((($id_file != '') &amp;&amp; ($template == '')) || (($id_file == '') &amp;&amp; ($template != '')))" doc="Exactly only one can be filled template or id_file "/>
+      </Rules>
+    </Entity>
+    <Entity name="fw_rm_controlled_document_class_template" doc="Template to create records of a given class">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_controlled_document" domain="foreign" required="true" refentity="fw_rm_controlled_document" refattr="id" doc="id of the document template"/>
+        <Attribute name="id_class" domain="foreign" unique="true" refentity="fw_rm_class" refattr="id" doc="The class with this disposal hold. Each class can only have one document template"/>
+        <Attribute name="code" domain="codeNotUnique" required="true" doc="Code to distinguish different templates for the same class"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+  </Entities>
+</Node>

@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions/>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens/>
+  <Actions>
+    <Action name="init"/>
+  </Actions>
+  <Library>
+    <Function name="add" doc="Add a capability in the system">
+      <Params>
+        <Param name="name" type="text" required="true" doc="Capability name."/>
+        <Param name="code" type="text" required="true" doc="Capability code."/>
+        <Param name="is_global" type="int" required="true" doc="Is this capability global to all companies or restricted by company?"/>
+      </Params>
+      <Return type="int" doc="the capablity id"/>
+      <Errors>
+        <Error code="-1" doc="Capability allready exist"/>
+      </Errors>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/capability::manage"/>
+          </Allow>
+        </Permissions>
+        <Var name="result">0</Var>
+        <Var name="rid">
+          <Call function="existsByCode">
+            <Param name="code">
+              <Var name="code"/>
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$rid == 1">
+          <Then>
+            <Var name="result">-1</Var>
+          </Then>
+        </If>
+        <If condition="$result == 0">
+          <Then>
+            <Var name="id">
+              <Execute method="framework,generic,insert" params="PARAMS">
+                <Param name="table">fw_capability</Param>
+                <Param name="_creation">
+                  <DateTimeLib method="Now"/>
+                </Param>
+                <Param name="_creation_ip">
+                  <Var name="USER" key="ip"/>
+                </Param>
+                <Param name="_modification">
+                  <DateTimeLib method="Now"/>
+                </Param>
+                <Param name="_modification_ip">
+                  <Var name="USER" key="ip"/>
+                </Param>
+              </Execute>
+            </Var>
+            <Var name="result">
+              <Var name="id"/>
+            </Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a capability data">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Capability Id."/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc="Capability Id"/>
+        <External name="name" type="text" doc="Capability name"/>
+        <External name="code" type="text" doc="Capability code"/>
+        <External name="is_global" type="int" doc="Is this capability global?"/>
+        <External name="_creation" doc=""/>
+        <External name="_creation_ip" doc=""/>
+        <External name="_modification" doc=""/>
+        <External name="_modification_ip" doc=""/>
+      </Return>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/capability::manage"/>
+          </Allow>
+        </Permissions>
+        <Var name="record">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_capability</Param>
+            <Param name="id">
+              <Var name="id"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="record"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getByCode" doc="Get a capability data giving the code">
+      <Params>
+        <Param name="code" type="text" required="true" doc="capability code."/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc="Capability Id"/>
+        <External name="name" type="text" doc="Capability name"/>
+        <External name="code" type="text" doc="Capability code"/>
+        <External name="is_global" type="int" doc="Is this capability global?"/>
+        <External name="_creation" doc=""/>
+        <External name="_creation_ip" doc=""/>
+        <External name="_modification" doc=""/>
+        <External name="_modification_ip" doc=""/>
+      </Return>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/capability::manage"/>
+          </Allow>
+        </Permissions>
+        <!-- Set default values -->
+        <Var name="record">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_capability</Param>
+            <Param name="code">
+              <Var name="code"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="record"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="existsById" doc="Check if the capability exists">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Role Id."/>
+      </Params>
+      <Return type="int" doc="1 if exists, 0 otherwise"/>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/capability::manage"/>
+          </Allow>
+        </Permissions>
+        <Var name="result">0</Var>
+        <Var name="record">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_capability</Param>
+            <Param name="id">
+              <Var name="id"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="rid">
+          <Var name="record" key="id"/>
+        </Var>
+        <If condition="$rid != ''">
+          <Then>
+            <Var name="result">1</Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="existsByCode" doc="Check if the capability exists">
+      <Params>
+        <Param name="code" type="text" required="true" doc="Capability code."/>
+      </Params>
+      <Return type="int" doc="1 if exists, 0 otherwise"/>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/capability::manage"/>
+          </Allow>
+        </Permissions>
+        <Var name="result">0</Var>
+        <Var name="record">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_capability</Param>
+            <Param name="code">
+              <Var name="code"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="rid">
+          <Var name="record" key="id"/>
+        </Var>
+        <If condition="$rid != ''">
+          <Then>
+            <Var name="result">1</Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="add" doc="Updates a record in table ">
+      <Params>
+        <Param name="name" type="text" required="true"/>
+        <Param name="code" type="text" required="true"/>
+        <Param name="is_global" type="checkbox" required="false"/>
+      </Params>
+      <Begin>
+        <Execute method="framework,generic,insert">
+          <Param name="table">fw_capability</Param>
+          <Param name="name">
+            <Var name="PARAMS" key="name"/>
+          </Param>
+          <Param name="code">
+            <Var name="PARAMS" key="code"/>
+          </Param>
+          <Param name="is_global">
+            <Var name="PARAMS" key="is_global"/>
+          </Param>
+          <Param name="_creation">
+            <DateTimeLib method="Now"/>
+          </Param>
+          <Param name="_creation_ip">
+            <Var name="USER" key="ip"/>
+          </Param>
+          <Param name="_modification">
+            <DateTimeLib method="Now"/>
+          </Param>
+          <Param name="_modification_ip">
+            <Var name="USER" key="ip"/>
+          </Param>
+        </Execute>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table fw_capability">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,delete">
+            <Param name="table">fw_capability</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_capability">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="name" type="text" required="true"/>
+        <Param name="code" type="text" required="true"/>
+        <Param name="is_global" type="checkbox" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <Execute method="framework,generic,update" params="paramData">
+          <Param name="table">fw_capability</Param>
+          <Param name="_creation">
+            <DateTimeLib method="Now"/>
+          </Param>
+          <Param name="_creation_ip">
+            <Var name="USER" key="ip"/>
+          </Param>
+          <Param name="_modification">
+            <DateTimeLib method="Now"/>
+          </Param>
+          <Param name="_modification_ip">
+            <Var name="USER" key="ip"/>
+          </Param>
+        </Execute>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table fw_capability">
+      <Params>
+        <Param name="id" type="int"/>
+        <Param name="name" type="text"/>
+        <Param name="code" type="text"/>
+        <Param name="is_global" type="checkbox"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="is_global" type="checkbox" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="this,this,search">
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+            <Param name="name" wildcard="full">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="code" wildcard="full">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="is_global">
+              <Var name="PARAMS" key="is_global"/>
+            </Param>
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_capability">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="is_global" type="checkbox" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,getAll">
+            <Param name="table">fw_capability</Param>
+            <Param name="fields">*</Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a record by id from table fw_capability">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="is_global" type="checkbox" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_capability</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getRoles" doc="Get the roles where this capability is">
+      <Params>
+        <Param name="code" type="string" required="true" doc="The capability code"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,getRoles">
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

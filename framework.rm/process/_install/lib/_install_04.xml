@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Change the domain of fw.rm_class name to longName to get size of 128</String>
+       </Return>
+      </Begin>
+    </Function>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+        <Var name="log"><Set/></Var>
+
+        <Var name="logEntry" key="message"><String>Only data definition</String></Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+		    
+		    <Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

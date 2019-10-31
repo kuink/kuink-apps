@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node reference="$SUBPROCESS" event="init">
+  <Params>
+      <Param name="id"/>
+  </Params>
+</Node>
+
+
+

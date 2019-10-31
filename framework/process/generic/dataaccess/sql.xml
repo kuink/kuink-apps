@@ -1,0 +1,12 @@
+<?xml version='1.0'?>
+<Method>
+    <Params><Param name="*"/></Params>
+    <Body>
+        <Sql>
+            <!-- TODO TODO -->
+            <![CDATA[
+                select * from {$CFG->prefix}test_table
+            ]]>
+        </Sql>
+    </Body>
+</Method>

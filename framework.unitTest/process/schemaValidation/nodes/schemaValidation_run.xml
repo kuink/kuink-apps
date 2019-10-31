@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node validate="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xsi:noNamespaceSchemaLocation="/opt/cscm-dev/code/kuink/kuink-apps/framework/schema/nodes.xsd"><!-- Force the schema xsd validation in this node -->
+  <!--Permissions>
+    <Allow>
+        <Capability name="framework/unitTests:run"/>
+    </Allow>
+  </Permissions-->      
+  <!--Libraries>
+    <Use name="ReflectionLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+  </Libraries-->
+  <!--Configuration>
+    <Config key="application" value="gecol.core"/>
+  </Configuration-->
+  <Screens>
+    <Screen id="sc01">
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="sc01">
+      
+      <!-- Validate Var instruction -->
+      <Var name="v1">123</Var>         
+      <Var name="v2"><Var name="v1"/></Var>
+      
+      
+    </Action>
+  </Actions>
+  <!--Library/-->
+</Node>
+

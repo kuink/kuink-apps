@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getIdByCode" doc="Get metadata's id by given code">
+      <Params>
+        <Param name="code" />
+      </Params>
+      <Return type="int" doc="The metadata's id" />
+      <Begin>
+        <Var name="metadata">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_metadata_definition</Param>
+            <Param name="code"><Var name="code" /></Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="metadata" key="id" /></Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

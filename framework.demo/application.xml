@@ -1,0 +1,21 @@
+<?xml version='1.0'?>
+<Application name="framework.demo" version="1.0.0">
+    <Config>
+        <!-- Global configuration... -->
+    </Config>
+    <Menus>
+      <!-- Define the menu nodes-->
+      <Menu role='Teacher,Student' startuc='manage' startnode='' event='init' label='manage' default='true'/>
+      <!--Menu role='Teacher' startuc='stack01' startnode='' event='init' label='stack01' default='true'/>
+      <Menu role='Teacher' startuc='ui' startnode='' event='init' label='controls' default='true'/>
+      <Menu role='Teacher' startuc='ui' startnode='' event='init_ref' label='ref' default='true'/>
+      <Menu role='Teacher' startuc='ui' startnode='' event='initRedirect' label='actionRedirect' default='false'/>
+      <Menu role='Teacher' startuc='ui' startnode='' event='initChart' label='chart' default='false'/>
+      <Menu role='Teacher' startuc='data' startnode='' event='init' label='demo' default='false'/>
+      <Menu role='Teacher' startuc='data' startnode='' event='init_composite' label='composite' default='false'/>
+      <Menu role='Teacher' startuc='data' startnode='' event='init_freeze' label='freeze' default='false'/>
+      <Menu role='Teacher' startuc='mongo' startnode='' event='init' label='mongo' default='false'/>
+      <Menu role='Teacher' startuc='stack01' startnode='' event='init' label='stack01' default='true'/>
+      <Menu role='Teacher' startuc='subProcess' startnode='' event='init' label='subProcess' default='false'/-->
+    </Menus>
+</Application>

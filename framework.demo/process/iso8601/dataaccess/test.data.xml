@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Returns test timestamp dates
+    </Doc>
+    <Params/>
+    <Body>
+        <Sql>
+            <![CDATA[
+                SELECT 
+                    id, 
+                    timestamp as "f1",
+                    timestamp as "f2",
+                    timestamp as "f3",
+                    timestamp as "f4",
+                    timestamp as "f5",
+                    timestamp as "f6",
+                    timestamp as "f7",
+                    timestamp as "f8",
+                    timestamp as "f9",
+                    timestamp as "f10"
+                FROM fw_log
+                WHERE id>660
+                ORDER BY log_key DESC
+                LIMIT 5
+            ]]>
+        </Sql>
+    </Body>
+</Method>

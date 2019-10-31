@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Search all fw_record
+    </Doc>
+    <Params>
+        <Param name="id"/>
+        <Param name="guid"/>
+        <Param name="id_company"/>
+        <Param name="id_file"/>
+        <Param name="id_component_type"/>
+        <Param name="metadata"/>
+        <Param name="name"/>
+        <Param name="short_name"/>
+        <Param name="code"/>
+        <Param name="order"/>
+        <Param name="_creation"/>
+        <Param name="_creation_ip"/>
+        <Param name="_modification"/>
+        <Param name="_modification_ip"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        t.*,
+                        a.id_aggregation_type
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_record t
+                        inner join fw_aggregation a on (t.id=a.id_record)
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>
+                        <![CDATA[
+                                a.id_aggregation_type='{param->id_aggregation_type}'
+                                and a.guid='{param->guid}'
+                        ]]>
+                    </XCondition>
+                    <XCondition optional="id_classification_item">
+                        <![CDATA[
+                                and t.id_classification_item='{param->id_classification_item}'
+                        ]]>
+                    </XCondition>
+                </XWhere>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

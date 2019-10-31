@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions>
+    </Permissions>
+    <Doc lang="pt-PT">
+        Demo of data manipulation
+    </Doc>
+    <Libraries>
+        <Use name="FormControl" type="control"/>
+        <Use name="GridControl" type="control"/>
+        <Use name="CustomControl" type="control"/>
+        <Use name="DateTimeFormatter" type="formatter"/>
+    </Libraries>
+    <Configuration>
+        <Config key="masterTable" value="fw_demo_composite"/>
+    </Configuration>
+    <Screens>
+    	<Screen id="showLog">
+    		<Custom name="logList" control="framework,log,search"/>
+    	</Screen>
+        <Screen id="editRecord">
+            <Form name="editRecordForm">
+            	<Header/>
+                <ActionGroup>
+                    <Action id="logList" name="logList" label="log" />
+                </ActionGroup>            
+                <Header id="head1" label="edit"/>
+				<Int id="id" label="id" required="true"/>                
+                <Int id="id_key1" label="id_key1" required="true"/>
+                <Int id="id_key2" label="id_key2" required="true"/>
+                <Name id="name" label="name" />
+                <ButtonGroup>
+                    <Button type="cancel" id="back" label="back" action="cancel"/>
+                    <Button type="submit" id="save" label="save" action="save"/>
+                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                </ButtonGroup>
+            </Form>
+            <Grid name="searchResultGrid">
+                <Template>
+                    <Columns>
+                    	<Column name="id" label="id_key1"/>
+                        <Column name="id_key1" label="id_key1"/>
+                        <Column name="id_key2" label="id_key2"/>
+                        <Column name="name" label="name"/>
+                    </Columns>
+                    <Actions>
+                    </Actions>
+                </Template>
+            </Grid>            
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="editRecord">
+        	<!--FormControl method="bind" object="editRecordForm">
+        		<Param>
+        			<Execute method="this,this,demo.getRecordFromSelect">
+        				<Param name="id">1</Param>
+        			</Execute>
+        		</Param>
+        	</FormControl-->
+        	<FormControl method="bind" object="editRecordForm">
+        		<Param>
+        			<Execute method="framework,generic,load">
+        				<Param name="table"><Config key="masterTable"/></Param>
+        				<Param name="id">1</Param>
+        			</Execute>
+        		</Param>
+        	</FormControl>
+        	<GridControl method="bind" object="searchResultGrid">
+        		<Param>
+        			<Execute method="framework,generic,getAll">
+        				<Param name="table"><Config key="masterTable"/></Param>
+        				<Param name="fields">id,id_key1,id_key2,name</Param>
+        			</Execute>
+        		</Param>
+        	</GridControl>
+        </Action>
+        <Action name="save">
+        	<Var name="var_teste">8881</Var>
+        	<Log type="action" key="$var_teste">
+        		<Param>Teste</Param>
+        	</Log>
+        
+        	<Execute method="framework,generic,save" params="POSTDATA">
+        		<Param name="table"><Config key="masterTable"/></Param>
+        		<Param name="id_key1" pk="true"><Var name="POSTDATA" key="id_key1"/></Param>
+        		<Param name="id_key2" pk="true"><Var name="POSTDATA" key="id_key2"/></Param>
+        	</Execute>
+        	<!--Execute method="framework,generic,save">
+        		<Param name="table"><Config key="masterTable"/></Param>
+        		<Param name="id">5</Param>
+        		<Param name="name"><Var name="POSTDATA" key="name"/></Param>
+        	</Execute-->
+
+        	<Action name="init"/>
+        </Action>
+        <Action name="delete">
+        </Action>
+        <Action name="cancel">
+            <Action name="init"/>
+        </Action>
+        <Action name="logList" screen="showLog">
+        	<CustomControl method="bind" object="logList">
+        		<Param>34</Param>
+        	</CustomControl>
+        	<NativeCode>
+        		print_object($nodeconfiguration);
+        	</NativeCode>
+        </Action>
+    </Actions>
+</Node>
+

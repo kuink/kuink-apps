@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<Process>
+	<Transitions>
+		<Flow role='framework.admin' startuc='task' startnode='' event='init' enduc='task' endnode='manage' />
+		<Flow role='framework.admin' startuc='task' startnode='manage' event='showHistory' enduc='task' endnode='history' />
+		<Flow role='framework.admin' startuc='task' startnode='history' event='back' enduc='task' endnode='manage' />
+
+		<!-- list -(add)-> add -->
+		<Flow role='framework.admin' startuc='task' startnode='manage' event='add' enduc='task' endnode='add' />
+
+		<!-- add -(back)-> list -->
+		<Flow role='framework.admin' startuc='task' startnode='add' event='back' enduc='task' endnode='manage' />
+
+		<!-- list -(edit)-> edit -->
+		<Flow role='framework.admin' startuc='task' startnode='manage' event='edit' enduc='task' endnode='edit' />
+
+		<!-- edit -(back)-> list -->
+		<Flow role='framework.admin' startuc='task' startnode='edit' event='back' enduc='task' endnode='manage' />
+    </Transitions>
+</Process>

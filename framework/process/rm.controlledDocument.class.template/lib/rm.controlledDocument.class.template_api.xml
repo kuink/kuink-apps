@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getAll" doc="Get all templates">
+      <Params>
+        <Param name="id_class" type="int"/>
+        <Param name="id_controlled_document" type="int"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="records">
+          <DataAccess method="getAll" params="PARAMS">
+            <Param name="_entity">fw_rm_controlled_document_class_template</Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="records"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getClassControlledDocument" doc="Get class controlled document">
+      <Params>
+        <Param name="class_code" type="string"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <!-- Load the class -->
+        <Var name="class" dump="true">
+					<Call library="framework,rm.class,api" function="get">
+						<Param name="code"><Var name="PARAMS" key="class_code"/></Param>
+					</Call>        
+        </Var>
+        
+        <!-- Get the template -->
+        <Var name="template">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document_class_template</Param>
+            <Param name="id_class"><Var name="class" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Return>
+          <Var name="template" key="id_controlled_document"/>
+        </Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

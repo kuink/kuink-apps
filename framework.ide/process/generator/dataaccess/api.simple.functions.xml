@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Api simple functions list
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <Dataset>
+            <r1>
+                <id>1</id>
+                <type>API.simple</type>
+                <fx>Insert</fx>
+            </r1>
+            <r2>
+                <id>2</id>
+                <type>API.simple</type>
+                <fx>Delete</fx>
+            </r2>
+            <r3>
+                <id>3</id>
+                <type>API.simple</type>
+                <fx>Update</fx>
+            </r3>
+            <r4>
+                <id>4</id>
+                <type>API.simple</type>
+                <fx>Search</fx>
+            </r4>
+            <r5>
+                <id>5</id>
+                <type>API.simple</type>
+                <fx>getAll</fx>
+            </r5>
+            <r6>
+                <id>6</id>
+                <type>API.simple</type>
+                <fx>getById</fx>
+            </r6>
+        </Dataset>
+    </Body>
+</Method>

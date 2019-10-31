@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Remove id_class unique index</String>
+       </Return>
+      </Begin>
+    </Function>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+        <Var name="log"><Set/></Var>
+		    <Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

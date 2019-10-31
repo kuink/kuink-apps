@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+        <!-- Process strings -->
+        <String key="framework.demo" value="Demonstração"/>
+
+        <!-- General strings -->
+		<String key="chart" value="Gráfico" />
+        <!--framework strings -->
+        
+        <String key="finished" value="Concluídas" />
+        <String key="to_finish" value="Por terminar"/>
+        <String key="num_of_enrolls" value="Nº de Matrículas"/>
+        <String key="name" value="nome" />
+        <String key="studentList" value="Referência Student List" />
+        <String key="ref" value="Referência Student List" />
+        
+        <String key="test" value="Teste" />
+        
+        
+        <!--  DEMO -->
+        <String key="manage" value="Gerir" />
+        <String key="integer" value="Inteiro" />
+        <String key="string" value="Cadeia Caracteres" />
+        <String key="select" value="Selecionar" />
+        <String key="checkbox" value="Verificação" />
+        <String key="datetime" value="DataHora" />
+        <String key="text" value="Texto Longo" />
+        <String key="result" value="Listagem" />
+        
+        
+        <!-- RECORDS BOOK -->
+        <!-- Actions -->
+        <String key="today" value="Hoje" />
+        <String key="yesterday" value="Ontem" />
+        <String key="last5Days" value="5 Dias" />
+        <String key="last30Days" value="30 Dias" />
+        <String key="all" value="Todos" />
+        <String key="advanced" value="Pesquisa Avançada" />
+        <String key="simple" value="Pesquisa Simples" />
+        <String key="search" value="Pesquisar" />
+        <String key="substitution" value="Ver aulas para Substituição" />
+        <String key="teach" value="Lecionar" />
+        <String key="backToList" value="Voltar à listagem" />
+        <String key="myLessons" value="Ver as minhas Aulas" />
+        <String key="substitution" value="Ver aulas para Substituição" />
+        <String key="change" value="Troca de Aulas" />
+        <String key="saveRecord" value="Gravar" />
+        <String key="cancelEdit" value="Cancelar" />
+
+		<!-- Campos -->        
+        <String key="dateFrom" value="Data de" />
+        <String key="dateTo" value="Data até" />
+        <String key="teacher" value="Docente" />
+        
+        <String key="id_class" value="Turma" />
+        <String key="id_subject" value="Disciplina" />
+        <String key="with_summary" value="Com Sumário" />
+        <String key="id_room" value="Sala" />
+        <String key="is_numbered" value="Numeração da aula" />
+        
+        <String key="week_day" value="Dia" />
+        <String key="date" value="Data" />
+        <String key="time" value="Hora" />
+        <String key="class" value="Turma" />
+        <String key="subject" value="Disciplina" />
+        <String key="lessons" value="Aulas" />
+        <String key="has_summary" value="Tem Sumário" />
+        
+        <String key="present" value="Presente" />
+        <String key="absent" value="Faltou" />
+        <String key="__active" value="Selecionada" />
+        
+        <String key="MyLessons" value="As minhas Aulas" />
+        <String key="SubstitutionLessons" value="Aulas de Substituição" />
+        
+        <String key="substitutionLessonTitle" value="Substituição" />
+        <String key="myLessonsTitle" value="As minhas Aulas" />
+        
+        <!--  User messages -->
+        <String key="choose_one_substitution_type" value="Por favor, escolha o tipo de substituição de aula que vai realizar." />
+        <String key="permission_denied" value="Não tem permissões para gerir esta aula." />
+        
+        
+        <String key="confirm">
+        <![CDATA[
+						Tem "mesmo" a certeza!?!?!
+						
+							
+					]]>
+					</String>
+        
+        
+   </Strings>
+   <HelpStrings>
+   		<Help key="is_numbered">Indique se a aula que vai substituir é para ser numerada ou não.</Help>
+   		<Help key="test2">Ajuda de Teste no novo ui!!</Help>
+   		
+   		<!-- DEMO -->
+   		<Help key="id">Chave primária numérica automática</Help>
+   		<Help key="string">Exemplo de campo do tipo cadeia de caracteres</Help>
+   		<Help key="integer">Exemplo de campo inteiro</Help>
+   		<Help key="select">Exemplo de campo com caixa de seleção</Help>
+   		<Help key="checkbox">Exemplo de campo com caixa de verificação</Help>
+   		<Help key="datetime">Exemplo de campo de Data/Hora</Help>
+   		<Help key="text">Exemplo de campo de texto longo</Help>
+   		
+   </HelpStrings>
+</Lang>

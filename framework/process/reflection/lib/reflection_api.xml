@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="ReflectionLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+      
+          <Function name="getApplications" scope="public" doc="Get all neon applications">
+            <Params>
+            </Params>
+            <Return type="multiple" doc="Applications">
+              <External name="name" type="text" doc="application name"/>
+            </Return>
+            <Errors/>
+            <Begin>
+              <Permissions>
+                <Allow>
+                  <Capability name="framework/reflection::browse"/>
+                </Allow>
+              </Permissions>
+              <Return>
+                   <ReflectionLib method="getApplications"/>
+              </Return>
+            </Begin>
+        </Function> 
+
+          <Function name="getApplicationProcesses" scope="public" doc="Get all neon application processes">
+            <Params>
+              <Param name="application" required="true" type="text" doc="Application name"/>
+            </Params>
+            <Return type="multiple" doc="The script id">
+              <External name="name" type="text" doc="Process name"/>
+            </Return>
+            <Errors/>
+            <Begin>
+              <Permissions>
+                <Allow>
+                  <Capability name="framework/reflection::browse"/>
+                </Allow>
+              </Permissions>
+              <Return>
+                   <ReflectionLib method="getApplicationProcesses">
+                     <Param name="application"><Var name="application"/></Param>
+                   </ReflectionLib> 
+              </Return>
+            </Begin>
+        </Function> 
+
+
+    </Library>
+</Node>
+

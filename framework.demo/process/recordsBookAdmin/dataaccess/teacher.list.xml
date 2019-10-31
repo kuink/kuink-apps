@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Returns a list of all classes
+    </Doc>
+    <Params>
+    	<Param name="idSchoolYear" />
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[
+            	SELECT p.id, p.display_name as "name" FROM class_sub_teacher cst
+            	INNER JOIN person p ON (cst.id_person=p.id)
+            	GROUP BY p.id
+            	ORDER BY p.name
+            ]]>
+        </Sql>
+    </Body>
+</Method>

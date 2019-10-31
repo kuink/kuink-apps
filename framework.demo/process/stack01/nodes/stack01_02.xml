@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+	</Libraries>
+	<Params>
+	 <Param name="P01"/>
+	 <Param name="P02"/>
+	</Params>
+	<Configuration />
+	<Screens>
+		<Screen id="screen001">
+			<Form name="test" title="01.02">
+			 <Column id="col1"/>
+			 <Text id="name" name="name" label="name" required="true"/>
+			 <Text id="name2" name="name2" label="name2"/>
+			 <ButtonGroup>
+			   <Button type="cancel" id="prev" label="prev" action="prev"/>  
+			   <Button type="submit" id="next" label="next" action="next"/>
+			 </ButtonGroup>
+			</Form>
+		</Screen>
+	</Screens>
+	<Actions>
+		<Action name="init" screen="screen001">
+		    <Var name="PARAMS" />
+            <!--Var name="teste" key="b" process="true" /-->
+            <!--Var name="redir">http://localhost/moodle22/mod/feedback/view.php?id=33</Var>
+            <Redirect>
+              <Var name="redir"/>
+            </Redirect-->
+		</Action>
+
+    <Action name="prev" type="read">
+      <RaiseEvent name="prev"/>
+    </Action>
+
+    <Action name="next" type="execute">
+      <RaiseEvent name="next">
+        <Param name="P01">E</Param>
+        <Param name="P02">F</Param>
+      </RaiseEvent>
+    </Action>
+
+	</Actions>
+</Node>
+

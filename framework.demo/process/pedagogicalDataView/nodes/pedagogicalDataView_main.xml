@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions>
+    </Permissions>
+    <Doc lang="pt-PT">
+    </Doc>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="MetadataLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens>
+        <Screen id="screen01" name="screen01">
+            <Custom name="coursePathControl" control="gecol.core,course,showCoursePath"/>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="screen01">
+            <Control method="bind" object="coursePathControl">
+                <Param name="id_course">5</Param>
+            </Control>
+        </Action>
+
+    </Actions>
+    <Library forceinterface="true">
+    </Library>
+</Node>

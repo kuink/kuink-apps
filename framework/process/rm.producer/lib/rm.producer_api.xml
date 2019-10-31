@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getAll" doc="Get all producers">
+      <Params>
+      </Params>
+      <Exceptions/>
+      <Return type="multiple" doc="All producers"/>
+      <Begin>
+        <Var name="producers">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="is_active"><Int>1</Int></Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="producers"/></Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

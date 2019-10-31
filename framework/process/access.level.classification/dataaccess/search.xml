@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all fw_access_level_classification
+    </Doc>
+    <Params>
+                      <Param name="id"/>
+                  <Param name="name"/>
+                  <Param name="short_name"/>
+                  <Param name="code"/>
+                  <Param name="level"/>
+                  <Param name="order"/>
+                  <Param name="_creation"/>
+                  <Param name="_creation_ip"/>
+                  <Param name="_modification"/>
+                  <Param name="_modification_ip"/>
+            </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_access_level_classification t
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>1 = 1</XCondition>
+                                                                                                                                                                                                        <XCondition optional="id">AND t.id = {param->id}</XCondition>
+                                                                                                                                                                                          <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+                                                                                                                                                                                          <XCondition optional="short_name">AND t.short_name like '{param->short_name}'</XCondition>
+                                                                                                                                                                                          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+                                                                                                                                <XCondition optional="level">AND t.level = {param->level}</XCondition>
+                                                                                                                                <XCondition optional="order">AND t.order = {param->order}</XCondition>
+                                                                                                                                <XCondition optional="_creation">AND t._creation = {param->_creation}</XCondition>
+                                                                                                                                                                                          <XCondition optional="_creation_ip">AND t._creation_ip like '{param->_creation_ip}'</XCondition>
+                                                                                                                                <XCondition optional="_modification">AND t._modification = {param->_modification}</XCondition>
+                                                                                                                                                                                          <XCondition optional="_modification_ip">AND t._modification_ip like '{param->_modification_ip}'</XCondition>
+                                                    </XWhere>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

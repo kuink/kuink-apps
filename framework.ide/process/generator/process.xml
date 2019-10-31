@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<Process>
+	<Transitions>
+		<Flow role='framework.admin' startnode='' event='init' endnode='generate' />
+    </Transitions>
+</Process>

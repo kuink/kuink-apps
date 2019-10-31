@@ -1,0 +1,161 @@
+<?xml version='1.0'?>
+<Node>
+	<Library>
+		<!-- Generic Load data fro a datasource -->
+<DataAccess datasource="datasource name">
+  <Load>
+    <Param name="_collection">collection</Param>
+    <Param name="_entity">entity</Param>
+    <Param name="id">primary key</Param>
+    <Param name="...">other filter attributes</Param>
+  </Load>
+</DataAccess>
+
+<!-- Generic get all rows from a datasource -->
+<DataAccess datasource="datasourceName">
+  <GetAll>
+    <Param name="_collection">collection</Param>
+    <Param name="_entity">entity</Param>
+    <Param name="...">filter attributes</Param>
+  </GetAll>
+</DataAccess>
+
+<!-- Generic get page -->
+<DataAccess datasource="datasource name" params="variableName"> 
+  <GetPage>
+    <Param name="_collection">collection</Param>
+    <Param name="_entity">entity</Param>
+    <Param name="_pageSize">Each page size</Param>
+    <Param name="_pageNum">The page number to get</Param>
+    <Param name="...">filter attributes</Param>
+  </GetPage>
+</DataAccess>
+
+<!-- Generic delete -->
+<DataAccess datasource="datasource name" params="variableName"> 
+  <Delete>
+    <Param name="_collection">collection</Param>
+    <Param name="_entity">entity</Param>
+    <Param name="id">id of the object to delete</Param>
+  </Delete>
+</DataAccess>
+
+<!-- Generic Update -->
+<DataAccess datasource="datasource name" params="variableName"> 
+  <Update>
+    <Param name="_collection">collection</Param>
+    <Param name="_entity">entity</Param>
+    <Param name="id">id of the object to update</Param>
+    <Param name="...">attributes to update</Param>
+  </Update>
+</DataAccess>
+
+<!-- Generic Save -->
+<DataAccess datasource="datasource name" params="variableName"> 
+  <Save>
+    <Param name="_collection">collection</Param>
+    <Param name="_entity">entity</Param>
+    <Param name="...">attributes to update</Param>
+  </Save>
+</DataAccess>
+
+      
+<!-- Generic Insert -->		
+<DataAccess datasource="datasource name" params="variableName"> 
+  <Insert>
+    <Param name="_collection">collection</Param>
+    <Param name="_entity">entity</Param>
+    <Param name="...">attributes to insert</Param>
+    <Param name="id">optional and only for keys not autoincremented or generated</Param>
+  </Insert>
+</DataAccess>
+      
+      
+		<!-- Specific -->
+<DataAccess datasource="datasource name" params="POSTDATA"> 
+  <Insert>
+    <Execute>
+      <![CDATA[  
+      INSERT INTO entity(name, description) VALUES ('$name', '$description');
+      ]]>
+    </Execute>
+  </Insert>
+</DataAccess>
+		
+		<DataAccess datasource="datasource name" params="POSTDATA"> 
+			<Update>
+				<Execute>
+					<![CDATA[  
+					UPDATE entity SET name='$name', description='$description'
+					WHERE id = $id;
+					]]>
+				</Execute>
+			</Update>
+		</DataAccess>
+		
+
+		<DataAccess datasource="datasource name" params="POSTDATA"> 
+			<GetAll>
+				<Execute>
+					<![CDATA[  
+					SELECT * FROM entity WHERE name like '%$search%';
+					]]>
+				</Execute>
+			</GetAll>
+		</DataAccess>
+		
+		<DataAccess datasource="datasource name" params="variableName"> 
+			<GetPage>
+				<SqlPaginated>
+					<XSql>
+						<XSelect>
+							<XField >
+								r.id, r._creation
+							</XField>
+						</XSelect>
+						<XFrom>
+							<XTable>
+								{table_prefix}srv_print_request r
+								INNER JOIN {table_prefix}person p ON (p.id = r.id_person)
+								INNER JOIN {table_prefix}status s ON (s.id = r.id_status)
+							</XTable>
+						</XFrom>
+						<XWhere>
+							<XCondition>r.id_person = $id_person</XCondition>
+						</XWhere>
+						<XOrderBy>
+							<XOrder>r._creation desc</XOrder>
+						</XOrderBy>
+					</XSql>
+				</SqlPaginated>
+			</GetPage>
+		</DataAccess>	
+		
+		<DataAccess datasource="datasource name" params="variableName"> 
+			<GetPage>
+				<SqlPaginated>
+					<CountFieldsSql>
+						Query to count records
+					</CountFieldsSql>
+					<GetFieldsSql>
+						Query to get records
+					</GetFieldsSql>
+				</SqlPaginated>
+			</GetPage>
+		</DataAccess>		
+		
+	</Library>
+  <Types>
+  
+<!-- Casting variables or values -->
+<Text>something....</Text>
+<Text><Var name="someText"/></Text>
+
+<Int>1233</Int>
+<Int><Var name="someIntNumber"/></Int>
+
+<Float>234.34</Float>
+<Float><Var name="somefloatNumber"/></Float>
+    
+  </Types>
+</Node>

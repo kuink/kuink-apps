@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get entity relation
+  </Doc>
+  <Params>
+	  <Param name="id_entity" required="true"/>
+    <Param name="id_entity_type" required="true"/>
+    <Param name="id_entity_relation" required="true"/>
+    <Param name="id_entity_type_relation" required="true"/>
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+	            er.id
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_rm_entity_relation er
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+         <XCondition>
+          er.id_entity = '{param->id_entity}'
+          AND er.id_entity_type = '{param->id_entity_type}'
+          AND er.id_entity_relation = '{param->id_entity_relation}'
+          AND er.id_entity_type_relation = '{param->id_entity_type_relation}'
+         </XCondition>
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[er.id asc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

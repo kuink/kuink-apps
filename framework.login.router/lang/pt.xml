@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- cms -->
+		<String key="inbox" value="Caixa de Entrada - Trabalho"/>
+		<String key="manage" value="Gerir"/>
+		<String key="framework.wf.inbox" value="Caixa de Entrada - Trabalho"/>
+    <String key="doIt" value="Tratar"/>
+    <String key="history" value="Histórico"/>
+    <String key="due_date" value="Data limite"/>
+    <String key="is_completed" value="Finalizada"/>
+    <String key="text" value="Texto"/>
+    <String key="taskCompleted" value="Tarefa concluída."/>
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

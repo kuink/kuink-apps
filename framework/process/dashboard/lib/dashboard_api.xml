@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="DateTimeLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+      
+                                          
+        <Function name="getItems" doc="Get a list of items to display">
+            <Params>
+              <Param name="id_dashboard" doc="The DashboardId"/>
+            </Params>
+            <Return type="multiple" doc="">
+              <External name="id" type="int" doc="Dashboard control Id"/>
+              <External name="id_dashboard" type="int" doc="Dashboard id"/>
+              <External name="id_role" type="int" doc="Role id"/>
+              <External name="control-type" type="text" doc="Control type"/>
+              <External name="control-position" type="text" doc="Control position"/>
+              <External name="control-order" type="int" doc="Control order"/>
+              <External name="control-configuration" type="text" doc="Control configuration"/>
+            </Return>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/company:manage"/>
+                </Allow>
+              </Permissions-->
+               <Var name="controls">
+                   <Execute method="this,this,dashboard.getItems">
+                       <Param name="id_dashboard" >
+                         <Var name="id_dashboard"/>
+                       </Param>
+                   </Execute>
+               </Var>
+               <Return>
+                   <Var name="controls"/>
+               </Return>
+            </Begin>
+        </Function>        
+        
+        <Function name="getDefaultItems" doc="Get a list of items from the default dashboard to display">
+            <Params>
+              <Param name="id_company" doc="The Company id"/>
+            </Params>
+            <Return type="multiple" doc="">
+              <External name="id" type="int" doc="Dashboard control Id"/>
+              <External name="id_dashboard" type="int" doc="Dashboard id"/>
+              <External name="id_role" type="int" doc="Role id"/>
+              <External name="control-type" type="text" doc="Control type"/>
+              <External name="control-position" type="text" doc="Control position"/>
+              <External name="control-order" type="int" doc="Control order"/>
+              <External name="control-configuration" type="text" doc="Control configuration"/>
+            </Return>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/company:manage"/>
+                </Allow>
+              </Permissions-->
+               <Var name="controls">
+                   <Execute method="this,this,dashboard.getDefaultItems">
+                       <Param name="id_company" >
+                         <Var name="id_company"/>
+                       </Param>
+                   </Execute>
+               </Var>
+               <Return>
+                   <Var name="controls"/>
+               </Return>
+            </Begin>
+        </Function>          
+        
+    </Library>
+</Node>
+

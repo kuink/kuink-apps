@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Fresh Install</String>
+       </Return>
+      </Begin>
+    </Function>
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+				<DataAccess method="insert">
+					<Param name="_entity">fw_request_category</Param>
+					<Param name="name">Password Reset</Param>
+					<Param name="short_name">Password Reset</Param>
+					<Param name="code">password.reset</Param>
+					<Param name="order">1</Param>
+					<Param name="assync">0</Param>
+					<Param name="ttl">86400</Param>
+          <Param name="_base">true</Param>
+				</DataAccess>
+        <DataAccess method="insert">
+          <Param name="_entity">fw_request_category</Param>
+          <Param name="name">Person rebuild in moodle</Param>
+          <Param name="short_name">Person rebuild</Param>
+          <Param name="code">person.rebuild</Param>
+          <Param name="handler">framework,request,person.rebuild</Param>
+          <Param name="order">2</Param>
+          <Param name="assync">1</Param>
+          <Param name="ttl">259200</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+				<DataAccess method="insert">
+          <Param name="_entity">fw_request_category</Param>
+          <Param name="name">Archivematica get status</Param>
+          <Param name="short_name">Archivematica get status</Param>
+          <Param name="code">archivematica.getstatus</Param>
+          <Param name="handler">framework,request,archivematica.status</Param>
+          <Param name="order">3</Param>
+          <Param name="assync">1</Param>
+          <Param name="ttl">259200</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+				<DataAccess method="insert">
+          <Param name="_entity">fw_request_category</Param>
+          <Param name="name">Record destroy</Param>
+          <Param name="short_name">Record destroy</Param>
+          <Param name="code">record.destroy</Param>
+          <Param name="handler">framework,request,record.destroy</Param>
+          <Param name="order">4</Param>
+          <Param name="assync">1</Param>
+          <Param name="ttl">259200</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+				<DataAccess method="insert">
+          <Param name="_entity">fw_request_category</Param>
+          <Param name="name">Record retain permanently</Param>
+          <Param name="short_name">Record retain permanently</Param>
+          <Param name="code">record.retainPermanently</Param>
+          <Param name="handler">framework,request,record.retainPermanentl</Param>
+          <Param name="order">5</Param>
+          <Param name="assync">1</Param>
+          <Param name="ttl">259200</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+        <DataAccess method="insert">
+          <Param name="_entity">fw_request_status</Param>
+          <Param name="name">New request</Param>
+          <Param name="short_name">New</Param>
+          <Param name="code">new</Param>
+          <Param name="order">1</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+        <DataAccess method="insert">
+          <Param name="_entity">fw_request_status</Param>
+          <Param name="name">Request completed with errors</Param>
+          <Param name="short_name">Errors</Param>
+          <Param name="code">error</Param>
+          <Param name="order">2</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+        <DataAccess method="insert">
+          <Param name="_entity">fw_request_status</Param>
+          <Param name="name">Request completed with success</Param>
+          <Param name="short_name">Ok</Param>
+          <Param name="code">ok</Param>
+          <Param name="order">3</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+        Get a controlled document versions
+    </Doc>
+  <Params>
+    <Param name="id_controlled_document"/>
+  </Params>
+  <Body>
+    <GetAll>
+      <XSql>
+        <XSelect>
+          <XField >
+            cd.code,
+            cd.name,
+            cdv.code as version_code,
+            cdv.reason as version_reason,
+            cdv.approval_date as version_approval_date
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+          	fw_rm_controlled_document cd
+            INNER JOIN fw_rm_controlled_document_version cdv ON (cdv.id = cd.id_current_version)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>cdv.is_notified = 0 AND cdv.is_active = 1 AND cd.id_controlled_document_type != 0</XCondition>
+        </XWhere>
+      </XSql>
+    </GetAll>
+  </Body>
+</Method>

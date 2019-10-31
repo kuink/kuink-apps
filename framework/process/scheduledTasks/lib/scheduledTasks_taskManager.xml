@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+		<Use name="MathLib" type="lib"/>
+		<Use name="DateTimeLib" type="lib"/>	
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+	
+	<!-- Executes all tasks - Entry Point -->
+	 <Function name="execute">
+	 <Params>
+	 </Params>
+	 <Begin>
+	      <Var name="tasks">
+			<Execute method="this,this,task.listTasksToExecute"/>	      
+	      </Var>
+	      <ForEach var="tasks" item="task">
+	      	<Call function="executeTask">
+	      		<Param name="id"><Var name="task" key="id"/></Param>
+	      	</Call>
+	      </ForEach>
+	 </Begin>
+	 </Function>
+
+	<!-- Executes a given task -->
+	 <Function name="executeTask">
+	 <Params>
+	 	<Param name="id"/>
+	 </Params>
+	 <Begin>
+		<Var name="taskToExecute">
+			<Execute method="framework,generic,load">
+				<Param name="table">fw_task</Param>
+				<Param name="id"><Var name="id"/></Param>
+			</Execute>
+		</Var>
+		<Var name="taskToExecute" />
+		
+		<Var name="library"><Var name="taskToExecute" key="library"/></Var>
+		<Var name="params">
+			<UtilsLib method="xmlToSet">
+				<Param><Var name="taskToExecute" key="params"/></Param>
+			</UtilsLib>
+		</Var>
+		
+		<!-- Execute the function -->
+		<Var name="result">
+			<Call library="$library" function="execute">
+				<Param name="params"><Var name="params"/></Param>
+			</Call>
+		</Var>
+		
+		<!-- Add the interval to the next run time -->
+		<Var name="nextRunDate">
+			<Var name="taskToExecute" key="run_next"/>
+		</Var>
+		<If>
+			<Condition><Eq><Param><Var name="nextRunDate"/></Param><Param><Null/></Param></Eq></Condition>
+			<Then>
+				<Var name="nextRunDate">
+					<DateTimeLib method="now"/>
+				</Var>				
+			</Then>
+		</If>
+		
+		<Var name="newNextRunDate">
+			<MathLib method="sum">
+				<Param><DateTimeLib method="now"/></Param>
+				<Param><Var name="taskToExecute" key="run_interval"/></Param>
+			</MathLib>
+		</Var>
+		<Var name="newNextRunDate" />
+
+		<Execute method="framework,generic,update">
+			<Param name="table">fw_task</Param>
+			<Param name="id"><Var name="taskToExecute" key="id"/></Param>
+			<Param name="result_code"><Var name="result"/></Param>
+			<Param name="run_last"><Var name="nextRunDate"/></Param>
+			<Param name="run_next"><Var name="newNextRunDate"/></Param>
+		</Execute>
+	 </Begin>
+	 </Function>
+
+	<!-- Disabables a given task -->
+	 <Function name="disableTask">
+	 <Params>
+	 	<Param name="id"/>
+	 </Params>
+	 <Begin>
+		<Execute method="framework,generic,update">
+			<Param name="table">fw_task</Param>
+			<Param name="id"><Var name="id"/></Param>
+			<Param name="active">0</Param>
+		</Execute>
+	 </Begin>
+	 </Function>
+
+	<!-- Enables a given task -->
+	 <Function name="enableTask">
+	 <Params>
+	 	<Param name="id"/>
+	 </Params>
+	 <Begin>
+		<Execute method="framework,generic,update">
+			<Param name="table">fw_task</Param>
+			<Param name="id"><Var name="id"/></Param>
+			<Param name="active">1</Param>
+		</Execute>
+	 </Begin>
+	 </Function>
+
+
+	</Library>
+</Node>
+

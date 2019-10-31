@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+      <Param name="code"/>
+    </Params>
+    <Libraries>
+    </Libraries>
+    <Screens>
+        <Screen id="scrShow" template="2x1col">
+            <DocViewer name="dcPreview" title="preview" position="left"/>
+            <Form name="frmDocData" position="right" title="documentDetails">
+			        <Header id="baseData" label="baseData"/>
+			        <!--Static id="id"/-->
+			        <Static id="full_name">
+			         <Formatter name="Style" method="bold"/>
+			        </Static>
+			        <Static id="description"/>
+			        <Static id="is_active">
+			          <Formatter name="YesNo"/>
+			        </Static>      			        
+			        <Header id="currentVersion" label="currentVersion"/>
+			        <Static id="version_code">
+			         <Formatter name="Style" method="bold"/>
+			        </Static>
+			        <Static id="version_reason"/>
+              <Static id="version_approval_date">
+			          <Formatter name="DateTime"/>
+			        </Static>
+              <Header id="classification"/>
+              <Static id="class"/>
+              <Static id="disposal_info">
+                <Formatter name="Style" method="bold"/>
+              </Static>
+              <Static id="obs_private"/>
+              <Static id="location"/>
+			        
+              <ButtonGroup>
+                <Button type="back" id="back" action="back"/>
+                <Button type="download" id="download" action="download"/>
+              </ButtonGroup>
+            </Form>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="scrShow">
+            <Var name="PARAMS" dump="true"/>
+            <Var name="docData" dump="true">
+              <Call library="framework,rm.controlledDocument,api" function="getByCode">
+                <Param name="code"><Var name="PARAMS" key="code"/></Param>
+              </Call>
+            </Var>
+            <Var name="isManager" dump="true"><Capability name="framework/rm.controlledDocuments::manage"/></Var>
+            <Exception name="framework\controlledDocument::permissionDeniedNotManager" condition="$isManager== 0 &amp;&amp; $docData->id_controlled_document_type == 0"/>
+
+            <Var name="docClassData" dump="true">
+              <Call library="framework,rm.controlledDocument,api" function="getClassData">
+                <Param name="code"><Var name="PARAMS" key="code"/></Param>
+              </Call>
+            </Var>
+            
+            <Var name="fileGuid" dump="true">
+              <Call library="framework,rm.controlledDocument,api" function="getFileGuidByCode">
+                <Param name="code"><Var name="PARAMS" key="code"/></Param>
+              </Call>
+            </Var>
+
+            <Var name="docData" key="full_name">
+              <String.parse>$docData->code - $docData->type_name - $docData->name</String.parse>
+            </Var>
+            
+            <Var name="docClassData" key="disposal_info">
+              <String.parse>$docClassData->disposal_duration » $docClassData->final_destination</String.parse>
+            </Var>
+            <Var name="docClassData" key="class">
+              <String.parse>$docClassData->class_code - $docClassData->parent_name ($docClassData->class_name)</String.parse>
+            </Var>
+            
+            <If condition="$docData->is_active == 0">
+							<Then>
+		            <Control method="setFieldProperty" object="frmDocData">
+		                <Param>download</Param>
+		                <Param>visible</Param>
+		                <Param>false</Param>
+		            </Control>
+							</Then>
+						</If>
+
+            <Control method="bind" object="dcPreview">
+                <Param><Var name="fileGuid"/></Param>
+            </Control>
+            <Control method="bind" object="frmDocData">
+                <Param><Var name="docData"/></Param>
+            </Control>
+            <Control method="bind" object="frmDocData">
+                <Param><Var name="docClassData"/></Param>
+            </Control>
+            
+            <UserMessage type="warning">
+              <Lang key="formatWarning"/>
+            </UserMessage>
+        </Action>
+
+        <Action name="download">
+          <Call library="framework,rm.controlledDocument,api" function="download">
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </Call>
+          <Action name="init"/>
+        </Action>
+
+        <Action name="back">
+          <RaiseEvent name="back"/>
+        </Action>
+        
+	</Actions>
+</Node>

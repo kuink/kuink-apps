@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions>
+    </Permissions>
+    <Doc lang="pt-PT">
+        Demo of data manipulation
+    </Doc>
+    <Libraries>
+        <Use name="FormControl" type="control"/>
+        <Use name="GridControl" type="control"/>
+        <Use name="CustomControl" type="control"/>
+        <Use name="DateTimeFormatter" type="formatter"/>
+    </Libraries>
+    <Configuration>
+        <Config key="masterTable" value="fw_demo_composite"/>
+    </Configuration>
+    <Screens>
+    	<Screen id="showLog">
+    		<Custom name="logList" control="framework,log,search"/>
+    	</Screen>
+        <Screen id="editRecord">
+            <Form name="editRecordForm">
+            	<Header/>           
+                <Header id="head1" label="edit"/>
+				<Int id="id" label="id" required="true"/>                
+				<Select id="id_key1" label="implication" required="true" datasource="table:pe_evaluation_level" bindid="id" bindvalue="name"/>
+                <Int id="id_key2" label="id_key2" required="true"/>
+                <Name id="name" label="name" />
+                <ButtonGroup label="actions">
+                    <Button type="cancel" id="back" label="back" action="cancel"/>
+                    <Button type="submit" id="save" label="save" action="save"/>
+                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                </ButtonGroup>
+            </Form>
+            <Grid name="searchResultGrid">
+                <Template>
+                    <Columns>
+                    	<Column name="id" label="id_key1"/>
+                        <Column name="id_key1" label="id_key1"/>
+                        <Column name="id_key2" label="id_key2"/>
+                        <Column name="name" label="name"/>
+                    </Columns>
+                    <Actions>
+                    </Actions>
+                </Template>
+            </Grid>            
+        </Screen>
+        <Screen id="viewRecord">
+            <Form name="viewRecordForm">
+            	<Header/>           
+                <Header id="head1" label="edit"/>
+				<Int id="id" label="id" required="true"/>                
+				<Select id="id_key1" label="implication" required="true" datasource="table:pe_evaluation_level" bindid="id" bindvalue="name"/>
+                <Int id="id_key2" label="id_key2" required="true"/>
+                <Name id="name" label="name" />
+                <ButtonGroup label="actions">
+                    <Button type="cancel" id="back" label="back" action="cancel"/>
+                    <Button type="submit" id="save" label="save" action="save"/>
+                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                </ButtonGroup>
+            </Form>
+        </Screen>        
+    </Screens>
+    <Actions>
+        <Action name="init">
+        	<!--FormControl method="bind" object="editRecordForm">
+        		<Param>
+        			<Execute method="this,this,demo.getRecordFromSelect">
+        				<Param name="id">1</Param>
+        			</Execute>
+        		</Param>
+        	</FormControl-->
+        	<Action name="bind"/>
+        </Action>
+        <Action name="save">
+        	<Var name="var_teste">8881</Var>
+        	<Log type="action" key="$var_teste">
+        		<Param>Teste</Param>
+        	</Log>
+        
+        	<Execute method="framework,generic,save" params="POSTDATA">
+        		<Param name="table"><Config key="masterTable"/></Param>
+        	</Execute>
+        	<!--Execute method="framework,generic,save">
+        		<Param name="table"><Config key="masterTable"/></Param>
+        		<Param name="id">5</Param>
+        		<Param name="name"><Var name="POSTDATA" key="name"/></Param>
+        	</Execute-->
+
+			<ActionValue><Var name="POSTDATA" key="id"/></ActionValue>
+        	<Action name="bind"/>
+        </Action>
+        <Action name="bind" screen="viewRecord">
+        	<FormControl method="setProperty" object="viewRecordForm">
+        		<Param>freeze_</Param>
+        		<Param>true</Param>
+        	</FormControl>        
+        	<FormControl method="bind" object="viewRecordForm">
+        		<Param>
+        			<Execute method="framework,generic,load">
+        				<Param name="table"><Config key="masterTable"/></Param>
+        				<Param name="id">1</Param>
+        			</Execute>
+        		</Param>
+        	</FormControl>
+
+        </Action>
+        <Action name="delete">
+        </Action>
+        <Action name="cancel">
+            <Action name="init"/>
+        </Action>
+    </Actions>
+</Node>
+

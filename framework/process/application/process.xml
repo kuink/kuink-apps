@@ -1,0 +1,7 @@
+<?xml version='1.0'?>
+<Process>
+	 <Transitions>
+	 	<!-- test process flow -->
+                <Flow role='Teacher' startuc='application' startnode='' event='E_INIT' enduc='application' endnode='install' />
+	 </Transitions>
+</Process>

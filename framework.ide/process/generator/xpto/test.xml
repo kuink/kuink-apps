@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<Method>
+    <Doc>
+        Search all legislation_descriptor
+    </Doc>
+    <Params>
+              <Param name="id"/>
+                  <Param name="name"/>
+            <Teste id="1"/></Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                         t
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>1 = 1</XCondition>
+                                                                                            <XCondition optional="id">AND t.id = {$param-&gt;id}</XCondition>
+                                                                                                                                                    <XCondition optional="name">AND t.name = '{$param-&gt;name}'</XCondition>
+                                                    </XWhere>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

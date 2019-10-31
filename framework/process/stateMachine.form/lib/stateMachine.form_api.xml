@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="id_state_machine" type="int" required="true"/>
+        <Param name="field_list" type="text" required="true"/>
+        <Param name="code" type="text" required="true"/>
+        <Param name="name" type="text" required="true"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_state_machine_form</Param>
+            <Param name="_base">true</Param>
+            <Param name="id_state_machine">
+              <Var name="PARAMS" key="id_state_machine"/>
+            </Param>
+            <Param name="field_list">
+              <Var name="PARAMS" key="field_list"/>
+            </Param>
+            <Param name="uuid"><Uuid/></Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="name">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="description">
+              <Var name="PARAMS" key="description"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table fw_state_machine_form">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_state_machine_form</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_state_machine_form">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="id_state_machine" type="int" required="false"/>
+        <Param name="field_list" type="text" required="false"/>
+        <Param name="uuid" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_state_machine_form</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table fw_state_machine_form">
+      <Params>
+        <Param name="id_state_machine" type="int"/>
+        <Param name="field_list" type="text"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_state_machine" type="int" doc=""/>
+        <External name="field_list" type="text" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,search">
+            <Param name="id_state_machine">
+              <Var name="PARAMS" key="id_state_machine"/>
+            </Param>
+            <Param name="field_list" wildcard="full">
+              <Var name="PARAMS" key="field_list"/>
+            </Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_state_machine_form">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_state_machine" type="int" doc=""/>
+        <External name="field_list" type="text" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_state_machine_form</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a record by id from table fw_state_machine_form">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_state_machine" type="int" doc=""/>
+        <External name="field_list" type="text" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_state_machine_form</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_state_machine_form">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+  </Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_state_machine_form</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

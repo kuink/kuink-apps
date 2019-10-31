@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Libraries>
+    <Use name="DateTimeLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens />
+  <Actions>
+    <Action name="init" />
+  </Actions>
+  <Library>
+    <Function name="add" doc="Add a user to the system">
+      <Params>
+        <!--Param name="id" type="int" required="true" doc="User Id"/ -->
+        <Param name="username" type="text" required="true" doc="Login username." />
+        <Param name="display_name" type="text" required="true" doc="User display name," />
+        <Param name="email" doc="User email" />
+      </Params>
+      <Return type="int" doc="the user id" />
+      <Errors>
+        <!--Error code="-1" doc="User allready exist"/ -->
+      </Errors>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+          
+        <Var name="fwUser">
+        	<DataAccess method="load">
+						<Param name="_entity">fw_user</Param>
+						<Param name="username"><Var name="PARAMS" key="username"/></Param>
+					</DataAccess>
+        </Var>  
+        
+        <If condition="$fwUser->__length == 0">
+					<Then>
+						<!-- User does not exist -->
+						<Var name="idUser">
+			        <DataAccess method="insert" params="PARAMS">
+			          <Param name="_entity">fw_user</Param>
+			          <Param name="_creation"><Now/></Param>
+			          <Param name="_creation_ip"><Var name="USER" key="ip" /></Param>
+			          <Param name="_modification"><Now/></Param>
+			          <Param name="_modification_ip"><Var name="USER" key="ip" /></Param>
+			        </DataAccess>
+						</Var>						
+					</Then>
+					<Else>
+						<!-- User exists -->
+						<Var name="idUser"><Var name="fwUser" key="id"/></Var>
+					</Else>
+				</If>
+
+        <Return>
+          <Var name="idUser"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="update" doc="Updates a user data">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id to update" />
+        <Param name="username" type="text" required="true"
+          doc="Login username." />
+        <Param name="display_name" type="text" required="true"
+          doc="User display name." />
+        <Param name="email" doc="User email" />
+      </Params>
+      <Return type="int" doc="the user id" />
+      <Errors>
+        <Error code="-1" doc="User doesn't exist" />
+      </Errors>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <!-- Set default values -->
+        <Var name="result">-1</Var>
+        <Var name="uid">
+          <Call function="existsById">
+            <Param name="id">
+              <Var name="id" />
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$uid == 1">
+          <Then>
+            <Execute method="framework,generic,update" params="PARAMS">
+              <Param name="table">fw_user</Param>
+              <Param name="_creation">
+                <DateTimeLib method="Now" />
+              </Param>
+              <Param name="_creation_ip">
+                <Var name="USER" key="ip" />
+              </Param>
+              <Param name="_modification">
+                <DateTimeLib method="Now" />
+              </Param>
+              <Param name="_modification_ip">
+                <Var name="USER" key="ip" />
+              </Param>
+            </Execute>
+            <Var name="result">
+              <Var name="id" />
+            </Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result" />
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="addCompany" doc="Adds a company to a user">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+        <Param name="id_company" type="int" required="true" doc="Company Id." />
+        <Param name="id_person" type="int" required="true"
+          doc="Person Id of this user in the company." />
+        <Param name="is_default" type="int" required="true"
+          doc="Is this the default company for this user?" />
+      </Params>
+      <Return type="int" doc="" />
+      <Errors>
+        <Error code="-1" doc="User does not exists" />
+        <Error code="-2" doc="Company does not exists" />
+      </Errors>
+      <Begin>
+      <Var name="PARAMS" dump="true"/>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="error">0</Var>
+        <Var name="uid">
+          <Call function="existsById">
+            <Param name="id">
+              <Var name="id" />
+            </Param>
+          </Call>
+        </Var>
+        <Var name="cid" dump="true">
+          <Call library="framework,company,api" function="existsById">
+            <Param name="id">
+              <Var name="id_company" />
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$uid == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+        </If>
+        <If condition="$cid == 0">
+          <Then>
+            <Var name="error">-2</Var>
+          </Then>
+        </If>
+        <Var name="contract" dump="true">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_user_company</Param>
+            <Param name="id_user">
+              <Var name="id" />
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company" />
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="aid">
+          <Var name="contract" key="id" />
+        </Var>
+        <If condition="$error == 0 &amp;&amp; $aid == ''">
+          <Then>
+            <!--Clear the default company -->
+            <Trace>Creating user in company</Trace>
+            <If condition="$is_default == 1">
+              <Then>
+                <Execute method="this,this,user.clearDefaultCompany">
+                  <Param name="id">
+                    <Var name="id" />
+                  </Param>
+                </Execute>
+              </Then>
+            </If>
+            <Execute method="framework,generic,insert">
+              <Param name="table">fw_user_company</Param>
+              <Param name="id_user">
+                <Var name="id" />
+              </Param>
+              <Param name="id_company">
+                <Var name="id_company" />
+              </Param>
+              <Param name="id_person">
+                <Var name="id_person" />
+              </Param>
+              <Param name="is_active">1</Param>
+              <Param name="is_default">
+                <Var name="is_default" />
+              </Param>
+              <Param name="_creation">
+                <DateTimeLib method="Now" />
+              </Param>
+              <Param name="_creation_ip">
+                <Var name="USER" key="ip" />
+              </Param>
+              <Param name="_modification">
+                <DateTimeLib method="Now" />
+              </Param>
+              <Param name="_modification_ip">
+                <Var name="USER" key="ip" />
+              </Param>
+            </Execute>
+          </Then>
+        </If>
+        <Return>
+          <Var name="error" />
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="getCompanies" doc="Get the user active companies">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc="Company Id" />
+        <External name="name" type="text" doc="Company name" />
+        <External name="code" type="text" doc="company code" />
+        <External name="is_default" type="int"
+          doc="Is this the user's default company?" />
+        <External name="is_active" type="int"
+          doc="Is this user allocation to company active?" />
+      </Return>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="companies">
+          <Execute method="this,this,user.getCompanies">
+            <Param name="id">
+              <Var name="id" />
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="companies" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="addRole" doc="Adds a role to user in a company">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+        <Param name="id_role" type="int" required="true" doc="Role Id." />
+        <Param name="id_company" type="int" required="true" doc="Company Id." />
+      </Params>
+      <Return type="int" doc="" />
+      <Errors>
+        <Error code="-1" doc="User does not exists" />
+        <Error code="-2" doc="Role does not exists" />
+      </Errors>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="error">0</Var>
+        <Var name="uid">
+          <Call function="existsById">
+            <Param name="id">
+              <Var name="id" />
+            </Param>
+          </Call>
+        </Var>
+        <Var name="rid">
+          <Call library="framework,user.role,api" function="existsById">
+            <Param name="id">
+              <Var name="id_role" />
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company" />
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$uid == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+        </If>
+        <If condition="$rid == 0">
+          <Then>
+            <Var name="error">-2</Var>
+          </Then>
+        </If>
+        <Var name="allocation">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_allocation</Param>
+            <Param name="id_user">
+              <Var name="id" />
+            </Param>
+            <Param name="id_role">
+              <Var name="id_role" />
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company" />
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="aid">
+          <Var name="allocation" key="id" />
+        </Var>
+        <If condition="$error == 0 &amp;&amp; $aid == ''">
+          <Then>
+            <Execute method="framework,generic,insert">
+              <Param name="table">fw_allocation</Param>
+              <Param name="id_user">
+                <Var name="id" />
+              </Param>
+              <Param name="id_role">
+                <Var name="id_role" />
+              </Param>
+              <Param name="id_company">
+                <Var name="id_company" />
+              </Param>
+              <Param name="_creation">
+                <DateTimeLib method="Now" />
+              </Param>
+              <Param name="_creation_ip">
+                <Var name="USER" key="ip" />
+              </Param>
+              <Param name="_modification">
+                <DateTimeLib method="Now" />
+              </Param>
+              gecol/docRecord::manage
+              <Param name="_modification_ip">
+                <Var name="USER" key="ip" />
+              </Param>
+            </Execute>
+          </Then>
+        </If>
+        <Return>
+          <Var name="error" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="removeRole" doc="Removes a role from user in a company">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+        <Param name="id_role" type="int" required="true" doc="Role Id." />
+        <Param name="id_company" type="int" required="true" doc="Company Id." />
+      </Params>
+      <Return type="int" doc="" />
+      <Errors>
+        <Error code="-1" doc="User does not exist" />
+        <Error code="-2" doc="Role does not exist ins the given company" />
+      </Errors>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="error">0</Var>
+        <Var name="uid">
+          <Call function="existsById">
+            <Param name="id">
+              <Var name="id" />
+            </Param>
+          </Call>
+        </Var>
+        <Var name="rid">
+          <Call library="framework,user.role,api" function="existsById">
+            <Param name="id">
+              <Var name="id_role" />
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company" />
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$uid == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+        </If>
+        <If condition="$rid == 0">
+          <Then>
+            <Var name="error">-2</Var>
+          </Then>
+        </If>
+        <Var name="allocation">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_allocation</Param>
+            <Param name="id_user">
+              <Var name="id" />
+            </Param>
+            <Param name="id_role">
+              <Var name="id_role" />
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company" />
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="aid">
+          <Var name="allocation" key="id" />
+        </Var>
+        <If condition="$error == 0 &amp;&amp; $aid != ''">
+          <Then>
+            <Execute method="framework,generic,delete">
+              <Param name="table">fw_allocation</Param>
+              <Param name="id">
+                <Var name="aid" />
+              </Param>
+            </Execute>
+          </Then>
+        </If>
+        <Return>
+          <Var name="error" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getRoles" doc="Get the user roles in a company">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+        <Param name="id_company" type="int" required="true" doc="Company Id." />
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc="Role Id" />
+        <External name="name" type="text" doc="Role name" />
+        <External name="code" type="text" doc="Role code" />
+      </Return>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="companies">
+          <Execute method="this,this,user.getRoles">
+            <Param name="id_user">
+              <Var name="id" />
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="companies" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getCapabilities" doc="Get the user capabilities">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+        <Param name="id_company" type="int" required="true" doc="Company Id." />
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc="Capability Id" />
+        <External name="name" type="text" doc="Capability name" />
+        <External name="code" type="text" doc="Capability code" />
+      </Return>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="capabilities">
+          <Execute method="this,this,user.getCapabilities">
+            <Param name="id_user">
+              <Var name="id" />
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company" />
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="capabilities" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="removeRoles"
+      doc="Removes all roles from user ina given company.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+        <Param name="id_company" type="int" required="true" doc="Company Id." />
+      </Params>
+      <Return type="int" doc="" />
+      <Errors>
+        <Error code="-1" doc="User does not exists " />
+      </Errors>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="error">0</Var>
+        <Var name="uid">
+          <Call function="existsById">
+            <Param name="id">
+              <Var name="id" />
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$uid == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+        </If>
+        <If condition="$error == 0">
+          <Then>
+            <Execute method="framework,generic,delete">
+              <Param name="table">fw_allocation</Param>
+              <Param name="id_user">
+                <Var name="id" />
+              </Param>
+              <Param name="id_company">
+                <Var name="id_company" />
+              </Param>
+            </Execute>
+          </Then>
+        </If>
+        <Return>
+          <Var name="error" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="existsById" doc="Check if the user exists">
+      <Params>
+        <Param name="id" type="int" required="true" doc="User Id." />
+      </Params>
+      <Return type="int" doc="1 if exists, 0 otherwise" />
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="result">0</Var>
+        <Var name="user">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_user</Param>
+            <Param name="id">
+              <Var name="id" />
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="uid">
+          <Var name="user" key="id" />
+        </Var>
+        <If condition="$uid != ''">
+          <Then>
+            <Var name="result">1</Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="setCompany" doc="Set the company to the current user">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Company Id." />
+      </Params>
+      <Return type="int" doc="The id company" />
+      <Errors>
+        <Error code="-1" doc="The user cannot set this company" />
+      </Errors>
+      <Begin>
+        <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
+          </Allow> </Permissions -->
+        <Var name="result">-1</Var>
+        <Var name="company">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_user_company</Param>
+            <Param name="id_company">
+              <Var name="id" />
+            </Param>
+            gecol/docRecord::manage
+            <Param name="id_user">
+              <Var name="USER" key="id" />
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="cid">
+          <Var name="company" key="id" />
+        </Var>
+        <If condition="$cid != ''">
+          <Then>
+            <!--Set the company id in NEON_CONTEXT -->
+            <Var name="NEON_CONTEXT" key="idCompany" session="true">
+              <Var name="id" />
+            </Var>
+            <Var name="result">
+              <Var name="id" />
+            </Var>
+          </Then>
+          <Else>
+            <!--User has no permission to set the company -->
+            <Var name="result">-1</Var>
+          </Else>
+        </If>
+        <Return>
+          <Var name="result" />
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="add" doc="Updates a record in table ">
+      <Params>
+        <Param name="username" type="text" required="false" />
+        <Param name="email" type="text" required="false" />
+        <Param name="display_name" type="text" required="false" />
+      </Params>
+      <Begin>
+        <Execute method="framework,generic,insert">
+          <Param name="table">fw_user</Param>
+          <Param name="username">
+            <Var name="PARAMS" key="username" />
+          </Param>
+          <Param name="email">
+            <Var name="PARAMS" key="email" />
+          </Param>
+          <Param name="display_name">
+            <Var name="PARAMS" key="display_name" />
+          </Param>
+          <Param name="_creation">
+            <DateTimeLib method="Now" />
+          </Param>
+          <Param name="_creation_ip">
+            <Var name="USER" key="ip" />
+          </Param>
+          <Param name="_modification">
+            <DateTimeLib method="Now" />
+          </Param>
+          <Param name="_modification_ip">
+            <Var name="USER" key="ip" />
+          </Param>
+        </Execute>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table fw_user">
+      <Params>
+        <Param name="id" type="int" required="true" />
+      </Params>
+      <Return type="int" doc="" />
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,delete">
+            <Param name="table">fw_user</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id" />
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_user">
+      <Params>
+        <Param name="id" type="int" required="true" />
+        <Param name="username" type="text" required="false" />
+        <Param name="email" type="text" required="false" />
+        <Param name="display_name" type="text" required="false" />
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS" />
+            </Param>
+          </UtilsLib>
+        </Var>
+        <Execute method="framework,generic,update" params="paramData">
+          <Param name="table">fw_user</Param>
+          <Param name="_creation">
+            <DateTimeLib method="Now" />
+          </Param>
+          <Param name="_creation_ip">
+            <Var name="USER" key="ip" />
+          </Param>
+          <Param name="_modification">
+            <DateTimeLib method="Now" />
+          </Param>
+          <Param name="_modification_ip">
+            <Var name="USER" key="ip" />
+          </Param>
+        </Execute>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table fw_user">
+      <Params>
+        <Param name="id" type="int" />
+        <Param name="username" type="text" />
+        <Param name="email" type="text" />
+        <Param name="display_name" type="text" />
+        <Param name="pagenum" type="int" />
+        <Param name="pagesize" type="int" />
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc="" />
+        <External name="username" type="text" doc="" />
+        <External name="email" type="text" doc="" />
+        <External name="display_name" type="text" doc="" />
+        <External name="_creation" type="int" doc="" />
+        <External name="_creation_ip" type="text" doc="" />
+        <External name="_modification" type="int" doc="" />
+        <External name="_modification_ip" type="text" doc="" />
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="this,this,search">
+            <Param name="id">
+              <Var name="PARAMS" key="id" />
+            </Param>
+            <Param name="username" wildcard="full">
+              <Var name="PARAMS" key="username" />
+            </Param>
+            <Param name="email" wildcard="full">
+              <Var name="PARAMS" key="email" />
+            </Param>
+            <Param name="display_name" wildcard="full">
+              <Var name="PARAMS" key="display_name" />
+            </Param>
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum" />
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize" />
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_user">
+      <Params />
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc="" />
+        <External name="username" type="text" doc="" />
+        <External name="email" type="text" doc="" />
+        <External name="display_name" type="text" doc="" />
+        <External name="_creation" type="int" doc="" />
+        <External name="_creation_ip" type="text" doc="" />
+        <External name="_modification" type="int" doc="" />
+        <External name="_modification_ip" type="text" doc="" />
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,getAll">
+            <Param name="table">fw_user</Param>
+            <Param name="fields">*</Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="getById" doc="Get a record by id from table fw_user">
+      <Params>
+        <Param name="id" type="int" required="true" />
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc="" />
+        <External name="username" type="text" doc="" />
+        <External name="email" type="text" doc="" />
+        <External name="display_name" type="text" doc="" />
+        <External name="_creation" type="int" doc="" />
+        <External name="_creation_ip" type="text" doc="" />
+        <External name="_modification" type="int" doc="" />
+        <External name="_modification_ip" type="text" doc="" />
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_user</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id" />
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getPerson" doc="Get a person based on a user">
+      <Params>
+        <Param name="id" type="int" required="true" />
+        <Param name="id_company" type="int" required="true" />
+      </Params>
+      <Return type="single" doc="">
+         <External name="id" type="text" doc=""/>
+         <External name="username" type="text" doc=""/>
+         <External name="email" type="text" doc=""/>
+         <External name="display_name" type="text" doc=""/>
+         <External name="_creation" type="text" doc=""/>
+         <External name="_creation_ip" type="text" doc=""/>
+         <External name="_modification" type="text" doc=""/>
+         <External name="_modification_ip" type="text" doc=""/>
+         <External name="id_company" type="text" doc=""/>
+         <External name="uid" type="text" doc=""/>
+         <External name="id_person_type" type="text" doc=""/>
+         <External name="id_card" type="text" doc=""/>
+         <External name="is_public" type="text" doc=""/>
+         <External name="public_key" type="text" doc=""/>
+         <External name="private_key" type="text" doc=""/>
+         <External name="name" type="text" doc=""/>
+         <External name="given_name" type="text" doc=""/>
+         <External name="surname" type="text" doc=""/>
+         <External name="id_title" type="text" doc=""/>
+         <External name="birthday" type="text" doc=""/>
+         <External name="publish_birthday" type="text" doc=""/>
+         <External name="uri" type="text" doc=""/>
+         <External name="home_phone" type="text" doc=""/>
+         <External name="mobile_1" type="text" doc=""/>
+         <External name="mobile_2" type="text" doc=""/>
+         <External name="street_address" type="text" doc=""/>
+         <External name="postal_address" type="text" doc=""/>
+         <External name="postal_code" type="text" doc=""/>
+         <External name="tax_number" type="text" doc=""/>
+         <External name="id_iddoc_type" type="text" doc=""/>
+         <External name="iddoc_number" type="text" doc=""/>
+         <External name="iddoc_expiry_date" type="text" doc=""/>
+         <External name="civil_parish" type="text" doc=""/>
+         <External name="county" type="text" doc=""/>
+         <External name="district" type="text" doc=""/>
+         <External name="id_nationality" type="text" doc=""/>
+         <External name="health_number" type="text" doc=""/>
+         <External name="social_sec_number" type="text" doc=""/>
+         <External name="sps_number" type="text" doc=""/>
+         <External name="id_sps_type" type="text" doc=""/>
+         <External name="id_sex_code" type="text" doc=""/>
+         <External name="job" type="text" doc=""/>
+         <External name="job_phone" type="text" doc=""/>
+         <External name="job_employer" type="text" doc=""/>
+         <External name="id_marital_status" type="text" doc=""/>
+         <External name="id_qualification" type="text" doc=""/>
+         <External name="id_job_class" type="text" doc=""/>
+         <External name="id_job_sector" type="text" doc=""/>
+         <External name="obs" type="text" doc=""/>
+         <External name="_person_type_description" type="text" doc=""/>
+         <External name="_is_system_valid" type="text" doc=""/>
+         <External name="_is_imported" type="text" doc=""/>
+         <External name="email_charset" type="text" doc=""/>
+         <External name="email_content_type" type="text" doc=""/>
+         <External name="id_moodle" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,user.getPerson">
+            <Param name="id_user"><Var name="PARAMS" key="id" /></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company" /></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="getByEmail" doc="Get a record by email fw_user">
+      <Params>
+        <Param name="email" type="text" />
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc="" />
+        <External name="username" type="text" doc="" />
+        <External name="email" type="text" doc="" />
+        <External name="display_name" type="text" doc="" />
+        <External name="_creation" type="int" doc="" />
+        <External name="_creation_ip" type="text" doc="" />
+        <External name="_modification" type="int" doc="" />
+        <External name="_modification_ip" type="text" doc="" />
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_user</Param>
+            <Param name="email">
+              <Var name="PARAMS" key="email" />
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getByUsername" doc="Get a record by email fw_user">
+      <Params>
+        <Param name="username" type="text" />
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc="" />
+        <External name="username" type="text" doc="" />
+        <External name="email" type="text" doc="" />
+        <External name="display_name" type="text" doc="" />
+        <External name="_creation" type="int" doc="" />
+        <External name="_creation_ip" type="text" doc="" />
+        <External name="_modification" type="int" doc="" />
+        <External name="_modification_ip" type="text" doc="" />
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_user</Param>
+            <Param name="username">
+              <Var name="PARAMS" key="username" />
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getIdByUsername" doc="Get a user id by username">
+      <Params>
+        <Param name="username" type="text" />
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="myUser">
+          <DataAccess method="load">
+            <Param name="_entity">fw_user</Param>
+            <Param name="username">
+              <Var name="PARAMS" key="username" />
+            </Param>
+          </DataAccess>
+        </Var>
+      
+        <Return>
+          <Var name="myUser" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getByCapability"
+      doc="Get users that have a role with a given capability. Usefull for audit and debug">
+      <Params>
+        <Param name="capability_code" type="text" doc="the capability code to test."/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="text" doc="" />
+        <External name="username" type="text" doc="" />
+        <External name="email" type="text" doc="" />
+        <External name="display_name" type="text" doc="" />
+        <External name="_creation" type="text" doc="" />
+        <External name="_creation_ip" type="text" doc="" />
+        <External name="_modification" type="text" doc="" />
+        <External name="_modification_ip" type="text" doc="" />
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,user.getByCapability">
+            <Param name="capability_code">
+              <Var name="PARAMS" key="capability_code" />
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+
+  </Library>
+</Node>

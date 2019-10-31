@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<Method database="mongo">
+    <Params>
+    </Params>
+    <Body>
+        <Execute collection="guuu" method="insert"/>
+    </Body>
+</Method>

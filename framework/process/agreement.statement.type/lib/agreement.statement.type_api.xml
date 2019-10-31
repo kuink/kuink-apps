@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_agreement_statement_type">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+		  </Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_agreement_statement_type</Param>
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAll" doc="Get All agreement types">
+      <Params/>
+      <Return type="int" doc="">
+		  </Return>
+      <Begin>
+        <Var name="records">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_agreement_statement_type</Param>
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="records"/>
+        </Return>
+      </Begin>
+    </Function>    
+  </Library>
+</Node>

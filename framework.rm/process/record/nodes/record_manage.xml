@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+    <Allow>
+      <Capability name="framework/rm::manage"/>
+    </Allow>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+  </Libraries>
+  <Configuration>
+    <Config key="maxUploadFileSize" value="4000000"/>
+    <Config key="allowedExtensions" value="pdf"/>
+    <Config key="uploadFolder" value="tmp"/>
+  </Configuration>
+  <Params>
+      <Param name="code" doc="Class code"/>
+  </Params>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Column id="col1"/>
+	      <DateTime id="dateFrom" />
+	      <DateTime id="dateTo" />
+	      <Select id="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
+        <Text id="text" label="text"/>
+        <ButtonGroup>
+          <Button id="search" type="search" label="search" action="search"/>
+          <Button id="add" type="add" label="addRecord" action="newRecord"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" pagingaction="search" collapsible="false" pagesize="10" title="result" freeze="false">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="uuid"/>
+            <Column name="name" label="recName"/>
+            <Column name="description" label="recDesc"/>
+            <Column name="last_xml" label="last_xml"/>
+            <Column name="_creation">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
+            <Column name="retention_date">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
+            <Column name="disposal_due_date">
+              <Formatter name="DateTime" method="shortDate"/>
+            </Column>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" label="view" actionvalue="id"/>
+            <Action name="recordComponents" label="components" actionvalue="id"/>
+            <Action name="archiveRecord" label="archive" actionvalue="id"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen id="scrAddRecord">
+      <Form name="frmAddRecord" title="addRecord">
+        <Select id="class_code" required="true" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="saveClass"/>
+        <TextArea id="data" label="data" disabled="true"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+          <Button id="addComponent" type="add" label="addComponent" action="addComponent"/>
+          <Button id="addMetadata" type="add" label="addMetadata" action="addMetadata"/>
+          <Button id="declareRecord" type="execute" label="declare" action="declareRecord" confirm="true"/>
+          <Button id="archiveRecord" type="continue" label="archive" action="archiveRecord" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdComponents" title="components">
+        <Template>
+          <Columns>
+            <Column name="id_plugin" label="plugin"/>
+            <Column name="plugin_name" label="plugin"/>
+            <Column name="settings" label="settings"/>
+          </Columns>
+          <Actions separator="true">
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+    <Screen id="scrAddComponent">
+      <Form name="frmAddComponent" title="addComponent">
+        <Select id="id_plugin" datasource="call:framework,rm.component.plugin,api,getAll" bindid="id" bindvalue="name" action="addComponent"/>
+        <Container id="setting"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="addRecord"/>
+          <Button id="save" type="save" label="save" action="saveComponentSettings"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+    <Screen id="scrAddMetadata">
+      <Form name="frmAddMetadata" title="addMetadata">
+        <Static id="code" label="code"/>
+        <Static id="name" label="name"/>
+        <TextArea id="last_xml" label="metadata" disabled="true"/>
+        <TextArea id="data" label="data"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="addRecord"/>
+          <Button id="save" type="save" label="save" action="saveMetadata"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+
+    <Screen id="scrRecordView" template="1x2col">
+      <Form name="frmOptions" title="record" position="left">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+        </ButtonGroup>
+      </Form>
+
+      <Form name="frmData" title="record" position="left">
+        <Static id="id"/>
+        <Static id="uuid"/>
+        <Static id="name" label="recName"/>
+        <Static id="description" label="recDesc"/>
+        <Static id="_creation">
+          <Formatter name="DateTime" method="shortDateTime"/>
+        </Static>
+        <Static id="retention_date">
+          <Formatter name="DateTime" method="shortDate"/>        
+        </Static>
+        <Static id="disposal_due_date">
+          <Formatter name="DateTime" method="shortDate"/>        
+        </Static>
+        <Static id="disposal_date">
+          <Formatter name="DateTime" method="shortDate"/>        
+        </Static>        
+        <Static id="is_archived">
+          <Formatter name="YesNo" method="format"/>        
+        </Static>
+        <Static id="last_xml">
+          <Formatter name="Xml" method="prettyForm"/>
+        </Static>
+      </Form>
+      <Grid name="grdComponents" title="components" position="right">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="plugin_name" label="plugin"/>
+            <Column name="settings" label="settings"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="getComponentContent" label="download" type="download" actionvalue="id"/>
+          </Actions>
+        </Template>
+      </Grid>
+      <Grid name="grdAggregations" title="aggregations" position="right">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="uuid" label="uuid"/>
+            <Column name="name" label="aggName"/>
+            <Column name="description" label="aggDesc"/>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>
+
+
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Action name="search"/>
+    </Action>
+
+    <Action name="process" screen="scrResult">
+      <Var name="log" dump="true">
+				<Call library="framework,request,api" function="process">
+  				<Param name="guid"><ActionValue/></Param>
+				</Call>
+      </Var>
+      <Control method="bind" object="grdLog">
+        <Param><Var name="log"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="search" screen="scrSearch">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>
+      <If condition="$PARAMS->code != ''">
+				<Then>
+		      <Var name="defaultData" key="class_code"><Var name="PARAMS" key="code"/></Var>
+		      <Control method="setDefaultData" object="frmSearch">
+		        <Param>
+		          <Var name="defaultData"/>
+		        </Param>
+		      </Control>
+				</Then>
+			</If>
+             
+       <Var name="currentData" dump="true">
+         <Control method="getCurrentData" object="frmSearch"/>
+       </Var>
+
+      <Var name="searchResult" dump="true">
+        <Call library="framework,rm.record,api" function="search">
+           <Param name="text"><Var name="currentData" key="text"/></Param>
+           <Param name="class_code"><Var name="currentData" key="class_code"/></Param>
+           <Param name="dateFrom"><Var name="currentData" key="dateFrom"/></Param>
+           <Param name="dateTo"><Var name="currentData" key="dateTo"/></Param>
+           <Param name="pagenum"><Control method="getCurrentPage" object="grdSearchResult"/></Param>
+           <Param name="pagesize"><Control method="getPageSize" object="grdSearchResult"/></Param>
+         </Call>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Var name="searchResult"/>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="newRecord">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Var name="record" process="true" clear="true"/>
+      <Action name="addRecord"/>
+    </Action>
+
+    <Action name="addRecord" screen="scrAddRecord">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Var name="record" process="true" dump="true"/>
+      <Control method="bind" object="frmAddRecord">
+				<Param>
+				  <Var name="record" process="true"/>
+				</Param>
+			</Control>
+			<Var name="components"><Var name="record" key="components" process="true"/></Var>
+      <Control method="bind" object="grdComponents">
+        <Param>
+          <Var name="components"/>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="saveClass">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Var name="record" key="class_code" process="true"><Var name="POSTDATA" key="class_code"/></Var>
+      <Action name="addRecord"/>
+    </Action>
+
+    <Action name="addComponent" screen="scrAddComponent">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>
+      <Var name="id_plugin"><Var name="POSTDATA" key="id_plugin"/></Var>
+      <Var name="component" key="id_plugin" process="true"><Var name="id_plugin"/></Var>
+      <Var name="plugginSettingsDef">
+        <Call library="framework,rm.component,api" function="getPluginSettingsDefinition">
+          <Param name="id_plugin"><Var name="id_plugin"/></Param>
+        </Call>
+      </Var>
+
+      <ForEach var="plugginSettingsDef" item="setting">
+        <Control method="addField" object="frmAddComponent">
+          <Param>
+            <Set>
+              <Element name="container">setting</Element>
+              <Element name="id"><Var name="setting" key="id"/></Element>
+              <Element name="type"><Var name="setting" key="type"/></Element>
+              <Element name="label"><Var name="setting" key="id"/></Element>
+            </Set>
+          </Param>
+        </Control>
+      </ForEach>
+
+    </Action>
+
+    <Action name="addMetadata" screen="scrAddMetadata">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Var name="class_code" dump="true"><Var name="record" key="class_code" process="true"/></Var>
+      <Var name="class" dump="true">
+        <Call library="framework,rm.class,api" function="get">
+          <Param name="code"><Var name="class_code"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="frmAddMetadata">
+				<Param>
+				  <Var name="class"/>
+				</Param>
+			</Control>
+    </Action>
+
+    <Action name="saveComponentSettings">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Var name="plugginSettingsDef">
+        <Call library="framework,rm.component,api" function="getPluginSettingsDefinition">
+          <Param name="id_plugin"><Var name="component" key="id_plugin" process="true"/></Param>
+        </Call>
+      </Var>
+      <Var name="plugin" dump="true">
+        <Call library="framework,rm.component.plugin,api" function="getById">
+          <Param name="id"><Var name="component" key="id_plugin" process="true"/></Param>
+        </Call>
+      </Var>
+      <Var name="component" key="plugin_name" process="true"><Var name="plugin" key="name"/></Var>
+
+      <Var name="settings"><Set/></Var>
+      <ForEach var="plugginSettingsDef" item="setting">
+        <If condition="$setting->type == 'File'">
+					<Then>
+					 <!-- Upload the file -->
+					 <Var name="idFile">
+                <FileLib method="Upload">
+                    <Param name="UploadFolder"><Config key="uploadFolder"/></Param>
+                    <Param name="Filename"><Guid/></Param>
+                    <Param name="MaxUploadFileSize"><Config key="maxUploadFileSize"/></Param>
+                    <Param name="AllowedExtensions"><Config key="allowedExtensions"/></Param>
+                    <Param name="id_user"><Var name="USER" key="id"/></Param>
+                </FileLib>
+            </Var>
+            <Var name="settings" key="$setting->id"><Var name="idFile"/></Var>
+					</Then>
+					<Else>
+					 <Var name="settings" key="$setting->id"><Var name="POSTDATA" key="$setting->id"/></Var>
+					</Else>
+				</If>
+      </ForEach>
+      <Var name="settings" dump="true"/>
+      <Var name="component" key="settings" process="true"><Var name="settings"/></Var>
+      <Var name="components"><Var name="record" key="components" process="true"/></Var>
+      <Var name="components" key=""><Var name="component" process="true"/></Var>
+      <Var name="component" process="true" dump="true"/>
+      <Var name="record" key="components" process="true"><Var name="components"/></Var>
+      <Var name="record" process="true" dump="true"/>
+      <Action name="addRecord"/>
+    </Action>
+
+    <Action name="saveMetadata">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Var name="record" key="data" process="true"><Var name="POSTDATA" key="data"/></Var>
+      <Action name="addRecord"/>
+    </Action>
+
+
+    <Action name="declareRecord">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <!-- TODO:Validate the record data ... -->
+
+      <!-- Declare de record in the system -->
+      <Var name="id_record" dump="true">
+				<Call library="framework,rm.record,api" function="add">
+					<Param name="class_code"><Var name="record" key="class_code" process="true"/></Param>
+					<Param name="data"><JsonToSet><Var name="record" key="data" process="true"/></JsonToSet></Param>
+					<Param name="componentArray"><Var name="record" key="components" process="true"/></Param>
+				</Call>
+			</Var>
+			<Action name="search"/>
+    </Action>
+
+    <Action name="archiveRecord">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <!-- TODO:Validate the record data ... -->
+
+      <!-- Declare de record in the system -->
+      <!--Call library="framework,rm.record,api" function="archive">
+        <Param name="id_record"><ActionValue/></Param>
+      </Call-->
+      <Action name="search"/>
+    </Action>
+
+    <Action name="view" screen="scrRecordView">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+
+      <Var name="record" dump="true">
+        <Call library="framework,rm.record,api" function="getById">
+          <Param name="id"><ActionValue/></Param>
+        </Call>
+      </Var>
+
+      <!-- Declare de record in the system -->
+      <Var name="components" dump="true">
+        <Call library="framework,rm.record,api" function="getComponents">
+          <Param name="id_record"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Var name="aggregations" dump="true">
+        <Call library="framework,rm.record,api" function="getAggregations">
+          <Param name="id_record"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="frmData">
+        <Param><Var name="record"/></Param>
+      </Control>      
+      <Control method="bind" object="grdComponents">
+        <Param><Var name="components"/></Param>
+      </Control>
+      <Control method="bind" object="grdAggregations">
+        <Param><Var name="aggregations"/></Param>
+      </Control>
+      
+    </Action>
+
+    <Action name="getComponentContent">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <!-- Download -->
+      <Call library="framework,rm.component,api" function="getContent">
+        <Param name="id_component"><ActionValue/></Param>
+      </Call>
+    </Action>
+
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

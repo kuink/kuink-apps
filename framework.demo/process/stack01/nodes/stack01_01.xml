@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+    <Params>
+      <Param name="id_feedback"/>
+    </Params>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+      <Use name="FormatterLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+      <Screen id="screen001" >
+          <Form name="changePasswordForm" title="changePassword">
+            <Password id="oldPassword" label="oldPassword" required="true"/>
+            <Password id="newPassword" label="newPassword" required="true"/>
+            <Password id="confirmNewPassword" label="confirmNewPassword" required="true"/>
+          </Form>
+          <Grid name="resultGrid" infer="true" title="result"/>
+          <Form name="resultForm" infer="true" title="result"/>          
+       </Screen>    
+      <Screen id="soapList" >
+          <Grid name="resultGrid" infer="true" title="result"/>
+       </Screen>    
+      <Screen id="soapCall" >
+          <Form name="callFrm" title="call">
+            <Container id="container"/>
+            <ButtonGroup>
+              <Buttton id="back" label="back" action="soapBack"/>
+              <Buttton id="execute" label="execute" action="soapExecute"/>
+            </ButtonGroup>
+          </Form>
+       </Screen>           
+  
+  
+		<Screen id="screen001b" >
+          <Grid name="resultGrid" infer="true" title="result"/>    
+          <!--Grid name="absenceResume" title="absenceResume" pivot="true" pivotlines="id_person,display_name" pivotcols="subject_code" pivotdata="count_unjustified,max_absences">
+              <Template>
+                  <Columns>
+                      <Column name="id_person"/>
+                      <Column name="display_name"/>
+                      <Column name="__infer"/>
+                      <Column name="__infer_count_unjustified" label="yes">
+                        <Formatter name="Badge" min="0" max="2" showvalue="true" pallete="success">
+                            <Param name="$value >= 0 &amp;&amp; $value &lt; $max/2">success</Param>
+                            <Param name="$value >= $max/2 &amp;&amp; $value &lt; $max">warning</Param>
+                            <Param name="$value == $max">important</Param>
+                            <Param name="$value > $max">inverse</Param>
+                        </Formatter>
+                      </Column>
+                      <Column name="__infer_max_absences"/>
+                    </Columns>
+                    <Actions>
+                      <Action name="init"/>
+                    </Actions>
+              </Template>
+          </Grid -->
+          <!--Grid name="dynamic" title="dynamic" freeze="false">
+            <Template>
+              <Columns>
+                <Column name="id" label="id"/>
+                <Column name="aa" label="aa" type="text"/>
+                <Column name="containerA" type="container"/>
+                <Column name="dd" label="dd"/>
+                <Column name="containerB" type="container"/>
+              </Columns>
+              <Actions separator="true"> 
+                <Action name="init" newcontext="true" confirm="false"/>
+                <Action name="init" newcontext="false" confirm="false"/>
+              </Actions>
+            </Template>
+          </Grid-->
+          
+          <!--Custom name="logEntries" control="framework,log,search"/-->
+          <Form name="test" title="01.01" tabs="top" >
+            <Tab id="first" name="first" label="first"/>
+            <Select id="state" label="state" decoration="info">
+              <Options>
+                <Option id="1">AAAA</Option>
+                <Option id="2">BBBB</Option>
+              </Options>
+            </Select>
+            <Text id="txt11" name="txt11" label="txt11" decoration="success"/>
+            <Text id="txt12" name="txt12" label="txt12" visible="true" required="true" >
+                <Rule attr="visible" condition="$state == '2'" value="false" runat="client"/>
+            </Text>
+            
+            <Tab id="second" name="second" label="second"/>
+            <Text id="txt21" name="txt21" label="txt21" >
+              <Rule attr="visible" condition="$state == '1'" value="false" runat="client"/>
+            </Text>
+            <Text id="txt22" name="txt22" label="txt22" required="false"/>
+            <Tab id="third" name="third" label="third"/>
+            <Text id="txt31" name="txt31" label="txt31" required="false"/>
+            <ButtonGroup>
+              <Button type="cancel" id="prev" label="prev" action="prev"/>  
+              <Button type="submit" id="next" label="next" action="next">
+                <Rule attr="visible" condition="$state == '2'" value="false" runat="client"/>
+              </Button>
+              <Button type="submit" id="something" label="something" action="doSomething" newcontext="true"/>
+            </ButtonGroup>
+        </Form>
+      </Screen>
+	</Screens>
+	<Actions>
+    <Action name="init" screen="screen001">
+          <UserMessage type="information">
+            Informação
+          </UserMessage>
+          <Var name="mail">paulo.tavares@cscm-lx.pt</Var>
+          <Var name="uid">5</Var>
+          <Var name="test" dump="true" >
+            <DataAccess method="getAll" datasource="ldap"> 
+              <Param name="_entity">ou=Users,dc=cscm-lx,dc=pt</Param>
+              <!--Param name="uid">5</Param-->
+              <!--Param name="mail">paulo.tavares@cscm-lx.pt</Param-->
+              <Param name="_attributes">dn,cn,sn,givenname,mail</Param>
+              <!--Param name="_query">(cn=*)</Param-->
+              <Param name="_query"><String parse="true">(uid=$uid)</String></Param>
+              <Param name="_sort">sn</Param>
+            </DataAccess>
+          </Var>
+          
+          <!--Var name="success" >
+            <DataAccess method="update" datasource="ldap"> 
+              <Param name="dn"><Var name="test" key="dn"/></Param>
+              <Param name="sn">Tavares</Param>
+            </DataAccess>
+          </Var-->
+
+          <!--Var name="success">
+            <Call library="framework,authentication,api" function="changePassword">
+              <Param name="entity">ou=Work,ou=Users,dc=cscm-lx,dc=pt</Param>
+              <Param name="uid">paulo.tavares</Param>
+              <Param name="oldPassword">Eishbym2</Param>
+              <Param name="newPassword">Eishbym1</Param>
+            </Call>
+          </Var>
+          <If condition="$success == 1">
+            <Then>
+              <UserMessage type="error">
+                Old password wrong!
+              </UserMessage>
+            </Then>
+          </If-->
+
+          <!-- Var name="success" >
+            <DataAccess method="changePassword" datasource="ldap"> 
+              <Param name="dn"><Var name="test" key="dn"/></Param>
+              <Param name="oldPassword">Eishbym2</Param>
+              <Param name="newPassword">Eishbym1</Param>
+            </DataAccess>
+          </Var>
+          <If condition="$success == 1">
+            <Then>
+              <UserMessage type="error">
+                Old password wrong!
+              </UserMessage>
+            </Then>
+          </If-->
+
+          
+          
+          <!--Var name="s">
+            <DataAccess method="bind" datasource="ldap"> 
+              <Param name="_entity">ou=Work,ou=Users,dc=cscm-lx,dc=pt</Param>
+              <Param name="_user">paulo.tavares</Param>
+              <Param name="_passwd">Eishbym1</Param>
+            </DataAccess>
+          </Var-->
+          <Control method="bind" object="resultGrid">
+            <Param>
+              <Var name="test"/>
+            </Param>
+          </Control>
+        </Action>
+          
+		<Action name="initb" screen="screen001b">
+          <UserMessage type="information">
+            Informação
+          </UserMessage>
+          <Var name="test" >
+            <DataAccess method="execute" datasource="praxis"> 
+              <Param name="_entity">GETAPLICACAOMENU</Param>
+              <Param name="USER">feerica</Param>
+              <Param name="CODIGO">1</Param>
+            </DataAccess>
+          </Var>
+          <Control method="bind" object="resultGrid">
+            <Param>
+              <Var name="test"/>
+            </Param>
+          </Control>
+          <Exit/>
+          
+          
+          <Control method="addColumn" object="dynamic">
+            <Param name="container">containerA</Param>
+            <Param name="name">bb</Param>
+            <Param name="label">bb</Param>
+          </Control>
+          <Control method="addColumn" object="dynamic">
+            <Param name="container">containerB</Param>
+            <Param name="name">cc</Param>
+            <Param name="label">cc</Param>
+            <Param name="type">select</Param>
+            <Param name="datasource">table:legislation_descriptor</Param>
+            <Param name="bindid">id</Param>
+            <Param name="bindvalue">name</Param>
+          </Control>
+          <Var name="bindData" key="0">
+            <Set>
+              <Element name="aa">aa1</Element>
+              <Element name="bb">bb1</Element>
+              <Element name="cc">cc1</Element>
+              <Element name="dd">dd1</Element>
+            </Set>
+          </Var>
+          <Var name="bindData" key="1">
+            <Set>
+              <Element name="aa">aa2</Element>
+              <Element name="bb">bb2</Element>
+              <Element name="cc">cc2</Element>
+              <Element name="dd">dd2</Element>
+            </Set>
+          </Var>
+          <!--Var name="bindData">
+            <Execute method="framework,generic,getAll">
+                <Param name="table">legislation_descriptor</Param>
+                <Param name="fields">*</Param>
+            </Execute>
+          </Var-->
+          <Control method="bind" object="dynamic">
+            <Param>
+              <Var name="bindData"/>
+            </Param>
+          </Control>
+          
+          
+          
+          <!--Var name="absenceResumeResult">
+              <Execute method="pt.cscm-lx.PR09,recordsBook,classDirection.absenceResumeAll">
+                  <Param name="idPerson">2460</Param>
+                  <Param name="idClass">196</Param>
+                  <Param name="idSchoolYear">201314</Param>
+              </Execute>
+          </Var>
+          
+          <Control method="bind" object="absenceResume">
+              <Param><Var name="absenceResumeResult" /></Param>
+          </Control-->
+          
+          <!--Control method="bind" object="logEntries">
+            <Param name="application">pt.cscm-lx.PR08</Param>
+            <Param name="process">enrollment</Param>
+            <Param name="node">01_students</Param>
+            <Param name="action">startEnrollement</Param>
+            <Param name="key">1271</Param>
+          </Control-->
+
+          <Control method="addRule" object="test">
+            <Param>txt11</Param> <!-- field -->
+            <Param>visible</Param>  <!-- attribute -->
+            <Param>$state == 1</Param> <!-- condition -->
+            <Param>client</Param> <!-- runat -->            
+            <Param>false</Param> <!-- value if condition is true -->
+            <Param>true</Param> <!-- value if condition is false -->
+          </Control>
+          <!--Permissions>
+            <Allow type="or">
+              <Role name="Default"/>
+              <Capability name="gecol/person:self.edit"/>
+              <Capability name="gecol/person:self.view"/>
+            </Allow>
+          </Permissions>
+          <Var name="hasPermission">
+            <Capability name="gecol/person:self.edit"/>
+          </Var>
+          <If condition="$hasPermission">
+            <Then>
+              <Print>TEM PERMISSÕES</Print>
+            </Then>
+            <Else>
+              <Print>NÃO TEM PERMISSÕES</Print>
+            </Else>
+          </If-->
+          
+          <!--DataAccess execute="framework,generic,cmisInsert">
+            <Param name="id_school_year">201314</Param>
+            <Param name="id_person">2460</Param>
+          </DataAccess-->
+
+          <Var name="objs" >
+            <DataAccess execute="framework,generic,imapLoad" datasource="imap">
+              <Param name="_entity">INBOX</Param>
+              <Param name="_filter">KEYWORD _Arquivar</Param>
+            </DataAccess>
+          </Var>
+
+          
+          <!--Role>Testa</Role>
+          <Role clear="true"/-->
+		  <!--Var name="USER" /-->
+          <!--Var name="xxx" process="true" >
+            3
+          </Var>
+          <If condition="@teste == 3">
+            <Then>
+              <Print>HURRRAY</Print>
+            </Then>
+          </If>
+          <Var name="xxx" process="true" clear="true"/-->
+          
+          <!--Var name="PARAMS" /-->
+		</Action>
+
+        <Action name="prev" >
+      <RaiseEvent name="prev">
+        <Param name="P01">X</Param>
+        <Param name="P02">Z</Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="doSomething" >      
+      <!--Var name="POSTDATA" /-->
+      <Action name="init"/>
+    </Action>
+      
+      
+    <Action name="next" >      
+      <!--Var name="POSTDATA" /-->
+      <RaiseEvent name="next">
+        <Param name="P01">A</Param>
+        <Param name="P02">B</Param>
+        <!--Param name="RWX">4</Param>
+        <Param name="IMPERSONATE">1234</Param-->
+      </RaiseEvent>
+    </Action>
+
+	</Actions>
+	
+	<Library>
+	 <Function name="test">
+	 <Params>
+	   <Param name="test" output="true"/>
+	 </Params>
+	 <Begin>
+      <Control method="setProperty" object="test">
+        <Param>title</Param>
+        <Param>CHANGED!!!</Param>
+      </Control>
+      <Return>3</Return>
+	 </Begin>
+	 </Function>
+	</Library>
+</Node>
+

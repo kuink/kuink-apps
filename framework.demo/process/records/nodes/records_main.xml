@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+      <Screen id="screenTest" name="screenTest">
+          <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
+          <Form name="aa" id="aa">
+            <Int id="b" name="b" required="true" />
+            <Text id="s" name="s" required="true" icon="envelope" help="aaasdsfdsdf"/>
+            <DateTime id="k" name="k"/>
+            <Date id="j" name="j" disabled="true"/>
+            <Select id="id_school_year" name="id_school_year" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" action="init" />
+            <TextArea id="p" name="p" />
+            <Static id="m" name="m" />
+            <Header name="m2" id="m2" label="My Header"/>
+            <Checkbox name="c1" id="c1" label="Checkbox"/>
+            <CheckBoxList id="educationalProjectItems" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" readonly="true" />
+            <ButtonGroup>
+                <Button type="submit" id="submit" action="ola" confirm="asdasdadavvvvv" />
+            </ButtonGroup>
+          </Form>
+          <Grid id="gridExample" name="gridExample" title="Grid de Exemplo">
+              <Template>
+                  <Columns>
+                      <Column id="id" name="id"/>
+                      <Column id="name" name="name"/>
+                  </Columns>
+                  
+              </Template>
+              <Actions>
+                        <Action id="init" name="init" icon="list" confirm="true"/>
+              </Actions>
+          </Grid>
+      </Screen>
+      <Screen id="screenTest2" name="screenTest2">
+          <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
+          <Form name="aa" id="aa">
+            <Int id="c2" name="c2" required="true" />
+            <ButtonGroup>
+                <Button type="submit" id="submit" action="ola"/>
+            </ButtonGroup>
+          </Form>
+      </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="screenTest">
+
+        <!-- Control method="bind" object="aggregationCtrl">
+            <Param name="aggregation_code">class</Param>
+            <Param name="guid">102FC4BA1698A4BB3EE904779C681DA6</Param>
+        </Control -->
+        <Var name="data" key="k">
+            <DateTimeLib method="now"/>
+        </Var>
+        <Var name="data" key="m">
+            <Lang key="bum"/>
+        </Var>
+        <Control method="bind" object="aa">
+            <Param><Var name="data"/></Param>
+        </Control>
+        
+        <Control method="bind" object="gridExample">
+            <Param>
+                <Call library="gecol.core,schoolYear,api" function="getAll"/>
+            </Param>
+        </Control>
+
+
+    </Action>
+    
+    <Action name="ola" screen="screenTest2">
+        <Print>aaabbbb</Print>
+    </Action>
+  </Actions>
+  <Library forceinterface="true">
+
+      <Function name="createAllInformationSheetRecords">
+          <Params></Params>
+          <Return type="int"/>
+          <Begin>
+              <Var name="evalMoments">
+                  <Execute method="framework,generic,getAll">
+                      <Param name="table">student_evaluation_moment</Param>
+                      <Param name="fields">*</Param>
+                  </Execute>
+              </Var>
+              <ForEach var="evalMoments" item="evalMoment">
+                  <Call library='gecol.core,student.evaluation.moment,api' function='createInformationSheetRecord'>
+                      <Param name='id_student_evaluation_moment'>
+                          <Var name="evalMoment" key="id"/>
+                      </Param>
+                  </Call>
+              </ForEach>
+          </Begin>
+      </Function>
+      <Function name="createAllPFRecords">
+          <Params></Params>
+          <Return type="int"/>
+          <Begin>
+              <Var name='id_file'>5222</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>4A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5225</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>4B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5224</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>4C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5847</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>7A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5503</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>7B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5451</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>7C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5378</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>7D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5500</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>7E.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5508</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>8A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5413</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>8B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5472</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>8C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5441</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>8D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5202</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>8E.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5324</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>9A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5411</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>9B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5231</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>9C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>5229</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>1P</Var> <Var name='class_code'>9D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11256</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>10A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11273</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>10B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11280</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>10C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11335</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>10D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11358</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>10E.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11377</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>11A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11382</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>11B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11387</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>11C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11392</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>11D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11397</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>11E1.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11402</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>11E2.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11407</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>12A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11412</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>12B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11417</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>12C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>13053</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>12D1.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11427</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>12D2.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11432</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>12D3.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>10983</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>4A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>10988</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>4B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>10993</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>4C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>10998</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>5A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11003</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>5B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11008</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>5C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11013</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>5D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11018</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>5E.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11023</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>6A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11028</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>6B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11033</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>6C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11038</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>6D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11043</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>6E.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11057</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>7A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>12631</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>7B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11103</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>7C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11117</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>7D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11122</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>7E.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11136</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>8A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11157</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>8B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11162</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>8C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11168</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>8D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11194</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>8E.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11199</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>9A.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>12307</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>9B.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11233</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>9C.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+              <Var name='id_file'>11243</Var> <Var name='id_school_year'>201314</Var> <Var name='evaluation_moment_code'>2P</Var> <Var name='class_code'>9D.201314</Var><Call function='createPFRecord'><Param name='id_file'><Var name='id_file'/></Param><Param name='evaluation_moment_code'><Var name='evaluation_moment_code'/></Param><Param name='class_code'><Var name='class_code'/></Param>         </Call>
+          </Begin>
+      </Function>
+      <Function name="createPFRecord" scope="private" doc="Function to create a new final evaluation grid record">
+          <Params>
+              <Param name="id_file"/>
+              <Param name="evaluation_moment_code"/>
+              <Param name="class_code"/>
+          </Params>
+          <Return type="single"/>
+          <Begin>
+
+              <Var name="class">
+                  <Execute method="framework,generic,load">
+                      <Param name="table">class</Param>
+                      <Param name="code"><Var name="PARAMS" key="class_code"/></Param>
+                  </Execute>
+              </Var>
+
+              <Var name="evaluationMoment">
+                  <Execute method="framework,generic,load">
+                      <Param name="table">evaluation_moment</Param>
+                      <Param name="code"><Var name="PARAMS" key="evaluation_moment_code"/></Param>
+                  </Execute>
+              </Var>
+
+              <Var name="record">
+                  <Call library="gecol.core,class,api" function="createFinalGridRecord">
+                      <Param name="id_class"><Var name="class" key="id"/></Param>
+                      <Param name="id_file"><Var name="PARAMS" key="id_file"/></Param>
+                      <Param name="id_evaluation_moment"><Var name="evaluationMoment" key="id"/></Param>
+                  </Call>
+              </Var>
+              <Return>
+                  <Var name="record"/>
+              </Return>
+          </Begin>
+      </Function>
+
+  </Library>
+</Node>

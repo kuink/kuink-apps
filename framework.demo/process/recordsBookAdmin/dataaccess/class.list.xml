@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Returns a list of all classes
+    </Doc>
+    <Params>
+    	<Param name="idSchoolYear" />
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[
+            	SELECT c.id, c.name from class c
+            	WHERE c.id_school_year='{param->idSchoolYear}'
+            ]]>
+        </Sql>
+    </Body>
+</Method>

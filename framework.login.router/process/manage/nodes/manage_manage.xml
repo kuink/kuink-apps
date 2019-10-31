@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="ruleOrder">0</Param>
+      <Param name="ruleDirection">1</Param>
+  </Params>
+  <Screens>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Var name="PARAMS" dump="true"/>
+	 		<Var name="result" dump="true">
+				<Call library="framework,login.router,api" function="getRedirectUrl">
+					<Param name="ruleOrder"><Var name="PARAMS" key="ruleOrder"/></Param>
+					<Param name="ruleDirection"><Var name="PARAMS" key="ruleDirection"/></Param>
+				</Call>    
+			</Var>
+			<Var name="PARAMS" dump="true"/>
+			
+			<Var name="url" dump="true">
+				<If condition="$result->inject_rule_order == 1">
+					<Then>
+					  <String.parse><![CDATA[$result->url&ruleOrder=$result->order&ruleDirection=$result->direction]]></String.parse>
+					</Then>
+					<Else>
+					  <Var name="result" key="url"/>
+					</Else>
+				</If>
+			 </Var>
+			 
+			<Redirect><Var name="url"/></Redirect>
+    </Action>
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

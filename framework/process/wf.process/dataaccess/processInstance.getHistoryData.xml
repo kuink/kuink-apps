@@ -1,0 +1,38 @@
+<?xml version='1.0'?>
+<Method>
+  <Doc>
+    Gets process instance token history
+  </Doc>
+  <Params>
+    <Param name="id_process_instance" />
+  </Params>
+  <Body>
+    <GetAll>
+      <XSql>
+        <XSelect>
+          <XField>
+            p.public_key as public_key,
+            p.display_name as display_name,
+            wfpio.obs_public,
+            wfpio.obs_private,
+            wfpio._creation as timestamp
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_wf_process_instance wfpi 
+            INNER JOIN fw_wf_process_instance_obs wfpio ON (wfpio.id_process_instance = wfpi.id)
+            INNER JOIN person p ON (p.id = wfpio.id_person)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>wfpi.id = {param->id_process_instance}</XCondition>
+        </XWhere>
+        <XOrderBy>
+          <XOrder>wfpio._creation asc</XOrder>
+        </XOrderBy>
+      </XSql>
+    </GetAll>
+  </Body>
+</Method>
+

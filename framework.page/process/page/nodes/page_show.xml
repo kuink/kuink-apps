@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+      <Param name="idPage"/>
+    </Params>
+    <Libraries>
+    </Libraries>
+    <Screens>
+        <Screen id="scrPage">
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="scrPage">
+          <Var name="widgets" dump="true">
+            <Call library="framework,page,api" function="getWidgets">
+              <Param name="uuid"><Var name="PARAMS" key="idPage"/></Param>
+            </Call>
+          </Var>
+          <!-- Add a widget control for each widget -->
+          <ForEach var="widgets" item="widget">
+            <AddControl control-type="Widget" name="$widget->code" />
+            <Var name="wdgParams" key="url" dump="true">
+              <String parse="true"><![CDATA[view.php?idWidget=$widget->uuid&modal=$widget->modal]]></String>
+            </Var>
+            <Var name="wdgParams" key="widgetName"><Var name="widget" key="name"/></Var>
+            <Control method="bind" object="$widget->code">
+              <Param><Var name="wdgParams"/></Param>
+            </Control>
+          </ForEach>
+        </Action>
+	</Actions>
+</Node>

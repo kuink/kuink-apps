@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens />
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getAll" doc="">
+      <Params>
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="int" doc="The component types"/>
+      <Begin>
+        <Var name="componentTypes">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_rm_component_type</Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="componentTypes" /></Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

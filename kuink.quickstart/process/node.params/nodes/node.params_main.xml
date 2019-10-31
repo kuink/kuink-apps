@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node showsource="true">
+    <Libraries />
+    <Configuration />
+    <Params>
+      <Param name="param1"/>
+      <Param name="param2"/>
+    </Params>
+    <Screens >
+        <Screen id="scr01" >
+          <Form name="frm01">
+            <ButtonGroup>
+              <Button type="submit" label="submit" id="submit" action="event" />
+            </ButtonGroup>
+          </Form>  
+        </Screen>
+    </Screens>
+    <Actions >
+        <Action name="init" screen="scr01">
+            <Var name="PARAMS" dump="true"/>
+        </Action>        
+        
+        <Action name="event">
+          <RaiseEvent name="test">
+            <Param name="param3"><Var name="PARAMS" key="param1"/></Param>
+            <Param name="param4">Valor</Param>
+          </RaiseEvent>
+        </Action>
+    </Actions>
+    <Library />
+</Node>

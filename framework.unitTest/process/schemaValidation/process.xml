@@ -1,0 +1,6 @@
+<?xml version='1.0'?>
+<Process>
+     <Transitions>
+			 	<Flow role='Teacher' startnode='' event='init' endnode='run' />
+     </Transitions>
+</Process>

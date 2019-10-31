@@ -1,0 +1,1016 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions> </Permissions>
+  <Doc lang="pt-PT"> </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="TemplateLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+
+  <Screens>
+    <Screen id="sc01">
+      <Form name="frmTables">
+        <Header id="hdEntity" label="entity"/>
+        <Select id="entity" required="true" searchable="true" datasource="dsTables"
+          bindid="table" bindvalue="table"/>
+        <Header id="api" label="api"/>
+        <Select id="apiTemplate" required="false" datasource="dsAPITemplates" bindid="id" bindvalue="name"/>
+        <Text id="apiBase" visible="true" required="true">
+          <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Text id="apiApplication" visible="true" required="true">
+          <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Text id="apiProcess" required="true">
+          <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Header id="nodes" label="nodes"/>
+        <Select id="nodeTemplate" required="false" datasource="dsNodeTemplates" bindid="id" bindvalue="name"/>
+        <Text id="nodeBase" required="true">
+          <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Text id="nodeApplication" required="true">
+          <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Text id="nodeProcess" required="true">
+          <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
+        </Text>
+        
+        <Header id="unit" label="unitTests"/>
+        <Select id="unitTemplate" required="false" datasource="dsUnitTemplates" bindid="id" bindvalue="name"/>
+        <Text id="unitBase" required="true">
+          <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Text id="unitApplication" required="true">
+          <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Text id="unitProcess" required="true">
+          <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
+        </Text>
+        
+        
+        <ButtonGroup>
+          <Button type="submit" id="next" action="step02"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+    <Screen id="sc02">
+      <Grid name="grdColumns" title="tableColumns" freeze="false">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="name" id="id" post="true"/>
+            <Column name="label" id="id" type="text"/>
+            <!-- Column name="column_default"/ -->
+            <Column name="required" id="id" type="select" datasource="requiredOptions" bindid="id"
+              bindvalue="name" inputsize="small"/>
+            <Column name="type" id="id" type="select" datasource="typeOptions" bindid="id"
+              bindvalue="name" inputsize="small"/>
+            <Column name="length" id="id" type="text" inputsize="small"/>
+            <Column name="key" id="id" type="text"/>
+            <Column name="formatter" id="id" type="text"/>
+            <Column name="datasource" id="id" type="text"/>
+            <Column name="bindid" id="id" type="text"/>
+            <Column name="bindvalue" id="id" type="text"/>
+            <Column name="list" id="id" type="checkbox"/>
+            <Column name="form" id="id" type="checkbox"/>
+            <Column name="search" id="id" type="checkbox"/>
+            <!--Column name="extra"/-->
+          </Columns>
+          <Actions/>
+        </Template>
+        <Actions>
+          <Action name="step03" label="step03"/>
+        </Actions>
+      </Grid>
+    </Screen>
+
+    <Screen id="sc03">
+      <Form name="frmOptions">
+        <!--Checkbox id="gAPI" label="generateAPI" required="true"/>
+        <Checkbox id="gProcess" label="generateProcess" required="true"/-->
+        <ButtonGroup>
+          <Button id="previous" type="cancel" label="previous" action="step02"/>
+          <Button id="next" type="submit" label="next" action="step04"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdFunctions" title="Functions" freeze="false">
+        <Template>
+          <Columns>
+            <Column name="id" id="id" type="pick"/>
+            <Column name="id_code_template" id="id" type="static" hidden="true" post="true"/>
+            <Column name="code_template" id="id" type="static"/>
+            <Column name="name" id="id" type="static"/>
+            <Column name="code_template_tpl" id="id" type="static" hidden="true" post="true"/>
+            <!-- Column name="column_default"/ -->
+            <Column name="capability" id="id" type="text"/>
+            <!--Column name="extra"/-->
+          </Columns>
+          <Actions/>
+        </Template>
+        <Actions>
+          <Action name="step04" label="next"/>
+        </Actions>
+      </Grid>
+    </Screen>
+
+    <Screen id="sc04">
+      <Form name="frmOptions">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="init"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+    <Screen id="scResume">
+      <Form name="frmOptions">
+        <ButtonGroup>
+          <Button id="previous" type="submit" label="previous" action="step02"/>
+          <Button id="next" type="submit" label="next" action="step03"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Action name="step01"/>
+    </Action>
+
+    <Action name="step01" screen="sc01">
+      <Var name="tablesRaw">
+        <Execute method="this,this,table.list"/>
+      </Var>
+      <Var name="tablesParsed"><Set/></Var>
+      <ForEach var="tablesRaw" item="item">
+        <Var name="first"><Var name="item" key="__first"/></Var>
+        <Var name="table"><Set/></Var>
+        <Var name="table" key="table"><Var name="first"/></Var>
+        <Var name="tablesParsed" key=""><Var name="table"/></Var>
+      </ForEach>
+
+      <Control method="addDataSource" object="frmTables">
+        <Param>dsTables</Param>
+        <Param>
+          <Var name="tablesParsed"/>
+        </Param>
+      </Control>
+
+      <Control method="addDataSource" object="frmTables">
+        <Param>dsAPITemplates</Param>
+        <Param>
+          <Call library="framework,code.template,api" function="getAll">
+            <Param name="code_template_type_code">API</Param>
+          </Call>
+        </Param>
+      </Control>
+      <Control method="addDataSource" object="frmTables">
+        <Param>dsNodeTemplates</Param>
+        <Param>
+          <Call library="framework,code.template,api" function="getAll">
+            <Param name="code_template_type_code">Node</Param>
+          </Call>
+        </Param>
+      </Control>
+      <Control method="addDataSource" object="frmTables">
+        <Param>dsUnitTemplates</Param>
+        <Param>
+          <Call library="framework,code.template,api" function="getAll">
+            <Param name="code_template_type_code">Unit</Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="step02" screen="sc02">
+      <Var name="POSTDATA" />
+      <Var name="general" process="true">
+        <Var name="POSTDATA"/>
+      </Var>
+      <Var name="columns">
+        <DataAccess method="this,this,table.listColumns">
+          <Param name="table">
+            <Var name="POSTDATA" key="entity"/>
+          </Param>
+          <Param name="schema"><DataAccess method="getSchemaName"/></Param>
+        </DataAccess>
+      </Var>
+
+      <!-- Required Options -->
+      <Var name="options" key="id">true</Var>
+      <Var name="options" key="name">true</Var>
+      <Var name="requiredOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">false</Var>
+      <Var name="options" key="name">false</Var>
+      <Var name="requiredOptions" key="">
+        <Var name="options"/>
+      </Var>
+
+      <!-- Type Options -->
+      <Var name="options" key="id">Text</Var>
+      <Var name="options" key="name">Text</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">TextArea</Var>
+      <Var name="options" key="name">Textarea</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">RichTextArea</Var>
+      <Var name="options" key="name">RichTextarea</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">Int</Var>
+      <Var name="options" key="name">Int</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">Select</Var>
+      <Var name="options" key="name">Select</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">Checkbox</Var>
+      <Var name="options" key="name">Checkbox</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">Date</Var>
+      <Var name="options" key="name">Date</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">DateTime</Var>
+      <Var name="options" key="name">DateTime</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">Hidden</Var>
+      <Var name="options" key="name">Hidden</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">Static</Var>
+      <Var name="options" key="name">Static</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+      <Var name="options" key="id">File</Var>
+      <Var name="options" key="name">File</Var>
+      <Var name="typeOptions" key="">
+        <Var name="options"/>
+      </Var>
+
+      <Control method="addDatasource" object="grdColumns">
+        <Param>requiredOptions</Param>
+        <Param>
+          <Var name="requiredOptions"/>
+        </Param>
+      </Control>
+      <Control method="addDatasource" object="grdColumns">
+        <Param>typeOptions</Param>
+        <Param>
+          <Var name="typeOptions"/>
+        </Param>
+      </Control>
+
+      <Control method="bind" object="grdColumns">
+        <Param>
+          <Var name="columns"/>
+        </Param>
+      </Control>
+      <Control method="setProperty" object="grdColumns">
+        <Param>title</Param>
+        <Param>
+          <StringLib method="concatenate">
+            <Param>Entity: </Param>
+            <Param>
+              <Var name="POSTDATA" key="entity"/>
+            </Param>
+          </StringLib>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="step03" screen="sc03">
+      <If condition="@general->apiTemplate != ''">
+        <Then>
+          <Var name="apiFunctions">
+            <Call library="framework,code.template,api" function="getAllItems">
+              <Param name="id_code_template"><Var name="general" key="apiTemplate" process="true"/></Param>
+            </Call>
+          </Var>
+        </Then>
+      </If>
+      <If condition="@general->nodeTemplate != ''">
+        <Then>
+          <Var name="nodeFunctions">
+            <Call library="framework,code.template,api" function="getAllItems">
+              <Param name="id_code_template"><Var name="general" key="nodeTemplate" process="true"/></Param>
+            </Call>
+          </Var>
+        </Then>
+      </If>
+      <If condition="@general->apiTemplate != ''">
+        <Then>
+          <Var name="unitFunctions">
+            <Call library="framework,code.template,api" function="getAllItems">
+              <Param name="id_code_template"><Var name="general" key="unitTemplate" process="true"/></Param>
+            </Call>
+          </Var>
+        </Then>
+      </If>
+
+
+      <If condition="@general->apiTemplate != ''">
+        <Then>
+          <Control method="bind" object="grdFunctions">
+            <Param><Var name="apiFunctions"/></Param>
+          </Control>
+        </Then>
+      </If>
+      <If condition="@general->nodeTemplate != ''">
+        <Then>
+          <Var name="nodeFunctions">
+            <Control method="bind" object="grdFunctions">
+              <Param><Var name="nodeFunctions"/></Param>
+            </Control>
+          </Var>
+        </Then>
+      </If>
+      <If condition="@general->unitTemplate != ''">
+        <Then>
+          <Var name="unitFunctions">
+            <Control method="bind" object="grdFunctions">
+              <Param><Var name="unitFunctions"/></Param>
+            </Control>
+          </Var>
+        </Then>
+      </If>
+
+      <Var name="model" process="true">
+        <Var name="POSTDATA"/>
+      </Var>
+    </Action>
+
+    <Action name="step04" screen="sc04">
+      <Var name="data" key="entity">
+        <Var name="general" key="entity" process="true"/>
+      </Var>
+      <Var name="data" key="apiBase">
+        <Var name="general" key="apiBase" process="true"/>
+      </Var>
+      <Var name="data" key="apiApplication">
+        <Var name="general" key="apiApplication" process="true"/>
+      </Var>
+      <Var name="data" key="apiProcess">
+        <Var name="general" key="apiProcess" process="true"/>
+      </Var>
+      <Var name="data" key="nodeBase">
+        <Var name="general" key="nodeBase" process="true"/>
+      </Var>
+      <Var name="data" key="nodeApplication">
+        <Var name="general" key="nodeApplication" process="true"/>
+      </Var>
+      <Var name="data" key="nodeProcess">
+        <Var name="general" key="nodeProcess" process="true"/>
+      </Var>
+      <Var name="data" key="unitBase">
+        <Var name="general" key="unitBase" process="true"/>
+      </Var>
+      <Var name="data" key="unitApplication">
+        <Var name="general" key="unitApplication" process="true"/>
+      </Var>
+      <Var name="data" key="unitProcess">
+        <Var name="general" key="unitProcess" process="true"/>
+      </Var>
+      <Var name="data" key="attributes">
+        <Var name="model" process="true"/>
+      </Var>
+      <Var name="data" key="functions"><Var name="POSTDATA"/></Var>
+
+      <If condition="@general->apiTemplate != ''">
+        <Then>
+        <Var name="general" process="true" dump="true"/>
+          <!-- Prepare the API application -->
+          <Call function="applicationAdd">
+            <Param name="base"><Var name="general" key="apiBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="apiApplication" process="true"/>
+            </Param>
+          </Call>
+          <Call function="processAdd">
+            <Param name="base"><Var name="general" key="apiBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="apiApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="apiProcess" process="true"/>
+            </Param>
+          </Call>
+          <Call function="nodeAdd">
+            <Param name="template">nodeAdd</Param>
+            <Param name="base"><Var name="general" key="apiBase" process="true"/></Param>
+            <Param name="application"><Var name="general" key="apiApplication" process="true"/></Param>
+            <Param name="process"><Var name="general" key="apiProcess" process="true"/></Param>
+            <Param name="type">lib</Param>
+            <Param name="node">api</Param>
+          </Call>
+          <!-- Add all functions in it -->
+          <ForEach var="POSTDATA" item="item">
+              <If condition="$item->SELECTED == 1 &amp;&amp; $item->id_code_template == @general->apiTemplate">
+                <Then>
+                  <Call function="addElementToNode">
+                    <Param name="template"><Var name="item" key="code_template_tpl"/> </Param>
+                    <Param name="data">
+                      <Var name="data"/>
+                    </Param>
+                    <Param name="base"><Var name="general" key="apiBase" process="true"/></Param>
+                    <Param name="application">
+                      <Var name="general" key="apiApplication" process="true"/>
+                    </Param>
+                    <Param name="process">
+                      <Var name="general" key="apiProcess" process="true"/>
+                    </Param>
+                    <Param name="type">lib</Param>
+                    <Param name="node">api</Param>
+                    <Param name="xPath">/Node/Library</Param>
+                  </Call>
+                  <UserMessage type="success">
+                    <Lang key="$item->code_template_tpl"/>
+                  </UserMessage>
+                </Then>
+              </If>
+          </ForEach>
+          
+          <!-- legacy search dataaccess -->
+          <Var name="fxDASearch" dump="true">
+            <TemplateLib method="ExecuteTemplate">
+              <Param>framework.ide</Param>
+              <Param>generator</Param>
+              <Param>dataAccessSearch</Param>
+              <Param>
+                <Var name="data"/>
+              </Param>
+            </TemplateLib>
+          </Var>
+          <ReflectionLib method="dataaccessAdd">
+            <Param name="base"><Var name="general" key="apiBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="apiApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="apiProcess" process="true"/>
+            </Param>
+            <Param name="node">search</Param>
+            <Param name="xmlDefinition">
+              <Var name="fxDASearch"/>
+            </Param>
+          </ReflectionLib>
+        </Then>
+      </If>
+
+      <If condition="@general->nodeTemplate != ''">
+        <Then>
+          <Call function="applicationAdd">
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+          </Call>
+          <Call function="processAdd">
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+          </Call>
+          <Call function="nodeAdd">
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+          </Call>
+          <!-- Add the search screen -->
+          <Call function="addElementToNode">
+            <Param name="template">screenSearch</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Screens</Param>
+          </Call>
+
+          <!-- Add the view screen -->
+          <Call function="addElementToNode">
+            <Param name="template">screenView</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Screens</Param>
+          </Call>
+
+          <!-- Add the edit screen -->
+          <Call function="addElementToNode">
+            <Param name="template">screenEdit</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Screens</Param>
+          </Call>
+
+          <!-- Add the init Action-->
+          <Call function="addElementToNode">
+            <Param name="template">actionInit</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Actions</Param>
+          </Call>
+
+          <!-- Add the search Action -->
+          <Call function="addElementToNode">
+            <Param name="template">actionSearch</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Actions</Param>
+          </Call>
+
+          <!-- Add the view Action -->
+          <Call function="addElementToNode">
+            <Param name="template">actionView</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Actions</Param>
+          </Call>
+
+          <!-- Add the save Action -->
+          <Call function="addElementToNode">
+            <Param name="template">actionSave</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Actions</Param>
+          </Call>
+
+          <!-- Add the delete Action -->
+          <Call function="addElementToNode">
+            <Param name="template">actionInsert</Param>
+            <Param name="data"><Var name="data"/></Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application"><Var name="general" key="nodeApplication" process="true"/></Param>
+            <Param name="process"><Var name="general" key="nodeProcess" process="true"/></Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Actions</Param>
+          </Call>
+
+          <!-- Add the delete Action -->
+          <Call function="addElementToNode">
+            <Param name="template">actionDelete</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Actions</Param>
+          </Call>
+
+          <!-- Add the edit Action -->
+          <Call function="addElementToNode">
+            <Param name="template">actionEdit</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="nodeBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="nodeApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="nodeProcess" process="true"/>
+            </Param>
+            <Param name="type">nodes</Param>
+            <Param name="node">manage</Param>
+            <Param name="xPath">/Node/Actions</Param>
+          </Call>
+          <UserMessage type="success">
+            <Lang key="nodeProcess"/>
+          </UserMessage>
+        </Then>
+      </If>
+			<!-- Handle unit tests -->
+			<!-- Setting the default unit tests prefix name based on the apiProcess or on the entity in apiProess is empty -->
+			<Var name="unitPrefix">
+				<If condition="@general->apiProcess == ''">
+					<Then>
+						<Var name="general" key="entity" process="true"/>
+					</Then>
+					<Else>
+						<Var name="general" key="apiProcess" process="true"/>
+					</Else>
+				</If>
+			</Var>
+			<If condition="@general->unitTemplate != ''">
+				<Then>
+					<!-- Create the unit test application and process-->
+          <Call function="applicationAdd">
+            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="unitApplication" process="true"/>
+            </Param>
+          </Call>
+          <Call function="processAdd">
+            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="unitApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="unitProcess" process="true"/>
+            </Param>
+          </Call>
+          <!-- Add the unitTest auxiliary library -->
+          <Var name="general" dump="true" process="true"/>
+          <Call function="nodeAdd">
+            <Param name="template">nodeAdd</Param>
+            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+            <Param name="type">lib</Param>
+            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+          </Call>
+          <!-- Now add the aux function to add a dummy element in the aux library-->
+          <Call function="addElementToNode">
+            <Param name="template">Unit.Simple.AddAux</Param>
+            <Param name="data">
+              <Var name="data"/>
+            </Param>
+            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+            <Param name="application">
+              <Var name="general" key="unitApplication" process="true"/>
+            </Param>
+            <Param name="process">
+              <Var name="general" key="unitProcess" process="true"/>
+            </Param>
+            <Param name="type">lib</Param>
+            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="xPath">/Node/Library</Param>
+          </Call>
+          <!-- Adding the prepare, run and clean functions so unit test application doesn't throw an error -->
+          <Call function="addElementToNode">
+            <Param name="template">Unit.Simple.prepare</Param>
+            <Param name="data"><Var name="data"/></Param>
+            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+            <Param name="type">lib</Param>
+            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="xPath">/Node/Library</Param>
+          </Call>
+          <Call function="addElementToNode">
+            <Param name="template">Unit.Simple.run</Param>
+            <Param name="data"><Var name="data"/></Param>
+            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+            <Param name="type">lib</Param>
+            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="xPath">/Node/Library</Param>
+          </Call>
+          <Call function="addElementToNode">
+            <Param name="template">Unit.Simple.clean</Param>
+            <Param name="data"><Var name="data"/></Param>
+            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+            <Param name="type">lib</Param>
+            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="xPath">/Node/Library</Param>
+          </Call>
+				</Then>
+			</If>
+			
+      <ForEach var="POSTDATA" item="item">
+          <If condition="$item->SELECTED == 1 &amp;&amp; $item->id_code_template == @general->unitTemplate">
+            <Then>
+            	<Var name="data" key="unitTemplate"><Var name="item" key="code_template_tpl"/></Var>
+            	<Var name="data" key="unitPrefix"><Var name="unitPrefix"/></Var>
+							<!-- Add a unit test node for each funtion in unit test -->
+		          <Call function="nodeAdd">
+		            <Param name="template">nodeAdd</Param>
+		            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+		            <Param name="type">lib</Param>
+		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		          </Call>
+		          <!-- Now add the aux function to add a dummy element in the aux library-->
+		          <!-- Add the test prepare function -->
+		          <Call function="addElementToNode">
+		            <Param name="template">Unit.Simple.prepare</Param>
+		            <Param name="data"><Var name="data"/></Param>
+		            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+		            <Param name="type">lib</Param>
+		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		            <Param name="xPath">/Node/Library</Param>
+		          </Call>				          		   
+		          <!-- Add the test run function -->       
+		          <Call function="addElementToNode">
+		            <Param name="template"><Var name="item" key="code_template_tpl"/></Param>
+		            <Param name="data"><Var name="data"/></Param>
+		            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+		            <Param name="type">lib</Param>
+		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		            <Param name="xPath">/Node/Library</Param>
+		          </Call>
+		          <!-- Add the test clean function -->
+		          <Call function="addElementToNode">
+		            <Param name="template">Unit.Simple.clean</Param>
+		            <Param name="data"><Var name="data"/></Param>
+		            <Param name="base"><Var name="general" key="unitBase" process="true"/></Param>
+		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
+		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
+		            <Param name="type">lib</Param>
+		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		            <Param name="xPath">/Node/Library</Param>
+		          </Call>
+              <UserMessage type="success">
+                <Lang key="$item->code_template_tpl"/>
+              </UserMessage>		          
+            </Then>
+          </If>
+      </ForEach>
+
+    </Action>
+  </Actions>
+
+  <Library>
+    <Function name="applicationAdd">
+      <Params>
+        <Param name="base" required="true"/>
+        <Param name="application" required="true"/>
+      </Params>
+      <Begin>
+        <Var name="data" key="application">
+          <Var name="application"/>
+        </Var>
+        <Var name="applicationTpl">
+          <TemplateLib method="ExecuteTemplate">
+            <Param>framework.ide</Param>
+            <Param>generator</Param>
+            <Param>applicationAdd</Param>
+            <Param>
+              <Var name="data"/>
+            </Param>
+          </TemplateLib>
+        </Var>
+        <Var name="applicationLangTpl">
+          <TemplateLib method="ExecuteTemplate">
+            <Param>framework.ide</Param>
+            <Param>generator</Param>
+            <Param>langAdd</Param>
+            <Param>
+              <Var name="data"/>
+            </Param>
+          </TemplateLib>
+        </Var>
+
+        <ReflectionLib method="applicationAdd">
+          <Param name="base"><Var name="base"/></Param>
+          <Param name="application"><Var name="application"/></Param>
+          <Param name="xmlDefinition"><Var name="applicationTpl"/></Param>
+          <Param name="langXmlDefinition"><Var name="applicationLangTpl"/></Param>
+          <Param name="override">false</Param>
+        </ReflectionLib>
+
+        <!-- Register the application -->
+        <Call library="framework,application,api" function="register">
+          <Param name="base"><Var name="PARAMS" key="base"/></Param>
+          <Param name="application"><Var name="PARAMS" key="application"/></Param>
+        </Call>
+      </Begin>
+    </Function>
+
+    <Function name="processAdd">
+      <Params>
+        <Param name="base" required="true"/>
+        <Param name="application" required="true"/>
+        <Param name="process" required="true"/>
+      </Params>
+      <Begin>
+        <Var name="processTpl">
+          <TemplateLib method="ExecuteTemplate">
+            <Param>framework.ide</Param>
+            <Param>generator</Param>
+            <Param>processAdd</Param>
+            <Param>
+              <Null/>
+            </Param>
+          </TemplateLib>
+        </Var>
+        <ReflectionLib method="processAdd">
+          <Param name="base"><Var name="base"/></Param>
+          <Param name="application">
+            <Var name="application"/>
+          </Param>
+          <Param name="process">
+            <Var name="process"/>
+          </Param>
+          <Param name="xmlDefinition">
+            <Var name="processTpl"/>
+          </Param>
+          <Param name="override">false</Param>
+        </ReflectionLib>
+      </Begin>
+    </Function>
+
+    <Function name="nodeAdd">
+      <Params>
+        <Param name="base" required="true"/>
+        <Param name="application" required="true"/>
+        <Param name="process" required="true"/>
+        <Param name="type" required="true"/>
+        <Param name="node" required="true"/>
+      </Params>
+      <Begin>
+        <Var name="nodeTpl">
+          <TemplateLib method="ExecuteTemplate">
+            <Param>framework.ide</Param>
+            <Param>generator</Param>
+            <Param>nodeAdd</Param>
+            <Param>
+              <Null/>
+            </Param>
+          </TemplateLib>
+        </Var>
+        <ReflectionLib method="nodeAdd">
+          <Param name="base"><Var name="base"/></Param>
+          <Param name="application">
+            <Var name="application"/>
+          </Param>
+          <Param name="process">
+            <Var name="process"/>
+          </Param>
+          <Param name="type">
+            <Var name="type"/>
+          </Param>
+          <Param name="node">
+            <Var name="node"/>
+          </Param>
+          <Param name="xmlDefinition">
+            <Var name="nodeTpl"/>
+          </Param>
+          <Param name="override">false</Param>
+        </ReflectionLib>
+      </Begin>
+    </Function>
+
+    <Function name="addElementToNode">
+      <Params>
+        <Param name="template" required="true"/>
+        <Param name="data" required="true"/>
+        <Param name="base" required="true"/>
+        <Param name="application" required="true"/>
+        <Param name="process" required="true"/>
+        <Param name="type" required="true"/>
+        <Param name="node" required="true"/>
+        <Param name="xPath" required="true"/>
+      </Params>
+      <Begin>
+        <Var name="element">
+          <TemplateLib method="ExecuteTemplate">
+            <Param>framework.ide</Param>
+            <Param>generator</Param>
+            <Param>
+              <Var name="template"/>
+            </Param>
+            <Param>
+              <Var name="data"/>
+            </Param>
+          </TemplateLib>
+        </Var>
+        <ReflectionLib method="nodeAddElement">
+          <Param name="base">
+            <Var name="base"/>
+          </Param>
+          <Param name="application">
+            <Var name="application"/>
+          </Param>
+          <Param name="process">
+            <Var name="process"/>
+          </Param>
+          <Param name="type">
+            <Var name="type"/>
+          </Param>
+          <Param name="node">
+            <Var name="node"/>
+          </Param>
+          <Param name="xPath"><Var name="xPath"/></Param>
+          <Param name="xmlDefinition">
+            <Var name="element"/>
+          </Param>
+          <Param name="override">false</Param>
+        </ReflectionLib>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

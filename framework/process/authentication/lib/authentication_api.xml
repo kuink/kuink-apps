@@ -1,0 +1,925 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib" />
+    <Use name="UtilsLib" type="lib" />
+    <Use name="StringLib" type="lib" />
+    <Use name="MathLib" type="lib"/>    
+  </Libraries>
+  <Actions>
+    <Action name="init" />
+  </Actions>
+  <Library forceinterface="true"> <!-- Forces the calls to respect the interface: params and return -->
+
+    <Function name="getPasswordPoliciesText" doc="Get the password policies Text">
+      <Params />
+      <Return type="string" doc="The policies text" />
+      <Begin>
+        <Var name="passwordPolicies" key="minAlphaUpper">
+          <Config key="authentication.password.minAlphaUpper" />
+        </Var>
+        <Var name="passwordPolicies" key="minAlphaLower">
+          <Config key="authentication.password.minAlphaLower" />
+        </Var>
+        <Var name="passwordPolicies" key="minNumeric">
+          <Config key="authentication.password.minNumeric" />
+        </Var>
+        <Var name="passwordPolicies" key="minNonAlphaNumeric">
+          <Config key="authentication.password.minNonAlphaNumeric" />
+        </Var>
+        <Var name="passwordHelp">
+          <Lang key="passwordPoliciesHead" />
+        </Var>
+        <Var name="passwordHelp">
+          <StringLib method="concatenate">
+            <Param>
+              <Var name="passwordHelp" />
+            </Param>
+            <Param>
+              <Lang key="minLength">
+                <Param>
+                  <Config key="authentication.password.minLength" />
+                </Param>
+              </Lang>
+            </Param>
+          </StringLib>
+        </Var>
+
+        <ForEach var="passwordPolicies" item="item" key="key">
+          <If condition="$item != 0">
+            <Then>
+              <Var name="passwordHelp">
+                <StringLib method="concatenate">
+                  <Param>
+                    <Var name="passwordHelp" />
+                  </Param>
+                  <Param>
+                    <Lang key="$key">
+                      <Param>
+                        <Var name="item" />
+                      </Param>
+                    </Lang>
+                  </Param>
+                </StringLib>
+              </Var>
+            </Then>
+          </If>
+        </ForEach>
+        <Var name="passwordHelp">
+          <StringLib method="concatenate">
+            <Param>
+              <Var name="passwordHelp" />
+            </Param>
+            <Param>
+              <Lang key="passwordPoliciesTail" />
+            </Param>
+          </StringLib>
+        </Var>
+
+        <Return>
+          <Var name="passwordHelp" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="resetPasswordRequest" doc="Adds a Request to change a password. Notifies the user by email">
+      <Params>
+        <Param name="uid" doc="The user uid of the user" />
+        <Param name="email" doc="The user email of the user" />
+      </Params>
+      <Errors>
+        <Error code="-1" doc="user doesn't exists"/>
+      </Errors>        
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="error">0</Var>
+        <If condition="$PARAMS->uid=='' &amp;&amp; $PARAMS->email==''">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+        </If>
+      
+        <Var name="fwUser">      
+          <If condition="$PARAMS->uid!=''">
+            <Then>
+              <Call library="framework,user,api" function="getByUsername">
+                <Param name="username"><Var name="PARAMS" key="uid"/></Param>
+              </Call>
+            </Then>
+            <Else>
+              <Call library="framework,user,api" function="getByEmail">
+                <Param name="email"><Var name="PARAMS" key="email"/></Param>
+              </Call>
+            </Else>
+          </If>
+        </Var>
+        <If condition="$fwUser == ''">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+        </If>
+        
+        <!-- If no errors then create the request and notify the user -->
+        <If condition="$error == 0">
+          <Then>
+            <!-- Create the request -->
+            <Var name="requestGuid" >
+              <Call library="framework,request,api" function="addByCode">
+                <Param name="request_category_code">password.reset</Param>
+                <Param name="data"><Var name="fwUser" key="username"/></Param>
+                <Param name="allowDuplicates">1</Param>
+								<Param name="assyncProcess"><Int>0</Int></Param>                
+              </Call>      
+            </Var>
+            
+            <!-- Building the request url -->
+            <Var name="resetUrl"><Config key="authentication.password.resetPasswordUrl"/></Var>
+            <Var name="resetPasswordUrl">
+              <String parse="true"><![CDATA[$resetUrl$requestGuid]]></String>
+            </Var>
+                        
+            <Var name="data" key="url"><Var name="resetPasswordUrl"/></Var>
+            <!-- Notify the user by email with the new password -->
+            <Call library="framework,message,api" function="sendSimpleMessage">
+              <Param name="template">framework,authentication,passwordChangeRequest</Param>
+              <Param name="to_name"><Var name="fwUser" key="display_name"/></Param>
+              <Param name="to_email"><Var name="fwUser" key="email"/></Param>
+              <Param name="from_name"><Config key="authentication.password.fromName"/></Param>
+              <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>
+              <Param name="guid"><Guid/></Param>
+              <Param name="data"><Var name="data"/></Param>
+            </Call>
+          </Then>
+        </If>
+        <Return><Var name="error"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="changePassword" doc="Changes a user password">
+      <Params>
+        <Param name="uid" doc="The user uid in ldap" />
+        <Param name="oldPassword" doc="The ols password" />
+        <Param name="newPassword" doc="The new Password" />
+        <Param name="confirmNewPassword" doc="The new Password confirmation" />
+      </Params>
+      <Return type="single" doc="">
+        <External name="errors" type="int"
+          doc="Number of errors. If 0 password changed" />
+        <External name="errorsMsg" type="text"
+          doc="Message containing all errors" />
+      </Return>
+      <Begin>
+
+        <Var name="ret" >
+          <Call function="validateNewPassword">
+            <Param name="oldPassword">
+              <Var name="PARAMS" key="oldPassword" />
+            </Param>
+            <Param name="newPassword">
+              <Var name="PARAMS" key="newPassword" />
+            </Param>
+            <Param name="confirmNewPassword">
+              <Var name="PARAMS" key="confirmNewPassword" />
+            </Param>
+          </Call>
+        </Var>
+
+        <Var name="fwUser" >
+          <Call library="framework,user,api" function="getByUsername">
+            <Param name="username"><Var name="PARAMS" key="uid"/></Param>
+          </Call>
+        </Var>
+        
+        <!-- Change the password in ldap -->
+        <If condition="$ret->errors == 0">
+          <Then>
+            <Var name="error">0</Var>
+
+            <!-- Try to bind with the old password -->
+            <Var name="bind" >
+		          <Call library="framework,authentication,api" function="bindPassword">
+		            <Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+		            <Param name="password"><Var name="PARAMS" key="oldPassword"/></Param>
+		          </Call>
+            </Var>
+            <If condition="$bind == 0">
+              <Then>
+                <!-- Set Error -->
+                <Var name="error">1</Var>
+              </Then>
+              <Else>
+                <!-- User bind with the old password so... Add and the Process Request -->
+                <!-- Insert request -->
+                <Var name="requestGuid" >
+                  <Call library="framework,request,api" function="addByCode">
+                    <Param name="request_category_code">password.reset</Param>
+                    <Param name="data"><Var name="PARAMS" key="uid"/></Param>
+                    <Param name="allowDuplicates">1</Param>   
+                    <Param name="assyncProcess"><Int>0</Int></Param>
+                  </Call>      
+                </Var>                
+                <Var name="setPasswordError" >
+                  <Call library="framework,authentication,api" function="setPassword">
+                    <Param name="requestGuid"><Var name="requestGuid"/></Param>
+                    <Param name="newPassword"><Var name="PARAMS" key="newPassword" /></Param>
+                    <Param name="confirmNewPassword"><Var name="PARAMS" key="confirmNewPassword" /></Param>
+                  </Call>
+                </Var>
+              </Else>
+            </If>
+            
+            <If condition="$error != 0 || $setPasswordError->errors != 0">
+              <Then>
+                <Var name="ret" key="errors" sum="1" />
+                <Var name="ret" key="errorsMsg">
+                  <StringLib method="concatenate">
+                    <Param>
+                      <Var name="ret" key="errorsMsg" />
+                    </Param>
+                    <Param>
+                      <Lang key="errorChangingPassword" />
+                    </Param>
+                  </StringLib>
+                </Var>
+              </Then>
+            </If>
+          </Then>
+        </If>
+
+        <Var name="ret" key="errorsMsg">
+          <StringLib method="concatenate">
+            <Param>
+              <Lang key="passwordErrorsHead" />
+            </Param>
+            <Param>
+              <Var name="ret" key="errorsMsg" />
+            </Param>
+            <Param>
+              <Lang key="passwordErrorsTail" />
+            </Param>
+          </StringLib>
+        </Var>
+
+        <!--Var name="ret" key="errors"><Var name="errors"/></Var> <Var name="ret" 
+          key="errorsMsg"><Var name="errorsStr"/></Var -->
+        <Return>
+          <Var name="ret" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="adminSetPassword" doc="Changes a user password - Used only by admins, can change any password">
+      <Params>
+        <Param name="uid" doc="The user uid in ldap" />
+        <Param name="newPassword" doc="The new Password" />
+        <Param name="confirmNewPassword" doc="The new Password confirmation" />
+      </Params>
+      <Return type="single" doc="">
+        <External name="errors" type="int"
+          doc="Number of errors. If 0 password changed" />
+        <External name="errorsMsg" type="text"
+          doc="Message containing all errors" />
+      </Return>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/authentication.password::change.all"/>
+          </Allow>
+        </Permissions>
+        <Var name="PARAMS"/>
+        <Var name="ret">
+          <Call function="validateNewPassword">
+            <Param name="oldPassword"><Null/></Param>
+            <Param name="newPassword">
+              <Var name="PARAMS" key="newPassword" />
+            </Param>
+            <Param name="confirmNewPassword">
+              <Var name="PARAMS" key="confirmNewPassword" />
+            </Param>
+          </Call>
+        </Var>
+
+        <Var name="fwUser">
+          <Call library="framework,user,api" function="getByUsername">
+            <Param name="username"><Var name="PARAMS" key="uid"/></Param>
+          </Call>
+        </Var>
+
+        <If condition="$ret->errors == 0">
+          <Then>
+            <Var name="error">0</Var>
+
+            <!-- User bind with the old password so... Add the Process Request -->
+            <!-- Insert request -->
+            <Try>
+              <Instructions>
+                <Var name="requestGuid">
+                  <Call library="framework,request,api" function="addByCode">
+                    <Param name="request_category_code">password.reset</Param>
+                    <Param name="data"><Var name="PARAMS" key="uid"/></Param>
+                    <Param name="allowDuplicates">1</Param> 
+                    <Param name="assyncProcess"><Int>0</Int></Param>               
+                  </Call>      
+                </Var>                
+                <Var name="setPasswordError">
+                  <Call library="framework,authentication,api" function="setPassword">
+                    <Param name="requestGuid"><Var name="requestGuid"/></Param>
+                    <Param name="newPassword"><Var name="PARAMS" key="newPassword" /></Param>
+                    <Param name="confirmNewPassword"><Var name="PARAMS" key="confirmNewPassword" /></Param>
+                  </Call>
+                </Var>
+              </Instructions>
+              <Catch>
+                <UserMessage type="error">
+                  <Var name="EXCEPTION"/>
+                </UserMessage>
+              </Catch>
+            </Try>
+            
+            <If condition="$error != 0 || $setPasswordError->errors != 0">
+              <Then>
+                <Var name="ret" key="errors" sum="1" />
+                <Var name="ret" key="errorsMsg">
+                  <StringLib method="concatenate">
+                    <Param>
+                      <Var name="ret" key="errorsMsg" />
+                    </Param>
+                    <Param>
+                      <Lang key="errorChangingPassword" />
+                    </Param>
+                  </StringLib>
+                </Var>
+              </Then>
+            </If>
+          </Then>
+        </If>
+
+        <Var name="ret" key="errorsMsg">
+          <StringLib method="concatenate">
+            <Param>
+              <Lang key="passwordErrorsHead" />
+            </Param>
+            <Param>
+              <Var name="ret" key="errorsMsg" />
+            </Param>
+            <Param>
+              <Lang key="passwordErrorsTail" />
+            </Param>
+          </StringLib>
+        </Var>
+
+        <!--Var name="ret" key="errors"><Var name="errors"/></Var> <Var name="ret" 
+          key="errorsMsg"><Var name="errorsStr"/></Var -->
+        <Return>
+          <Var name="ret" />
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="setPassword"
+      doc="Sets a user password. It needs a valid request guid to get the uid">
+      <Params>
+        <Param name="requestGuid" doc="The request guid" />
+        <Param name="newPassword" doc="The new Password" />
+        <Param name="confirmNewPassword" doc="The new Password confirmation" />
+      </Params>
+      <Return type="single" doc="">
+        <External name="errors" type="int"
+          doc="Number of errors. If 0 password changed" />
+        <External name="errorsMsg" type="text"
+          doc="Message containing all errors" />
+      </Return>
+      <Begin>
+        <!-- Validate the request -->
+        <Var name="request" >
+          <Call library="framework,request,api" function="getData">
+            <Param name="guid"><Var name="PARAMS" key="requestGuid"/></Param>
+          </Call>
+        </Var>
+        <If condition="$request == ''">
+          <Then>
+            <Exception><Lang key="Invalid request"/></Exception>
+          </Then>
+        </If>
+        
+        <Var name="fwUser" >
+          <Call library="framework,user,api" function="getByUsername">
+            <Param name="username"><Var name="request"/></Param>
+          </Call>
+        </Var>
+        
+        <Var name="ret" >
+          <Call function="validateNewPassword">
+            <Param name="oldPassword">
+              <Null />
+            </Param>
+            <Param name="newPassword">
+              <Var name="PARAMS" key="newPassword" />
+            </Param>
+            <Param name="confirmNewPassword">
+              <Var name="PARAMS" key="confirmNewPassword" />
+            </Param>
+          </Call>
+        </Var>
+        <Var name="dataSourceList"><Config key="authentication.dataSource"/></Var>
+		    <Var name="dataSources"><ListToSet><Var name="dataSourceList"/></ListToSet></Var>
+        <!-- Change the password in ldap -->
+        <Var name="ldapErrors">0</Var>
+        <Var name="ldapLog"><String/></Var>
+        <If condition="$ret->errors == 0">
+          <Then>
+            <!-- Get the list of internal ldap servers and force the set of password -->
+            <ForEach var="dataSources" item="dataSource">
+					    <Var name="loginField">
+					      <DataAccess method="getDataSourceParam" datasource="$dataSource">
+					        <Param name="name">loginField</Param>
+					      </DataAccess>
+					    </Var>
+	            <Var name="success">0</Var>
+	            <Var name="ldapUser">
+	              <DataAccess method="load" datasource="$dataSource">
+	                <Param name="_attributes">dn,cn,sn,givenname,mail</Param>
+	                <Param name="$loginField">
+	                  <Var name="request"/>
+	                </Param>
+	              </DataAccess>
+	            </Var>
+	            <If condition="$ldapUser != ''">
+	              <Then>
+		              <Var name="success">
+		                <DataAccess method="setPassword" datasource="$dataSource">
+		                  <Param name="dn">
+		                    <Var name="ldapUser" key="dn" />
+		                  </Param>
+		                  <Param name="newPassword">
+		                    <Var name="PARAMS" key="newPassword" />
+		                  </Param>
+		                </DataAccess>
+		              </Var>
+		              <Var name="ldapErrors" value="$ldapErrors + $success"/>
+		              <Var name="ldapLog"><String.parse>$ldapLog $dataSource (error $success);</String.parse></Var>
+	              </Then>
+	              <Else>
+		              <Var name="ldapErrors" value="$ldapErrors + 1"/>
+	                <Var name="ldapLog"><String.parse>$ldapLog $dataSource (error NO_USER);</String.parse></Var>
+	              </Else>
+	            </If>
+            </ForEach>
+          
+            <!-- Try to change password in google Apps -->
+            <Var name="googleAppsSuccess">
+              <DataAccess method="update" datasource="googleAPIAdminSDK">
+                <Param name="uid"><Var name="request"/></Param>
+                <Param name="password"><Var name="PARAMS" key="newPassword" /></Param>
+              </DataAccess>
+            </Var>
+            
+            <Var name="ldapResult" >
+              <If condition="$ldapErrors == 0">
+                <Then>OK</Then>
+                <Else>ERROR</Else>
+              </If>
+            </Var>
+
+            <Var name="googleResult">
+              <If condition="$googleAppsSuccess == 1">
+                <Then>OK</Then>
+                <Else>ERROR</Else>
+              </If>
+            </Var>
+            
+            <Var name="requestLog" dump="true"><String parse="true">LDAP:$ldapResult [$ldapLog]; Google:$googleResult</String></Var>
+            
+            <!-- Close the request -->
+            <Call library="framework,request,api" function="close">
+              <Param name="guid"><Var name="PARAMS" key="requestGuid"/></Param>
+              <Param name="status_code">ok</Param>
+              <Param name="log"><Var name="requestLog"/></Param>
+            </Call>
+            
+            <If condition="$success != 0">
+              <Then>
+                <Var name="ret" key="errors" sum="1" />
+                <Var name="ret" key="errorsMsg">
+                  <StringLib method="concatenate">
+                    <Param>
+                      <Var name="ret" key="errorsMsg" />
+                    </Param>
+                    <Param>
+                      <Lang key="errorChangingPassword" />
+                    </Param>
+                  </StringLib>
+                </Var>
+              </Then>
+            </If>
+          </Then>
+        </If>
+
+        <Var name="ret" key="errorsMsg">
+          <StringLib method="concatenate">
+            <Param>
+              <Lang key="passwordErrorsHead" />
+            </Param>
+            <Param>
+              <Var name="ret" key="errorsMsg" />
+            </Param>
+            <Param>
+              <Lang key="passwordErrorsTail" />
+            </Param>
+          </StringLib>
+        </Var>
+
+        <Return>
+          <Var name="ret" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="generatePassword" doc="generates a valid password">
+      <Params/>
+      <Return type="text" doc="The generated Password"/>
+      <Begin>
+        <Var name="alphaUpper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Var>
+        <Var name="alphaLower">abcdefghijklmnopqrstuvwxyz</Var>
+        <Var name="numeric">0123456789</Var>
+        <Var name="nonAlphaNumeric">!?</Var>
+         
+        <Var name="newPassword"><String/></Var>
+        <Var name="minLength">
+          <Config key="authentication.password.minLength" />
+        </Var>
+        <Var name="minAlphaUpper">
+          <Config key="authentication.password.minAlphaUpper" />
+        </Var>
+        <Var name="minAlphaLower">
+          <Config key="authentication.password.minAlphaLower" />
+        </Var>
+        <Var name="minNumeric">
+          <Config key="authentication.password.minNumeric" />
+        </Var>
+        <Var name="minNonAlphaNumeric">
+          <Config key="authentication.password.minNonAlphaNumeric" />
+        </Var>
+         
+         <For var="count" start="1" condition="$count &lt;= $minAlphaUpper" step="1">
+           <Var name="random">
+            <MathLib method="random">
+              <Param>0</Param>
+              <Param>25</Param>
+            </MathLib>
+           </Var>
+           <Var name="newPassword">
+              <StringLib method="concatenate">
+                <Param><Var name="newPassword"/></Param>
+                <Param><Var name="alphaUpper" key="$random"/></Param>
+              </StringLib>
+           </Var>
+         </For>
+         <For var="count" start="1" condition="$count &lt;= $minAlphaLower" step="1">
+           <Var name="random">
+            <MathLib method="random">
+              <Param>0</Param>
+              <Param>25</Param>
+            </MathLib>
+           </Var>
+           <Var name="newPassword">
+              <StringLib method="concatenate">
+                <Param><Var name="newPassword"/></Param>
+                <Param><Var name="alphaLower" key="$random"/></Param>
+              </StringLib>
+           </Var>
+         </For>
+         <For var="count" start="1" condition="$count &lt;= $minNonAlphaNumeric" step="1">
+           <Var name="random">
+            <MathLib method="random">
+              <Param>0</Param>
+              <Param>1</Param>
+            </MathLib>
+           </Var>
+           <Var name="newPassword">
+              <StringLib method="concatenate">
+                <Param><Var name="newPassword"/></Param>
+                <Param><Var name="nonAlphaNumeric" key="$random"/></Param>
+              </StringLib>
+           </Var>
+         </For>
+         
+         <!-- preappend numbers until minlength -->
+         <Var name="numbers" value="$minLength - $minNonAlphaNumeric - $minAlphaUpper - $minAlphaLower"/>
+         <For var="count" start="1" condition="$count &lt;= $numbers" step="1">
+           <Var name="random">
+            <MathLib method="random">
+              <Param>0</Param>
+              <Param>9</Param>
+            </MathLib>
+           </Var>
+           <Var name="newPassword">
+              <StringLib method="concatenate">
+                <Param><Var name="newPassword"/></Param>
+                <Param><Var name="random"/></Param>
+              </StringLib>
+           </Var>
+         </For>
+        <Return><Var name="newPassword"/></Return>
+      </Begin>
+    </Function>
+    
+    <Function name="sendNewPassword">
+    <Params>
+      <Param name="username" doc="The username "/>
+    </Params>
+    <Errors>
+      <Error></Error>
+    </Errors>
+    <Begin>
+      <Permissions>
+        <Allow>
+          <Capability name="framework/authentication.password::send.new"/>
+        </Allow>
+      </Permissions>
+      <Var name="fwUser" >
+        <Call library="framework,user,api" function="getByUsername">
+          <Param name="username"><Var name="PARAMS" key="username"/></Param>
+        </Call>
+      </Var>
+
+      
+      <If condition="$fwUser->__length != 0">
+        <Then>
+            <Var name="data" key="newPassword">
+              <Call function="generatePassword"/>
+            </Var>
+            <Var name="data" key="username">
+              <Var name="fwUser" key="username"/>
+            </Var>
+            <!-- Change the password -->
+                        
+            
+            <Var name="ldapUser" >
+							<Call library="framework,authentication,api" function="userExists">
+							 <Param name="uid"><Var name="PARAMS" key="username"/></Param>
+							</Call>
+						</Var>
+            <If condition="$ldapUser == 0">
+              <Then>
+                <Exception><Lang key="noUserInLDAP"/></Exception>
+              </Then>
+            </If>
+                        
+            <Var name="requestGuid" >
+              <Call library="framework,request,api" function="addByCode">
+                <Param name="request_category_code">password.reset</Param>
+                <Param name="data"><Var name="fwUser" key="username"/></Param>
+                <Param name="allowDuplicates">1</Param>
+                <Param name="assyncProcess"><Int>0</Int></Param>              
+              </Call>      
+            </Var>                
+            <Var name="error" >
+              <Call library="framework,authentication,api" function="setPassword">
+                <Param name="requestGuid"><Var name="requestGuid"/></Param>
+                <Param name="newPassword"><Var name="data" key="newPassword"/></Param>
+                <Param name="confirmNewPassword"><Var name="data" key="newPassword"/></Param>
+              </Call>
+            </Var>
+
+            <!--If condition="$success == 0">
+              <Then-->
+                <!-- Notify the user by email with the new password -->
+                <Call library="framework,message,api" function="sendSimpleMessage">
+                  <Param name="template">framework,authentication,passwordSendNew</Param>
+                  <Param name="to_name"><Var name="fwUser" key="display_name"/></Param>
+                  <Param name="to_email"><Var name="fwUser" key="email"/></Param>
+                  <Param name="from_name"><Config key="authentication.password.fromName"/></Param>
+                  <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>
+                  <Param name="guid"><Guid/></Param>
+                  <Param name="data"><Var name="data"/></Param>
+                </Call>
+              <!--/Then>
+              <Else>
+                <Exception>Cannot set password in ldap</Exception>
+              </Else>
+            </If-->
+        </Then>
+        <Else>
+          <Exception>User not Found</Exception>
+        </Else>
+      </If>
+      
+    </Begin>
+    </Function>
+
+    <Function name="validateNewPassword" doc="Validates a password">
+      <Params>
+        <Param name="oldPassword" doc="The old password" />
+        <Param name="newPassword" doc="The new Password" />
+        <Param name="confirmNewPassword" doc="The new Password confirmation" />
+      </Params>
+      <Return type="single" doc="">
+        <External name="errors" type="int"
+          doc="Number of errors. If 0 password changed" />
+        <External name="errorsMsg" type="text"
+          doc="Message containing all errors" />
+      </Return>
+      <Begin>
+        <!-- Validate the password -->
+        <Var name="regexp" key="minAlphaUpper"><![CDATA[/[A-Z]/]]></Var>
+        <Var name="regexp" key="minAlphaLower"><![CDATA[/[a-z]/]]></Var>
+        <Var name="regexp" key="minNumeric"><![CDATA[/[0-9]/]]></Var>
+        <Var name="regexp" key="minNonAlphaNumeric"><![CDATA[/[!#$%&*()\-_=+{};:,<.>]/]]></Var>
+        <!-- Get the policies -->
+        <Var name="passwordPolicies" key="minAlphaUpper">
+          <Config key="authentication.password.minAlphaUpper" />
+        </Var>
+        <Var name="passwordPolicies" key="minAlphaLower">
+          <Config key="authentication.password.minAlphaLower" />
+        </Var>
+        <Var name="passwordPolicies" key="minNumeric">
+          <Config key="authentication.password.minNumeric" />
+        </Var>
+        <Var name="passwordPolicies" key="minNonAlphaNumeric">
+          <Config key="authentication.password.minNonAlphaNumeric" />
+        </Var>
+
+        <Var name="errors">0</Var>
+        <Var name="errorsStr">
+          <Null />
+        </Var>
+
+        <Var name="allowAsPrevious">
+          <Config key="authentication.password.allowSameAsPrevious" />
+        </Var>
+        <If
+          condition="$allowAsPrevious=='false' &amp;&amp; $PARAMS->newPassword == $PARAMS->oldPassword">
+          <Then>
+            <Var name="errors" sum="1" />
+            <Var name="errorsStr">
+              <StringLib method="concatenate">
+                <Param>
+                  <Var name="errorsStr" />
+                </Param>
+                <Param>
+                  <Lang key="passwordSameAsPrevious" />
+                </Param>
+              </StringLib>
+            </Var>
+          </Then>
+        </If>
+
+        <If condition="$PARAMS->newPassword != $PARAMS->confirmNewPassword">
+          <Then>
+            <Var name="errors" sum="1" />
+            <Var name="errorsStr">
+              <StringLib method="concatenate">
+                <Param>
+                  <Var name="errorsStr" />
+                </Param>
+                <Param>
+                  <Lang key="passwordsDontMatch" />
+                </Param>
+              </StringLib>
+            </Var>
+          </Then>
+        </If>
+
+        <Var name="minLength">
+          <Config key="authentication.password.minLength" />
+        </Var>
+        <Var name="newPassword">
+          <Var name="PARAMS" key="newPassword" />
+        </Var>
+        <If condition="$newPassword->__length &lt; $minLength">
+          <Then>
+            <Var name="errors" sum="1" />
+            <Var name="errorsStr">
+              <StringLib method="concatenate">
+                <Param>
+                  <Var name="errorsStr" />
+                </Param>
+                <Param>
+                  <Lang key="minLength">
+                    <Param>
+                      <Var name="minLength" />
+                    </Param>
+                  </Lang>
+                </Param>
+              </StringLib>
+            </Var>
+          </Then>
+        </If>
+        <!-- Validate passwords regexps -->
+        <ForEach var="passwordPolicies" item="item" key="key">
+          <Var name="match">
+            <StringLib method="regexp">
+              <Param>
+                <Var name="regexp" key="$key" />
+              </Param>
+              <Param>
+                <Var name="PARAMS" key="newPassword" />
+              </Param>
+            </StringLib>
+          </Var>
+          <Var name="minValue">
+            <Var name="passwordPolicies" key="$key" />
+          </Var>
+          <If condition="$match->__length &lt; $minValue ">
+            <Then>
+              <Var name="errors" sum="1" />
+              <Var name="errorsStr">
+                <StringLib method="concatenate">
+                  <Param>
+                    <Var name="errorsStr" />
+                  </Param>
+                  <Param>
+                    <Lang key="$key">
+                      <Param>
+                        <Var name="item" />
+                      </Param>
+                    </Lang>
+                  </Param>
+                </StringLib>
+              </Var>
+            </Then>
+          </If>
+        </ForEach>
+
+        <!--Var name="errorsStr"> <StringLib method="concatenate"> <Param><Lang 
+          key="passwordErrorsHead"/></Param> <Param><Var name="errorsStr"/></Param> 
+          <Param><Lang key="passwordErrorsTail" /></Param> </StringLib> </Var -->
+
+        <Var name="ret" key="errors">
+          <Var name="errors" />
+        </Var>
+        <Var name="ret" key="errorsMsg">
+          <Var name="errorsStr" />
+        </Var>
+        <Return>
+          <Var name="ret" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="bindPassword" doc="Checks if a password binds in at least one ldap server">
+      <Params>
+        <Param name="uid" doc="The user id" />
+        <Param name="password" doc="The user Password" />
+      </Params>
+      <Return type="int" doc="0 if the user cannot bind 1 if the user bind in at least one ldap server"/>
+      <Begin>
+        <Var name="dataSourceList"><Config key="authentication.dataSource"/></Var>
+        <Var name="dataSources"><ListToSet><Var name="dataSourceList"/></ListToSet></Var>
+        <!-- Change the password in ldap -->
+        <Var name="ldapBinds">0</Var>
+        <ForEach var="dataSources" item="dataSource">
+	        <Var name="bind" >
+	          <DataAccess method="bind" datasource="$dataSource">
+	            <Param name="_user"><Var name="PARAMS" key="uid"/></Param>
+	            <Param name="_passwd"><Var name="PARAMS" key="password"/></Param>
+	          </DataAccess>  
+	        </Var>      
+          <Var name="ldapBinds" value="$ldapBinds + $bind"/>
+        </ForEach>
+        <Return>
+          <If condition="$ldapBinds == 0">
+						<Then><Int>0</Int></Then>
+						<Else><Int>1</Int></Else>
+					</If>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="userExists" doc="Checks if a user exists in at least one ldap server">
+      <Params>
+        <Param name="uid" doc="The username" />
+      </Params>
+      <Return type="int" doc="0 if the user does not exist 1 if the user exists in at least one ldap server"/>
+      <Begin>
+        <Var name="dataSourceList"><Config key="authentication.dataSource"/></Var>
+        <Var name="dataSources"><ListToSet><Var name="dataSourceList"/></ListToSet></Var>
+        <!-- Change the password in ldap -->
+        <Var name="userExist">0</Var>
+        <ForEach var="dataSources" item="dataSource">
+            <Var name="ldapUser" >
+              <DataAccess method="load" datasource="$dataSource">
+                <Param name="_attributes">dn,cn,sn,givenname,mail</Param>
+                <Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+              </DataAccess>
+            </Var>
+            <If condition="$ldapUser->__length != 0">
+              <Then>
+                <Var name="userExist" value="$userExist + 1"/>
+              </Then>
+            </If>    
+        </ForEach>
+      
+        <Return>
+          <If condition="$userExist == 0">
+            <Then><Int>0</Int></Then>
+            <Else><Int>1</Int></Else>
+          </If>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>
+

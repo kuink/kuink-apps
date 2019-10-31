@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+      <Param name="id_object"/>    
+      <Param name="id_task"/>
+    </Params>
+    <Libraries>
+    </Libraries>
+    <Screens>
+        <Screen id="scrShow" template="2x1col">
+            <DocViewer name="dcPreview" position="left"/>
+            <HtmlContainer name="htmlPreview" title="previewTpl" position="left"/>      
+            <Form name="frmDocData" position="right" >
+              <Column id="c1"/>
+              <Header id="h1" label="document"/>
+              <Static id="code" title="code"/>
+              <Static id="name" title="name"/>
+              <Static id="description" title="description"/>
+              <Column id="c2"/>
+              <Header id="h2" label="version"/>
+              <Static id="version_code" title="code"/>
+              <Static id="reason" title="reason"/>
+            </Form>
+            <Form name="frmWfData" position="right">  
+              <Header id="h1" label="obs"/>
+              <TextArea id="obs_private"/>
+              <TextArea id="obs_public"/>
+              <ButtonGroup>
+                <Button type="back" id="back" action="back"/>
+                <Button type="download" id="download" action="download"/>
+                <Button type="execute" id="approve" action="approve"/>
+                <Button type="delete" id="reject" action="reject"/>
+              </ButtonGroup>
+            </Form>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="scrShow">
+          <Var name="PARAMS" dump="true"/>
+            <Var name="id_task" process="true"><Var name="PARAMS" key="id_token"/></Var>
+            <Var name="PARAMS" dump="true"/>
+            
+            <Var name="docData" dump="true">
+              <Call library="framework,rm.controlledDocument.version,api" function="getById">
+                <Param name="id"><Var name="PARAMS" key="id_object"/></Param>
+              </Call>
+            </Var>
+
+            <Control method="bind" object="dcPreview">
+              <Param><Var name="docData" key="file_guid"/></Param>
+            </Control>
+            <Control method="bind" object="frmDocData">
+              <Param><Var name="docData"/></Param>
+            </Control>
+            
+	          <Var name="content" dump="true">
+	            <Call library="framework,rm.controlledDocument,api" function="getVersionAutoContent">
+	              <Param name="id_version"><Var name="PARAMS" key="id_object"/></Param>
+	              <Param name="use_test_data"><Int>1</Int></Param>
+	            </Call>
+	          </Var>
+	          <Control method="bind" object="htmlPreview">
+	            <Param><Var name="content"/></Param>
+	          </Control>              
+        </Action>
+
+        <Action name="download">
+          <Call library="framework,rm.controlledDocument.version,api" function="download">
+            <Param name="id"><Var name="PARAMS" key="id_object"/></Param>
+          </Call>
+          <Action name="init"/>
+        </Action>
+        
+        <Action name="back">
+          <RaiseEvent name="back">
+          
+          </RaiseEvent>
+        </Action>
+        
+        <Action name="approve">
+          <Var name="result" key="result">approved</Var>
+          <Var name="data"><Set/></Var>
+          <Var name="data" key="obs_private"><Var name="POSTDATA" key="obs_private"/></Var>
+          <Var name="data" key="obs_public"><Var name="POSTDATA" key="obs_public"/></Var>
+          <RaiseEvent name="complete">
+            <Param name="id_task"><Var name="PARAMS" key="id_task"/></Param>
+            <Param name="result"><Var name="result"/></Param>
+            <Param name="data"><Var name="data"/></Param>
+          </RaiseEvent>
+        </Action>
+
+        <Action name="reject">
+          <Var name="result" key="result">rejected</Var>
+          <Var name="data"><Set/></Var>
+          <Var name="data" key="obs_private"><Var name="POSTDATA" key="obs_private"/></Var>
+          <Var name="data" key="obs_public"><Var name="POSTDATA" key="obs_public"/></Var>
+          <RaiseEvent name="complete">
+            <Param name="id_task"><Var name="PARAMS" key="id_task"/></Param>          
+            <Param name="result"><Var name="result"/></Param>
+            <Param name="data"><Var name="data"/></Param>
+          </RaiseEvent>
+        </Action>
+        
+	</Actions>
+</Node>

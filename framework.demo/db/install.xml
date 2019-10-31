@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<XMLDB PATH="mod/neon/db" VERSION="20100710" COMMENT="XMLDB file for Moodle mod/neon"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd">
+	<TABLES>
+		<TABLE NAME="fw_demo_test_type" COMMENT="Table for testing purposes"
+			NEXT="fw_demo_test">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" UNSIGNED="true"
+					SEQUENCE="false" NOTNULL="true" NEXT="name" COMMENT="Identifier" />
+				<FIELD NAME="name" TYPE="char" LENGTH="128" NOTNULL="true"
+					PREVIOUS="id" SEQUENCE="false" COMMENT="Name" />
+			</FIELDS>
+			<KEYS>
+				<KEY NAME="id4" TYPE="primary" FIELDS="id" COMMENT="" />
+			</KEYS>
+		</TABLE>
+		<TABLE NAME="fw_demo_test" COMMENT="Table for testing purposes"
+			PREVIOUS="fw_demo_test_type" NEXT="fw_demo_composite">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" UNSIGNED="true"
+					SEQUENCE="false" NOTNULL="true" NEXT="name" COMMENT="Identifier" />
+				<FIELD NAME="name" TYPE="char" LENGTH="128" NOTNULL="true"
+					PREVIOUS="id" NEXT="id_type" SEQUENCE="false" COMMENT="Name" />
+				<FIELD NAME="id_type" TYPE="int" LENGTH="10" UNSIGNED="true"
+					NOTNULL="true" PREVIOUS="name" SEQUENCE="false" COMMENT="Test Type" />
+			</FIELDS>
+			<KEYS>
+				<KEY NAME="id8" TYPE="primary" FIELDS="id" NEXT="id_type9"
+					COMMENT="" />
+				<KEY NAME="id_type9" TYPE="foreign" FIELDS="id_type"
+					REFTABLE="fw_demo_test_type" REFFIELDS="id" PREVIOUS="id8"
+					COMMENT="" />
+			</KEYS>
+		</TABLE>
+		<TABLE NAME="fw_demo_composite" COMMENT="Table for testing composite primary keys"
+			PREVIOUS="fw_demo_test">
+			<FIELDS>
+				<FIELD NAME="id" TYPE="int" LENGTH="10" UNSIGNED="true"
+					SEQUENCE="true" NOTNULL="true" NEXT="id_key1" COMMENT="Identifier" />
+				<FIELD NAME="id_key1" TYPE="int" LENGTH="10" UNSIGNED="true"
+					SEQUENCE="false" NOTNULL="true" PREVIOUS="id" NEXT="id_key2"
+					COMMENT="Identifier1" />
+				<FIELD NAME="id_key2" TYPE="int" LENGTH="10" UNSIGNED="true"
+					SEQUENCE="false" NOTNULL="true" PREVIOUS="id_key1" NEXT="name"
+					COMMENT="Identifier2" />
+				<FIELD NAME="name" TYPE="char" LENGTH="128" NOTNULL="false"
+					PREVIOUS="id_key2" SEQUENCE="false" COMMENT="Name" />
+			</FIELDS>
+			<KEYS>
+				<KEY NAME="id_id_key1_id_key214" TYPE="primary" FIELDS="id,id_key1,id_key2"
+					COMMENT="" />
+			</KEYS>
+		</TABLE>
+	</TABLES>
+</XMLDB>

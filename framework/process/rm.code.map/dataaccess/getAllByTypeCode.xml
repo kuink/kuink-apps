@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get all map codes based on the type
+  </Doc>
+  <Params>
+	  <Param name="type_code" required="true"/>
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+        	 cm.*
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_rm_code_map cm
+	            INNER JOIN fw_rm_code_map_type cmt ON (cmt.id = cm.id_code_map_type)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+         <XCondition>
+          cmt.code = '{param->type_code}'
+         </XCondition>  
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[cm.id asc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

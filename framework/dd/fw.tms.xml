@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Ticket Management System">
+  <Domains/>
+  <Templates/>
+  <Entities>
+  
+    <Entity name="fw_tms_group_type" doc="TMS ticket group type">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity"/>        
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this group type active?"/>
+        <Attribute name="id_state_machine" domain="foreign" doc="The state machine to control the action plan"/>
+        <Attribute name="id_acl" domain="foreign" refentity="fw_access_control_list" refattr="id" doc="Who can do what in this group"/>
+        <Attribute name="fields" domain="xml" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_group" doc="TMS ticket group, eg an audit. While the group is open it can receive new tickets">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_group_type" domain="foreign" required="true" refentity="fw_tms_group_type" refattr="id" doc="The type this group belongs"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this group type active?"/>
+        <Attribute name="is_open" domain="bool" required="true" doc="Only open goups can receive new tickets"/>
+				<Template name="fw.identity"/>        
+        <Template name="fw.dateRestriction"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_group_records" doc="TMS records that gave origin to this group like an audit report or a system revision report.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_group" domain="foreign" required="true" refentity="fw_tms_group" refattr="id" doc="The group this record belong"/>
+        <Attribute name="id_record" domain="foreign" required="false" doc="The record. Remember that the record can have its own access control list..."/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_classification" doc="TMS ticket classification NC/NCP/R/OBS/OM">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity"/>        
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this group type active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_tms_ticket" doc="TMS ticket. Files and comments and managed at state machine">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_group" domain="foreign" required="true" refentity="fw_tms_group" refattr="id" doc="The group this ticket belongs"/>
+				<Attribute name="id_state_machine_instance" domain="foreign" doc="The state machine to control this process"/>
+        <Attribute name="id_classification" domain="foreign" refentity="fw_tms_classification" refattr="id" doc="The ticket classification NC/NCP/R/OM"/>				
+        <Attribute name="description" domain="description" required="true" doc="The ticket description"/>
+        <Attribute name="cause" domain="description" required="false" doc="The problem cause"/>
+        <Attribute name="action_plan" domain="text" required="false" doc="The ticket action plan description"/>
+        <Attribute name="is_effective" domain="bool" required="false" doc="The action plan/correction was effective?"/>
+				<Attribute name="data" domain="xml" />        
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>    
+
+  </Entities>
+</Node>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template>
+  <Code></Code>
+  <Subject>
+    Este é um template de teste para $id
+  </Subject>
+  <Content template="testSimple.content.pt"/>
+  <Meta>
+    <Name>$name</Name>
+    <Id>$id</Id>
+  </Meta>
+</Template>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="prepare" doc="prepare">
+      <Params/>
+      <Return type="text" doc="Test documentation"/>
+      <Begin>
+        <Var name="context" key="message">framework::framework.unitTest::acl add an entry</Var>
+        <Return>
+          <Var name="context"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="run" doc="Run the test">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="single" doc="The result">
+        <External name="code" type="int" doc="The result code"/>
+        <External name="data" type="text" doc="Data returned by the function"/>
+      </Return>
+      <Errors>
+        <Error code="-1" doc="Test failed"/>
+      </Errors>
+      <Begin>
+        <Transaction>
+        	<Var name="id_acl_entry">
+						<Call library="framework.unitTest,_unitTest,acl.10.aux" function="addAclPerson">
+							<Param name="id_person"><Var name="USER" key="id"/></Param>
+						</Call>
+					</Var>
+					<Var name="aclEntry">
+						<Call library="framework,acl.entry,api" function="getById">
+							<Param name="id"><Var name="id_acl_entry"/></Param>
+						</Call>						
+					</Var>        
+        	<Var name="permissions">
+						<Call library="framework,acl,api" function="getPermissions">
+							<Param name="id"><Var name="aclEntry" key="id_acl"/></Param>
+							<Param name="id_person"><Var name="USER" key="id"/></Param>
+						</Call>
+					</Var>
+					
+					<!-- dump the acl -->
+					<If condition="$permissions->__length == 2">
+						<Then>
+							<Var name="result" key="code"><Int>0</Int></Var>
+							<Var name="result" key="data"><String.parse>Permissions OK $permissions->__length</String.parse></Var>
+						</Then>
+						<Else>
+							<Var name="result" key="code"><Int>-1</Int></Var>
+							<Var name="result" key="data"><String.parse>Could not retrieve permissions</String.parse></Var>
+						</Else>
+					</If>
+          
+          <RollBack/>
+        </Transaction>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="clean" doc="Removes the data added">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+            </Begin>
+    </Function>
+  </Library>
+</Node>

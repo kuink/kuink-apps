@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Params />
+    <Permissions>
+    </Permissions>
+    <Doc lang="pt-PT">
+    </Doc>
+    <Libraries >
+        <Use name="TemplateLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens>
+    	<Screen id="mainScreen">
+    		
+    	</Screen>
+    </Screens>
+    <Actions>
+    	<Action name="init" screen="mainScreen">
+            <Var name="data" key="person">
+                <Call library="gecol.core,person,api" function="get">
+                    <Param name="id">3975</Param>
+                </Call>
+            </Var>
+                <DoPDF_v2 register="true" filename="o_meu_teste222" path="persons/3975/lalassla/" download="true" override="true">
+                    <Param name="content">
+                        <TemplateLib method="ExecuteTemplate">
+                        <Param>framework.demo</Param>
+                        <Param>pdfbytemplate</Param>
+                        <Param>1ciclo</Param>
+                        <Param><Var name="data"/></Param>
+                    </TemplateLib>    
+                    </Param>
+                    <Meta name="creator"><Lang key="pdfCreator"/></Meta>
+                    <Meta name="author"><Lang key="pdfAuthor"/></Meta>
+                    <Meta name="title">Ficha informativa</Meta>
+                    <Meta name="subject">aaaaa</Meta>
+                    <Meta name="keywords">
+                        <Set> 
+                            <Element name="1"><Var name="pe" key="id_person"/></Element>
+                            <Element name="2"><Var name="peParticipants" key="p_name"/></Element>
+                            <Element name="3"><Var name="schoolYear" session="true"/></Element>
+                        </Set>
+                    </Meta>
+                </DoPDF_v2>
+    	</Action>
+    </Actions>
+</Node>

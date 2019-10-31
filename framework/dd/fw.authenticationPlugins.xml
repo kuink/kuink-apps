@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <!-- Controlled documents RM Module -->
+    <Entity name="fw_auth_plugin" doc="Authentication plugin">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The auth plugin code"/>
+        <Attribute name="name" domain="name" required="true" doc="The auth plugin name"/>
+        <Attribute name="description" domain="description" required="true" doc="The auth plugin description"/>
+        <Attribute name="datasource" domain="string" required="true" doc="The auth plugin datasource"/>
+        <Attribute name="is_active" domain="bool" doc="Is it active or not?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_auth_action" doc="Authentication actions like add, update, remove, change password">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The auth plugin action code"/>
+        <Attribute name="name" domain="name" required="true" doc="The auth plugin action name"/>
+        <Attribute name="description" domain="description" required="true" doc="The auth plugin action description"/>
+        <Attribute name="is_active" domain="bool" doc="Is it active or not?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_auth_action_step" doc="Handlers of the autentication plugin actions. What to do when the action occurs and in which order">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_auth_action" domain="foreign" refentity="fw_auth_action" refattr="id" doc="id of the authentication action"/>
+        <Attribute name="id_auth_plugin" domain="foreign" refentity="fw_auth_plugin" refattr="id" doc="id of the authentication plugin"/>
+        <Attribute name="order" domain="int" required="true" doc="The order in which this plugin will be called"/>
+        <Attribute name="condition" domain="string" required="false" doc="This condition will be tested. If true this step is executed"/>
+        <Attribute name="is_active" domain="bool" doc="Is this step is active or not"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

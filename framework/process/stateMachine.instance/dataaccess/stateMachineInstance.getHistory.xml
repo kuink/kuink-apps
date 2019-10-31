@@ -1,0 +1,51 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Get the history
+    </Doc>
+    <Params>
+    	<Param name="id_state_machine_instance"/>
+    	<Param name="id_person"/>
+    </Params>
+    <Body>
+        <Sql>
+	        <XSql>
+						<XSelect>
+               <XField >
+								 		smih.id,
+										smih._creation,
+										smih._modification,
+										smss.name as start_state,
+										smse.name as end_state,
+										smih.event as event,
+										smih.event_description as event_description,
+										IFNULL(p.id,0) as id_person,
+										IF(p.id=0,'default',p.public_key) as photo,
+										smih.event_data as event_data
+               </XField>
+             </XSelect>
+             <XFrom>
+                 <XTable>
+										fw_state_machine_instance_history smih
+										INNER JOIN fw_state_machine_state smss ON (smss.id = smih.id_start_state)
+										INNER JOIN fw_state_machine_state smse ON (smse.id = smih.id_end_state)
+										LEFT OUTER JOIN person p ON (p.id = smih._id_creator)
+                 </XTable>
+             </XFrom>
+             <XWhere>
+             	<XCondition>
+             		smih.id_state_machine_instance = {param->id_state_machine_instance}
+             	</XCondition>
+             	<XCondition optional="id_person">
+             		AND smih._id_creator = {param->id_person}
+             	</XCondition>
+             </XWhere>
+             <XOrderBy>
+             	<XOrder>
+                 smih._creation DESC
+                </XOrder>
+             </XOrderBy>
+	        </XSql>
+        </Sql>
+    </Body>
+</Method>

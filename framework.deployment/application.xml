@@ -1,0 +1,12 @@
+<?xml version='1.0'?>
+<Application name="framework" version="1.0.0">
+    <Config>
+        <!-- Global configuration... -->
+        <!--Key name="test" value="1"/-->
+    </Config>
+    <Databases>
+        <!-- type=(pgsql, mssql, mysqli, oci) -->
+        <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
+    </Databases>
+    <Menus/>
+</Application>

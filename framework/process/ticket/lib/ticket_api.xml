@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="FormatterLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+        <Function name="add" doc="Adds a ticket in the system">
+          <Params>
+            <Param name="handler_code" type="string" required="true" doc="Type of the ticket to report"/>
+            <Param name="message" type="string" required="true" doc="Where this ticket was started eg. gecol.enroll"/>
+            <Param name="email" type="string" required="true" doc="The user email"/>
+            <Param name="url" type="string" required="true" doc="The url of the application when the problem occurred"/>
+          </Params>
+          <Return type="int" doc="the id of the ticket"/>
+          <Begin>
+            <!-- Get the handler by code -->
+            <Var name="handler" dump="true">
+	            <DataAccess method="load">
+								<Param name="_entity">fw_ticket_handler</Param>
+								<Param name="code"><Var name="handler_code"/></Param>
+							</DataAccess>
+						</Var>
+						<If condition="$handler->__length == 0">
+							<Then>
+							 <Exception><String parse="true">Invalid handler $handler_code</String></Exception>
+							</Then>
+						</If>
+						
+						<If condition="$message == ''">
+              <Then>
+               <Exception><String parse="true">Invalid message $message</String></Exception>
+              </Then>
+            </If>
+    
+            <Var name="person" dump="true">
+              <Call library="gecol.core,person,api" function="get">
+                <Param name="id"><Var name="USER" key="id"/></Param>
+              </Call>
+            </Var>
+            
+            <!-- Get the context data to add to the message -->
+            <Var name="data" key="context">
+              <Core.processOrchestrator method="getContextStackInfo"/>
+            </Var>
+            <Var name="data" key="context">
+            	<String.parse><![CDATA[$data->context <br/> $SYSTEM->userAgent <br/> $PARAMS->email <br/> $PARAMS->url</String.parse>]]></String.parse>
+            </Var>
+            <Var name="data" key="content">
+	            <String.parse>$message</String.parse>
+	          </Var>
+
+            <Var name="formattedDate">
+              <FormatterLib method="format">
+                <Param>DateTime</Param>
+                <Param>shortDateTimeStamp</Param>
+                <Param><Now/></Param>
+              </FormatterLib>
+            </Var>  
+            
+            <!-- Save the ticket -->
+            <Var name="data" key="id_ticket">
+	            <DataAccess method="insert">
+								<Param name="_entity">fw_ticket</Param>
+								<Param name="id_person"><Var name="USER" key="id"/></Param>
+								<Param name="id_handler"><Var name="handler" key="id"/></Param>
+								<Param name="message"><String.parse>$data->content  $data->context | $SYSTEM->userAgent | $PARAMS->email | $PARAMS->url</String.parse></Param>
+								<Param name="_base">true</Param>
+							</DataAccess>
+						</Var>
+            
+            <!-- Send the email -->
+            <Var name="data" key="subject">
+              <String parse="true">Ticket::$handler_code::$formattedDate::$USER->id</String>
+            </Var>
+            <Var name="data" key="person">
+              <Var name="person"/>
+            </Var>
+            
+            <Try>
+            	<Instructions>
+		            <Var name="messageResult">
+					        <Call library="framework,message,api" function="sendSimpleMessage">
+					          <Param name="template">framework,ticket,ticketSendNew</Param>
+					          <Param name="to_name"><Null/></Param>
+					          <Param name="to_email"><String parse="true">$handler->email,$PARAMS->email</String></Param>
+					          <Param name="from_name"><Config key="authentication.password.fromName"/></Param>
+					          <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>
+					          <Param name="guid"><Guid/></Param>
+					          <Param name="data"><Var name="data"/></Param>
+					        </Call>      
+				        </Var>                    	
+            	</Instructions>
+            	<Catch>
+            	</Catch>
+            </Try>
+            
+            <Return>
+                <Var name="data" key="id_ticket"/>
+            </Return>
+          </Begin>
+        </Function>        
+        
+        <Function scope="public" name="getHandlers" doc="Get all the handlers">
+          <Params>
+          </Params>
+          <Return type="multiple" doc="">
+            <External name="id" type="text" doc=""/>
+            <External name="code" type="text" doc=""/>
+            <External name="name" type="text" doc=""/>
+            <External name="description" type="text" doc=""/>
+          </Return>
+          <Begin>
+             <Return>
+              <DataAccess method="getAll">
+                <Param name="_entity">fw_ticket_handler</Param>
+                <Param name="_attributes">e.id, e.code, l.name, l.description</Param>
+                <!--Param name="id_company"><Var name="USER" key="idCompany"/></Param-->
+                <Param name="_lang"><Var name="USER" key="lang"/></Param>
+              </DataAccess>
+             </Return>
+          </Begin>
+        </Function>
+        
+      </Library>
+</Node>

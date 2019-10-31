@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search all class
+  </Doc>
+  <Params>
+	  <Param name="id_parent" required="true"/>
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+	            c.*,
+	            cp.name as parent_name,
+	            cd.code as controlled_document_code,
+	            cd.name as controlled_document_name,
+	            (SELECT count(*) FROM fw_rm_class cc WHERE cc.id_parent = c.id) as childs_count,
+	            IF (cma.name IS NULL,
+	             ds._action_name_childs,
+	             cma.name) as final_destination,
+	            #The action duration can be either in cmi or in ds.interval_duration this is because in classes with childs the interval_duration has a concatenation of the childs intervals
+	            IF (ds.action_duration IS NULL,
+	             ds._action_interval_childs,
+	             CONCAT(ds.action_duration,' ', cmi.name)) as disposal_duration,
+	            CONCAT(c.year_from,'-', c.year_to) as years,
+              aml.name as archival_medium_name,
+	            ds.action_justification as action_justification,
+              ds.interval_justification as interval_justification,
+	            p.public_key as manager_photo,
+							(SELECT IF(COUNT(*)>0,1,0) FROM fw_rm_class_workflow cw WHERE cw.id_class = c.id) as has_workflows
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_rm_class c
+	            LEFT OUTER JOIN fw_rm_class cp ON (cp.id = c.id_parent)
+	            LEFT OUTER JOIN person p ON (p.id = c.id_manager)
+	            LEFT OUTER JOIN fw_rm_disposal_schedule ds ON (ds.id = c.id_disposal_schedule) 
+	            LEFT OUTER JOIN fw_rm_code_map cma ON (cma.id = ds.id_action_code)
+	            LEFT OUTER JOIN fw_rm_code_map cmi ON (cmi.id = ds.id_action_interval_code)
+	            LEFT OUTER JOIN fw_rm_archival_medium am ON (am.id = c.id_archival_medium)
+	            LEFT OUTER JOIN fw_rm_archival_medium_lang aml ON (aml.id = am.id AND aml.lang = '{param->_lang}')
+	            LEFT OUTER JOIN fw_rm_controlled_document_class_template cdc ON (cdc.id_class = c.id)
+	            LEFT OUTER JOIN fw_rm_controlled_document cd ON (cd.id = cdc.id_controlled_document)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+         <XCondition>
+          c.id_parent = '{param->id_parent}'
+         </XCondition>  
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[c.code asc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

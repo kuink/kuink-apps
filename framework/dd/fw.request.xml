@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+    <!-- Override domain inherited definitions or add local definitions here -->
+  </Domains>
+  <Templates>
+    <!-- Override template inherited definitions or add local definitions here -->
+  </Templates>
+  <Entities>
+    <Entity name="fw_request" doc="A request">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="guid" domain="guid" />
+        <Attribute name="id_request_category" domain="foreign"  required="true" refentity="fw_request_category" refattr="id" />
+        <Attribute name="id_request_status" domain="foreign" required="true" refentity="fw_request_status" refattr="id" />
+        <Attribute name="ttl" domain="int" />
+        <Attribute name="data" domain="text" />
+        <Attribute name="log"  domain="text" required="false"/>
+        <Attribute name="attempts" domain="int" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  
+    <Entity name="fw_request_category" doc="Request Category">
+      <Attributes>
+        <Attribute name="id" domain="id"  doc="The category id"/>
+        <Attribute name="name" domain="name" doc="The category name" required="true"/>
+        <Attribute name="short_name" domain="name" doc="The category short name" required="true"/>
+        <Attribute name="code" domain="code" doc="The category code" required="true"/>
+        <Attribute name="handler" domain="apiFunction" doc="The handler to execute in order to process a request of this category" required="false"/>
+        <Attribute name="order" domain="int" doc="The category order" required="false"/>
+        <Attribute name="ttl" domain="int" doc="Time to live for requests of this category" required="false"/>
+        <Attribute name="assync" domain="bool" doc="This requests are to be processed assynchronously?" required="true"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_request_status" doc="Request status">
+      <Attributes>
+        <Attribute name="id" domain="id"  doc="The status id"/>
+        <Attribute name="name" domain="name" doc="The status name" required="true"/>
+        <Attribute name="short_name" domain="name" doc="The status short name" required="true"/>
+        <Attribute name="code" domain="code" doc="The status code" required="true"/>
+        <Attribute name="order" domain="int" doc="The status order" required="false"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_request_comment" doc="Request followup comment">
+      <Attributes>
+        <Attribute name="id" domain="id"  doc="The status id"/>
+        <Attribute name="id_request" domain="foreign"  required="true" refentity="fw_request" refattr="id" />
+        <Attribute name="comment" domain="text" doc="The comment" required="true"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+  </Entities>
+</Node>

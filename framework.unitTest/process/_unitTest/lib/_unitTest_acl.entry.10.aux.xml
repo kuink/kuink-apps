@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="addTestData" doc="Adds a test record in table ">
+      <Params>
+  </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_access_control_list_entry</Param>
+            <Param name="_base">true</Param>
+            <Param name="id_acl">
+              <Int>1</Int>
+            </Param>
+            <Param name="id_permission">
+              <Int>1</Int>
+            </Param>
+            <Param name="id_person_group">
+              <Int>1</Int>
+            </Param>
+            <Param name="id_person">
+              <Int>1</Int>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="prepare" doc="prepare">
+      <Params/>
+      <Return type="text" doc="Test documentation"/>
+      <Begin>
+        <Var name="context" key="message">framework::framework.unitTest::</Var>
+        <Return>
+          <Var name="context"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="run" doc="Run the test">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="single" doc="The result">
+        <External name="code" type="int" doc="The result code"/>
+        <External name="data" type="text" doc="Data returned by the function"/>
+      </Return>
+      <Errors>
+        <Error code="-1" doc="Test failed"/>
+      </Errors>
+      <Begin>
+        <Var name="result" key="code">
+          <Int>0</Int>
+        </Var>
+        <Var name="result" key="data">
+          <String/>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="clean" doc="Removes the data added">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+            </Begin>
+    </Function>
+  </Library>
+</Node>

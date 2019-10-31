@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Returns a list of pending messages
+    </Doc>
+    <Params />
+    <Body>
+      <Sql>
+        <XSql>
+          <XSelect>
+            <XField>
+              <![CDATA[
+                *
+                
+              ]]> 
+            </XField>
+          </XSelect>
+            <XFrom>
+              <XTable>
+                fw_message
+              </XTable>
+            </XFrom>
+            <XWhere> 
+              <XCondition>is_sent='0'</XCondition>
+              <XCondition optional="now"><![CDATA[AND send_date<='{param->now}']]></XCondition>
+            </XWhere>
+         </XSql>
+      </Sql>
+    </Body>
+</Method>

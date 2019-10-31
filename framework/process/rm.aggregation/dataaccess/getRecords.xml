@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get all records that belong to a tree path
+  </Doc>
+  <Params>
+	  <Param name="tree_path" required="true"/>
+    <Param name="getChildren" required="true"/>
+    <Param name="classes" required="false"/>
+  </Params>
+  <Body>
+      <XSql>
+        <XSelect>
+        	<XField>
+            *
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+            fw_rm_aggregation AS agg
+            INNER JOIN fw_rm_entity_relation AS er ON (er.id_entity=agg.id)
+            INNER JOIN fw_rm_entity_type AS et ON (et.id=er.id_entity_type)
+            INNER JOIN fw_rm_entity_type AS etr ON (etr.id=er.id_entity_type_relation)
+            INNER JOIN fw_rm_record AS r ON (r.id=er.id_entity_relation)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              <![CDATA[
+                if({param->getChildren}=1,agg.tree_path like '{tree_path}%',agg.tree_path like '{tree_path}')
+                AND et.code = 'aggregation' AND etr.code = 'record'
+              ]]>
+            </XCondition>
+            <XCondition optional="classes">
+              <![CDATA[
+                AND r.id IN ({param->classes})
+              ]]>
+            </XCondition>
+	    </XWhere>
+      <XOrderBy>
+	        <XOrder><![CDATA[ agg.tree_path ASC, agg.id ASC ]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+  </Body>
+</Method>

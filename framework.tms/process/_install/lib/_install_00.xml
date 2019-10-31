@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+			
+				<!-- The state machine -->
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine</Param><Param name="code">framework.tms.eaqs</Param><Param name="name">Gestão da Melhoria</Param><Param name="description">Processo de gestão da melhoria</Param><Param name="is_active">1</Param><Param name="_base">true</Param></DataAccess>
+
+				<!-- The state machine states -->
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine_state</Param><Param name="code">eaqs.01.start</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">eaqs.01.start</Param></Call></Param><Param name="name">Inicio</Param><Param name="description">Início</Param><Param name="name_public">Início</Param><Param name="description_public">Início</Param><Param name="visible_to_roles">CLB.EAQS</Param><Param name="is_bulk">0</Param><Param name="is_active">1</Param><Param name="is_start_state">1</Param><Param name="is_end_state">0</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine_state</Param><Param name="code">eaqs.11.new</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">eaqs.11.new</Param></Call></Param><Param name="name">Novo</Param><Param name="description">Nova incidência. Aguarda tratamento.</Param><Param name="name_public">Novo</Param><Param name="description_public">Aguarda tratamento.</Param><Param name="visible_to_roles">CLB.EAQS</Param><Param name="is_bulk">0</Param><Param name="is_active">1</Param><Param name="is_start_state">0</Param><Param name="is_end_state">0</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine_state</Param><Param name="code">eaqs.12.inProgress</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">eaqs.12.inProgress</Param></Call></Param><Param name="name">Em execução</Param><Param name="description">Em execução</Param><Param name="name_public">Em execução</Param><Param name="description_public">Em execução.</Param><Param name="visible_to_roles">CLB.EAQS</Param><Param name="is_bulk">0</Param><Param name="is_active">1</Param><Param name="is_start_state">0</Param><Param name="is_end_state">0</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine_state</Param><Param name="code">eaqs.13.inEvaluation</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">eaqs.13.inEvaluation</Param></Call></Param><Param name="name">Executado</Param><Param name="description">Executado. Aguarda avaliação de eficácia.</Param><Param name="name_public">Executado</Param><Param name="description_public">Executado.</Param><Param name="visible_to_roles">CLB.EAQS</Param><Param name="is_bulk">0</Param><Param name="is_active">1</Param><Param name="is_start_state">0</Param><Param name="is_end_state">0</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine_state</Param><Param name="code">eaqs.21.terminated</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">eaqs.21.terminated</Param></Call></Param><Param name="name">Terminado</Param><Param name="description">Incidência terminada</Param><Param name="name_public">Em confirmação</Param><Param name="description_public">O processo aguarda confirmação por parte dos serviços administrativos. É necessária mais informação.</Param><Param name="visible_to_roles">CLB.EAQS</Param><Param name="is_bulk">0</Param><Param name="is_active">1</Param><Param name="is_start_state">0</Param><Param name="is_end_state">1</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine_state</Param><Param name="code">eaqs.22.canceled</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">eaqs.22.canceled</Param></Call></Param><Param name="name">Cancelado</Param><Param name="description">Incidência cancelada</Param><Param name="name_public">Em confirmação</Param><Param name="description_public">O processo aguarda confirmação por parte dos serviços administrativos.</Param><Param name="visible_to_roles">CLB.EAQS</Param><Param name="is_bulk">0</Param><Param name="is_active">1</Param><Param name="is_start_state">0</Param><Param name="is_end_state">1</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_state_machine_state</Param><Param name="code">eaqs.23.rejected</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">eaqs.23.rejected</Param></Call></Param><Param name="name">Confirmado</Param><Param name="description">Incidência rejeitada</Param><Param name="name_public">Confirmado</Param><Param name="description_public">O processo foi confirmado pelos serviços administrativos. Aguarda decisão final.</Param><Param name="visible_to_roles">CLB.EAQS</Param><Param name="is_bulk">1</Param><Param name="is_active">1</Param><Param name="is_start_state">0</Param><Param name="is_end_state">1</Param><Param name="_base">true</Param></DataAccess>
+
+				<!-- The state machine transitions -->				
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">8e0aad91-69ae-43f9-a178-5ff9bfd52cc7</Param><Param name="start_state_code">eaqs.01.start</Param><Param name="end_state_code">eaqs.11.new</Param><Param name="event">init</Param><Param name="event_description">Inicializar Processo</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">59a9f1eb-b96e-457f-8f9c-b40250cfec56</Param><Param name="start_state_code">eaqs.11.new</Param><Param name="end_state_code">eaqs.12.inProgress</Param><Param name="event">startProgress</Param><Param name="event_description">Marcar em tratamento</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">79e462dd-50c5-4484-b39c-8e8bbbbcea0d</Param><Param name="start_state_code">eaqs.12.inProgress</Param><Param name="end_state_code">eaqs.13.inEvaluation</Param><Param name="event">done</Param><Param name="event_description">Finalizar Tratamento</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active"></Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">67fc6a27-995d-4c61-9887-028bd6fe32c1</Param><Param name="start_state_code">eaqs.13.inEvaluation</Param><Param name="end_state_code">eaqs.12.inProgress</Param><Param name="event">notEffective</Param><Param name="event_description">Avaliar: NÃO Eficaz</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">a5d66c52-c486-4e81-b651-e50435930d18</Param><Param name="start_state_code">eaqs.13.inEvaluation</Param><Param name="end_state_code">eaqs.21.terminated</Param><Param name="event">effective</Param><Param name="event_description">Avaliar: Eficaz</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active"></Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">e4e73ee6-7575-499d-82d3-f4f33e05ee92</Param><Param name="start_state_code">eaqs.11.new</Param><Param name="end_state_code">eaqs.23.rejected</Param><Param name="event">reject</Param><Param name="event_description">Indeferir</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">bdaf6e06-a50c-4a61-ac4e-cb15c53e88db</Param><Param name="start_state_code">eaqs.12.inProgress</Param><Param name="end_state_code">eaqs.23.rejected</Param><Param name="event">reject</Param><Param name="event_description">Indeferir</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active"></Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">900c0158-7c1e-4047-8552-40a64d3757b4</Param><Param name="start_state_code">eaqs.13.inEvaluation</Param><Param name="end_state_code">eaqs.23.rejected</Param><Param name="event">reject</Param><Param name="event_description">Indeferir</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">a73ab1fa-5780-4cb4-bb03-1f5f47641252</Param><Param name="start_state_code">eaqs.11.new</Param><Param name="end_state_code">eaqs.22.canceled</Param><Param name="event">cancel</Param><Param name="event_description">Cancelar</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active"></Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">340368e1-949b-4f65-9227-e6606b1982e2</Param><Param name="start_state_code">eaqs.11.new</Param><Param name="end_state_code">eaqs.11.new</Param><Param name="event">addFileNote</Param><Param name="event_description">Adicionar Acompanhamento</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">8955818b-a858-4dc5-890a-040cec7ea83f</Param><Param name="start_state_code">eaqs.12.inProgress</Param><Param name="end_state_code">eaqs.12.inProgress</Param><Param name="event">addFileNote</Param><Param name="event_description">Adicionar Acompanhamento</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+			<Call library="framework,stateMachine,api" function="saveTransition"><Param name="uuid">57d97696-c912-4793-8c00-b272a5b151b8</Param><Param name="start_state_code">eaqs.13.inEvaluation</Param><Param name="end_state_code">eaqs.13.inEvaluation</Param><Param name="event">addFileNote</Param><Param name="event_description">Adicionar Acompanhamento</Param><Param name="role_list">CLB</Param><Param name="notify_role_list"></Param><Param name="field_list"><![CDATA[  [
+			 {
+			    "id": "id_file",
+			    "type": "File",
+			    "label": "Ficheiro",
+			    "formatter": "FileDownload",
+			    "formatterMethod": "small",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindname": "",
+			    "required": "false"
+			  },
+			  {
+			    "id": "obs_private",
+			    "type": "TextArea",
+			    "label": "Observação privada",
+			    "formatter": "",
+			    "formatterMethod": "",
+			    "datasource": "",
+			    "bindid": "",
+			    "bindvalue": "",
+			    "required": "false"
+			  }
+			]]]></Param><Param name="actions"></Param><Param name="is_active">1</Param></Call>
+
+				<!-- Classification -->
+				<DataAccess method="insert"><Param name="_entity">fw_tms_classification</Param><Param name="name">Não Conformidade</Param><Param name="description">Não Conformidade</Param><Param name="code">NC</Param><Param name="is_active">1</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_classification</Param><Param name="name">Não Conformidade Potencial</Param><Param name="description">Não Conformidade Potencial</Param><Param name="code">NCP</Param><Param name="is_active">1</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_classification</Param><Param name="name">Reclamação</Param><Param name="description">Registo de incidentes de Ambiente</Param><Param name="code">RCL</Param><Param name="is_active">1</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_classification</Param><Param name="name">Observação</Param><Param name="description">Registo de problemas informáticos</Param><Param name="code">OBS</Param><Param name="is_active">1</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_classification</Param><Param name="name">Oportunidade de Melhoria</Param><Param name="description">Registo de Reclamações</Param><Param name="code">OM</Param><Param name="is_active">1</Param><Param name="_base">true</Param></DataAccess>
+			
+				<!-- Group Type -->
+				<DataAccess method="insert"><Param name="_entity">fw_tms_group_type</Param><Param name="name">Gestão da Melhoria</Param><Param name="description">Gestão da Melhoria</Param><Param name="code">GSTMLH</Param><Param name="id_state_machine"><Call library="framework,stateMachine,api" function="getIdByCode"><Param name="code">framework.tms.eaqs</Param></Call></Param><Param name="is_active">1</Param><Param name="_base">true</Param></DataAccess>
+
+				<!-- Group -->
+				<DataAccess method="insert"><Param name="_entity">fw_tms_group</Param><Param name="id_group_type"><Call library="framework,tms.groupType,api" function="getIdByCode"><Param name="is_active">1</Param></Call></Param><Param name="is_active">1</Param><Param name="is_open">1</Param><Param name="name">Incidente de Segurança</Param><Param name="description">Registo de incidentes de Segurança</Param><Param name="code">INCSEG</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_group</Param><Param name="id_group_type"><Call library="framework,tms.groupType,api" function="getIdByCode"><Param name="is_active">1</Param></Call></Param><Param name="is_active">1</Param><Param name="is_open">1</Param><Param name="name">Incidente de Segurança Digital</Param><Param name="description">Registo de incidentes de Segurança Digital</Param><Param name="code">INCSEGDGT</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_group</Param><Param name="id_group_type"><Call library="framework,tms.groupType,api" function="getIdByCode"><Param name="is_active">1</Param></Call></Param><Param name="is_active">1</Param><Param name="is_open">1</Param><Param name="name">Incidente de Ambiente</Param><Param name="description">Registo de incidentes de Ambiente</Param><Param name="code">INCAMB</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_group</Param><Param name="id_group_type"><Call library="framework,tms.groupType,api" function="getIdByCode"><Param name="is_active">1</Param></Call></Param><Param name="is_active">1</Param><Param name="is_open">1</Param><Param name="name">Problema Informático</Param><Param name="description">Registo de problemas informáticos</Param><Param name="code">INCINF</Param><Param name="_base">true</Param></DataAccess>
+				<DataAccess method="insert"><Param name="_entity">fw_tms_group</Param><Param name="id_group_type"><Call library="framework,tms.groupType,api" function="getIdByCode"><Param name="is_active">1</Param></Call></Param><Param name="is_active">1</Param><Param name="is_open">1</Param><Param name="name">Reclamações</Param><Param name="description">Registo de Reclamações</Param><Param name="code">REC</Param><Param name="_base">true</Param></DataAccess>
+				 
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

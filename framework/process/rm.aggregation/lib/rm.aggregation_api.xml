@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="add" doc="Adds an aggregation in rm system">
+      <Params>
+        <Param name="uuid_parent" type="string" doc="The parent aggregation"/>
+        <Param name="uuid" type="string" doc="This aggregation uuid"/>
+        <Param name="id_class" type="int" doc="The class id"/>
+        <Param name="name" type="string" doc="This aggregation name"/>
+        <Param name="type_code" type="string" doc="This aggregation type code"/>
+        <Param name="description" type="string" doc="This aggregation description"/>
+        <!--Param name="data" type="array" required="true" doc="The aggregation specific data"/-->
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.aggregation::invalidParentAggregation" doc="The given parent aggregation already has records related to it" />
+        <Exception name="framework/rm.aggregation::invalidAggregationType" doc="The given aggregation type is invalid" />
+      </Exceptions>
+      <Return type="int" doc="The id_aggregation in the system"/>
+      <Begin>
+      
+        <!-- Load the type by the code -->
+        <Var name="type" dump="true">
+          <DataAccess method="load">
+						<Param name="_entity">fw_rm_aggregation_type</Param>
+						<Param name="code"><Var name="type_code"/></Param>
+					</DataAccess>
+        </Var>
+        <If condition="$type->__length == 0">
+					<Then>
+            <Exception><String parse="true">framework/rm.aggregation::invalidAggregationType $PARAMS->type_code</String></Exception>					
+					</Then>
+				</If>
+      
+        <!-- Get parent aggregation if one was given -->
+        <If condition="$uuid_parent != ''">
+          <Then>
+            <Var name="parent">
+              <DataAccess method="load">
+                <Param name="_entity">fw_rm_aggregation</Param>
+                <Param name="uuid"><Var name="uuid_parent"/></Param>
+              </DataAccess>
+            </Var>
+            <!-- Check if aggregation parent already has records related to it -->
+            <Var name="hasRecords">
+              <DataAccess method="this,this,hasRecords">
+                <Param name="id"><Var name="parent" key="id"/></Param>
+              </DataAccess>
+            </Var>
+          </Then>
+        </If>
+        <!-- Load the aggregation if it exists -->
+        <Var name="aggregation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_aggregation</Param>
+            <Param name="uuid"><Var name="uuid"/></Param>
+          </DataAccess>
+        </Var>            
+        
+        <!-- Create aggregation if given parent has no records, or if one was not given -->
+        <If condition="($hasRecords == 0) || ($parent == '')">
+          <Then>
+            <!-- Get the aggregation's tree info -->
+            <Var name="tree_path"><Var name="uuid"/></Var>
+            <If condition="$parent != ''"><Then><Var name="tree_path"><String parse="true">$parent->tree_path;$uuid</String></Var></Then></If>
+            <Var name="tree">
+              <StringLib method="explode">
+                <Param>;</Param>
+                <Param><Var name="tree_path"/></Param>
+              </StringLib>
+            </Var>
+            <Var name="tree_level" value="$tree->__length"/>
+
+            <!-- Only create the aggregation if it doesn't exist -->
+            <!-- insert new aggregation -->
+            <If condition="$aggregation->__length == 0">
+							<Then>
+		            <Var name="aggregation">
+		              <DataAccess method="insert">
+		                <Param name="_entity">fw_rm_aggregation</Param>
+		                <Param name="uuid"><Var name="uuid"/></Param>
+		                <Param name="id_aggregation_type"><Var name="type" key="id"/></Param>
+		                <Param name="aggregated"><If condition="$parent != ''"><Then><Now/></Then></If></Param>
+		                <Param name="id_class"><Var name="id_class" /></Param>
+		                <Param name="name"><Var name="name"/></Param>
+		                <Param name="description"><Var name="description"/></Param>
+		                <Param name="id_parent"><Var name="parent" key="id"/></Param>
+		                <Param name="tree_path"><Var name="tree_path"/></Param>
+		                <Param name="tree_level"><Var name="tree_level"/></Param>
+		                <Param name="originated"><Now/></Param>
+		                <Param name="_base">true</Param>
+		              </DataAccess>
+		            </Var>
+							</Then>
+						</If>
+          </Then>
+          <Else>
+            <Exception><String parse="true">framework/rm.aggregation::invalidParentAggregation $PARAMS->uuid_parent</String></Exception>
+          </Else>
+        </If>
+
+        <Return><Var name="aggregation" key="id"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="addRecord" doc="Adds a record to the aggregation">
+      <Params>
+        <Param name="uuid_aggregation" required="true" type="int" doc="The uuid of the aggregation"/>
+        <Param name="id_record" type="array" required="true" doc="The id of the record to add"/>
+      </Params>
+      <Exceptions/>
+      <Return type="int" doc="The id of the entity relation created"/>
+      <Begin>
+
+        <!-- Get the aggregation -->
+        <Var name="aggregation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_aggregation</Param>
+            <Param name="uuid"><Var name="uuid_aggregation"/></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Get aggregation entity_type -->
+        <Var name="aggregationEntityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><String>aggregation</String></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Get record entity_type -->
+        <Var name="recordEntityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><String>record</String></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Add entity_relation between aggregation and record -->
+        <Var name="idRecAggrRelation">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_entity_relation</Param>
+            <Param name="id_entity"><Var name="aggregation" key="id"/></Param>
+            <Param name="id_entity_type"><Var name="aggregationEntityType" key="id"/></Param>
+            <Param name="id_entity_relation"><Var name="id_record"/></Param>
+            <Param name="id_entity_type_relation"><Var name="recordEntityType" key="id"/></Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Update aggregation last_addition field -->
+        <If condition="$aggregation->first_used == ''"><Then><Var name="first_used"><Now/></Var></Then></If>
+        <DataAccess method="update">
+          <Param name="_entity">fw_rm_aggregation</Param>
+          <Param name="id"><Var name="aggregation" key="id"/></Param>
+          <Param name="last_addition"><Now/></Param>
+          <Param name="first_used"><Var name="first_used"/></Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+        <!-- Return id_entity_relation -->
+        <Return><Var name="idRecAggrRelation"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getRecords" doc="Get all records related to an aggregation or aggregation and classes">
+      <Params>
+        <Param name="uuid_aggregation" required="true" type="int" doc="The uuid of the aggregation"/>
+        <Param name="getChildren" required="true" type="int" doc="0 to return only the given aggregation's list of records, 1 to return the list of records from the entire child tree"/>
+        <Param name="classes" type="array" doc="Array of classes to filter the records with"/>
+      </Params>
+      <Exceptions/>
+      <Return type="multiple" doc="The list of records related to the tree of aggregations"/>
+      <Begin>
+
+        <!-- Get the top aggregation -->
+        <Var name="topAggregation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_aggregation</Param>
+            <Param name="uuid"><Var name="uuid_aggregation"/></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Get the list of records for the tree path filtering by classes -->
+        <Var name="records">
+          <DataAccess method="this,this,getRecords">
+            <Param name="tree_path"><Var name="topAggregation" key="tree_path"/></Param>
+            <Param name="getChildren"><Var name="getChildren"/></Param>
+            <Param name="classes"><Var name="classes"/></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Return the records related to the aggregation -->
+        <Return><Var name="records"/></Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

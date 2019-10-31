@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+      <Param name="code"/>
+    </Params>
+    <Libraries>
+    </Libraries>
+    <Screens/>
+    <Actions>
+        <Action name="init">
+          <Call library="framework,rm.controlledDocument,api" function="download">
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </Call>
+        </Action>
+	</Actions>
+</Node>

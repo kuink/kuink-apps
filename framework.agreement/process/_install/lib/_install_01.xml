@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+		<Function name="getReleaseNotes">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+				<Return>Fresh install</Return>
+			</Begin>
+		</Function>
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>	
+				<Transaction>
+					<!-- Add a valid uuid to all agreements so far -->
+					<Var name="agreements">
+						<DataAccess method="getAll">
+							<Param name="_entity">fw_agreement</Param>
+						</DataAccess>
+					</Var>
+					<ForEach var="agreements" item="agreement">
+						<DataAccess method="update">
+							<Param name="_entity">fw_agreement</Param>
+							<Param name="id"><Var name="agreement" key="id"/></Param>
+							<Param name="uuid"><Uuid/></Param>
+						</DataAccess>
+					</ForEach>
+				</Transaction>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

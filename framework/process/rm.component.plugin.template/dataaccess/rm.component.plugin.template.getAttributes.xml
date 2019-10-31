@@ -1,0 +1,40 @@
+<?xml version='1.0'?>
+<Method>
+    <Params>
+        <Param name="id_template"/>
+    </Params>
+    <Body>
+        <Sql>
+          <XSql>
+            <XSelect>
+              <XField>
+                <![CDATA[
+                  ta.*
+                ]]>
+              </XField>
+            </XSelect>
+            <XFrom>
+              <XTable>
+                <![CDATA[
+                  fw_template t
+                  INNER JOIN fw_template_attribute ta ON (ta.id_template=t.id)
+                ]]>
+              </XTable>
+            </XFrom>
+            <XWhere>
+              <XCondition>
+                  <![CDATA[
+                    t.id='{param->id_template}'
+                  ]]>
+              </XCondition>
+            </XWhere>
+            <XOrderBy>
+              <XOrder>
+                  <![CDATA[ ta.order ASC, ta.name ASC ]]>
+              </XOrder>
+            </XOrderBy>
+          </XSql>
+        </Sql>
+    </Body>
+
+</Method>

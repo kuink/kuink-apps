@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+        <Use name="UtilsLib" type="lib" />
+    </Libraries>
+    <Configuration />
+    <Params>
+    </Params>
+    <Screens>
+        <Screen id="main_screen" template="1col_LeftMenu">
+            <Grid id="records" name="records">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id"/>
+                        <Column id="name" name="name"/>
+                        <Column id="id_file" name="id_file"/>
+                    </Columns>
+                </Template>
+            </Grid>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="main_screen">
+            
+        </Action>
+        
+
+        <Action name="back">
+            <RaiseEvent name="back" />
+        </Action>
+    </Actions>
+    <Library>
+    </Library>
+</Node>

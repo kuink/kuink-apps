@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+    <Allow>
+        <Capability name="framework/script::manage"/>
+    </Allow>
+  </Permissions>
+  <Params>
+    <Param name="id"/>
+  </Params>  
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen id="viewScreen">
+      <Form name="viewForm">
+        <Int id="id" disabled="true"/>
+        <Text id="description" />
+        <CodeEditor id="script" cols="80" rows="20"/>
+        <ButtonGroup>
+          <Button id="back" type="back" event="back"/>
+          <Button id="execute" type="execute" action="execute" default="true"/>
+          <Button id="save" type="save" action="save"/>
+          <Button id="delete" type="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>	
+	
+  <Actions>
+    <Action name="init" screen="viewScreen">
+      <Var name="script">
+        <Call library="framework,script,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="viewForm">
+        <Param>
+          <Var name="script"/>
+        </Param>
+      </Control>      
+    </Action>
+    
+    <Action name="execute">
+      <Var name="id"><Var name="PARAMS" key="id"/></Var>
+      <Var name="scriptToExecute">
+        <StringLib method="concatenate">
+          <Param>&lt;Eval&gt;</Param>
+          <Param><Var name="POSTDATA" key="script"/></Param>
+          <Param>&lt;/Eval&gt;</Param>
+        </StringLib>
+      </Var>
+      
+      <Call function="saveScript">
+        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        <Param name="data"><Var name="POSTDATA"/></Param>
+      </Call>   
+      
+      <RaiseEvent name="execute">
+        <Param name="id"><Var name="id"/></Param>
+        <Param name="script"><Var name="scriptToExecute"/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="delete">
+      <Call library="framework,script,api" function="delete">
+        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+      </Call>       
+      <RaiseEvent name="back"/>
+    </Action>
+
+    <Action name="save">
+      <Call function="saveScript">
+        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        <Param name="data"><Var name="POSTDATA"/></Param>
+      </Call>       
+      <RaiseEvent name="back"/>
+    </Action>
+    
+  </Actions>
+  
+  <Library>
+      <Function name="saveScript">
+          <Params>
+              <Param name="id"/>
+              <Param name="data"/>
+          </Params>
+          <Begin>
+            <If condition="$id == ''">
+              <Then>
+                <Var name="id">
+                  <Call library="framework,script,api" function="add">
+                    <Param name="description"><Var name="data" key="description"/></Param>
+                    <Param name="script"><Var name="data" key="script"/></Param>
+                  </Call>
+                </Var>      
+              </Then>
+              <Else>
+                <Call library="framework,script,api" function="update">
+                  <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                  <Param name="description"><Var name="data" key="description"/></Param>
+                  <Param name="script"><Var name="data" key="script"/></Param>
+                </Call>      
+              </Else>
+            </If>
+            <Return/>
+          </Begin>
+      </Function>
+  </Library>
+</Node>
+

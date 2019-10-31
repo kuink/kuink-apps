@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib" />
+    <Use name="UtilsLib" type="lib" />
+    <Use name="StringLib" type="lib" />
+    <Use name="FileLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens />
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="add" doc="place the file to a local folder">
+      <Params>
+        <Param name="id_record" type="int"/>
+        <Param name="id_component" type="int"/>
+        <Param name="settings" type="array"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component.plugin_localfile::cannotMoveFile" doc="The file cannot be moved."/>
+      </Exceptions>
+      <Return type="int" doc="id of the file" />
+      <Begin>
+        <Var name="id_file">
+          <Var name="settings" key="id_file"/>
+        </Var>
+
+        <Var name="component">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="component" key="id_record" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id">
+              <Var name="id_file" />
+            </Param>
+          </DataAccess>
+        </Var>
+
+        <!-- record's folder path -->
+        <Var name="destinationPath">
+          <String parse="true">records/$record->uuid</String>
+        </Var>
+
+        <!-- create component's folder -->
+        <Var name="destinationPathForFile">
+          <FileLib method="createFolder">
+            <Param name="path"><String parse="true">$destinationPath/</String></Param>
+          </FileLib>
+        </Var>
+
+        <If condition="$settings->duplicate == ''">
+          <Then>
+            <Var name="settings" key="duplicate"><Int>0</Int></Var>
+          </Then>
+        </If>
+        <!-- If is duplicate, create new fw_file -->
+        <If condition="$settings->duplicate == 1">
+          <Then>
+            <Var name="file">
+              <FileLib method="copyFile">
+                <Param name="id"><Var name="id_file"/></Param>
+                <Param name="path">
+                  <String parse="true"><Var name="destinationPathForFile"/></String>
+                </Param>
+              </FileLib>
+            </Var>
+            <Var name="id_file">
+              <Var name="file"/>
+            </Var>
+            <Var name="updated">1</Var>
+          </Then>
+          <Else>
+            <!-- move file -->
+            <Var name="updated">
+              <FileLib method="moveFiles">
+                <Param name="originalPath">
+                  <String parse="true">$file->path/$file->name</String>
+                </Param>
+                <Param name="destinationPath">
+                  <String parse="true">$destinationPath/$file->name</String>
+                </Param>
+              </FileLib>
+            </Var>
+          </Else>
+        </If>
+
+        <!-- update file's path -->
+        <If condition="$updated">
+          <Then>
+            <DataAccess method="update">
+    	        <Param name="_entity">fw_file</Param>
+    	        <Param name="id"><Var name="file" key="id" /></Param>
+    	        <Param name="path"><Var name="destinationPathForFile" /></Param>
+    	      </DataAccess>
+          </Then>
+          <Else>
+            <Exception><String parse="true">framework/rm.component.plugin_localfile::cannotMoveFile $file->id</String></Exception>
+          </Else>
+        </If>
+
+        <Var name="checksum" >
+          <FileLib method="getFileChecksum">
+            <Param name="id">
+              <Var name="id_file" />
+            </Param>
+          </FileLib>
+        </Var>
+
+        <Var name="checksumFile" >
+          <FileLib method="createFile">
+            <Param name="filename">
+              <Var name="file" key="name" />
+            </Param>
+            <Param name="ext">checksum.md5</Param>
+            <Param name="content">
+              <Var name="checksum" />
+            </Param>
+            <Param name="path">
+              <Var name="destinationPath" />
+            </Param>
+          </FileLib>
+        </Var>
+
+        <Var name="settings" key="id_file"><Var name="id_file" /></Var>
+
+        <Return><Var name="settings" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getStream" doc="Stream back the local file">
+      <Params>
+        <Param name="id_component" />
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component.plugin.localfile::invalidIdFile" doc="Invalid id file" />
+      </Exceptions>
+      <Return />
+      <Begin>
+
+        <!-- get the component -->
+        <Var name="component">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- convert from xml to set array -->
+        <Var name="settings">
+          <UtilsLib method="xmlToSet">
+            <Param>
+              <Var name="component" key="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <!-- get file -->
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id"><Var name="settings" key="id_file" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$file->__length &lt;= 0">
+          <Then>
+            <Exception><String parse="true">framework/rm.component.plugin.localfile::invalidIdFile $PARAMS->id_file</String></Exception>
+          </Then>
+        </If>
+
+        <!-- Stream the file -->
+        <FileLib method="download">
+          <Param><Var name="file" key="path" /></Param>
+          <Param><Var name="file" key="name" /></Param>
+        </FileLib>
+
+        <Return />
+      </Begin>
+    </Function>
+
+    <Function name="getURI" doc="get the file's URI">
+      <Params>
+        <Param name="id_component" />
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component.plugin.localfile::invalidIdFile" doc="Invalid id file" />
+      </Exceptions>
+      <Return type="single" doc="the file's URI" />
+      <Begin>
+
+        <!-- get the component -->
+        <Var name="component">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- convert from xml to set array -->
+        <Var name="settings">
+          <UtilsLib method="xmlToSet">
+            <Param>
+              <Var name="component" key="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <!-- get file -->
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id"><Var name="settings" key="id_file" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$file->__length &lt;= 0">
+          <Then>
+            <Exception><String parse="true">framework/rm.component.plugin.localfile::invalidIdFile $PARAMS->id_file</String></Exception>
+          </Then>
+        </If>
+
+        <Return><Var name="file" key="path" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getExtension" doc="get the file's extension">
+      <Params>
+        <Param name="id_component" />
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component.plugin.localfile::invalidIdFile" doc="Invalid id file" />
+      </Exceptions>
+      <Return type="single" doc="the file's URI" />
+      <Begin>
+
+        <!-- get the component -->
+        <Var name="component">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- convert from xml to set array -->
+        <Var name="settings">
+          <UtilsLib method="xmlToSet">
+            <Param>
+              <Var name="component" key="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <!-- get file -->
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id"><Var name="settings" key="id_file" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$file->__length &lt;= 0">
+          <Then>
+            <Exception><String parse="true">framework/rm.component.plugin.localfile::invalidIdFile $PARAMS->id_file</String></Exception>
+          </Then>
+        </If>
+
+        <Return><Var name="file" key="ext" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getMedium" doc="get the file's medium">
+      <Params>
+        <Param name="id_component" />
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="single" doc="the file's URI" />
+      <Begin>
+        <Return><Lang key="localFileMedium"/></Return>
+      </Begin>
+    </Function>
+
+
+
+    <Function name="handleArchive" doc="handle component for archiving">
+      <Params>
+        <Param name="id_component" required="true" />
+        <Param name="path" required="true" />
+      </Params>
+      <Return type="int" doc="1 if done, 0 if errors" />
+      <Begin>
+        <Return><Int>1</Int></Return>
+      </Begin>
+    </Function>
+
+    <Function name="destroy" doc="destroy component">
+      <Params>
+        <Param name="id_component" required="true" />
+      </Params>
+      <Return type="int" doc="1 if done, 0 if errors" />
+      <Begin>
+        <Var name="component">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+        <Var name="settings">
+          <UtilsLib method="xmlToSet">
+            <Param>
+              <Var name="component" key="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <FileLib method="unlink">
+          <Param><Var name="settings" key="id_file" /></Param>
+        </FileLib>
+
+        <Return><Int>1</Int></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="getSettingsDefinition" doc="Get the component settings definition data to build forms.">
+			<Params>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+			 <Var name="setting" key="id">id_file</Var>
+			 <Var name="setting" key="type">File</Var>
+       <Var name="settings" key=""><Var name="setting"/></Var>
+       <Var name="setting" key="id">duplicate</Var>
+       <Var name="setting" key="type">Checkbox</Var>
+			 <Var name="settings" key=""><Var name="setting"/></Var>
+			 <Return><Var name="settings"/></Return>
+			</Begin>
+		</Function>
+
+  </Library>
+</Node>

@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="MetadataLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+      <Screen id="screen01" name="screen01">
+
+          <Custom name="coursePathControl" control="gecol.core,course,showCoursePath" />
+
+
+          <Form id="mainForm" name="mainForm">
+
+              <TextArea name="metadataDefinition" id="metadataDefinition" cols="60" rows="20" />
+              <ButtonGroup>
+                  <Button type="submit" id="do" action="init"/>
+              </ButtonGroup>
+          </Form>
+
+
+
+      </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="screen01">
+
+
+        <Call library='gecol.core,student.evaluation.moment,api' function='createInformationSheetRecord'>
+            <Param name='id_student_evaluation_moment'>3787</Param>
+        </Call>
+
+
+        <!--
+        <Call library="gecol.core,class,api" function="createFinalGridRecord">
+            <Param name="id_class">222</Param>
+            <Param name="id_file">11421</Param>
+            <Param name="id_evaluation_moment">5</Param>
+        </Call>
+        -->
+<!--
+        <Var name="metadata">
+            <Execute method="framework,generic,load">
+                <Param name="table">fw_classification_item</Param>
+                <Param name="id">2</Param>
+            </Execute>
+        </Var>
+        <Var name="metadataXml" ><Var name="metadata" key="metadata_definition"/></Var>
+
+        <Var name="teacher1" key="private_key">1bb</Var>
+        <Var name="teacher1" key="name">PAulo Tavares</Var>
+
+        <Var name="teacher2" key="private_key">123aa</Var>
+        <Var name="teacher2" key="name">Joao</Var>
+
+        <Var name="teachers" key=""><Var name="teacher1"/></Var>
+        <Var name="teachers" key=""><Var name="teacher2"/></Var>
+
+        <Var name="validator" key="private_key">123456aaaa</Var>
+        <Var name="validator" key="name">Margarida</Var>
+
+
+        <Var name="student" key="id">9876234</Var>
+        <Var name="student" key="process_number">JoaoP</Var>
+
+        <Var name="objectData" key="teachersData"><Var name="teachers"/></Var>
+        <Var name="objectData" key="validator"><Var name="validator"/></Var>
+        <Var name="objectData" key="student"><Var name="student"/></Var>
+        <Var name="objectData" />
+
+        <Var name="xmlExpanded" >
+            <MetadataLib method="expand">
+                <Param name="matchMetadata"><Var name="metadataXml"/></Param>
+                <Param name="objectData"><Var name="objectData"/></Param>
+            </MetadataLib>
+        </Var>
+
+        -->
+    </Action>
+
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+
+    <!--
+    <Metadata schema="CSCM-Lx_Metadata" version="1.1">
+        <Meta name="Titulo">Pauta de Avaliação</Meta>
+        <Meta name="Titulo_alternativo">PF_id8225_pn2922_201314_1P_V1</Meta>
+        <Meta name="Identificador">
+            <Meta name="Identificador_tipo">GUID</Meta>
+            <Meta name="Identificador_id_recurso">00A7F47F0587688FEFEB7C201F6EF594</Meta>
+            <Meta name="Identificador_codigo_classificacao">750.30.601</Meta>
+        </Meta>
+        <Meta name="Produtor">
+            <Meta name="Produtor_setor">CSCM-LX/AP/3CEB</Meta>
+            <Meta name="Produtor_id">57CB41E3B3E072F6E5A0FECAFD5F4AA8</Meta>
+            <Meta name="Produtor_designacao">Sofia Marques dos Santos Belo Muñoz Nogueira</Meta>
+            <Meta name="Produtor_tipo">Diretor Turma</Meta>
+        </Meta>
+        <Meta name="Assunto">Ficha Informativa do aluno Beatriz Laura de Almeida Dias Urbano do 1.º Período do ano letivo 2013/14
+        </Meta>
+        <Meta name="Idioma">PT</Meta>
+        <Meta name="Data_hora_registo">2014-05-15T10:45Z</Meta>
+        <Meta name="Formato">
+            <Meta name="Formato_dados">PDF</Meta>
+            <Meta name="Formato_suporte">Ficheiro Digital</Meta>
+        </Meta>
+        <Meta name="Acessibilidade_classificacao_seguranca">Reservado</Meta>
+        <Meta name="Ano_letivo">2013/14</Meta>
+        <Meta name="Momento_avaliacao">1.º Período</Meta>
+
+        <Meta name="Turma">
+            <Meta name="Turma_id">F4BC166078162182CD2F9B3A5FEC3D15</Meta>
+            <Meta name="Turma_designacao">8.º ano D</Meta>
+        </Meta>
+        <Meta name="Conselho_Turma">
+            <Meta name="Docente">
+                <Meta name="Docente_id"></Meta>
+                <Meta name="Docente_designacao"></Meta>
+            </Meta>
+        </Meta>
+        <Meta name="Alunos">
+            <Meta name="Aluno">
+                <Meta name="Aluno_id">ED2A58E4298EE330BBF319032298B223</Meta> *
+                <Meta name="Aluno_designacao">Beatriz Laura de Almeida Dias Urbano</Meta>
+            </Meta>
+            <Meta name="Aluno">
+                <Meta name="Aluno_id">ED2A58E4298EE330BBF319032298B223</Meta> *
+                <Meta name="Aluno_designacao">Beatriz Laura de Almeida Dias Urbano</Meta>
+            </Meta>
+            <Meta name="Aluno">
+                <Meta name="Aluno_id">ED2A58E4298EE330BBF319032298B223</Meta> *
+                <Meta name="Aluno_designacao">Beatriz Laura de Almeida Dias Urbano</Meta>
+            </Meta>
+            <Meta name="Aluno">
+                <Meta name="Aluno_id">ED2A58E4298EE330BBF319032298B223</Meta> *
+                <Meta name="Aluno_designacao">Beatriz Laura de Almeida Dias Urbano</Meta>
+            </Meta>
+        </Meta>
+        <Meta name="Ciclo">Básico – 3.º Ciclo</Meta>
+        <Meta name="Validador">
+            <Meta name="Validador_id">668AD17ABD5E124ECE0B463A6556E05B</Meta> *
+            <Meta name="Validador_designacao">Margarida Georgina Delgado Jana Marrucho Mota Amador</Meta>
+        </Meta>
+    </Metadata>
+
+
+
+    -->
+
+
+<!--
+    <Metadata schema="CSCM-Lx_Metadata" version="1.1">
+        <Meta name="Titulo" minoccurs="1" maxoccurs="1">Pauta de Avaliação</Meta>
+        <Meta name="Titulo_alternativo" minoccurs="1" maxoccurs="1">PF_$schoolYear->id_$evaluationMoment->code_$class->code</Meta>
+        <Meta name="Identificador" minoccurs="1" maxoccurs="1">
+            <Meta name="Identificador_tipo" minoccurs="1" maxoccurs="1">GUID</Meta>
+            <Meta name="Identificador_id_recurso" minoccurs="1" maxoccurs="1">$record_guid</Meta>
+            <Meta name="Identificador_codigo_classificacao" minoccurs="1" maxoccurs="1">$classificationItem->classification_code</Meta>
+        </Meta>
+        <Meta name="Produtor" minoccurs="1" maxoccurs="1">
+            <Meta name="Produtor_setor" minoccurs="1" maxoccurs="1">CSCM-LX/AP/$grade->code</Meta>
+            <Meta name="Produtor_id" minoccurs="1" maxoccurs="1">$classDirector->private_key</Meta>
+            <Meta name="Produtor_designacao" minoccurs="1" maxoccurs="1">$classDirector->name</Meta>
+            <Meta name="Produtor_tipo" minoccurs="1" maxoccurs="1">Diretor Turma</Meta>
+        </Meta>
+        <Meta name="Assunto" minoccurs="1" maxoccurs="1">Pauta de avaliação da turma $class->name do $evaluationMoment->name do ano letivo $schoolYear->name</Meta>
+        <Meta name="Idioma" minoccurs="1" maxoccurs="1">PT</Meta>
+        <Meta name="Data_hora_registo" minoccurs="1" maxoccurs="1">$record_date</Meta>
+        <Meta name="Formato" minoccurs="1" maxoccurs="1">
+            <Meta name="Formato_dados" minoccurs="1" maxoccurs="1">PDF</Meta>
+            <Meta name="Formato_suporte" minoccurs="1" maxoccurs="1">Ficheiro Digital</Meta>
+        </Meta>
+        <Meta name="Acessibilidade_classificacao_seguranca" minoccurs="1" maxoccurs="1">$accessLevelClassification->name</Meta>
+        <Meta name="Ano_letivo" minoccurs="1" maxoccurs="1">$schoolYear->name</Meta>
+        <Meta name="Momento_avaliacao" minoccurs="1" maxoccurs="1">$evaluationMoment->name</Meta>
+        <Meta name="Turma" minoccurs="1" maxoccurs="1">
+            <Meta name="Turma_id" minoccurs="1" maxoccurs="1">$class->guid</Meta>
+            <Meta name="Turma_designacao" minoccurs="1" maxoccurs="1">$class->name</Meta>
+        </Meta>
+        <Meta name="Ciclo" minoccurs="1" maxoccurs="1">$grade->name</Meta>
+        <Meta name="Validador" minoccurs="1" maxoccurs="1">
+            <Meta name="Validador_id" minoccurs="1" maxoccurs="1">$validator->private_key</Meta>
+            <Meta name="Validador_designacao" minoccurs="1" maxoccurs="1">$validator->name</Meta>
+        </Meta>
+        <Meta name="Conselho_Turma" minoccurs="1" maxoccurs="1">
+            <Meta name="Docente" minoccurs="1" maxoccurs="*" source="teachersData">
+                <Meta name="Docente_id">$teachersData->private_key</Meta>
+                <Meta name="Docente_designacao">$teachersData->name</Meta>
+            </Meta>
+        </Meta>
+        <Meta name="Alunos" minoccurs="1" maxoccurs="1">
+            <Meta name="Aluno"  minoccurs="1" maxoccurs="*" source="studentsData">
+                <Meta name="Aluno_id" minoccurs="1" maxoccurs="1">$studentsData->private_key</Meta>
+                <Meta name="Aluno_designacao" minoccurs="1" maxoccurs="1">$studentsData->name</Meta>
+            </Meta>
+        </Meta>
+    </Metadata>
+    -->
+
+</Node>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<String key="fillSuccess" value="Formulário preenchido com sucesso"/>
+		<String key="framework.form" value="Inquéritos"/>
+		<String key="manage" value="Gestão"/>
+		<String key="fill" value="Preenchimento"/>
+		<String key="_termsConditions" value="Termos e Condições"/>
+		<String key="title">
+		<![CDATA[
+							<div class="well">
+								<h1>{0}</h1>
+							</div>
+					]]>
+		</String>
+
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<String key="xHistory" value="Histórico"/>
+    <String key="token_public_key" value="Foto"/>
+    <String key="public_key" value="Foto"/>
+    <String key="token_display_name" value="Nome"/>
+    <String key="node" value="Atividade"/>
+    <String key="started" value="Início"/>
+    <String key="ended" value="Fim"/>
+    <String key="obs" value="Observações"/>
+    <String key="bpmnProcess" value="Processo BPMN"/>
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

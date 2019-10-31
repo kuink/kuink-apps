@@ -1,0 +1,44 @@
+<?xml version='1.0'?>
+<Method>
+    <Params>
+        <Param name="context"/>
+    </Params>
+    <Body>
+        <Sql>
+          <XSql>
+            <XSelect>
+              <XField>
+                <![CDATA[
+                  t.*
+                ]]>
+              </XField>
+            </XSelect>
+            <XFrom>
+              <XTable>
+                <![CDATA[
+                  fw_template t
+                ]]>
+              </XTable>
+            </XFrom>
+            <XWhere>
+              <XCondition>
+                  <![CDATA[
+                    1=1
+                  ]]>
+              </XCondition>
+              <XCondition optional="context">
+                  <![CDATA[
+                    AND t.context LIKE "%{param->context}%"
+                  ]]>
+              </XCondition>
+            </XWhere>
+            <XOrderBy>
+              <XOrder>
+                  <![CDATA[ t.order ASC, t.name ASC ]]>
+              </XOrder>
+            </XOrderBy>
+          </XSql>
+        </Sql>
+    </Body>
+
+</Method>

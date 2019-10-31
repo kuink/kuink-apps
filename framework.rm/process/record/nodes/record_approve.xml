@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+      <Param name="id_object"/>
+      <Param name="id_task"/>
+    </Params>
+    <Libraries>
+    </Libraries>
+    <Screens>
+        <Screen id="scrShow">
+            <Form name="frmDocData" title="components">
+              <Header id="id" label="id"/>
+              <Static id="uuid" title="uuid"/>
+              <Static id="name" title="name"/>
+              <Static id="description" title="description"/>
+              <ButtonGroup>
+                <Button type="back" id="back" action="back"/>
+                <Button type="download" id="download" action="download" actionvalue="id"/>
+                <Button type="execute" id="approve" action="approve"/>
+                <Button type="delete" id="reject" action="reject"/>
+              </ButtonGroup>
+            </Form>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="scrShow">
+
+            <Var name="components">
+              <Call library="framework,rm.record,api" function="getComponents">
+                <Param name="id_record"><Var name="PARAMS" key="id_object" /></Param>
+              </Call>
+            </Var>
+
+            <Control method="bind" object="frmDocData">
+                <Param>
+                  <Var name="components" />
+                </Param>
+            </Control>
+        </Action>
+
+        <Action name="download">
+          <Var name="component">
+            <Call library="framework,rm.component" function="getById">
+              <Param name="id"><ActionValue /></Param>
+            </Call>
+          </Var>
+          <Var name="plugin">
+            <Call library="framework,rm.component.plugin,api" function="getById">
+              <Param name="id"><Var name="component" key="id_component_plugin" /></Param>
+            </Call>
+          </Var>
+          <Var name="library"><String.parse><![CDATA[framework,rm.component.plugin,$plugin->code]]></String.parse></Var>
+          <Call library="$library" function="getStream">
+            <Param name="id_component"><Var name="component" key="id"/></Param>
+          </Call>
+          <Action name="init"/>
+        </Action>
+
+        <Action name="back">
+          <RaiseEvent name="back" />
+        </Action>
+
+        <Action name="approve">
+          <Var name="result" key="result">approved</Var>
+          <RaiseEvent name="complete">
+            <Param name="id_task"><Var name="PARAMS" key="id_task"/></Param>
+            <Param name="result"><Var name="result"/></Param>
+          </RaiseEvent>
+        </Action>
+
+        <Action name="reject">
+          <Var name="result" key="result">rejected</Var>
+          <RaiseEvent name="complete">
+            <Param name="id_task"><Var name="PARAMS" key="id_task"/></Param>
+            <Param name="result"><Var name="result"/></Param>
+          </RaiseEvent>
+        </Action>
+
+	</Actions>
+</Node>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        get a record if it is common in all given aggregations
+    </Doc>
+    <Params>
+        <Param name="guids"/>
+        <Param name="classificationItems"/>
+        <Param name="amountOfRelations"/>
+        <Param name="comparison"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        id_record
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        (
+                            SELECT fa.id_record, count(fa.id_aggregation_type) as agg, count(fa.guid) as guid, 
+                            fr.id_classification_item as frici
+                            FROM fw_aggregation fa
+                            inner join fw_record fr on (fr.id=fa.id_record) 
+                            where fa.guid in ({param->guids})
+                            GROUP BY fa.id_record
+                        ) AS result
+
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>
+                        <![CDATA[
+                                agg {param->comparison} {param->amountOfRelations}
+                        ]]>
+                    </XCondition>
+                    <XCondition optional="classificationItems">
+                        <![CDATA[
+                            and frici in ({param->classificationItems})
+                        ]]>
+                    </XCondition>
+                </XWhere>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

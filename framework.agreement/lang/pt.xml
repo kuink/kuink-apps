@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+   <Strings>
+		<String key="fillSuccess" value="Formulário preenchido com sucesso"/>
+		<String key="statements" value="Declarações"/>
+		<String key="validUntil" value="Válido até:"/>
+    <String key="id_agreement" value="Autorização"/>
+    <String key="removeAgreementFromList" value="Remover da lista"/>
+    <String key="downloadAgreement" value="Descarregar Autorizações"/>
+    
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

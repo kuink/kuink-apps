@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Doc lang="pt-PT">
+    </Doc>
+    <Libraries>
+        <Use name="UtilsLib" type="lib"/>
+        <Use name="MathLib" type="lib"/>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="StringLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens>
+    </Screens>
+    <Actions>
+        <Action name="init">
+        </Action>
+    </Actions>
+    <Library>
+
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="code" type="text" required="true"/>
+        <Param name="name" type="text" required="true"/>
+        <Param name="description" type="text" required="true"/>
+        <Param name="is_active" type="checkbox" required="true"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_state_machine</Param>
+            <Param name="_base">true</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="name">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="description">
+              <Var name="PARAMS" key="description"/>
+            </Param>
+            <Param name="is_active">
+              <Var name="PARAMS" key="is_active"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+		
+    <Function name="delete" doc="Delete a record by id from table fw_state_machine">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_state_machine</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_state_machine">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="description" type="text" required="false"/>
+        <Param name="is_active" type="checkbox" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_state_machine</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+
+    <Function name="search" doc="Search records from table fw_state_machine">
+      <Params>
+        <Param name="code" type="text"/>
+        <Param name="name" type="text"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="is_active" type="checkbox" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,search">
+            <Param name="code" wildcard="full">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="name" wildcard="full">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAll" doc="Get all records from table fw_state_machine">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="is_active" type="checkbox" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_state_machine</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getById" doc="Get a record by id from table fw_state_machine">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="is_active" type="checkbox" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_state_machine</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_state_machine">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+  		</Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_state_machine</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+        
+        <Function scope="protected" name="getAllStates" doc="Get all the sates of the state machine">
+					<Params>
+	          <Param name="code" doc="The state machine instance code"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+					
+         		<Var name="stateMachine" >
+         			<DataAccess method="load">
+							<Param name="_entity">fw_state_machine</Param>
+							<Param name="code"><Var name="PARAMS" key="code"/></Param>
+						</DataAccess>
+         		</Var>
+         		<If condition="$stateMachine->__length == 0">
+							<Then>
+								<Exception><String>framework/stateMachine::invalid</String></Exception>
+							</Then>
+						</If>
+
+						<Var name="states">
+							<DataAccess method="getAll">
+								<Param name="_entity">fw_state_machine_state</Param>
+								<Param name="id_state_machine"><Var name="stateMachine" key="id"/></Param>
+								<Param name="_sort">code</Param>
+							</DataAccess>
+						</Var>
+
+						<Return>
+							<Var name="states"/>
+						</Return>
+					</Begin>
+				</Function>
+
+        <Function scope="protected" name="getAllStatesWithDefault" doc="Get all the sates of the instance state machine">
+					<Params>
+	          <Param name="code" doc="The state machine code"/>
+	          <Param name="role" doc="The role to filter the default states"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+						<Var name="stateMachine">
+							<DataAccess method="load">
+								<Param name="_entity">fw_state_machine</Param>
+								<Param name="code"><Var name="PARAMS" key="code"/></Param>
+							</DataAccess>
+						</Var>
+						<Var name="states">
+							<DataAccess method="getAll">
+								<Param name="_entity">fw_state_machine_state</Param>
+								<Param name="id_state_machine"><Var name="stateMachine" key="id"/></Param>
+								<Param name="_sort">code</Param>
+							</DataAccess>
+						</Var>
+						<Var name="statesWithDefault"><Set/></Var>
+						<ForEach var="states" item="state">
+							<Var name="roles" >
+								<String.explode>
+									<Param>,</Param>
+									<Param><Var name="state" key="default_to_roles"/></Param>
+								</String.explode>
+							</Var>
+							<Var name="found"><Int>0</Int></Var>
+							<ForEach var="roles" item="roleItem">
+								<If condition="$roleItem == $PARAMS->role">
+									<Then>
+										<Var name="found"><Int>1</Int></Var>
+									</Then>
+								</If>
+							</ForEach>
+							<Var name="stateWithDefault"><Set/></Var>
+							<Var name="stateWithDefault" key="id"><Var name="state" key="id"/></Var>
+							<Var name="stateWithDefault" key="name"><Var name="state" key="name"/></Var>
+							<Var name="stateWithDefault" key="default"><Int>0</Int></Var>
+							<If condition="$found == 1">
+								<Then>
+									<Var name="stateWithDefault" key="default"><Int>1</Int></Var>
+								</Then>
+							</If>
+							
+							<Var name="rolesVisible" >
+								<String.explode>
+									<Param>,</Param>
+									<Param><Var name="state" key="visible_to_roles"/></Param>
+								</String.explode>
+							</Var>
+							<Var name="found"><Int>0</Int></Var>
+							<ForEach var="rolesVisible" item="roleItemVisible">
+								<If condition="$roleItemVisible == $PARAMS->role">
+									<Then>
+										<Var name="found"><Int>1</Int></Var>
+									</Then>
+								</If>
+							</ForEach>
+							
+							<!-- Only add if the role has permission -->
+							<If condition="$found == 1">
+								<Then>
+									<Var name="statesWithDefault" key=""><Var name="stateWithDefault"/></Var>								
+								</Then>
+							</If>
+						</ForEach>
+						<Return>
+							<Var name="statesWithDefault"/>
+						</Return>
+					</Begin>
+				</Function>
+
+        <Function scope="protected" name="getAllStatesDefault" doc="Get all the default sates of the state machine">
+					<Params>
+	          <Param name="code" doc="The state machine code"/>
+	          <Param name="role" doc="The role to filter the default states"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+						<Var name="stateMachine">
+							<DataAccess method="load">
+								<Param name="_entity">fw_state_machine</Param>
+								<Param name="code"><Var name="PARAMS" key="code"/></Param>
+							</DataAccess>
+						</Var>
+						<Var name="states">
+							<DataAccess method="getAll">
+								<Param name="_entity">fw_state_machine_state</Param>
+								<Param name="id_state_machine"><Var name="stateMachine" key="id"/></Param>
+								<Param name="_sort">code</Param>
+							</DataAccess>
+						</Var>
+						<Var name="statesWithDefault"><Set/></Var>
+						<ForEach var="states" item="state">
+							<Var name="roles" >
+								<String.explode>
+									<Param>,</Param>
+									<Param><Var name="state" key="default_to_roles"/></Param>
+								</String.explode>
+							</Var>
+							<Var name="found"><Int>0</Int></Var>
+							<ForEach var="roles" item="roleItem">
+								<If condition="$roleItem == $PARAMS->role">
+									<Then>
+										<Var name="found"><Int>1</Int></Var>
+									</Then>
+								</If>
+							</ForEach>
+							<If condition="$found == 1">
+								<Then>
+									<Var name="statesWithDefault" key="$state->id"><Int>1</Int></Var>
+								</Then>
+							</If>
+						</ForEach>
+						
+						<Return>
+							<Var name="statesWithDefault"/>
+						</Return>
+					</Begin>
+				</Function>
+
+				<Function scope="protected" name="saveTransition" doc="Insert or update a transition based on uuid">
+					<Params>
+						<Param name="uuid" type="" doc=""></Param>
+						<Param name="start_state_code" type="" doc=""></Param>
+						<Param name="end_state_code" type="" doc=""></Param>
+						<Param name="event" type="" doc=""></Param>
+						<Param name="event_description" type="" doc=""></Param>
+						<Param name="role_list" type="" doc=""></Param>
+						<Param name="notify_role_list" type="" doc=""></Param>
+						<Param name="field_list" type="" doc=""></Param>
+						<Param name="actions" type="" doc=""></Param>
+						<Param name="is_active" type="" doc=""></Param>
+					</Params>
+					<Return type=""/>
+					<Begin>
+						<Var name="transition">
+							<DataAccess method="load">
+								<Param name="_entity">fw_state_machine_transition</Param>
+								<Param name="uuid"><Var name="PARAMS" key="uuid"/></Param>
+							</DataAccess>
+						</Var>
+
+						<Var name="id_start_state">						
+							<Call library="framework,stateMachine.state,api" function="getIdByCode">
+								<Param name="code"><Var name="PARAMS" key="start_state_code"/></Param>
+							</Call>
+						</Var>
+						<Var name="id_end_state">						
+							<Call library="framework,stateMachine.state,api" function="getIdByCode">
+								<Param name="code"><Var name="PARAMS" key="end_state_code"/></Param>
+							</Call>
+						</Var>
+						
+						<If condition="$id_start_state === '' || $id_start_state === null">
+							<Then>
+								<Exception><String.parse>Invalid state $PARAMS->start_state_code</String.parse></Exception>
+							</Then>
+						</If>
+						<If condition="$id_end_state === '' || $id_end_state === null">
+							<Then>
+								<Exception><String.parse>Invalid state $PARAMS->end_state_code</String.parse></Exception>
+							</Then>
+						</If>
+					
+						<If condition="$transition->__length == 0">
+							<Then>
+								<!-- Insert the transition -->
+								<DataAccess method="insert">
+									<Param name="_entity">fw_state_machine_transition</Param>
+									<Param name="uuid"><Var name="PARAMS" key="uuid"/></Param>
+									<Param name="id_start_state"><Var name="id_start_state"/></Param>
+									<Param name="id_end_state"><Var name="id_end_state"/></Param>
+									<Param name="event"><Var name="PARAMS" key="event"/></Param>
+									<Param name="event_description"><Var name="PARAMS" key="event_description"/></Param>
+									<Param name="role_list"><Var name="PARAMS" key="role_list"/></Param>
+									<Param name="notify_role_list"><Var name="PARAMS" key="notify_role_list"/></Param>
+									<Param name="field_list"><Var name="PARAMS" key="field_list"/></Param>
+									<Param name="actions"><Var name="PARAMS" key="actions"/></Param>
+									<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+									<Param name="_base">true</Param>
+								</DataAccess>
+							</Then>
+							<Else>
+								<!-- Update the transition -->
+								<DataAccess method="update">
+									<Param name="_entity">fw_state_machine_transition</Param>
+									<Param name="uuid" pk="true"><Var name="PARAMS" key="uuid"/></Param>
+									<Param name="id_start_state"><Var name="id_start_state"/></Param>
+									<Param name="id_end_state"><Var name="id_end_state"/></Param>
+									<Param name="event"><Var name="PARAMS" key="event"/></Param>
+									<Param name="event_description"><Var name="PARAMS" key="event_description"/></Param>
+									<Param name="role_list"><Var name="PARAMS" key="role_list"/></Param>
+									<Param name="notify_role_list"><Var name="PARAMS" key="notify_role_list"/></Param>
+									<Param name="field_list"><Var name="PARAMS" key="field_list"/></Param>
+									<Param name="actions"><Var name="PARAMS" key="actions"/></Param>
+									<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+									<Param name="_base">true</Param>
+								</DataAccess>
+							</Else>
+						</If>					
+					</Begin>
+				</Function>
+
+        <Function scope="private" name="updateTransitionFormAndAction" doc="Updates the transition form and action. Used in import.">
+					<Params>
+						<Param name="transition_uuid" doc="The transition uuid"/>
+						<Param name="form_code" doc="The form code to update. Ignored if empty."/>
+						<Param name="action_code" doc="The action code to update. Ignored if empty."/>
+					</Params>
+					<Return type="int" doc=""/>
+					<Begin>
+						<Var name="transition">
+							<DataAccess method="load">
+								<Param name="_entity">fw_state_machine_transition</Param>
+								<Param name="uuid"><Var name="PARAMS" key="transition_uuid"/></Param>
+							</DataAccess>
+						</Var>
+						<Exception name="framework::stateMachine/invalidTransition" condition="$transition->__length == 0">
+							<Param><Var name="PARAMS" key="transition_uuid"/></Param>
+						</Exception>
+						
+						<!-- Getting  the form -->
+						<Var name="form">
+							<DataAccess method="load">
+								<Param name="_entity">fw_state_machine_form</Param>
+								<Param name="code"><Var name="PARAMS" key="form_code"/></Param>
+							</DataAccess>
+						</Var>
+
+						<!-- Getting  the action -->
+						<Var name="action" dump="true">
+							<DataAccess method="load">
+								<Param name="_entity">fw_state_machine_action</Param>
+								<Param name="code"><Var name="PARAMS" key="action_code"/></Param>
+							</DataAccess>
+						</Var>
+						
+						<Var name="data"><Set/></Var>
+						<If condition="$PARAMS->form_code != ''">
+							<Then><Var name="data" key="id_form"><Var name="form" key="id"/></Var></Then>
+						</If>
+						<If condition="$PARAMS->action_code != ''">
+							<Then><Var name="data" key="id_action"><Var name="action" key="id"/></Var></Then>
+						</If>
+
+						<If condition="$data->__length &gt; 0">
+							<Then>
+								<DataAccess method="update" params="data">
+									<Param name="_entity">fw_state_machine_transition</Param>
+									<Param name="id"><Var name="transition" key="id"/></Param>
+								</DataAccess>								
+							</Then>
+						</If>
+						<Return>
+						</Return>
+					</Begin>
+        </Function>				
+
+    </Library>
+</Node>
+

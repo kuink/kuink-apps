@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="result"/>
+  </Params>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Column id="col1"/>
+	      <ActionGroup >
+	          <Action name="today" id="today" label="today" />
+	          <Action name="yesterday" id="yesterday" label="yesterday" />
+	          <Action name="last5Days" id="last5Days" label="last5Days" />
+	          <Action name="last30Days" id="last30Days" label="last30Days" />
+	      </ActionGroup>
+	      <DateTime id="dateFrom" />
+	      <DateTime id="dateTo" />
+	      <Column id="col2"/>
+        <Select id="category" datasource="call:framework,request.category,api,getAll" bindid="id" bindvalue="name"/>
+        <Select id="status" datasource="call:framework,request.status,api,getAll" bindid="id" bindvalue="name"/>
+        <Text id="data" label="data"/>
+        <Checkbox id="inTTL"/>
+        <ButtonGroup>
+          <Button id="search" type="search" label="search" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" pagingaction="search" collapsible="false" pagesize="10" title="result" freeze="false">
+        <Template>
+          <Columns>
+            <Column name="guid" type="pick" label="select"/>
+            <Column name="id"/>
+            <Column name="photo">
+              <Formatter name="Image" ext="jpg" path="photo"/>
+            </Column>
+            <Column name="data"/>
+            <Column name="category_code"/>
+            <Column name="status_code"/>
+            <Column name="_creation">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
+          </Columns>
+          <Actions separator="true">
+            <Action name="process" actionvalue="guid" type="execute"/>
+            <Action name="showLog" actionvalue="id" label="log"/>
+            <Action name="addComment" actionvalue="id" label="comment" icon="commenting"/>
+            <Action name="addComment" actionvalue="id" label="comments" icon="comments" condition="$comments_count &gt; 0"/>
+            <Action name="completeManual" actionvalue="id" label="completeManual"/>
+          </Actions>
+        </Template>
+          <Actions>
+            <Action name="bulkProcess" actionvalue="guid" type="execute"/>
+          </Actions>
+      </Grid>
+    </Screen>
+    
+    <Screen id="scrLog" doc="Show log">
+      <Form name="frmSearch" persist="true" title="search">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdLog" pageable="false" collapsible="false" title="result">
+        <Template>
+          <Columns>
+            <Column name="action"/>
+            <Column name="result"/>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>  
+
+    <Screen id="scrComment" doc="Comment the request">
+      <Form name="frmComment" title="addComments">
+        <TextArea id="comment" label="comment"/>
+        <ButtonGroup>
+          <Button id="add" type="add" action="saveComment"/>
+          <Button id="cancel" type="cancel" label="cancel" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdComments" pageable="false" collapsible="false" title="result">
+        <Template>
+          <Columns>
+            <Column name="photo">
+              <Formatter name="Image" ext="jpg" path="photo"/>
+            </Column>
+            <Column name="comment_date">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
+            <Column name="comment"/>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>  
+        
+    <Screen id="scrResult" doc="Result Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdLog" pageable="false" collapsible="false" title="result">
+        <Template>
+          <Columns>
+            <Column name="action"/>
+            <Column name="result"/>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>    
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Var name="searchFormDataSession" process="true" clear="true"/>
+      <Var name="defaultData" key="inTTL" process="true"><Int>0</Int></Var>
+      <Var name="defaultData" key="status" process="true"><Int>2</Int></Var>
+      
+      <Action name="last5Days"/>
+    </Action>
+    
+    <Action name="process" screen="scrResult">
+      <Var name="log" dump="true">
+				<Call library="framework,request,api" function="process">
+  				<Param name="guid"><ActionValue/></Param>
+				</Call>
+      </Var>
+      <Control method="bind" object="grdLog">
+        <Param><Var name="log"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="bulkProcess" screen="scrResult">
+    <Var name="POSTDATA" dump="true"/>
+      <ForEach var="POSTDATA" item="request">
+        <If condition="$request->SELECTED == 1">
+		 		  <Then>
+		 		  <Var name="request" dump="true"/>
+					 <Var name="log" dump="true">
+			        <Call library="framework,request,api" function="process">
+			          <Param name="guid"><Var name="request" key="guid"/></Param>
+			        </Call>
+			      </Var>
+			      <Control method="bind" object="grdLog">
+			        <Param><Var name="log"/></Param>
+			      </Control>
+					</Then>
+        </If>
+      </ForEach>
+    </Action>
+    
+    <Action name="showLog" screen="scrLog">
+	    <Var name="request" dump="true">
+	      <Call library="framework,request,api" function="getById">
+	        <Param name="id"><ActionValue/></Param>
+	      </Call>
+	    </Var>
+	    <Var name="log">
+	     <JsonToSet>
+	       <Var name="request" key="log"/>
+	     </JsonToSet>
+	    </Var>
+      <Control method="bind" object="grdLog">
+        <Param><Var name="log"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="search" screen="scrSearch">
+      <If condition="@defaultData->__length > 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param><Var name="defaultData" process="true"/></Param>
+          </Control>
+          <Control method="bind" object="frmSearch">
+            <Param><Var name="defaultData" process="true"/></Param>
+          </Control>
+          
+          <Var name="defaultData" process="true" clear="true"/>          
+        </Then>
+      </If>
+
+      <If condition="$POSTDATA->__length == 0">
+				<Then>
+		       <Var name="currentData" dump="true">
+		         <Control method="getCurrentData" object="frmSearch"/>
+		       </Var>
+		       <Var name="currentData" key="dateFrom"><Var name="searchFormDataSession" key="dateFrom" process="true"/></Var>
+		       <Var name="currentData" key="dateTo"><Var name="searchFormDataSession" key="dateTo" process="true"/></Var>
+		       <Var name="searchFormDataSession" process="true"><Var name="currentData"/></Var>
+			     <Control method="bind" object="frmSearch">
+			       <Param><Var name="currentData"/></Param>
+			     </Control>		
+				</Then>
+				<Else>
+           <Var name="searchFormDataSession" key="dateFrom" process="true">
+               <Var name="POSTDATA" key="dateFrom" />
+           </Var>
+           <Var name="searchFormDataSession" key="dateTo" process="true">
+               <Var name="POSTDATA" key="dateTo" />
+           </Var>
+				</Else>
+			</If>
+      
+      
+      <Var name="currentData" dump="true">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Var name="currentData" key="dateFrom"><Var name="searchFormDataSession" key="dateFrom" process="true"/></Var>
+      <Var name="currentData" key="dateTo"><Var name="searchFormDataSession" key="dateTo" process="true"/></Var>
+      <Var name="searchResult" dump="true">
+        <Call library="framework,request,api" function="search">
+           <Param name="id_request_status"><Var name="currentData" key="status"/></Param>
+           <Param name="id_request_category"><Var name="currentData" key="category"/></Param>
+           <Param name="data"><Var name="currentData" key="data"/></Param>
+           <Param name="inTTL"><Var name="currentData" key="inTTL"/></Param>
+           <Param name="dateFrom"><Var name="currentData" key="dateFrom"/></Param>
+           <Param name="dateTo"><Var name="currentData" key="dateTo"/></Param>
+           <Param name="pagenum"><Control method="getCurrentPage" object="grdSearchResult"/></Param>
+           <Param name="pagesize"><Control method="getPageSize" object="grdSearchResult"/></Param>
+         </Call>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Var name="searchResult"/>          
+        </Param>
+      </Control>
+    </Action>
+
+        <!-- Date search dates -->
+        <Action name="today">
+            <Var name="searchFormData">
+                <Var name="searchFormDataSession" process="true" />
+            </Var>
+            <Var name="searchFormData" key="dateFrom">
+                <DateTimeLib method="todayStart" />
+            </Var>
+            <Var name="searchFormData" key="dateTo">
+                <DateTimeLib method="todayEnd" />
+            </Var>
+            <Var name="searchFormDataSession" process="true">
+                <Var name="searchFormData" />
+            </Var>
+            <Action name="search" />
+        </Action>
+
+        <Action name="yesterday">
+            <Var name="searchFormData">
+                <Var name="searchFormDataSession" process="true" />
+            </Var>
+            <Var name="searchFormData" key="dateFrom">
+                <DateTimeLib method="addWorkingDays">
+                    <Param>
+                        <DateTimeLib method="todayStart" />
+                    </Param>
+                    <Param>-1</Param>
+                </DateTimeLib>
+            </Var>
+            <Var name="searchFormData" key="dateTo">
+                <DateTimeLib method="addWorkingDays">
+                    <Param>
+                        <DateTimeLib method="todayEnd" />
+                    </Param>
+                    <Param>-1</Param>
+                </DateTimeLib>
+            </Var>
+            <Var name="searchFormDataSession" process="true">
+                <Var name="searchFormData" />
+            </Var>
+
+            <Action name="search" />
+        </Action>
+
+        <Action name="last5Days">
+            <Var name="searchFormData">
+                <Var name="searchFormDataSession" process="true" />
+            </Var>
+            <Var name="searchFormData" key="dateFrom">
+                <DateTimeLib method="addWorkingDays">
+                    <Param>
+                        <DateTimeLib method="todayStart" />
+                    </Param>
+                    <Param>-5</Param>
+                </DateTimeLib>
+            </Var>
+            <Var name="searchFormData" key="dateTo">
+                <DateTimeLib method="todayEnd" />
+            </Var>
+            <Var name="searchFormDataSession" process="true">
+                <Var name="searchFormData" />
+            </Var>
+
+            <Action name="search" />
+        </Action>
+
+        <Action name="last30Days">
+            <Var name="searchFormData">
+                <Var name="searchFormDataSession" process="true" />
+            </Var>
+            <Var name="searchFormData" key="dateFrom">
+                <DateTimeLib method="addWorkingDays">
+                    <Param>
+                        <DateTimeLib method="todayStart" />
+                    </Param>
+                    <Param>-30</Param>
+                </DateTimeLib>
+            </Var>
+            <Var name="searchFormData" key="dateTo">
+                <DateTimeLib method="todayEnd" />
+            </Var>
+            <Var name="searchFormDataSession" process="true" dump="true">
+                <Var name="searchFormData" />
+            </Var>
+
+            <Action name="search" />
+        </Action>
+
+        <Action name="addComment" screen="scrComment">
+          <Var name="id_request" process="true" clear="true"/>
+          <Var name="id_request" process="true"><ActionValue/></Var>
+          <Control method="bind" object="grdComments">
+						<Param>
+						  <Call library="framework,request,api" function="getComments">
+  							<Param name="id_request"><ActionValue/></Param>
+							</Call>
+						</Param>
+					</Control>
+        </Action>
+
+        <Action name="saveComment">
+          <Call library="framework,request,api" function="addComment">
+            <Param name="id_request"><Var name="id_request" process="true"/></Param>
+            <Param name="comment"><Var name="POSTDATA" key="comment"/></Param>
+          </Call>
+          <Var name="id_request" process="true" clear="true"/>   
+          <Action name="search"/>       
+        </Action>
+
+        <Action name="completeManual">
+          <Call library="framework,request,api" function="completeManual">
+            <Param name="id_request"><ActionValue/></Param>
+          </Call>
+          <Var name="id_request" process="true" clear="true"/>   
+          <Action name="search"/>       
+        </Action>
+
+    
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

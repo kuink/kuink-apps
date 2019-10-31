@@ -1,0 +1,28 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Gets the total number of records as well as the page of records itself.
+    </Doc>
+    <Params>
+        <Param name="id"/>
+        <Param name="string"/>
+        <Param name="pagenum"/>
+        <Param name="pagesize"/>
+    </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect><XField>*</XField></XSelect>
+                <XFrom>
+                    <XTable>fw_demo_entity t</XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1=1</XCondition>
+                    <XCondition optional="id">AND t.id = {param->id}</XCondition>
+                    <XCondition optional="string">AND t.string like '{param->string}'</XCondition>
+                </XWhere>
+                <XOrderBy><XOrder>t.id ASC</XOrder></XOrderBy>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

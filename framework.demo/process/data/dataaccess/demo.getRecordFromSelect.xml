@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Gets the total number of records as well as the page of records itself.
+    </Doc>
+    <Params>
+        <Param name="id"/>
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[        
+            	SELECT * from {table_prefix}fw_demo_test_type WHERE id={param->id}
+            ]]>
+        </Sql>
+    </Body>
+</Method>

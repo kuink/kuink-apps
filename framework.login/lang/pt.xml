@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- cms -->
+		<String key="Login" value="Login"/>
+		<String key="manage" value="Login"/>
+		
+		<String key="username" value="Utilizador"/>
+		<String key="password" value="Password"/>
+    <String key="doLogin" value="Continuar"/>		
+    
+    <String key="failed" value="Utilizador ou palavra passe incorreta"/>
+
+
+
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

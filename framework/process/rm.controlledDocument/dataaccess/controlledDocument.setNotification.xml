@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+        Get a controlled document data
+    </Doc>
+  <Params>
+    <Param name="id"/>
+    <Param name="code"/>
+  </Params>
+  <Body>
+    <Execute>
+     	<![CDATA[
+				UPDATE fw_rm_controlled_document_version SET is_notified=1 WHERE is_notified=0 AND is_active=1;
+			]]>
+    </Execute>
+  </Body>
+</Method>

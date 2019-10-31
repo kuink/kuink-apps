@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all class_validation
+    </Doc>
+    <Params>
+                      <Param name="id"/>
+                  <Param name="id_class"/>
+                  <Param name="id_validator"/>
+                  <Param name="validation_level"/>
+                  <Param name="is_active"/>
+                  <Param name="name"/>
+                  <Param name="short_name"/>
+                  <Param name="code"/>
+                  <Param name="order"/>
+                                                            </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        class_validation t
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>1 = 1</XCondition>
+                                                                                                                                                                                                        <XCondition optional="id">AND t.id = {param->id}</XCondition>
+                                                                                                                                <XCondition optional="id_class">AND t.id_class = {param->id_class}</XCondition>
+                                                                                                                                <XCondition optional="id_validator">AND t.id_validator = {param->id_validator}</XCondition>
+                                                                                                                                <XCondition optional="validation_level">AND t.validation_level = {param->validation_level}</XCondition>
+                                                                                                                                <XCondition optional="is_active">AND t.is_active = {param->is_active}</XCondition>
+                                                                                                                                                                                          <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+                                                                                                                                                                                          <XCondition optional="short_name">AND t.short_name like '{param->short_name}'</XCondition>
+                                                                                                                                                                                          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+                                                                                                                                <XCondition optional="order">AND t.order = {param->order}</XCondition>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              </XWhere>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

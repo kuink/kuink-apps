@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="prepare" doc="prepare">
+      <Params/>
+      <Return type="text" doc="Test documentation"/>
+      <Begin>
+        <Var name="context" key="message">framework::framework.unitTest::acl da.Load r1(c1,c2) r2(c2) r3(c3) acl(user,r1) - test c1</Var>
+        <Return>
+          <Var name="context"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="run" doc="Run the test">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="single" doc="The result">
+        <External name="code" type="int" doc="The result code"/>
+        <External name="data" type="text" doc="Data returned by the function"/>
+      </Return>
+      <Errors>
+        <Error code="-1" doc="Test failed"/>
+      </Errors>
+      <Begin>
+        <Transaction>
+        	<Try>
+        		<Instructions>
+        			<!-- ************************ Build the scenary ***************** -->
+	        			<!-- List of roles to add to the scenary -->
+	        			<Var name="roles"><Set>
+	        				<Element name="role1">capability1,capability2</Element>
+	        				<Element name="role2">capability2</Element>
+	        				<Element name="role3">capability3</Element>
+	        			</Set></Var>
+	        			
+	        			<!-- List of acl entries to add to the scenary -->
+	        			<Var name="acl">
+			            <Set>
+			            	<Element name="acl1">
+			            		<Set>
+			            			<Element name="entry1">
+			            				<Set>
+							              <Element name="id_person"><Var name="USER" key="id"/></Element>
+							              <Element name="id_person_group"><Null/></Element>
+							              <Element name="role">role1</Element>
+						              </Set>
+					            	</Element>
+					          	</Set>
+				         		</Element>
+				         	</Set>        				
+	        			</Var>
+	
+	        			<!-- List of acl entries to add to the scenary -->
+	        			<!--Var name="allocations" key="">
+			            <Set>
+			              <Element name="id_person"><Var name="USER" key="id"/></Element>
+			              <Element name="id_person_group"><Int>0</Int></Element>
+			              <Element name="role">role1</Element>
+			            </Set>
+	        			</Var-->
+	        			<!-- Records to add on the temporary table -->
+								<Var name="records">
+									<Set>
+										<Element name="r1">
+											<Set>
+				              	<Element name="id"><Int>1</Int></Element>
+				              	<Element name="acl_code">acl1</Element>
+				              </Set>
+			            	</Element>
+			            </Set>
+								</Var>
+	        			        		
+			        	<Var name="tableName">
+									<Call library="framework.unitTest,_unitTest,acl.10.aux" function="addScenaryAcl">
+										<Param name="roles"><Var name="roles"/></Param>
+										<Param name="acl"><Var name="acl"/></Param>
+										<Param name="allocations"><Var name="allocations"/></Param>
+										<Param name="records"><Var name="records"/></Param>
+									</Call>
+								</Var>
+														
+							<!-- ************************ Test the scenary ***************** -->
+							<Var name="record" dump="true">
+								<DataAccess method="load">
+									<Param name="_entity"><Var name="tableName"/></Param>
+									<Param name="id"><Int>1</Int></Param>
+									<Param name="_aclPermissions">capability1</Param>
+								</DataAccess>
+							</Var>
+							<Call library="framework.unitTest,_unitTest,acl.10.aux" function="dropAuxTable">
+								<Param name="tableName"><Var name="tableName"/></Param>
+							</Call>
+							
+							<If condition="$record->__length &gt; 0">
+								<Then>
+									<Var name="result" key="code"><Int>0</Int></Var>
+									<Var name="result" key="data"><String.parse>ACL filtered OK $record->__length</String.parse></Var>
+								</Then>
+								<Else>
+									<Var name="result" key="code"><Int>-1</Int></Var>
+									<Var name="result" key="data"><String.parse>ACL filtered NOT OK $record->__length</String.parse></Var>
+								</Else>
+							</If>
+        		
+        		</Instructions>
+        		<Catch>
+        			<RollBack/>
+        		</Catch>
+        	</Try>
+          
+          <RollBack/>
+        </Transaction>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="clean" doc="Removes the data added">
+      <Params>
+        <Param name="context" doc="Context data"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+            </Begin>
+    </Function>
+  </Library>
+</Node>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Returns a list of all subjects
+    </Doc>
+    <Params>
+    	<Param name="idSchoolYear" />
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[
+            	SELECT id, code as "name" FROM subject
+            	WHERE code is not null
+            	ORDER BY code
+            ]]>
+        </Sql>
+    </Body>
+</Method>

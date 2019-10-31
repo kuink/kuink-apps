@@ -1,0 +1,36 @@
+<?xml version='1.0'?>
+<Method>
+  <Doc>
+    Gets the token context
+  </Doc>
+  <Params>
+    <Param name="id_token" />
+  </Params>
+  <Body>
+    <Load>
+      <XSql>
+        <XSelect>
+          <XField>
+            wft.*,
+            wfpi.id_process,
+            wfp.code as process_code,
+            wfp.source as process_source,
+            wfpe.handler as engine_handler
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_wf_token wft
+            INNER JOIN fw_wf_process_instance wfpi ON (wfpi.id = wft.id_process_instance)
+            INNER JOIN fw_wf_process wfp ON (wfp.id = wfpi.id_process)
+            INNER JOIN fw_wf_process_engine wfpe ON (wfpe.id = wfp.id_process_engine)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>wft.id = {param->id_token}</XCondition>
+        </XWhere>
+      </XSql>
+    </Load>
+  </Body>
+</Method>
+

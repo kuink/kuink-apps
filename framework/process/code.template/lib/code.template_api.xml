@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="DateTimeLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+    <Function name="getAll" doc="Get all records from table fw_code_template">
+      <Params>
+        <Param name="code_template_type_code" type="text" doc="filter by type code"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="this,this,code.template.getAll">
+            <Param name="code_template_type_code"><Var name="PARAMS" key="code_template_type_code"/></Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>      
+    <Function name="getAllItems" doc="Get all records from table fw_code_template_item">
+      <Params>
+        <Param name="id_code_template" type="text" doc="filter by code_template"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="this,this,code.template.item.getAll">
+            <Param name="id_code_template"><Var name="PARAMS" key="id_code_template"/></Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>      
+
+    </Library>
+</Node>
+

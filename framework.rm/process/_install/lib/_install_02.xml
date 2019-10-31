@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Third Install</String>
+       </Return>
+      </Begin>
+    </Function>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return type="multiple"/>
+			<Begin>
+        <Var name="log"><Set/></Var>
+
+        <Var name="logEntry" key="message"><String>Adding rm manager Role</String></Var>
+				<Var name="roleId">
+				  <Call library="framework,user.role,api" function="add">
+				      <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+				      <Param name="name">Records Manager</Param>
+				      <Param name="code">rm.manager</Param>
+				      <Param name="is_active">1</Param>
+				  </Call>
+				</Var>
+				<If condition="$roleId > 0">
+					<Then>
+		        <Var name="logEntry" key="result">OK</Var>
+					</Then>
+					<Else>
+            <Var name="logEntry" key="result">ERROR</Var>
+					</Else>
+				</If>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+				
+        <Var name="logEntry" key="message"><String>Adding capability framework/rm::manage</String></Var>				
+				<Var name="capabilityId">
+				  <Call library="framework,user.capability,api" function="add">
+				    <Param name="name">Can manage records and classes</Param>
+				    <Param name="code">framework/rm::manage</Param>
+				    <Param name="is_global">0</Param>
+				  </Call>
+				</Var>
+        <If condition="$capabilityId > 0">
+          <Then>
+            <Var name="logEntry" key="result">OK</Var>
+          </Then>
+          <Else>
+            <Var name="logEntry" key="result">ERROR</Var>
+          </Else>
+        </If>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+				
+				<Call library="framework,user.role,api" function="addCapability">
+				  <Param name="id_role"><Var name="roleId"/></Param>
+				  <Param name="id_capability"><Var name="capabilityId"/></Param>
+				</Call>
+
+        <Var name="logEntry" key="message"><String>Adding allocations</String></Var>        
+				<Call library="framework,user.allocation,api" function="addByCode">
+				  <Param name="company_code">CSCM-Lx</Param>
+				  <Param name="role_code">rm.manager</Param>
+				  <Param name="person_uid">teresa.palma</Param>
+				</Call>
+        <Call library="framework,user.allocation,api" function="addByCode">
+          <Param name="company_code">CSCM-Lx</Param>
+          <Param name="role_code">rm.manager</Param>
+          <Param name="person_uid">andre.bittencourt</Param>
+        </Call>
+        <Call library="framework,user.allocation,api" function="addByCode">
+          <Param name="company_code">CSCM-Lx</Param>
+          <Param name="role_code">rm.manager</Param>
+          <Param name="person_uid">paulo.tavares</Param>
+        </Call>
+        <Call library="framework,user.allocation,api" function="addByCode">
+          <Param name="company_code">CSCM-Lx</Param>
+          <Param name="role_code">rm.manager</Param>
+          <Param name="person_uid">jose.feio</Param>
+        </Call>
+        <Call library="framework,user.allocation,api" function="addByCode">
+          <Param name="company_code">CSCM-Lx</Param>
+          <Param name="role_code">rm.manager</Param>
+          <Param name="person_uid">margarida.marrucho</Param>
+        </Call>
+        <Var name="logEntry" key="result">OK</Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+
+        <Return><Var name="log"/></Return>		
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

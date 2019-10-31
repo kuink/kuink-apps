@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+		<Function scope="public" name="getById" doc="Get the request by id">
+			<Params>
+			 <Param name="id" type="int" doc="Request id"/>
+			</Params>
+			<Return type="single"/>
+			<Begin>
+			 <Var name="request">
+			   <DataAccess method="load">
+					 <Param name="_entity">fw_request</Param>
+					 <Param name="id"><Var name="id"/></Param>
+  		   </DataAccess>
+			 </Var>
+			 <Return><Var name="request"/></Return>
+			</Begin>
+		</Function>
+
+    <Function name="addByCode" doc="Adds a request but category and status are by code ">
+      <Params>
+        <Param name="request_category_code" type="string" required="true"/>
+        <Param name="data" type="text" required="false"/>
+        <Param name="allowDuplicates" type="bool" required="false"><Int>1</Int></Param>
+        <Param name="assyncProcess" type="bool" required="false" doc="Only to assync requests. Process now?"><Int>1</Int></Param>
+      </Params>
+      <Return type="string" doc="The request Guid"/>
+      <Begin>
+      	<Transaction>
+      		<Var name="PARAMS" dump="true"/>
+	        <!-- Get category by code -->
+	        <Var name="requestCategory">
+	          <Call library="framework,request.category,api" function="get">
+	            <Param name="code"><Var name="PARAMS" key="request_category_code"/></Param>
+	          </Call>
+	        </Var>
+	        <If condition="$requestCategory->__length==0">
+	          <Then>
+	            <Exception><String parse="true">Invalid category code: $PARAMS->request_category_code</String></Exception>
+	          </Then>
+	        </If>
+	        
+	        <!-- Get status by code -->
+	        <Var name="requestStatus">
+	          <Call library="framework,request.status,api" function="get">
+	            <Param name="code"><String>new</String></Param>
+	          </Call>
+	        </Var>
+	        <If condition="$requestStatus->__length==0">
+	          <Then>
+	            <Exception><String parse="true">Invalid status code: new</String></Exception>
+	          </Then>
+	        </If>
+	
+	        <Var name="canAddRequest">1</Var>        
+	        <If condition="$allowDuplicates == 0">
+						<Then>
+			        <Var name="duplicateRequests" dump="true">
+			          <DataAccess method="getAll">
+			            <Param name="_entity">fw_request</Param>
+			            <Param name="data"><Var name="data"/></Param>
+			            <Param name="id_request_status">1</Param>
+			          </DataAccess>
+			        </Var>
+		          <If condition="$duplicateRequests->__length &gt; 0">
+		            <Then>
+		              <Var name="canAddRequest">0</Var>             
+		            </Then>
+		          </If>
+						</Then>
+					</If>
+	        
+					<If condition="$canAddRequest == 1">
+						<Then>
+					    <Var name="requestGuid"><Guid/></Var>
+					    <Var name="requestId">
+						    <DataAccess method="insert">
+						      <Param name="_entity">fw_request</Param>
+						      <Param name="guid"><Var name="requestGuid"/></Param>
+						      <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+						      <Param name="id_request_category"><Var name="requestCategory" key="id"/></Param>
+						      <Param name="id_request_status"><Var name="requestStatus" key="id"/></Param>
+						      <Param name="ttl"><Var name="requestCategory" key="ttl"/></Param>
+						      <Param name="data"><Var name="PARAMS" key="data"/></Param>
+						      <Param name="attempts">0</Param>
+						      <Param name="_base">true</Param>
+						    </DataAccess>		
+					    </Var>
+					    <If condition="$requestCategory->assync == 0 &amp;&amp; $PARAMS->assyncProcess == 1">
+								<Then>
+									<!-- Process imediately -->
+									<Call library="framework,request,api" function="process">
+										<Param name="guid"><Var name="requestGuid"/></Param>
+									</Call>								
+								</Then>
+							</If>
+					    
+						</Then>
+						<Else>
+						 <Var name="requestGuid"><Null/></Var>
+						</Else>
+					</If>
+        </Transaction>
+        <Return>
+          <Var name="requestGuid"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="close" doc="Closes a request">
+    <Params>
+      <Param name="guid" doc="The request guid"/>
+      <Param name="status_code" doc="The status code"/>
+      <Param name="log" doc="The log string"/>
+    </Params>
+    <Begin>
+      <Var name="status">
+        <DataAccess method="load">
+          <Param name="_entity">fw_request_status</Param>
+          <Param name="code"><Var name="status_code"/></Param>
+        </DataAccess>
+      </Var>
+
+      <If condition="$status->__length == 0">
+        <Then>
+          <Exception><String parse="true">StatusNotFound: $PARAMS->status_code</String></Exception>
+        </Then>
+      </If>
+      <DataAccess method="update">
+        <Param name="_entity">fw_request</Param>
+        <Param name="guid" pk="true"><Var name="guid"/></Param>
+        <Param name="id_request_status"><Var name="status" key="id"/></Param>
+        <Param name="log"><Var name="PARAMS" key="log"/></Param>
+        <Param name="_base">true</Param>
+      </DataAccess>
+    </Begin>
+    </Function>
+
+    <Function name="search" doc="Search records from table fw_request">
+      <Params>
+        <Param name="id" type="int"/>
+        <Param name="guid" type="text"/>
+        <Param name="id_company" type="int"/>
+        <Param name="id_request_category" type="int"/>
+        <Param name="id_request_status" type="int"/>
+        <Param name="data" type="string"/>
+        <Param name="inTTL" type="int"/>
+        <Param name="dateFrom" type="int"/>
+        <Param name="dateTo" type="int"/>
+        <Param name="attempts" type="int"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="guid" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="id_request_category" type="int" doc=""/>
+        <External name="id_request_status" type="int" doc=""/>
+        <External name="ttl" type="int" doc=""/>
+        <External name="data" type="text" doc=""/>
+        <External name="attempts" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+      <Var name="PARAMS" dump="true"/>
+        <If condition="$inTTL == 1">
+          <Then>
+            <Var name="fxParams" key="now"><Now/></Var>           
+          </Then>
+        </If>      
+        <Var name="result" dump="true">
+          <DataAccess method="this,this,search" params="fxParams">
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+            <Param name="guid" wildcard="full">
+              <Var name="PARAMS" key="guid"/>
+            </Param>
+            <Param name="data" wildcard="full">
+              <Var name="PARAMS" key="data"/>
+            </Param>            
+            <Param name="id_company">
+              <Var name="PARAMS" key="id_company"/>
+            </Param>
+            <Param name="id_request_category">
+              <Var name="PARAMS" key="id_request_category"/>
+            </Param>
+            <Param name="id_request_status">
+              <Var name="PARAMS" key="id_request_status"/>
+            </Param>
+            <Param name="attempts">
+              <Var name="PARAMS" key="attempts"/>
+            </Param>
+            <Param name="dateFrom">
+              <Var name="PARAMS" key="dateFrom"/>
+            </Param>
+            <Param name="dateTo">
+              <Var name="PARAMS" key="dateTo"/>
+            </Param>
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>        
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    
+    <Function name="getAssyncOpen" doc="Get all requests to process on scheduled task">
+      <Params>
+        <Param name="inTTL" type="bool" doc="Get only the requests in ttl (time to live)"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Var name="fxParams"><Set/></Var>
+        <If condition="$inTTL == 1">
+					<Then>
+            <Var name="fxParams" key="now"><Now/></Var>						
+					</Then>
+				</If>
+				<Var name="fxParams" dump="true"/>
+        <Return>
+          <DataAccess method="this,this,getAssyncOpen" params="fxParams"/>
+        </Return>
+      </Begin>
+    </Function>    
+    
+    <Function name="getData" doc="Get a request data">
+      <Params>
+        <Param name="guid" type="string" required="true" doc="The request guid"/>
+      </Params>
+      <Return type="string" doc="The data xml."/>
+      <Begin>
+        <Var name="request">
+          <DataAccess method="this,this,getByGuid">
+            <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+            <Param name="now"><Now/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$request == ''">
+          <Then>
+            <Exception>Invalid request</Exception>
+          </Then>
+        </If>
+        <Var name="data"><Var name="request" key="data"/></Var>
+        <Return><Var name="data"/></Return>
+      </Begin>
+    </Function>
+    
+    <Function name="process" doc="Process a given request">
+      <Params>
+        <Param name="guid" type="string" required="true" doc="The request guid"/>
+      </Params>
+      <Return type="multiple" doc="The log"/>
+      <Begin>
+        <Var name="request" dump="true">
+          <DataAccess method="this,this,getByGuid">
+            <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+            <!--Param name="now"><Now/></Param--> <!-- Dont use the ttl, execute it -->
+          </DataAccess>
+        </Var>
+        
+        <If condition="$request == ''">
+          <Then>
+            <Exception>Invalid request</Exception>
+          </Then>
+        </If>
+        <If condition="$request->status_code != 'new'">
+          <Then>
+            <Exception>Request allready processed</Exception>
+          </Then>
+        </If>
+        <!-- Process the request inside a transaction -->
+        <Transaction>
+	        <Var name="status" dump="true">
+	          <Call library="$request->category_handler" function="execute">
+	           <Param name="data"><Var name="request" key="data"/></Param>
+	           <Param name="log" var="log"><Var name="log"/></Param>
+	          </Call>
+	        </Var>
+	                            
+	        <Var name="jsonLog"><SetToJson><Var name="log"/></SetToJson></Var>
+	    
+	        <Call library="framework,request,api" function="close">
+	          <Param name="guid"><Var name="request" key="guid"/></Param>
+	          <Param name="status_code"><Var name="status"/></Param>
+	          <Param name="log"><Var name="jsonLog"/></Param>
+	        </Call>
+        </Transaction>
+        
+        <Return><Var name="log"/></Return>
+      </Begin>
+    </Function>
+    
+    <Function name="addComment" doc="Add a comment to a given request">
+      <Params>
+        <Param name="id_request" type="int" required="true" doc="The request id"/>
+        <Param name="comment" type="string" required="true" doc="The request comment"/>
+      </Params>
+      <Return type="int" doc="The comment id"/>
+      <Begin>
+      <Var name="PARAMS" dump="true"/>
+        <Var name="request" dump="true">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id_request"/></Param>
+          </Call>
+        </Var>
+        
+        <If condition="$request == ''">
+          <Then>
+            <Exception>Invalid request</Exception>
+          </Then>
+        </If>
+        
+        <Var name="id_comment">
+          <DataAccess method="insert">
+						<Param name="_entity">fw_request_comment</Param>
+						<Param name="id_request"><Var name="id_request"/></Param>
+						<Param name="comment"><Var name="comment"/></Param>
+						<Param name="_base">true</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return><Var name="id_comment"/></Return>
+        
+      </Begin>
+    </Function>
+    
+    <Function name="getComments" doc="Get the comments of a given request">
+      <Params>
+        <Param name="id_request" type="int" required="true" doc="The request id"/>
+      </Params>
+      <Return type="multiple" doc="The comments"/>
+      <Begin>
+        <Var name="request" dump="true">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id_request"/></Param>
+          </Call>
+        </Var>
+        
+        <If condition="$request == ''">
+          <Then>
+            <Exception>Invalid request</Exception>
+          </Then>
+        </If>
+        
+        <Var name="comments">
+          <DataAccess method="this,this,getComments">
+            <Param name="id_request"><Var name="id_request"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Return><Var name="comments"/></Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="completeManual" doc="Set this request processed and completed manually">
+      <Params>
+        <Param name="id_request" type="int" required="true" doc="The request id"/>
+      </Params>
+      <Return type="int"/>
+      <Begin>
+        <Var name="request" dump="true">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id_request"/></Param>
+          </Call>
+        </Var>
+        
+        <If condition="$request == ''">
+          <Then>
+            <Exception>Invalid request</Exception>
+          </Then>
+        </If>
+        
+	      <Var name="status">
+	        <DataAccess method="load">
+	          <Param name="_entity">fw_request_status</Param>
+	          <Param name="code">ok.manual</Param>
+	        </DataAccess>
+	      </Var>
+	
+	      <If condition="$status->__length == 0">
+	        <Then>
+	          <Exception><String parse="true">StatusNotFound: $PARAMS->status_code</String></Exception>
+	        </Then>
+	      </If>
+	      <DataAccess method="update">
+	        <Param name="_entity">fw_request</Param>
+	        <Param name="id"><Var name="request" key="id"/></Param>
+	        <Param name="id_request_status"><Var name="status" key="id"/></Param>
+	        <Param name="_base">true</Param>
+	      </DataAccess>
+        
+        <Return><Var name="request" key="id"/></Return>
+      </Begin>
+    </Function>
+    
+  </Library>
+</Node>

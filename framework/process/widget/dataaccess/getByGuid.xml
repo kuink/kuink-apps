@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+    returns the list of all tables
+    </Doc>
+    <Params>
+      <Param name="guid"/>
+    </Params>
+    <Body>
+        <Sql>
+             <![CDATA[
+ 				SELECT * FROM fw_widget WHERE guid='{param->guid}'
+            ]]>
+        </Sql>
+    </Body>
+</Method>

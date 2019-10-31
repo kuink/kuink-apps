@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+    <Param name="id_task"/>
+	  <Param name="result"/>
+    <Param name="data"/>
+  </Params>
+  <Screens>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Transaction>
+        <If condition="$PARAMS->result != ''">
+          <Then>
+            <Trace>Result found:</Trace>
+            <Var name="PARAMS" key="result" dump="true"/>
+          </Then>
+        </If>
+        
+        <Var name="task">
+          <Call library="framework,wf.inbox,api" function="getTask">
+            <Param name="id_task"><Var name="PARAMS" key="id_task"/></Param>
+          </Call>      
+        </Var>			
+
+        <!-- Add the data to the process instance -->
+        <Call library="framework,wf.process,api" function="addProcessInstanceData">
+          <Param name="id_person"><Var name="USER" key="id"/></Param>
+          <Param name="id_token"><Var name="task" key="id_token"/></Param>
+          <Param name="data"><Var name="PARAMS" key="data"/></Param>
+        </Call>     
+
+        <!-- Process token -->
+        <Call library="framework,wf.process,api" function="processToken">
+          <Param name="id_token"><Var name="task" key="id_token"/></Param>
+          <Param name="result"><Var name="PARAMS" key="result"/></Param>
+          <Param name="closeTask">1</Param>
+        </Call>      
+        
+        <!-- Complete the task -->
+        <Call library="framework,wf.inbox,api" function="completeTask">
+          <Param name="id_task"><Var name="PARAMS" key="id_task"/></Param>
+        </Call>      
+      </Transaction>
+      
+      <UserMessage type="information">
+        <Lang key="taskCompleted"/>
+      </UserMessage>      
+      <RaiseEvent name="complete"/>
+    </Action>
+    
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+    <Use name="FileLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getById" doc="Get a record by id from table fw_rm_controlled_document_version">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,version.get">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="download" doc="Downloads a controlled document version file">
+        <Params>
+          <Param name="id" required="false" type="int" doc="The controlled document version id"/>
+        </Params>
+        <Exceptions>
+          <Exception name="framework/rm.controlledDocument.version::notExist" doc="The base document does noe exist"/>
+          <Exception name="framework/rm.controlledDocument.version::fileNotExist" doc="The base document does noe exist"/>
+        </Exceptions>
+        <Return/>
+        <Begin>
+          <Var name="version">
+            <DataAccess method="load" >
+              <Param name="_entity">fw_rm_controlled_document_version</Param>
+              <Param name="id"><Var name="id"/></Param>
+            </DataAccess>
+          </Var>
+          <If condition="$version->id == ''">
+            <Then>
+                <Exception><String parse="true">framework/rm.controlledDocument.version::notExist ($PARAMS-id $PARAMS->code)</String></Exception>
+            </Then>
+          </If>
+          <If condition="$version->id_file == ''">
+            <Then>
+                <Exception><String parse="true">framework/rm.controlledDocument.version::fileNotExist ($PARAMS-id $PARAMS->code)</String></Exception>
+            </Then>
+          </If>
+
+          <!-- Load the file -->
+          <Var name="file" dump="true">
+            <DataAccess method="load">
+              <Param name="_entity">fw_file</Param>
+              <Param name="id"><Var name="version" key="id_file"/></Param>
+            </DataAccess>
+          </Var>
+
+          <!-- Stream the file -->
+          <FileLib method="download">
+              <Param><Var name="file" key="path"/></Param>
+              <Param><Var name="file" key="name"/></Param>
+          </FileLib>
+        </Begin>
+    </Function>
+
+  </Library>
+</Node>

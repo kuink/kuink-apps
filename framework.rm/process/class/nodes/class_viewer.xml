@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+  </Libraries>
+  <Configuration>
+  </Configuration>
+  <Params>
+      <Param name="code" doc="The class code to view"/>
+  </Params>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Select id="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="search"/>
+        <ButtonGroup>
+          <Button id="search" type="search" label="search" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" collapsible="false" pagesize="10" title="result" freeze="false">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <!--Column name="uuid"/-->
+            <Column name="code" action="search" actionvalue="code" condition="$childs_count > 0"/>
+            <Column name="parent_name"/>
+            <Column name="name" action="search" actionvalue="code" condition="$childs_count > 0"/>
+            <Column name="description"/>
+            <Column name="business_process"/>
+            <Column name="disposal_duration"/>
+            <Column name="final_destination"/>
+            <Column name="obs_private"/>
+            <!--Column name="manager_photo">
+              <Formatter name="Image" ext="jpg" path="photo"/>            
+            </Column-->            
+          </Columns>
+          <Actions separator="true">
+            <Action name="show" label="view" actionvalue="code"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init">
+			<Action name="search"/>  
+    </Action>
+
+    <Action name="search" screen="scrSearch">
+      <Var name="defaultData" key="class_code">000</Var>
+      <Control method="setDefaultData" object="frmSearch">
+        <Param>
+          <Var name="defaultData"/>
+        </Param>
+      </Control>
+        
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Var name="actionValue"><ActionValue/></Var>
+      <If condition="$actionValue !== '' &amp;&amp; $actionValue !== null">
+        <Then>
+          <Var name="currentData" key="class_code"><ActionValue/></Var>
+          <Control method="bind" object="frmSearch">
+            <Param><Var name="currentData"/></Param>
+          </Control>          
+        </Then>
+      </If>
+      <Var name="currentData" dump="true"/>
+      <Var name="currentClass" dump="true">
+        <Call library="framework,rm.class,api" function="get">
+          <Param name="code"><Var name="currentData" key="class_code"/></Param>
+        </Call>        
+      </Var>
+
+      <!-- Add the parent before the childs to be on top-->
+      <Var name="parentClass" dump="true">
+        <Call library="framework,rm.class,api" function="get">
+          <Param name="id"><Var name="currentClass" key="id_parent"/></Param>
+        </Call>        
+      </Var>
+      <Var name="parentClass" key="childs_count">1</Var>
+      <Var name="parentClassBind" key=""><Var name="parentClass"/></Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param><Var name="parentClassBind"/></Param>
+      </Control>
+
+      <Var name="className"><String.parse>$currentClass->code-$currentClass->name</String.parse></Var>
+      <Control method="setProperty" object="grdSearchResult">
+        <Param>title</Param>
+        <Param><Var name="className"/></Param>
+      </Control>
+      
+      <Var name="searchResult" dump="true">
+        <Call library="framework,rm.class,api" function="getChilds">
+          <Param name="code"><Var name="currentData" key="class_code"/></Param>
+        </Call>
+      </Var>
+      
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Var name="searchResult"/>
+        </Param>
+      </Control>
+    </Action>
+
+
+
+    <!--Action name="search" screen="scrSearch">
+			<Var name="currentData">
+			  <Control method="getCurrentData" object="frmSearch"/>
+			</Var>
+			<Var name="actionValue" dump="true"><ActionValue/></Var>
+			<If condition="$actionValue !== ''">
+			  <Then>
+			    <Var name="currentData" key="class_code"><ActionValue/></Var>
+		      <Control method="bind" object="frmSearch">
+		        <Param><Var name="currentData"/></Param>
+		      </Control>			    
+			  </Then>
+			</If>
+			<Var name="currentData" dump="true"/>
+			<Var name="currentClass" dump="true">
+				<Call library="framework,rm.class,api" function="get">
+					<Param name="code"><Var name="currentData" key="class_code"/></Param>
+				</Call>			   
+			</Var>
+
+      <Var name="parentClass" dump="true">
+        <Call library="framework,rm.class,api" function="get">
+          <Param name="id"><Var name="currentClass" key="id_parent"/></Param>
+        </Call>        
+      </Var>
+			<Var name="parentClass" key="childs_count">1</Var>
+			<Var name="parentClassBind" key=""><Var name="parentClass"/></Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param><Var name="parentClassBind"/></Param>
+      </Control>
+
+      <Var name="className"><String.parse>$currentClass->code-$currentClass->name</String.parse></Var>
+      <Control method="setProperty" object="grdSearchResult">
+        <Param>title</Param>
+        <Param><Var name="className"/></Param>
+      </Control>
+			
+      <Var name="searchResult" dump="true">
+				<Call library="framework,rm.class,api" function="searchFullTextComplete">
+					<Param name="text"><Var name="currentData" key="text"/></Param>
+				</Call>
+			</Var>
+			
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Var name="searchResult"/>
+        </Param>
+      </Control>
+    </Action-->
+
+    <Action name="show">
+        <RaiseEvent name="show">
+          <Param name="code"><ActionValue/></Param>
+        </RaiseEvent>
+    </Action>
+
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

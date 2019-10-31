@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->              
+              <Var name="context" key="message">Instruction Exception - Default Catch the correct type</Var>
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              <Var name="result" key="code"><Int>-1</Int></Var>
+              <Var name="result" key="data"><String>Exception not catched</String></Var>
+							<Try>
+								<Instructions>
+							      <Exception name="framework/generic::unitTest">
+							          <Param>Test DATA</Param>
+							      </Exception>      
+								</Instructions>
+							  	<Catch exception="framework/generic::someType">
+							    	<Var name="result" key="code"><Int>-2</Int></Var>
+							    	<Var name="result" key="data"><String>Exception catched with the incorrect type</String></Var>
+							  	</Catch>
+							  	<Catch>
+			              <Var name="result" key="code"><Int>0</Int></Var>
+			              <Var name="result" key="data"><String>Exception well catched</String></Var>
+							  	</Catch>
+							</Try>
+							              
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

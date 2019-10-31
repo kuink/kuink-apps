@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="id_parent" type="int" required="false"/>
+        <Param name="is_inherited" type="int" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+      	<!-- Validate the code, dont allow duplicates -->
+      	<Var name="acl">
+      		<DataAccess method="load">
+            <Param name="_entity">fw_access_control_list</Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+					</DataAccess>
+      	</Var>
+      	
+      	<Exception name="framework/acl::duplicatedCode" condition="$acl->__length &gt; 0"/>
+      	
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_access_control_list</Param>
+            <Param name="_base">true</Param>
+            <Param name="id_parent">
+              <Var name="PARAMS" key="id_parent"/>
+            </Param>
+            <Param name="is_inherited">
+              <Var name="PARAMS" key="is_inherited"/>
+            </Param>
+            <Param name="uuid"><Uuid/></Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="name">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="description">
+              <Var name="PARAMS" key="description"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function scope="public" name="addCompleteByCode" doc="Adds or updates an acl by using only codes. Good for batch import.">
+			<Params>
+				<Param name="acl_code" type="string" doc="The acl code to create ou update"/>
+				<Param name="acl_name" type="string" doc="The acl description"/>
+				<Param name="acl_description" type="string" doc="The acl description"/>
+				<Param name="permission_code" type="string" doc="The permission code to aply to the group or person"/>
+				<Param name="group_code_list" type="string" doc="Comma separated list of group codes tpo apply"/>
+				<Param name="person_uid_list" type="string" doc="Comma separated list of person uid's to apply"/>
+			</Params>
+			<Return type="int" doc="The id of the acl added or updated"/>
+			<Begin>
+				<Transaction>
+					<Var name="PARAMS" dump="true"/>
+					<!-- Check if the acl exists or if it is to create a new one -->
+					<Var name="acl" dump="true">
+						<DataAccess method="load">
+							<Param name="_entity">fw_access_control_list</Param>
+							<Param name="code"><Var name="PARAMS" key="acl_code"/></Param>
+						</DataAccess>
+					</Var>
+					<If condition="$acl->__length &gt; 0">
+						<Then>
+							<Var name="idAcl"><Var name="acl" key="id"/></Var>
+						</Then>
+						<Else>
+							<Var name="idAcl" dump="true">
+								<Call function="add">
+									<Param name="id_parent"><Null/></Param>
+									<Param name="is_inherited"><Int>0</Int></Param>
+									<Param name="code"><Var name="PARAMS" key="acl_code"/></Param>
+									<Param name="name"><Var name="PARAMS" key="acl_name"/></Param>
+									<Param name="description"><Var name="PARAMS" key="acl_description"/></Param>
+								</Call>
+							</Var>
+						</Else>
+					</If>
+					<Var name="dummy" dump="true">
+						<DataAccess method="load">
+							<Param name="_entity">fw_access_control_list</Param>
+							<Param name="id"><Var name="idAcl"/></Param>
+						</DataAccess>
+					</Var>
+	      	<Var name="dummy2" dump="true">
+	      		<Call function="getById">
+							<Param name="id"><Var name="idAcl"/></Param>
+						</Call>
+	      	</Var>					
+	      	
+					<!-- Add the entry to each group -->
+					<Var name="groupSplited" dump="true">
+						<String.explode>
+							<Param>,</Param>
+							<Param><Var name="PARAMS" key="group_code_list"/></Param>
+						</String.explode>
+					</Var>					
+					<ForEach var="groupSplited" item="groupCode">
+						<!-- Add an entry ti this code -->
+						<Call library="framework,acl,api" function="addEntryByCode">
+							<Param name="acl_code"><Var name="PARAMS" key="acl_code"/></Param>
+							<Param name="permission_code"><Var name="PARAMS" key="permission_code"/></Param>
+							<Param name="uid"><Null/></Param>
+							<Param name="person_group_code"><Var name="groupCode"/></Param>
+						</Call>
+					</ForEach>
+					
+					<!-- Add the entry to each person -->
+					<If condition="$PARAMS->person_uid_list != ''">
+						<Then>
+							<Var name="personSplited">
+								<String.explode>
+									<Param>,</Param>
+									<Param><Var name="PARAMS" key="person_uid_list"/></Param>
+								</String.explode>
+							</Var>					
+							<ForEach var="personSplited" item="personUid">
+								<!-- Add an entry ti this code -->
+								<Call library="framework,acl,api" function="addEntryByCode">
+									<Param name="acl_code"><Var name="PARAMS" key="acl_code"/></Param>
+									<Param name="permission_code"><Var name="PARAMS" key="permission_code"/></Param>
+									<Param name="uid"><Var name="personUid"/></Param>
+									<Param name="person_group_code"><Null/></Param>
+								</Call>
+							</ForEach>					
+						</Then>
+					</If>
+				</Transaction>
+				<Return><Var name="idAcl"/></Return>
+			</Begin>
+		</Function>
+    
+    <Function name="delete" doc="Delete a record by id from table fw_access_control_list">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_access_control_list</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_access_control_list">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="id_parent" type="int" required="false"/>
+        <Param name="is_inherited" type="int" required="false"/>
+        <Param name="uuid" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_access_control_list</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table fw_access_control_list">
+      <Params>
+        <Param name="id_parent" type="int"/>
+        <Param name="uuid" type="text"/>
+        <Param name="code" type="text"/>
+        <Param name="name" type="text"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_parent" type="int" doc=""/>
+        <External name="_path" type="text" doc=""/>
+        <External name="is_inherited" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,search">
+            <Param name="id_parent">
+              <Var name="PARAMS" key="id_parent"/>
+            </Param>
+            <Param name="uuid" wildcard="full">
+              <Var name="PARAMS" key="uuid"/>
+            </Param>
+            <Param name="code" wildcard="full">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="name" wildcard="full">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_access_control_list">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_parent" type="int" doc=""/>
+        <External name="_path" type="text" doc=""/>
+        <External name="is_inherited" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_access_control_list</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a record by id from table fw_access_control_list">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_parent" type="int" doc=""/>
+        <External name="_path" type="text" doc=""/>
+        <External name="is_inherited" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_access_control_list</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_access_control_list">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+  		</Return>
+      <Begin>
+      	<Var name="PARAMS" dump="true"/>
+        <Var name="record" dump="true">
+          <DataAccess method="load">
+            <Param name="_entity">fw_access_control_list</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+					<If condition="$record->__length == 0">
+						<Then><Null/></Then>
+						<Else><Var name="record" key="id"/></Else>
+					</If>
+        </Return>
+      </Begin>
+    </Function>
+    
+    
+    <Function name="addEntry" doc="Adds an entry in an access control list">
+      <Params>
+        <Param name="id" type="int" required="true" doc="The acl id"/>
+        <Param name="id_permission" type="int" required="true" doc="The permission id to add"/>
+        <Param name="id_person" type="int" required="false" doc="The person id"/>
+        <Param name="id_person_group" type="int" required="false" doc="The person_group"/>
+      </Params>
+      <Return type="int" doc="">
+  		</Return>
+      <Begin>
+      	<Var name="idEntry">
+					<Call library="framework,acl.entry,api" function="add">
+						<Param name="id_acl"><Var name="PARAMS" key="id"/></Param>
+						<Param name="id_permission"><Var name="PARAMS" key="id_permission"/></Param>
+						<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+						<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+					</Call>      	
+				</Var>
+        <Return>
+          <Var name="idEntry"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="addEntryByCode" doc="Adds an entry in an access control list">
+      <Params>
+        <Param name="acl_code" type="int" required="true" doc="The acl id"/>
+        <Param name="permission_code" type="int" required="true" doc="The permission id to add"/>
+        <Param name="uid" type="int" required="false" doc="The person id"/>
+        <Param name="person_group_code" type="int" required="false" doc="The person_group"/>
+      </Params>
+      <Return type="int" doc="">
+  		</Return>
+      <Begin>
+      	<!-- Get the acl -->
+      	<Var name="idAcl">
+      		<Call function="getIdByCode">
+						<Param name="code"><Var name="PARAMS" key="acl_code"/></Param>
+					</Call>
+      	</Var>
+      	<Var name="acl">
+      		<Call function="getById">
+						<Param name="id"><Var name="idAcl"/></Param>
+					</Call>
+      	</Var>
+      	
+      	<Exception name="framework/acl::aclNotFound" condition="$acl->__length == 0">
+      		<Param><Var name="PARAMS" key="acl_code"/></Param>
+      	</Exception>
+      	
+      	<!-- Get the role -->
+      	<Var name="idPermission">
+      		<Call library="framework,permission,api" function="getIdByCode">
+						<Param name="code"><Var name="PARAMS" key="permission_code"/></Param>
+					</Call>
+      	</Var>
+      	<Exception name="framework/acl::permissionNotFound" condition="$idPermission == null"/>
+      	
+      	<!-- Get the person -->
+      	<Var name="person">
+      		<Call library="gecol.core,person,api" function="getByUid">
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</Call>
+      	</Var>
+      	<Var name="idPerson">
+      		<Var name="person" key="id"/>
+      	</Var>
+      	
+      	<!-- Get the person_group -->
+      	<Var name="idPersonGroup">
+      		<Call library="gecol.core,person.group,api" function="getIdByCode">
+						<Param name="code"><Var name="PARAMS" key="person_group_code"/></Param>
+					</Call>
+      	</Var>
+      	<!-- Either uuid or person_group_code mus be given -->
+      	<Exception name="framework/acl::requiredParameterNotFound" condition="($person->__length == 0) &amp;&amp; ($idPersonGroup == '')">
+      		<Param>uid=</Param>
+      		<Param><Var name="PARAMS" key="uid"/></Param>
+      		<Param>person_group=</Param>
+      		<Param><Var name="PARAMS" key="person_group_code"/></Param>
+      	</Exception>
+
+				<Var name="idEntry">
+					<Call function="addEntry">
+						<Param name="id"><Var name="idAcl"/></Param>
+						<Param name="id_permission"><Var name="idPermission"/></Param>
+						<Param name="id_person"><Var name="idPerson"/></Param>
+						<Param name="id_person_group"><Var name="idPersonGroup"/></Param>
+					</Call>      	
+				</Var>
+        <Return>
+          <Var name="idEntry"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getPermissions" doc="Get all the permissions of a given person if given Else return all acl permissions">
+      <Params>
+        <Param name="id" type="int" required="true" doc="The acl id"/>
+        <Param name="id_person" type="int" required="false" doc="The person id. If not supplied all permissions are returned"/>
+      </Params>
+      <Return type="multiple" doc="The list of permissions of the user">
+  		</Return>
+      <Begin>
+        <Return>
+	      	<DataAccess method="this,this,getPermissions">
+	      		<Param name="id"><Var name="PARAMS" key="id"/></Param>
+	      		<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+					</DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getRoles" doc="Get all the roles of a given person if given Else return all acl permissions">
+      <Params>
+        <Param name="id" type="int" required="true" doc="The acl id"/>
+        <Param name="id_person" type="int" required="false" doc="The person id. If not supplied all permissions are returned"/>
+      </Params>
+      <Return type="multiple" doc="The list of permissions of the user">
+  		</Return>
+      <Begin>
+        <Return>
+	      	<DataAccess method="this,this,getRoles">
+	      		<Param name="id"><Var name="PARAMS" key="id"/></Param>
+	      		<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+					</DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getEntries" doc="Get all entries of an acl">
+      <Params>
+      	<Param name="id" type="int" doc="The acl id"/>
+      </Params>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,getEntries">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

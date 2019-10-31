@@ -1,0 +1,15 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+    returns the list of all tables
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <Sql>
+             <![CDATA[
+ 				SHOW TABLES;
+            ]]>
+        </Sql>
+    </Body>
+</Method>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+		<Use name="DateTimeLib" type="lib"/>
+		<Use name="MathLib" type="lib"/>
+		<Use name="StringLib" type="lib"/>
+		<Use name="DateTimeLib" type="lib"/>	
+		<Use name="SetLib" type="lib"/>	
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+	
+		<Function name="addLog">
+			<Params>
+				<Param name="LOG" output="true"/>
+				<Param name="logLevel"/>
+				<Param name="message"/>
+			</Params>
+			<Begin>
+				<Var name="entry" key="logLevel"><Var name="logLevel"/></Var>
+				<Var name="entry" key="message"><Var name="message"/></Var>
+				<Var name="LOG" key=""><Var name="entry"/></Var>
+			</Begin>
+		</Function>
+
+
+
+		<!-- 2014-02-28 -->
+		<Function name="contructWeekDaysString" doc="Contruct week days string from an array. The week days must be in this format : dow_{num_dow}">
+		 	<Params>
+		 		<Param name="arr" doc="Array with the dow_ fields. Eg. POSTDATA"/>
+		 	</Params>
+		 	<Return type="text"/>
+		 	<Begin>
+		 		<Var name="arr" />
+		 		<Var name="daysOfWeek"></Var>
+				<If condition="$arr->dow_1 == '1'">
+					<Then>
+						<Var name="daysOfWeek">
+							<SetLib method="flatSetInsert">
+								<Param><Var name="daysOfWeek"/></Param>
+								<Param>,</Param>
+								<Param>1</Param>
+							</SetLib>
+						</Var>
+					</Then>	
+				</If>
+				<If condition="$arr->dow_2 == '1'">
+					<Then>
+						<Var name="daysOfWeek">
+							<SetLib method="flatSetInsert">
+								<Param><Var name="daysOfWeek"/></Param>
+								<Param>,</Param>
+								<Param>2</Param>
+							</SetLib>
+						</Var>
+					</Then>
+				</If>
+				<If condition="$arr->dow_3 == '1'">
+					<Then>
+						<Var name="daysOfWeek">
+							<SetLib method="flatSetInsert">
+								<Param><Var name="daysOfWeek"/></Param>
+								<Param>,</Param>
+								<Param>3</Param>
+							</SetLib>
+						</Var>
+					</Then>	
+				</If>
+				<If condition="$arr->dow_4 == '1'">
+					<Then>
+						<Var name="daysOfWeek">
+							<SetLib method="flatSetInsert">
+								<Param><Var name="daysOfWeek"/></Param>
+								<Param>,</Param>
+								<Param>4</Param>
+							</SetLib>
+						</Var>
+					</Then>
+				</If>
+				<If condition="$arr->dow_5 == '1'">
+					<Then>
+						<Var name="daysOfWeek">
+							<SetLib method="flatSetInsert">
+								<Param><Var name="daysOfWeek"/></Param>
+								<Param>,</Param>
+								<Param>5</Param>
+							</SetLib>
+						</Var>
+					</Then>
+				</If>
+				<If condition="$arr->dow_6 == '1'">
+					<Then>
+						<Var name="daysOfWeek">
+							<SetLib method="flatSetInsert">
+								<Param><Var name="daysOfWeek"/></Param>
+								<Param>,</Param>
+								<Param>6</Param>
+							</SetLib>
+						</Var>
+					</Then>	
+				</If>
+				<If condition="$arr->dow_7 == '1'">
+					<Then>
+						<Var name="daysOfWeek">
+							<SetLib method="flatSetInsert">
+								<Param><Var name="daysOfWeek"/></Param>
+								<Param>,</Param>
+								<Param>7</Param>
+							</SetLib>
+						</Var>
+					</Then>
+				</If>
+				<Return >
+					<Var name="daysOfWeek"  />
+				</Return>
+		 	</Begin>
+		 </Function>
+
+
+		 <Function name="explodeWeekDaysString" doc="Explode the week day string for fields to be added into a form">
+		 	<Params>
+		 		<Param name="str" doc="Week day string"/>
+		 	</Params>
+		 	<Return type="multiple"/>
+		 	<Begin>
+		 		<Var name="weekDays">
+		 			<UtilsLib method="split">
+		 				<Param><Var name="str"/></Param>
+		 			</UtilsLib>
+		 		</Var>
+		 		<Var name="output" ></Var>
+		 		<ForEach var="weekDays" item="weekDay">
+		 			<Var name="key">
+		 				<StringLib method="concatenate">
+		 					<Param>dow_</Param>
+		 					<Param><Var name="weekDay"/></Param>
+		 				</StringLib>
+		 			</Var>
+		 			<Var name="output" key="$key">1</Var>
+		 		</ForEach>
+		 		<Return><Var name="output"/></Return>
+		 	</Begin>
+		 </Function>
+
+	</Library>
+</Node>
+

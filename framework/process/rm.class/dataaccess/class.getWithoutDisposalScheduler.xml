@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get all classes that are leafs
+  </Doc>
+  <Params>
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+            c.*  
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_rm_class c
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+         <XCondition>
+          c.id_disposal_schedule IS NULL OR c.id_disposal_schedule = 0 
+         </XCondition>  
+	    </XWhere>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

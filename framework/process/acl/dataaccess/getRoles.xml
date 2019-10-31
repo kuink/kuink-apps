@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+		Give all roles of an acl
+	</Doc>
+	<Params>
+		<Param name="id" />
+		<Param name="acl_code" />
+		<Param name="id_person" />
+		<Param name="id_company" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				
+				<XSelect>
+					<XField>
+						*
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						_fw_access_control_list_role aclc
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>1=1</XCondition>
+					<XCondition optional="id">AND id_acl = {param->id}</XCondition>
+					<XCondition optional="acl_code">AND acl_code = '{param->acl_code}'</XCondition>
+					<XCondition optional="id_person">AND id_person = {param->id_person}</XCondition>
+					<XCondition optional="id_company">AND id_company = {param->id_company}</XCondition>
+				</XWhere>			
+				<XGroupBy>
+					<XCondition>id</XCondition>
+				</XGroupBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
+

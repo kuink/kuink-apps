@@ -1,0 +1,8 @@
+<?xml version='1.0'?>
+<Method>
+    <Params><Param name="*"/></Params>
+    <Body>
+        <Delete/>
+    </Body>
+    <!-- sample: return get_record("$tablename","id",$recordid) -->
+</Method>

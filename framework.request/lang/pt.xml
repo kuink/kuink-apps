@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- cms -->
+		<String key="request" value="Pedidos"/>
+		<String key="manage" value="Gerir"/>
+    <String key="inTTL" value="Em tempo de vida"/>
+    <String key="category_code" value="Categoria"/>
+    <String key="status_code" value="Estado"/>
+    <String key="category" value="Categoria"/>
+    <String key="status" value="Estado"/>
+    
+    <String key="select" value="Selecionar"/>
+    <String key="data" value="Dados"/>
+    <String key="process" value="Processar"/>
+    <String key="bulkProcess" value="Processar Selecionados"/>
+    <String key="log" value="Log"/>
+    <String key="result" value="Resultado"/>
+    <String key="comment" value="Comentário"/>
+    <String key="comments" value="Comentários"/>
+    <String key="addComment" value="Adicionar Comentários"/>
+    <String key="completeManual" value="Processado Manualmente"/>
+    
+    <String key="yesterday" value="ontem"/>
+    <String key="last5Days" value="5 dias"/>
+    <String key="last30Days" value="30 dias"/>
+    <String key="dateFrom" value="De"/>
+    <String key="dateTo" value="Até"/>
+
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

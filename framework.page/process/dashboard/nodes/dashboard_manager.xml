@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+    </Params>
+    <Libraries>
+        <Use name="StringLib" type="lib"/>
+        <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Screens>
+        <Screen id="dashScreen" template="1x2x1col">
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="dashScreen">
+          <Var name="controls">
+            <Call library="framework,dashboard,api" function="getDefaultItems">
+              <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+            </Call>
+          </Var>
+          <ForEach var="controls" item="control">
+            <Var name="controlType"><Var name="control" key="control_type"/></Var>
+            <Var name="controlPosition"><Var name="control" key="control_position"/></Var>
+            <Var name="controlOrder"><Var name="control" key="control_order"/></Var>
+            <Var name="controlConfig"><Var name="control" key="control_configuration"/></Var>
+            <Var name="controlNode"><Var name="control" key="control_node"/></Var>
+            <Var name="controlName">
+              <StringLib method="concatenate">
+                <Param><Var name="controlType"/></Param>
+                <Param><Var name="controlPosition"/></Param>
+                <Param><Var name="controlOrder"/></Param>
+              </StringLib>
+            </Var>
+            <AddControl control-type="$controlType" name="$controlName" control="$controlNode" position="$controlPosition"/>
+            <!--AddControl control-type="$control->control_type" name="ccCmsItem" control="$control->control_node" position="$control->control_position"/-->
+            
+            <!--binding values -->
+            <Var name="bindParams">
+              <UtilsLib method="xmlToSet">
+                <Param><Var name="controlConfig"/></Param>
+              </UtilsLib>
+            </Var>
+            <Control method="bind" object="$controlName" params="bindParams"/>
+          </ForEach>
+          
+          
+        </Action>
+	</Actions>
+</Node>
+

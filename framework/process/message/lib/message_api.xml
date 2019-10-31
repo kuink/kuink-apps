@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+        <Use name="MessageLib" type="lib"/>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration>
+        <Config key="message_id_context" value="neon.framework"/>
+    </Configuration>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+        <Function name="create" doc="Create a message to delivery">
+            <Permissions>
+                <Capability>create</Capability>
+            </Permissions>
+            <Params>
+                <!-- define params -->
+                <Param name="send_date" doc="When the message will be sent. UTC timestamp"/>
+                <Param name="subject" doc="Message subject" />
+                <Param name="content" doc="Message content" />
+                <Param name="to_name" doc="Receiver name"/>
+                <Param name="to_email" doc="Receiver email" />
+                <Param name="from_name" doc="Sender name"/>
+                <Param name="from_email" doc="Sender email"/>
+                <Param name="reply_to" type="array" doc="Reply to email" />
+                <Param name="cc" type="array" doc="CC field. This field should be filled with mail-header format (RFC 2822)" />
+                <Param name="bcc" doc="CC field. This field should be filled with mail-header format (RFC 2822)" />
+                <Param name="content_type" doc="Mime Type of message (text/html or text/plain) "/>
+                <Param name="charset" doc="Message charset (UTF-8 or ISO-8859-1)"/>
+                <Param name="guid" doc="Message identifier" />
+                <Param name="context" doc="Message id context" />
+                <Param name="confirm_reading" doc="Add confirm_reading header to from_email. Default: No" />
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="int" doc=""/>
+                <External name="headers" type="text" doc=""/>
+                <External name="body" type="text" doc=""/>
+                <External name="guid" type="text" doc=""/>
+                <External name="context" type="text" doc=""/>
+                <External name="send_date" type="text" doc=""/>
+                <External name="is_sent" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+            </Return>
+            <Begin>
+
+
+                <Var name="context"><Var name="PARAMS" key="context"/></Var>
+
+                <If condition="$context == NULL">
+                    <Then>
+                        <Var name="context"><Config key="message_id_context"/></Var>
+                    </Then>
+                </If>
+
+                <Var name="headers">
+                    <MessageLib method="createHeader">
+                        <Param name="subject"><Var name="PARAMS" key="subject" /></Param>
+                        <Param name="content"><Var name="PARAMS" key="content" /></Param>
+                        <Param name="to_name"><Var name="PARAMS" key="to_name" /></Param>
+                        <Param name="to_email"><Var name="PARAMS" key="to_email" /></Param>
+                        <Param name="from_name"><Var name="PARAMS" key="from_name" /></Param>
+                        <Param name="from_email"><Var name="PARAMS" key="from_email" /></Param>
+                        <Param name="reply_to"><Var name="PARAMS" key="reply_to" /></Param>
+                        <Param name="cc"><Var name="PARAMS" key="cc" /></Param>
+                        <Param name="bcc"><Var name="PARAMS" key="bcc" /></Param>
+                        <Param name="content_type"><Var name="PARAMS" key="content_type" /></Param>
+                        <Param name="charset"><Var name="PARAMS" key="charset" /></Param>
+                        <Param name="guid"><Var name="PARAMS" key="guid" /></Param>
+                        <Param name="send_date"><Var name="PARAMS" key="send_date"/></Param>
+                        <Param name="context"><Var name="context"/></Param>
+                        <Param name="confirm_reading"><Var name="PARAMS" key="confirm_reading"/></Param>
+                    </MessageLib>
+                </Var>
+
+
+
+                <Var name="headers">
+                    <UtilsLib method="base64Encode">
+                        <Param><Var name="headers"/></Param>
+                    </UtilsLib>
+                </Var>
+
+                <Var name="body">
+                    <UtilsLib method="base64Encode">
+                            <Param><Var name="PARAMS" key="content"/></Param>
+                        </UtilsLib>
+                </Var>
+
+
+
+                <Execute method="this,this,message.create">
+                    <Param name="table">fw_message</Param>
+                    <Param name="send_date"><Var name="PARAMS" key="send_date"/></Param>
+                    <Param name="headers"><Var name="headers"/></Param>
+                    <Param name="body"><Var name="body"/></Param>
+                    <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                    <Param name="is_sent">0</Param>
+                    <Param name="id_app">1</Param>
+                    <Param name="context"><Var name="context"/></Param>
+                    <Param name="_creation"><DateTimeLib method="now"/></Param>
+                    <Param name="_modification"><DateTimeLib method="now"/></Param>
+                </Execute>
+
+
+                <Return>
+<!--                    <Var name="msg"/>-->
+                </Return>
+            </Begin>
+        </Function>
+
+
+        <Function name="sendSimpleMessage" doc="Sends directly a simple message">
+            <Params>
+                <!-- define params -->
+                <Param name="template" doc="The template to execute in form of kid application,process,template" />
+                <Param name="subject" doc="Message subject" />
+                <Param name="content" doc="Message content" />
+                <Param name="to_name" doc="Receiver name"/>
+                <Param name="to_email" doc="Receiver email" />
+                <Param name="from_name" doc="Sender name"/>
+                <Param name="from_email" doc="Sender email"/>
+								<Param name="cc" required="false" doc="cc email"/>
+                <Param name="reply_to" type="array" doc="Reply to email" />
+                <Param name="context" doc="Message id context" />
+                <Param name="guid" doc="Message guid" />
+                <Param name="data" doc="Data to pass to the template" />
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="int" doc=""/>
+                <External name="headers" type="text" doc=""/>
+                <External name="body" type="text" doc=""/>
+                <External name="guid" type="text" doc=""/>
+                <External name="context" type="text" doc=""/>
+                <External name="send_date" type="text" doc=""/>
+                <External name="is_sent" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+            </Return>
+            <Begin>
+
+              <If condition="$PARAMS->template == '' &amp;&amp; $PARAMS->subject == '' &amp;&amp; $PARAMS->content == ''">
+                <Then>
+                  <Exception>Send Simple Message: template or (subject + content) mus be set.</Exception>
+                </Then>
+              </If>
+              <Var name="context"><Var name="PARAMS" key="context"/></Var>
+
+              <If condition="$context == NULL">
+                  <Then>
+                      <Var name="context"><Config key="message_id_context"/></Var>
+                  </Then>
+              </If>
+
+              <!-- Load subject and content from the template -->
+              <If condition="$PARAMS->template != ''">
+                <Then>
+                  <Var name="result" dump="true">
+                    <Template name="$PARAMS->template" params="data"/>
+                  </Var>
+                  <Var name="subject" ><Var name="result" key="Subject"/></Var>
+                  <Var name="content" ><Var name="result" key="Content"/></Var>
+                </Then>
+              </If>
+
+              <Var name="headers">
+                  <MessageLib method="createHeader">
+                      <Param name="subject"><Var name="subject" /></Param>
+                      <Param name="content"><Var name="content" /></Param>
+                      <Param name="to_name"><Var name="PARAMS" key="to_name" /></Param>
+                      <Param name="to_email"><Var name="PARAMS" key="to_email" /></Param>
+                      <Param name="from_name"><Var name="PARAMS" key="from_name" /></Param>
+                      <Param name="from_email"><Var name="PARAMS" key="from_email" /></Param>
+											<Param name="cc"><Var name="PARAMS" key="cc"/></Param>
+                      <Param name="context"><Var name="context"/></Param>
+                      <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                      <Param name="content_type">text/html</Param>
+                      <Param name="charset">UTF-8</Param>
+                  </MessageLib>
+              </Var>
+
+              <Var name="sendMailResult">
+                <MessageLib method="sendMessage">
+                  <Param name="headers"><Var name="headers"/></Param>
+                  <Param name="body"><Var name="content"/></Param>
+                </MessageLib>
+              </Var>
+
+              <Return>
+                  <Var name="sendMailResult"/>
+              </Return>
+            </Begin>
+        </Function>
+
+
+
+        <Function name="getMessageByGuid" doc="Get a message by guid">
+            <Params>
+                <Param name="guid" type="text" doc="Message guid"/>
+            </Params>
+            <Return type="single">
+                <External name="send_date" type="text" doc=""/>
+                <External name="headers" type="text" doc=""/>
+                <External name="body" type="text" doc=""/>
+                <External name="guid" type="text" doc=""/>
+                <External name="is_sent" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Message does not exist"/>
+            </Errors>
+            <Begin>
+                <Var name="output"></Var>
+                <Var name="msg">
+                  <Execute method="this,this,message.getByGuid">
+                    <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                  </Execute>
+                <!--
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_message</Param>
+                        <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                    </Execute>
+                -->
+                </Var>
+                <If>
+                    <Condition>
+                        <Empty><Var name="msg" key="id"/></Empty>
+                    </Condition>
+                    <Then>
+                        <Var name="output">-1</Var>
+                    </Then>
+                    <Else>
+                        <Var name="msg" key="headers">
+                            <UtilsLib method="base64Decode">
+                                <Param><Var name="msg" key="headers"/></Param>
+                            </UtilsLib>
+                        </Var>
+			<Var name="msg" key="body">
+                            <UtilsLib method="base64Decode">
+                                <Param><Var name="msg" key="body"/></Param>
+                            </UtilsLib>
+                        </Var>
+                        <Var name="output"><Var name="msg"/></Var>
+                    </Else>
+                </If>
+
+                <Return><Var name="output"/></Return>
+            </Begin>
+        </Function>
+
+
+        <Function name="deleteBody">
+            <Params>
+                <Param name="guid" type="text" doc="Message guid"/>
+            </Params>
+            <Errors>
+              <Error code="-1" doc="Message does not exist"/>
+            </Errors>
+            <Begin>
+                <Var name="msg">
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_message</Param>
+                        <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                    </Execute>
+                </Var>
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_message</Param>
+                    <Param name="id"><Var name="msg" key="id"/></Param>
+                    <Param name="body"></Param>
+                    <Param name="_modification"><DateTimeLib method="now"/></Param>
+                </Execute>
+            </Begin>
+        </Function>
+
+        <Function name="delete">
+            <Params>
+                <Param name="guid" type="text" doc="Message guid"/>
+            </Params>
+            <Errors>
+              <Error code="-1" doc="Message does not exist"/>
+            </Errors>
+            <Begin>
+                <Var name="msg">
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_message</Param>
+                        <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                    </Execute>
+                </Var>
+                <Var name="messageStr">
+                    <UtilsLib method="jsonEncode">
+                        <Param><Var name="msg"/></Param>
+                    </UtilsLib>
+                </Var>
+                <Var name="guid"><Var name="msg" key="guid"/></Var>
+                <Execute method="framework,generic,delete">
+                    <Param name="table">fw_message</Param>
+                    <Param name="id"><Var name="msg" key="id"/></Param>
+                </Execute>
+                <Log type="action" key="$guid">
+                    <Param>
+                        <Var name="messageStr"/>
+                    </Param>
+                </Log>
+            </Begin>
+        </Function>
+
+
+        <Function name="isSent">
+            <Params>
+                <Param name="guid" doc="Message Guid" />
+            </Params>
+            <Return type="single">
+                <External name="result" type="int" doc="1 if has been sent, 0 otherwise"/>
+            </Return>
+            <Begin>
+                <Var name="msg">
+                    <Call function="getMessageByGuid">
+                        <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                    </Call>
+                </Var>
+                <Var name="isSent"><Var name="msg" key="is_sent"/></Var>
+                <Var name="result">0</Var>
+                <If condition="$isSent == 1">
+                    <Var  name="result">1</Var>
+                </If>
+                <Return><Var name="result"/></Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>

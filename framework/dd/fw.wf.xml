@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Global Workflow ">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <!-- Workflow Module -->
+    <Entity name="fw_wf_process_engine" doc="Workflow process engine that will handle a given process">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" required="true" doc="The process description"/>
+        <Attribute name="handler" domain="string" required="true" doc="The engine library handler"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_wf_process" multilang="true" doc="Workflow process">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="source" domain="string" required="true" doc="Process Id like app,process,bpmn"/>
+        <Attribute name="params" domain="json" required="true" doc="The process name"/>                
+        <Attribute name="id_process_engine" domain="string" required="true" doc="Process Id like app,process,bpmn"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_wf_process_configuration" doc="Workflow process configuration. It sets the parameters for the workflow configuration">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_process" domain="foreign" required="true" refentity="fw_wf_process" refattr="id" doc="The process"/>                
+        <Attribute name="params" domain="json" required="true" doc="The values to expand in the parameters"/>
+        <Attribute name="guid_object" domain="uuid" doc="The reference object that will implement this workflow"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <!-- Process execution engine definitions -->
+    <Entity name="fw_wf_process_instance" doc="Workflow process">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_parent" domain="foreign" required="false" refentity="fw_wf_process_instance" refattr="id" doc="The process parent instance. For subprocess handling."/>        
+        <Attribute name="id_process" domain="foreign" required="true" refentity="fw_wf_process" refattr="id" doc="The process"/>        
+        <Attribute name="configuration" domain="text" required="true" doc="The configuration of the process"/>
+        <Attribute name="variables" domain="text" required="true" doc="The process variables"/>
+        <Attribute name="is_started" domain="bool" required="true" doc="Is this instance started, _creation stores the timestamp of the start"/>
+        <Attribute name="is_ended" domain="bool" required="true" doc="Is this instance ended"/>
+        <Attribute name="ended" domain="timestamp" required="false" doc="When this instance ended"/>
+        <Attribute name="end_event" domain="string" required="false" doc="The ended event"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_wf_token" doc="Workflow process instance token">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_parent" domain="foreign" required="false" refentity="fw_wf_token" refattr="id" doc="The parent token"/>
+        <Attribute name="id_process_instance" domain="foreign" required="true" refentity="fw_wf_process_instance" refattr="id" doc="The instance of this token"/>        
+        <Attribute name="id_current_history" domain="foreign" required="false" refentity="fw_wf_token_history" refattr="id" doc="The current node where the token is"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_wf_token_history" doc="Workflow process instance token history. This is where all the process instance details are">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_token" domain="foreign" required="true" refentity="fw_wf_token" refattr="id" doc="The parent token"/>
+        <Attribute name="node" domain="string" required="true" doc="The node where this token has passed"/>
+        <Attribute name="started" domain="timestamp" required="false" doc="When this instance started"/>        
+        <Attribute name="ended" domain="timestamp" required="false" doc="When this instance ended"/>
+        <Attribute name="start_flow" domain="string" required="false" doc="The flow that started the node"/>
+        <Attribute name="end_flow" domain="string" required="false" doc="The flow that was raised in the end of the node"/>
+        <Attribute name="id_inbox_task" domain="foreign" required="false" refentity="fw_wf_inbox_task" refattr="id" doc="What is the current task?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_wf_process_instance_obs" doc="Token History observations">
+      <Attributes>
+        <Attribute name="id" domain="id"  doc="The obs id"/>
+        <Attribute name="id_process_instance" domain="foreign"  required="true" refentity="fw_wf_process_instance" refattr="id" />
+        <Attribute name="id_person" domain="foreign"  required="true" refentity="fw_person" refattr="id" doc="The person that added the observations"/>
+        <Attribute name="id_token" domain="foreign" required="false" refentity="fw_wf_token" refattr="id" doc="The process token associated"/>
+        <Attribute name="obs_public" domain="text" doc="Public observations, can be viewed by anyone with access to the history" />
+        <Attribute name="obs_private" domain="text" doc="Private observations, can be viewed by the person that have added the observations" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>    
+    
+    <Entity name="fw_wf_inbox_task" doc="User's task inbox">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_token" domain="foreign" required="true" refentity="fw_wf_token" refattr="id" doc="The token associated with this task"/>
+        <Attribute name="name" domain="string" required="true" doc="The name to appear in the task"/>        
+        <Attribute name="description" domain="text" required="false" doc="The task description"/>
+        <Attribute name="is_completed" domain="bool" required="true" doc="Is this task completed?"/>
+        <Attribute name="due_date" domain="timestamp" required="false" doc="When is the due date associated with this task"/>
+        <Attribute name="handler" domain="string" required="true" doc="The node that will handle this task"/>
+        <Attribute name="id_object" domain="foreign" required="true" doc="The object which this workflow applyes to"/>
+        <Attribute name="id_person" domain="foreign" required="false" refentity="fw_person" refattr="id" doc="The person to handle this task"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_wf_inbox_task_delegation" doc="User's task inbox delegation">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_inbox_task" domain="foreign" required="true" refentity="fw_wf_inbox_task" refattr="id" doc="The inbox task"/>
+        <Attribute name="id_person" domain="foreign" required="false" refentity="fw_person" refattr="id" doc="The person who is delegating"/>        
+        <Attribute name="id_person_delegate" domain="foreign" required="false" refentity="fw_person" refattr="id" doc="The in which the task was delegate. Who will perform the task"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_wf_delegation_rule" doc="User's delegation of tasks rules">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_person" domain="foreign" required="false" refentity="fw_person" refattr="id" doc="The person who is delegating"/>        
+        <Attribute name="condition" domain="longString" required="true" doc="The condition to apply to this rule"/>        
+        <Attribute name="name" domain="text" required="false" doc="The rule name"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this rule active?"/>
+        <Attribute name="start_date" domain="timestamp" required="true" doc="When this rule starts"/>
+        <Attribute name="end_date" domain="timestamp" required="true" doc="When this rule ends"/>
+        <Attribute name="id_person_delegate" domain="foreign" required="true" refentity="fw_person" refattr="id" doc="The person who will do the task"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+  </Entities>
+</Node>

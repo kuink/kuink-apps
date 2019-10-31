@@ -1,0 +1,10 @@
+<?xml version='1.0'?>
+<DataAcess datasource="cmis">
+    <Params>
+      <Param name="id_school_year"/>
+      <Param name="id_person"/>
+    </Params>
+    <Begin>
+        <Insert/>
+    </Begin>
+</DataAcess>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Node Templates
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <Dataset>
+            <r1>
+                <id>1</id>
+                <name>Node.simple</name>
+            </r1>
+        </Dataset>
+    </Body>
+</Method>

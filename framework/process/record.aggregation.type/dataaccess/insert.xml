@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all fw_record
+    </Doc>
+    <Params>
+        <Param name="id"/>
+        <Param name="guid"/>
+        <Param name="id_company"/>
+        <Param name="id_file"/>
+        <Param name="id_component_type"/>
+        <Param name="metadata"/>
+        <Param name="name"/>
+        <Param name="short_name"/>
+        <Param name="code"/>
+        <Param name="order"/>
+        <Param name="_creation"/>
+        <Param name="_creation_ip"/>
+        <Param name="_modification"/>
+        <Param name="_modification_ip"/>
+    </Params>
+    <Body>
+        <Execute>
+
+                <![CDATA[
+                    insert into fw_aggregation_type
+                    (
+                        name,
+                        code,
+                        table,
+                        field,
+                        _creation,
+                        _creation_ip
+                    )
+                    values
+                    (
+                        '{param->name}',
+                        '{param->code}',
+                        '{param->table}',
+                        '{param->field}',
+                        '{param->_creation}',
+                        '{param->_creation_ip}',
+                    )
+                ]]>
+
+        </Execute>
+    </Body>
+</Method>

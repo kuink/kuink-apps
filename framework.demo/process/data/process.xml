@@ -1,0 +1,10 @@
+<?xml version='1.0'?>
+<Process>
+     <Transitions>
+	 	<!-- test process flow -->
+        <Flow role='Teacher' startuc='data' startnode='' event='init' enduc='data' endnode='from_db' />
+        <Flow role='Teacher' startuc='data' startnode='' event='init_composite' enduc='data' endnode='compositePk' />
+        <Flow role='Teacher' startuc='data' startnode='' event='init_composite' enduc='data' endnode='data_from_db' />
+        <Flow role='Teacher' startuc='data' startnode='' event='init_freeze' enduc='data' endnode='freezeForms' />
+     </Transitions>
+</Process>

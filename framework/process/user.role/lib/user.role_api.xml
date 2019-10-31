@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions/>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens/>
+  <Actions>
+    <Action name="init"/>
+  </Actions>
+  <Library>
+    <Function name="add" doc="Add a role to a company in the system">
+      <Params>
+        <Param name="id_company" type="int" required="true" doc="Company Id"/>
+        <Param name="name" type="text" required="true" doc="Role name"/>
+        <Param name="code" type="text" required="true" doc="Role code"/>
+        <Param name="is_active" type="int" required="true" doc="Is this role active?"/>
+      </Params>
+      <Return type="int" doc="the role id"/>
+      <Errors>
+        <Error code="-1" doc="Role allready exist"/>
+        <Error code="-2" doc="Company doesn't exist"/>
+      </Errors>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage.local"/>
+                </Allow>
+              </Permissions-->
+        <!-- Set default values -->
+        <Var name="result">0</Var>
+        <Var name="rid">
+          <Call function="existsByCode">
+            <Param name="code">
+              <Var name="code"/>
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company"/>
+            </Param>
+          </Call>
+        </Var>
+        <Var name="cid">
+          <Call library="framework,company,api" function="existsById">
+            <Param name="id">
+              <Var name="id_company"/>
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$rid == 1">
+          <Then>
+            <Var name="result">-1</Var>
+          </Then>
+        </If>
+        <If condition="$cid == 0">
+          <Then>
+            <Var name="result">-2</Var>
+          </Then>
+        </If>
+        <If condition="$result == 0">
+          <Then>
+            <Var name="id">
+              <Execute method="framework,generic,insert" params="PARAMS">
+                <Param name="table">fw_role</Param>
+                <Param name="_creation">
+                  <DateTimeLib method="Now"/>
+                </Param>
+                <Param name="_creation_ip">
+                  <Var name="USER" key="ip"/>
+                </Param>
+                <Param name="_modification">
+                  <DateTimeLib method="Now"/>
+                </Param>
+                <Param name="_modification_ip">
+                  <Var name="USER" key="ip"/>
+                </Param>
+              </Execute>
+            </Var>
+            <Var name="result">
+              <Var name="id"/>
+            </Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="addCapability" doc="Add a capability to the role">
+      <Params>
+        <Param name="id_role" type="int" required="true" doc="Role Id"/>
+        <Param name="id_capability" type="int" required="true" doc="Capability Id"/>
+      </Params>
+      <Return type="int" doc="The record id"/>
+      <Errors>
+        <Error code="-1" doc="Role does not exists"/>
+        <Error code="-2" doc="Capability does not exists"/>
+        <Error code="-3" doc="Capability allready defined in role"/>
+      </Errors>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <!-- Set default values -->
+        <Var name="PARAMS" />
+                
+        <Var name="result">0</Var>
+        <Var name="role">
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
+            <Param name="id"><Var name="PARAMS" key="id_role"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$role->__length == 0">
+          <Then>
+            <Var name="result">-1</Var>
+          </Then>
+        </If>
+        <Var name="capability">
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="id"><Var name="PARAMS" key="id_capability"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$capability->__length == 0">
+          <Then>
+            <Var name="result">-2</Var>
+          </Then>
+        </If>        
+        <Var name="roleCapability">
+          <DataAccess method="load" params="PARAMS">
+            <Param name="_entity">fw_role_capability</Param>
+          </DataAccess>
+        </Var>
+        <If condition="$roleCapability->__length &gt; 0">
+          <Then>
+            <Var name="result">-3</Var>
+          </Then>
+        </If>
+
+        <If condition="$result == 0">
+          <Then>
+            <Var name="id">
+              <Execute method="framework,generic,insert" params="PARAMS">
+                <Param name="table">fw_role_capability</Param>
+              </Execute>
+            </Var>
+            <Var name="result">
+              <Var name="id"/>
+            </Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="addCapabilityByCode" doc="Add a capability to the role by code">
+      <Params>
+        <Param name="role_code" type="text" required="true" doc="Role Code"/>
+        <Param name="capability_code" type="text" required="true" doc="Capability Code"/>
+      </Params>
+      <Return type="int" doc="the role id"/>
+      <Errors>
+        <Error code="-1" doc="Role doesn't exist"/>
+        <Error code="-2" doc="Capability doesn't exist"/>
+      </Errors>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <!-- Set default values -->
+        <Var name="role">
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
+            <Param name="code"><Var name="PARAMS" key="role_code"/></Param>
+          </DataAccess>
+        </Var>
+        <Var name="capability">
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="code"><Var name="PARAMS" key="capability_code"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Call function="addCapability">
+            <Param name="id_role"><Var name="role" key="id"/></Param>
+            <Param name="id_capability"><Var name="capability" key="id"/></Param>
+          </Call>                
+        </Return>
+      </Begin>
+    </Function>
+        
+    
+    <Function name="update" doc="Updates a role data">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Role Id"/>
+        <Param name="id_company" type="int" required="true" doc="Company Id"/>
+        <Param name="name" type="text" required="true" doc="Login username."/>
+        <Param name="code" type="text" required="true" doc="User display name,"/>
+        <Param name="is_active" type="int" required="true" doc="Is this role active?"/>
+      </Params>
+      <Return type="int" doc="the role id"/>
+      <Errors>
+        <Error code="-1" doc="Role does not exist"/>
+        <Error code="-2" doc="Company doesn't exist"/>
+      </Errors>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <!-- Set default values -->
+        <Var name="result">0</Var>
+        <Var name="rid">
+          <Call function="existsById">
+            <Param name="id">
+              <Var name="id"/>
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company"/>
+            </Param>
+          </Call>
+        </Var>
+        <Var name="cid">
+          <Call library="framework,company,api" function="existsById">
+            <Param name="id">
+              <Var name="id_company"/>
+            </Param>
+          </Call>
+        </Var>
+        <If condition="$rid == 0">
+          <Then>
+            <Var name="result">-1</Var>
+          </Then>
+        </If>
+        <If condition="$cid == 0">
+          <Then>
+            <Var name="result">-2</Var>
+          </Then>
+        </If>
+        <If condition="$result == 0">
+          <Then>
+            <Execute method="framework,generic,update" params="PARAMS">
+              <Param name="table">fw_role</Param>
+              <Param name="_creation">
+                <DateTimeLib method="Now"/>
+              </Param>
+              <Param name="_creation_ip">
+                <Var name="USER" key="ip"/>
+              </Param>
+              <Param name="_modification">
+                <DateTimeLib method="Now"/>
+              </Param>
+              <Param name="_modification_ip">
+                <Var name="USER" key="ip"/>
+              </Param>
+            </Execute>
+            <Var name="result">
+              <Var name="id"/>
+            </Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getRoles" doc="Get a list of available roles">
+      <Params>
+        <Param name="id_company" type="int" required="true" doc="Company Id."/>
+        <Param name="name" type="text" doc="Search by name."/>
+        <Param name="code" type="text" doc="Search by code."/>
+        <Param name="capabilities" type="array" doc="Search by code."/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc="Role Id"/>
+        <External name="name" type="text" doc="Role name"/>
+        <External name="code" type="text" doc="Role code"/>
+      </Return>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <!-- Set default values -->
+        <Var name="roles">
+          <Execute method="this,this,role.search">
+            <Param name="id_company">
+              <Var name="id_company"/>
+            </Param>
+            <Param name="name" wildcard="full">
+              <Var name="name"/>
+            </Param>
+            <Param name="code" wildcard="full">
+              <Var name="code"/>
+            </Param>
+            <Param name="capabilities">
+              <Var name="capabilities"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="roles"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a role data">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Role Id."/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc="Role Id"/>
+        <External name="id_company" type="int" doc="Role Id"/>
+        <External name="name" type="text" doc="Role name"/>
+        <External name="code" type="text" doc="Role code"/>
+        <External name="is_active" type="int" doc="Is this role active?"/>
+        <External name="_creation" doc=""/>
+        <External name="_creation_ip" doc=""/>
+        <External name="_modification" doc=""/>
+        <External name="_modification_ip" doc=""/>
+      </Return>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <!-- Set default values -->
+        <Var name="role">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_role</Param>
+            <Param name="id">
+              <Var name="id"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="role"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="getByCode" doc="Get a role data">
+      <Params>
+        <Param name="code" type="text" required="true" doc="Role code."/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc="Role Id"/>
+        <External name="id_company" type="int" doc="Role Id"/>
+        <External name="name" type="text" doc="Role name"/>
+        <External name="code" type="text" doc="Role code"/>
+        <External name="is_active" type="int" doc="Is this role active?"/>
+        <External name="_creation" doc=""/>
+        <External name="_creation_ip" doc=""/>
+        <External name="_modification" doc=""/>
+        <External name="_modification_ip" doc=""/>
+      </Return>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <!-- Set default values -->
+        <Var name="role">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_role</Param>
+            <Param name="code">
+              <Var name="code"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Return>
+          <Var name="role"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="existsById" doc="Check if the role exists">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Role Id."/>
+        <Param name="id_company" type="int" required="true" doc="Company Id."/>
+      </Params>
+      <Return type="int" doc="1 if exists, 0 otherwise"/>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <Var name="result">0</Var>
+        <Var name="role">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_role</Param>
+            <Param name="id">
+              <Var name="id"/>
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="rid">
+          <Var name="role" key="id"/>
+        </Var>
+        <If condition="$rid != ''">
+          <Then>
+            <Var name="result">1</Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="existsByCode" doc="Check if the role exists">
+      <Params>
+        <Param name="code" type="text" required="true" doc="Role code."/>
+        <Param name="id_company" type="int" required="true" doc="Company Id."/>
+      </Params>
+      <Return type="int" doc="1 if exists, 0 otherwise"/>
+      <Begin>
+        <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role::manage"/>
+                </Allow>
+              </Permissions-->
+        <Var name="result">0</Var>
+        <Var name="role">
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_role</Param>
+            <Param name="code">
+              <Var name="code"/>
+            </Param>
+            <Param name="id_company">
+              <Var name="id_company"/>
+            </Param>
+          </Execute>
+        </Var>
+        <Var name="rid">
+          <Var name="role" key="id"/>
+        </Var>
+        <If condition="$rid != ''">
+          <Then>
+            <Var name="result">1</Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="delete" doc="Delete a record by id from table fw_role">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,delete">
+            <Param name="table">fw_role</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="search" doc="Search records from table fw_role">
+      <Params>
+        <Param name="id" type="int"/>
+        <Param name="id_company" type="select"/>
+        <Param name="name" type="text"/>
+        <Param name="code" type="text"/>
+        <Param name="is_active" type="int"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_company" type="select" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="this,this,search">
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+            <Param name="id_company">
+              <Var name="PARAMS" key="id_company"/>
+            </Param>
+            <Param name="name" wildcard="full">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="code" wildcard="full">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="is_active">
+              <Var name="PARAMS" key="is_active"/>
+            </Param>
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_role">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_company" type="select" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,getAll">
+            <Param name="table">fw_role</Param>
+            <Param name="fields">*</Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+
+      <Function name="getCapabilities" scope="public" doc="Get capabilities given a role code">
+          <Params>
+              <Param name="role_code"/>
+          </Params>
+          <Return type="multiple"/>
+          <Begin>
+              <Return>
+                  <DataAccess method="this,this,getCapabilities" params="PARAMS" />
+              </Return>
+          </Begin>
+      </Function>
+      
+      <Function name="getCapabilitiesOfList" scope="public" doc="Get capabilities given a list of role codes">
+          <Params>
+              <Param name="role_codes"/>
+          </Params>
+          <Return type="multiple"/>
+          <Begin>
+              <Return>
+                  <DataAccess method="this,this,getCapabilitiesOfList" params="PARAMS" />
+              </Return>
+          </Begin>
+      </Function>
+      
+  </Library>
+</Node>

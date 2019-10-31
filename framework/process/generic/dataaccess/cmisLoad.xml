@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<DataAcess datasource="cmis">
+    <Params>
+      <Param name="id" required="true" doc="objectId"/>
+    </Params>
+    <Begin>
+        <Load/>
+    </Begin>
+</DataAcess>

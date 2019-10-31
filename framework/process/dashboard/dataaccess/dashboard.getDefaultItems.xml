@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Gets all dashboard items for default dashboard
+    </Doc>
+    <Params>
+        <Param name="id_company"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        di.*
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        {table_prefix}fw_dashboard_item di
+                        INNER JOIN {table_prefix}fw_dashboard d ON (di.id_dashboard = d.id)
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>d.id_company = {param->id_company}</XCondition>
+                    <XCondition>AND di.id_role IS NULL</XCondition>
+                </XWhere>
+                <XOrderBy>
+                    di.position, di.order
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

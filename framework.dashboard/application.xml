@@ -1,0 +1,11 @@
+<?xml version='1.0'?>
+<Application name="framework.dashboard" version="">
+    <Config>
+    </Config>
+    <Databases>
+    </Databases>
+    <Menus>
+        <Menu role='Student,Teacher' startuc='backoffice' startnode='' event='init'
+            label='Backoffice' default='true' />
+    </Menus>
+</Application>

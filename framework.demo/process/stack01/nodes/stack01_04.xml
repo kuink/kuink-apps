@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens>
+		<Screen id="screen001" template="2x1col">
+
+			<Form name="searchForm" id="searchForm" persist="true" position="left">
+				<Text name="name" id="name" />
+				<Checkbox name="is_collaborator" id="is_collaborator" />
+				<Checkbox name="is_collaborator_active" id="is_collaborator_active" />
+				<Checkbox name="is_student" id="is_student" />
+				<ButtonGroup>
+					<Button type="search" id="search" name="search" action="search" />
+				</ButtonGroup>
+			</Form>
+
+			<Grid id="searchResultGrid" name="searchResultGrid" freeze="false"
+				position="left" title="searchResults">
+				<Template>
+					<Columns>
+						<Column id="id" name="id" type="pick" />
+						<Column id="id_person" name="id_person" />
+						<Column id="public_key" name="public_key" label="">
+							<Formatter name="Image" ext="jpg" path="photo" />
+						</Column>
+						<Column id="name" name="name" />
+						<Column id="_person_type_description" name="_person_type_description" />
+					</Columns>
+					<Actions>
+						<Action name="addToBagSingle" id="addToBagSingle" action="addToBagSingle"
+							icon="plus" actionvalue="id_person" />
+					</Actions>
+				</Template>
+				<Actions>
+					<Action name="addToBagBulk" id="addToBagBulk" />
+				</Actions>
+			</Grid>
+
+
+			<Grid id="personBagGrid" name="personBagGrid" freeze="true"
+				title="personBag" position="right">
+				<Template>
+					<Columns>
+						<Column id="id" name="id" />
+						<Column id="public_key" name="public_key" label="">
+							<Formatter name="Image" ext="jpg" path="photo" />
+						</Column>
+						<Column id="name" name="name" />
+						<Column id="_person_type_description" name="_person_type_description" />
+					</Columns>
+					<Actions>
+						<Action name="removeFromBagSingle" icon="minus"
+							actionvalue="id" />
+						<Action name="printDocument" actionvalue="id" />
+					</Actions>
+				</Template>
+			</Grid>
+
+		</Screen>
+	</Screens>
+	<Actions>
+		<Action name="init">
+			<Trace label="Stack 04" />
+			<Action name="search" />
+		</Action>
+
+		<Action name="search" screen="screen001">
+			<Var name="searchParams" >
+				<Control method="getCurrentData" object="searchForm" />
+			</Var>
+
+
+			<Var name="searchResult">
+				<DataAccess method="getAll">
+					<Param name="_sql">
+						<Xml>
+							<SqlPaginated>
+								<XSql>
+									<XSelect>
+										<XField>
+											p.*,
+											p.id as "id_person"
+										</XField>
+									</XSelect>
+									<XFrom>
+										<XTable>
+											person p
+											left outer join collaborator cb on
+											(cb.id=p.id)
+											left outer join student std on (std.id=p.id)
+										</XTable>
+									</XFrom>
+									<XWhere>
+										<XCondition>
+											<![CDATA[
+											(
+												p.name like '{param->name}'
+												or p._person_type_description like '{param->name}'
+											)
+											]]>
+										</XCondition>
+										<XCondition optional="is_collaborator">
+											<![CDATA[
+												and 
+													(cb.id is not null or '{param->is_collaborator}'='0')
+													
+											]]>
+										</XCondition>
+										<XCondition optional="is_collaborator_active">
+											<![CDATA[
+												and 
+													(cb.is_active = 1 or '{param->is_collaborator_active}'='0')
+													
+													
+											]]>
+										</XCondition>
+										<XCondition optional="is_student">
+											<![CDATA[
+												and (std.id is not null or '{param->is_student}'='0')
+											]]>
+										</XCondition>
+									</XWhere>
+									<XOrderBy>
+										<XOrder><![CDATA[p.name asc]]></XOrder>
+									</XOrderBy>
+								</XSql>
+							</SqlPaginated>
+						</Xml>
+					</Param>
+					<Param name="name" wildcard="full">
+						<Var name="searchParams" key="name" />
+					</Param>
+					<Param name="is_collaborator">
+						<Var name="searchParams" key="is_collaborator" />
+					</Param>
+					<Param name="is_collaborator_active">
+						<Var name="searchParams" key="is_collaborator_active" />
+					</Param>
+					<Param name="is_student">
+						<Var name="searchParams" key="is_student" />
+					</Param>
+				</DataAccess>
+
+			</Var>
+
+			<Control method="bind" object="personBagGrid">
+				<Param>
+					<Var name="_PersonBag" process="true"  />
+				</Param>
+			</Control>
+
+			<Control method="bind" object="searchResultGrid">
+				<Param>
+					<Var name="searchResult" />
+				</Param>
+			</Control>
+			<Trace label="Stack 04 | Search" />
+		</Action>
+
+		<Action name="addToBagBulk">
+			<Var name="selected">
+				<UtilsLib method="filterSelected">
+					<Param>
+						<Var name="POSTDATA" />
+					</Param>
+				</UtilsLib>
+			</Var>
+			<ForEach var="selected" item="person">
+				<Call function="addToBag">
+					<Param name="id_person">
+						<Var name="person" key="id" />
+					</Param>
+				</Call>
+
+			</ForEach>
+			<Action name="search" />
+		</Action>
+
+		<Action name="addToBagSingle">
+			<Call function="addToBag">
+				<Param name="id_person">
+					<ActionValue />
+				</Param>
+			</Call>
+			<Action name="search" />
+		</Action>
+
+		<Action name="removeFromBagSingle">
+			<Call function="removeFromBag">
+				<Param name="id_person">
+					<ActionValue />
+				</Param>
+			</Call>
+			<Action name="search" />
+		</Action>
+
+		<Action name="printDocument">
+			<Var name="id_person">
+				<ActionValue />
+			</Var>
+			<Var name="currentSchoolYear">
+				<Call library="gecol.core,schoolYear,api" function="getCurrent"/>
+			</Var>
+			<Call library="gecol.core,person.document,api" function="createCredentialDocument">
+				<Param name="id_person"><Var name="id_person"/></Param>
+				<Param name="id_school_year">
+					<Var name="currentSchoolYear" key="id"/>					
+				</Param>
+			</Call>
+			<Action name="search"/>
+		</Action>
+
+	</Actions>
+
+	<Library>
+		<Function name="addToBag">
+			<Params>
+				<Param name="id_person" />
+			</Params>
+			<Return type="int" />
+			<Begin>
+				<Var name="personData">
+					<Call library="gecol.core,person,api" function="get">
+						<Param name="id">
+							<Var name="PARAMS" key="id_person" />
+						</Param>
+					</Call>
+				</Var>
+				<Var name="key">
+					<Var name="personData" key="id" />
+				</Var>
+				<Var name="_PersonBag" process="true" key="$key">
+					<Var name="personData" />
+				</Var>
+				<Return>1</Return>
+			</Begin>
+		</Function>
+
+		<Function name="removeFromBag">
+			<Params>
+				<Param name="id_person" />
+			</Params>
+			<Return type="int" />
+			<Begin>
+				<Var name="key" >
+					<Var name="PARAMS" key="id_person" />
+				</Var>
+				<Var name="_PersonBag" process="true" key="$key" clear="true" />
+				<Return>1</Return>
+			</Begin>
+		</Function>
+	</Library>
+</Node>
+

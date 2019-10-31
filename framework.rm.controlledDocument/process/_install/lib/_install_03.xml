@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Add is_notified to controlled documents.</String>
+       </Return>
+      </Begin>
+    </Function>
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+				<Transaction>
+				</Transaction>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

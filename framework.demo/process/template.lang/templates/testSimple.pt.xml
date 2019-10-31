@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template>
+  <Subject>
+    Este é um template de teste para $id $name
+  </Subject>
+  <Content>
+  <![CDATA[
+    <h1>
+      This is a sample content for $id $name
+    </h1>
+    <br>
+    $id $name
+   ]]>
+  </Content>
+</Template>

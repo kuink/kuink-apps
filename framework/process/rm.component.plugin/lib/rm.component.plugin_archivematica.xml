@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+    <Use name="FileLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens />
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="add" doc="add record to archivematica">
+      <Params>
+        <Param name="id_record" type="int" required="true" />
+        <Param name="id_component" type="int"/>
+        <Param name="settings" type="array"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component.plugin.archivematica::invalidIdRecord" doc="Invalid id record" />
+      </Exceptions>
+      <Return type="multiple" doc="return 1 if successfull, error list otherwise" />
+      <Begin>
+
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="id_record" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$record->__length &lt;= 0">
+          <Then>
+            <Exception><String parse="true">framework/rm.component.plugin.archivematica::invalidIdRecord $PARAMS->id_record</String></Exception>
+          </Then>
+        </If>
+
+        <!-- get the components -->
+        <Var name="components">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id_record"><Var name="id_record" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="originalPath">
+          <String parse="true">records/$record->uuid</String>
+        </Var>
+
+        <Var name="errors"><Set/></Var>
+        <ForEach var="components" item="component">
+          <!-- get the plugin's code -->
+          <Var name="plugin">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_component_plugin</Param>
+              <Param name="id"><Var name="component" key="id_component_plugin" /></Param>
+            </DataAccess>
+          </Var>
+
+          <Var name="library"><String parse="true">framework,rm.component.plugin,$plugin->code</String></Var>
+
+          <!-- call the handleArchive function from the component's plugin -->
+          <Var name="handle">
+            <Call library="$library" function="handleArchive">
+              <Param name="id_component"><Var name="id_component" /></Param>
+              <Param name="path"><Var name="originalPath" /></Param>
+            </Call>
+          </Var>
+
+          <If condition="$handle == 1">
+            <Then>
+              <Var name="settings">
+                <UtilsLib method="xmlToSet">
+                  <Param>
+                    <Var name="component" key="settings" />
+                  </Param>
+                </UtilsLib>
+              </Var>
+
+              <Var name="fileName">
+                <DataAccess method="load">
+                  <Param name="_entity">fw_file</Param>
+                  <Param name="id"><Var name="settings" key="id_file" /></Param>
+                </DataAccess>
+              </Var>
+              <Var name="fileName"><Var name="fileName" key="name" /></Var>
+
+              <Var name="settings"><Set /></Var>
+              <Var name="settings" key="arch_name"></Var>
+              <Var name="settings" key="arch_extension"></Var>
+              <Var name="settings" key="arch_size"></Var>
+              <Var name="settings" key="arch_stream"></Var>
+              <Var name="settings" key="file_name"><Var name="fileName" /></Var>
+
+              <Var name="settings">
+                <UtilsLib method="setToXml">
+                  <Param>
+                    <Var name="settings" />
+                  </Param>
+                </UtilsLib>
+              </Var>
+
+              <DataAccess method="update">
+                <Param name="_entity">fw_rm_component</Param>
+                <Param name="id"><Var name="component" key="id" /></Param>
+                <Param name="settings"><Var name="settings" /></Param>
+              </DataAccess>
+            </Then>
+            <Else>
+              <Var name="errors" key=""><Var name="component" key="uuid" /></Var>
+            </Else>
+          </If>
+        </ForEach>
+
+        <Var name="destinationPath">
+          <String parse="true">archivematica/sharedDirectory/activeTransfers/standardTransfers/$record->uuid</String>
+        </Var>
+
+        <Var name="folderCopied">
+          <FileLib method="copyFolder">
+            <Param name="source"><Var name="originalPath" /></Param>
+            <Param name="destination"><Var name="destinationPath" /></Param>
+          </FileLib>
+        </Var>
+
+        <If condition="$folderCopied">
+          <Then>
+
+            <!-- approve transfer for record's directory -->
+            <Call function="approveTransfer">
+              <Param name="directory"><String parse="true">$record->uuid</String></Param>
+            </Call>
+
+            <Call library="framework,request,api" function="addByCode">
+              <Param name="request_category_code">archivematica.getstatus</Param>
+              <Param name="data"><Var name="record" key="uuid" /></Param>
+              <Param name="allowDuplicates">0</Param>
+              <Param name="attempts">-1</Param>
+            </Call>
+
+          </Then>
+          <Else>
+            <Var name="errors" key=""><Var name="record" key="uuid" /></Var>ç
+          </Else>
+        </If>
+
+        <Return><If condition="$errors->__length &gt; 0"><Then><Var name="errors" /></Then><Else>1</Else></If></Return>
+
+      </Begin>
+    </Function>
+
+    <Function name="listTransfers" doc="load the unapproved components list">
+      <Params />
+      <Return type="multiple" doc="the unapproved components" />
+      <Begin>
+        <Var name="response">
+          <DataAccess method="load" datasource="archive">
+            <Param name="_entity"><String>unapproved</String></Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="response" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="approveTransfer" doc="load the unapproved components list">
+      <Params>
+        <Param name="directory" required="true" />
+      </Params>
+      <Return type="multiple" doc="the unapproved components" />
+      <Begin>
+        <Var name="response">
+          <DataAccess method="load" datasource="archive">
+            <Param name="_entity"><String>approved</String></Param>
+            <Param name="directory"><Var name="directory" /></Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="response" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="handleArchive" doc="handle component for archiving">
+      <Params>
+        <Param name="id_component" required="true" />
+        <Param name="path" required="true" />
+      </Params>
+      <Return type="int" doc="1 if done, 0 if errors" />
+      <Begin>
+        <Return><Int>1</Int></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getStream" doc="strems back the archived file">
+      <Params>
+        <Param name="id_component" required="true"/>
+      </Params>
+      <Exception name="framework/rm.component.plugin.archivematica::invalidIdFile" doc="Invalid id file" />
+      <Return />
+      <Begin>
+
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="component" key="id_record" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$record->is_archived == 1">
+          <Then>
+
+            <!-- get the component -->
+            <Var name="component">
+              <DataAccess method="load">
+                <Param name="_entity">fw_rm_component</Param>
+                <Param name="id"><Var name="id_component" /></Param>
+              </DataAccess>
+            </Var>
+
+            <!-- convert from xml to set array -->
+            <Var name="settings">
+              <UtilsLib method="xmlToSet">
+                <Param>
+                  <Var name="component" key="settings" />
+                </Param>
+              </UtilsLib>
+            </Var>
+
+            <Var name="response">
+              <DataAccess method="load" datasource="archive">
+                <Param name="_entity"><String>file</String></Param>
+                <Param name="record"><Var name="record" key="uuid" /></Param>
+                <Param name="component"><Var name="settings" key="file_name" /></Param>
+              </DataAccess>
+            </Var>
+
+            <!-- upload file to tmp folder and download it-->
+            <Var name="uploadedFile">
+              <FileLib method="upload">
+                <Param name="UploadFolder"><String>tmp</String></Param>
+                <Param name="Filename">
+                  <StringLib method="concat">
+                    <Param><Var name="settings" key="arch_name" /></Param>
+                    <Param><String>.</String></Param>
+                    <Param><Var name="settings" key="arch_extension" /></Param>
+                  </StringLib>
+                </Param>
+                <Param name="MaxUploadSize"><Var name="settings" key="arch_size" /></Param>
+                <Param name="ValidExtensions"><Var name="settings" key="arch_extension" /></Param>
+              </FileLib>
+            </Var>
+
+            <FileLib method="download">
+              <Param><Var name="uploadedFile" key="path" /></Param>
+              <Param><Var name="uploadedFile" key="name" /></Param>
+            </FileLib>
+          </Then>
+          <Else>
+            <Exception><String parse="true">framework/rm.component.plugin.archivematica::componentNotProcessed $PARAMS->id_component</String></Exception>
+          </Else>
+        </If>
+
+        <Return />
+      </Begin>
+    </Function>
+
+    <Function name="getURI" doc="get the archived file's URI">
+      <Params>
+        <Param name="id_component" required="true" />
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component.plugin.archivematica::invalidIdFile" doc="Invalid id file" />
+      </Exceptions>
+      <Return type="single" doc="the file's URI" />
+      <Begin>
+
+        <!-- get the component -->
+        <Var name="component">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- get the record -->
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="component" key="id_record" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$record->is_archived == 1">
+          <Then>
+            <!-- convert from xml to set array -->
+            <Var name="settings">
+              <UtilsLib method="xmlToSet">
+                <Param>
+                  <Var name="component" key="settings" />
+                </Param>
+              </UtilsLib>
+            </Var>
+            <Var name="return"><Var name="settings" key="arch_stream" /></Var>
+          </Then>
+          <Else>
+            <Exception><String parse="true">framework/rm.component.plugin.archivematica::componentNotProcessed $PARAMS->id_component</String></Exception>
+          </Else>
+        </If>
+
+        <Return><Var name="return" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getstatus" doc="get the archive status">
+      <Params>
+        <Param name="id_record" required="true" />
+      </Params>
+      <Return type="multiple" doc="the status of the archive" />
+      <Begin>
+
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_record</Param>
+            <Param name="id"><Var name="id_record" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="recordResponse">
+          <DataAccess method="load" datasource="archive">
+            <Param name="_entity"><String>json</String></Param>
+            <Param name="record"><Var name="record" key="uuid" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="!$recordResponse->error">
+          <Then>
+
+            <Var name="components">
+              <DataAccess method="getAll">
+                <Param name="_entity">fw_rm_component</Param>
+                <Param name="id_record"><Var name="record" key="id" /></Param>
+              </DataAccess>
+            </Var>
+
+            <ForEach var="components" item="component">
+
+              <Var name="componentResponse">
+                <DataAccess method="load" datasource="archive">
+                  <Param name="_entity"><String>json</String></Param>
+                  <Param name="record"><Var name="record" key="uuid" /></Param>
+                </DataAccess>
+              </Var>
+
+              <Var name="settings"><Set /></Var>
+              <Var name="settings" key="arch_name"><Var name="componentResponse" key="name" /></Var>
+              <Var name="settings" key="arch_extension"><Var name="componentResponse" key="extension" /></Var>
+              <Var name="settings" key="arch_size"><Var name="componentResponse" key="size" /></Var>
+              <Var name="settings" key="arch_stream"><Var name="componentResponse" key="stream" /></Var>
+
+              <!-- convert from set array to xml -->
+              <Var name="settings">
+                <UtilsLib method="setToXml">
+                  <Param>
+                    <Var name="settings" />
+                  </Param>
+                </UtilsLib>
+              </Var>
+
+              <DataAccess method="update">
+                <Param name="_entity">fw_rm_component</Param>
+                <Param name="id"><Var name="component" key="id" /></Param>
+                <Param name="settings"><Var name="settings" /></Param>
+              </DataAccess>
+
+            </ForEach>
+
+            <DataAccess method="update">
+              <Param name="_entity">fw_rm_record</Param>
+              <Param name="id"><Var name="record" key="id" /></Param>
+              <Param name="is_archived"><Int>1</Int></Param>
+            </DataAccess>
+
+          </Then>
+        </If>
+
+        <Return><Var name="recordResponse" /></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="getSettingsDefinition" doc="Get the component settings definition data to build forms.">
+      <Params>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+       <Var name="setting" key="id">id_component</Var>
+       <Var name="setting" key="type">Int</Var>
+       <Var name="settings" key=""><Var name="setting"/></Var>
+       <Return><Var name="settings"/></Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

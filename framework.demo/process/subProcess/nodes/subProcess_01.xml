@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+    <Params>
+      <Param name="id_feedback"/>
+    </Params>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+	</Libraries>
+	<Configuration />
+	<Screens>
+		<Screen id="screen001" >
+          <Grid name="eventsGrid" title="events">
+            <Template>
+              <Columns>
+                <Column name="id" label="id"/>
+                <Column name="subject" label="subject"/>
+              </Columns>
+              <Actions>
+                <Action name="_handle" action="_handle" actionvalue="id"/>
+              </Actions>
+            </Template>
+        </Grid>
+      </Screen>
+	</Screens>
+	<Actions>
+      <Action name="init" screen="screen001">
+        <Control method="bind" object="eventsGrid">
+          <Param>
+             <Execute method="this,this,test.data"/>
+          </Param>
+        </Control>
+        
+        
+        <Action name="logThis"/>
+        
+      </Action>
+      
+      <Action name="logThis">
+      
+      	<Var name="old">
+      		<Call library="gecol.core,person,api" function="get">
+				<Param name="id">3975</Param>
+			</Call>
+    	</Var>
+      	<Var name="new">
+      		<Call library="gecol.core,person,api" function="get">
+				<Param name="id">2460</Param>
+			</Call>
+    	</Var>
+      	
+      
+      	<Call library="gecol.core,log,api" function="add">
+			<Param name="id">3975</Param>
+			<Param name="context">gecol.demo</Param>
+			<Param name="message_code">person_updated</Param>
+			<Param name="old_record"><Var name="old"/></Param>
+			<Param name="new_record"><Var name="new"/></Param>
+		</Call>
+      </Action>
+      
+      <Action name="_handle" >
+        <!-- Load the event handler as well as the id_child-->
+        <Var name="eventHandler">pt.cscm-lx.PR09,handler</Var>
+        <Var name="eventHandlerChild">000004652240000000LT</Var>
+              
+        <RaiseEvent name="next">
+          <Param name="id"><Var name="eventHandlerChild"/></Param>
+          <Param name="SUBPROCESS"><Var name="eventHandler"/></Param>
+        </RaiseEvent>
+      </Action>
+	</Actions>
+</Node>
+

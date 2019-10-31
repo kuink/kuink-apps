@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get all classes that are leafs
+  </Doc>
+  <Params>
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+            c.id,
+				    c.code,
+				    c.id_parent,
+					  (SELECT count(*) FROM fw_rm_class cc WHERE cc.id_parent = c.id) as childs_count  
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_rm_class c
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+         <XCondition>
+          (SELECT count(*) FROM fw_rm_class cc WHERE cc.id_parent = c.id) = 0
+         </XCondition>  
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[length(c.tree_path) DESC]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

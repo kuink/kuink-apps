@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' ?><Lang>
+   <Strings>
+   	<String key="acl">Listas de Controlo de Acessos</String>
+   	
+   	
+   	<String key="code">Código</String>
+   	
+   	<String key="addEntry">Adicionar Entrada</String>
+   	<String key="deleteEntry">Remover Entrada</String>
+   	<String key="entries">Entradas</String>
+   	<String key="person_display_name">Nome</String>
+   	<String key="person_group_code">Grupo</String>
+   	<String key="permission_code">Permissão</String>
+   </Strings>
+   <HelpStrings/>
+</Lang>

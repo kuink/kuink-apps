@@ -1,0 +1,11 @@
+<?xml version='1.0'?><Process>
+	<Transitions>
+		<Flow role='Teacher,Student' startnode='' event='init' endnode='manage' />
+		<Flow role='Teacher,Student' startnode='manage' event='doIt' endnode='xDoIt' />
+		<Flow role='Teacher,Student' startnode='xDoIt' event='back' endnode='manage' />
+		<Flow role='Teacher,Student' startnode='xDoIt' event='complete' endnode='complete' />
+		<Flow role='Teacher,Student' startnode='complete' event='complete' endnode='manage' />
+    <Flow role='Teacher,Student' startnode='manage' event='history' endnode='xHistory' />
+    <Flow role='Teacher,Student' startnode='xHistory' event='back' endnode='manage' />
+  </Transitions>
+</Process>

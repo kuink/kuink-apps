@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template>
+  <Subject>
+    $subject
+  </Subject>
+  <Content>
+  <![CDATA[
+    Caro utilizador, <br/>
+    o problema reportado foi registado com o n.º $id_ticket. 
+    <br/><br/>
+    Utilizador: $person->display_name ($person->uid) ($person->id) <br/><br/>
+    Mensagem:<br/>
+    $content
+    <br/><br/>
+    Contexto (a ser processado pelo STI):<br/>
+    $context
+    <br/><br/>    
+    
+    Cumprimentos,<br/>
+    <a href="http://sti.cscm-lx.pt">Serviço Técnico de Informática</a><br/>
+    <a href="http://www.cscm-lx.pt">Colégio do Sagrado coração de Maria - Lisboa</a>
+   ]]>
+  </Content>
+</Template>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+  </Libraries>
+  <Configuration/>
+  <Params>
+    <Param name="code"/>
+  </Params>
+  <Screens>
+    <Screen id="scrMain" doc="Main screen">
+      <Repeatable name="items" template="menuBox" cols="4" type="type" icon="icon" label="name" url="url" tooltip="description"/>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scrMain">
+      <Var name="personData" dump="true">
+        <Call library="gecol.core,person,api" function="get">
+          <Param name="id"><Var name="USER" key="id" /></Param>
+        </Call>
+      </Var>      
+      <Var name="menuItems" dump="true">
+        <Call library="framework,menu,api" function="getItemsByMenuCode">
+          <Param name="code">
+            <IsNull>
+              <Param><Var name="PARAMS" key="code"/></Param>
+              <Param><Var name="personData" key="person_type_code"/></Param>
+            </IsNull>
+          </Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="items">
+        <Param><Var name="menuItems"/></Param>
+      </Control>
+    </Action>
+  </Actions>
+</Node>

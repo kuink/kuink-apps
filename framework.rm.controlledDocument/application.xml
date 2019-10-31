@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Application name="framework.rm.controlledDocument" version="1.0.0">
+    <Configuration>
+        <!-- Global configuration... -->
+    </Configuration>
+    <Databases>
+        <!-- type=(pgsql, mssql, mysqli, oci) -->
+        <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
+    </Databases>
+    <Menus>
+        <Menu role="Teacher" startuc="manage" startnode="" event="init" label="manage" default="true"/>
+        <Menu role="Teacher" startuc="manage" startnode="" event="manageType" label="controlledDocumentType"/>
+        <Menu role="Teacher" startuc="viewer" startnode="" event="init" label="view"/>
+        
+    </Menus>
+</Application>

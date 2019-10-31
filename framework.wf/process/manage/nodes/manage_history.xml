@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="id_process_instance" doc="The process instance to get the history"/>
+  </Params>
+  <Screens>
+    <Screen id="scrHistory" doc="Token history">
+      <Grid name="grdHistory" title="history">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="token_public_key">
+              <Formatter name="Image" ext="jpg" path="photo"/>
+            </Column>            
+            <Column name="token_display_name"/>
+            <Column name="node"/>
+            <Column name="started">
+              <Formatter name="DateTime" method="longDateTime"/>            
+            </Column>
+            <Column name="ended">
+              <Formatter name="DateTime" method="longDateTime"/>
+            </Column>            
+            <!-- Column name="_id_starter"/>
+            <Column name="_id_updater"/ -->
+          </Columns>
+        </Template>
+      </Grid>
+      <Grid name="grdHistoryData" title="obs">
+        <Template>
+          <Columns>
+            <Column name="public_key">
+              <Formatter name="Image" ext="jpg" path="photo"/>
+            </Column>            
+            <Column name="display_name"/>
+            <Column name="obs"/>
+            <Column name="timestamp">
+              <Formatter name="DateTime" method="shortDateTime"/>            
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>
+
+      <Form name="frmOptions">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>
+        </ButtonGroup>
+      </Form>
+      <Image name="imgDiagram" title="bpmnProcess"/>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scrHistory">
+      <If condition="$PARAMS->id_process_instance != ''">
+				<Then>
+				  <Var name="history">
+            <Call library="framework,wf.process,api" function="getProcessInstanceHistory">
+              <Param name="id_process_instance"><Var name="PARAMS" key="id_process_instance"/></Param>
+            </Call>
+				  </Var>
+				  <Var name="historyData">
+            <Call library="framework,wf.process,api" function="getProcessInstanceHistoryData">
+              <Param name="id_process_instance"><Var name="PARAMS" key="id_process_instance"/></Param>
+            </Call>
+				  </Var>
+          <Var name="process">
+            <Call library="framework,wf.process,api" function="getByInstance">
+              <Param name="id_process_instance"><Var name="PARAMS" key="id_process_instance"/></Param>
+            </Call>
+          </Var>
+				
+		      <Control method="bind" object="grdHistory">
+		        <Param>
+		          <Var name="history"/>
+		        </Param>
+		      </Control>
+		      <Control method="bind" object="grdHistoryData">
+		        <Param>
+		          <Var name="historyData"/>
+		        </Param>
+		      </Control>
+
+		      <Var name="imgData" key="type">bpmn</Var>
+		      <Var name="imgData" key="guid"><Var name="process" key="source"/></Var>
+		      <Control method="bind" object="imgDiagram">
+		        <Param><Var name="imgData"/></Param>
+		      </Control>
+				</Then>
+				<Else>
+				  <Exception>id_process_instance must be supplied as a parameter</Exception>
+				</Else>
+			</If>
+    </Action>
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>       
+  </Actions>
+  <Library/>
+</Node>

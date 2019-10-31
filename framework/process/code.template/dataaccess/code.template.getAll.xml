@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all code templates
+    </Doc>
+    <Params>
+      <Param name="code_template_type_code"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        ct.*
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_code_template ct
+                        INNER join fw_code_template_type ctt ON (ctt.id =ct.id_code_template_type)
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>ctt.code = '{param->code_template_type_code}'</XCondition>
+                </XWhere>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

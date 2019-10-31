@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+    returns the list of all task
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <Sql>
+             <![CDATA[
+ 				SELECT 
+                    id, description, library, params, run_last, run_next,elapsed_time, run_interval, log_level,
+                    IF ( result_code = 'OK', 1, 0) as result,
+                    IF ( active = 1 AND run_next < UNIX_TIMESTAMP( NOW() ), 1, 0) as pending,
+                    result_code, 
+                    result_message, 
+                    active,
+                    t.start_date,
+                    t.end_date,
+                    t.day_of_week ,
+                    t.start_time,
+                    t.end_time   
+                FROM 
+                    fw_task t
+                ORDER BY active DESC, run_last DESC
+            ]]>
+        </Sql>
+    </Body>
+</Method>

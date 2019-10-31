@@ -1,0 +1,66 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Get the history
+    </Doc>
+    <Params>
+    	<Param name="id_state_machine_instance"/>
+    	<Param name="id_person"/>
+    </Params>
+    <Body>
+      <Sql>
+        <XSql>
+    			<XSelect>
+            <XField >
+              smt.id,
+              smt.uuid,
+              smt.event,
+              smt.event_description,
+              smt.id_start_state,
+              smt.id_end_state,
+              smt.id_form,
+              smt.id_action,
+              smt.is_active,
+              smt.notify_role_list,
+              smt.role_list,
+              smt.id_company,
+              smt._creation,
+              smt._creation_ip,
+              smt._id_creator,
+              smt._id_updater,
+              smt._modification,
+              smt._modification_ip,
+              smf.field_list as field_list,
+              sma.action_list as actions
+            </XField>
+          </XSelect>
+          <XFrom>
+            <XTable>
+              fw_state_machine_transition smt
+              LEFT OUTER JOIN fw_state_machine_form smf ON (smf.id = smt.id_form)
+              LEFT OUTER JOIN fw_state_machine_action sma ON (sma.id = smt.id_action)
+            </XTable>
+          </XFrom>
+          <XWhere>
+            <XCondition>
+              1=1
+            </XCondition>
+            <XCondition optional="id_start_state">
+              AND smt.id_start_state = {param->id_start_state}
+            </XCondition>
+            <XCondition optional="is_active">
+              AND smt.is_active = {param->is_active}
+            </XCondition>
+            <XCondition optional="event">
+              AND smt.event = '{param->event}'
+            </XCondition>
+          </XWhere>
+          <XOrderBy>
+            <XOrder>
+              event_description ASC
+            </XOrder>
+          </XOrderBy>
+	        </XSql>
+        </Sql>
+    </Body>
+</Method>

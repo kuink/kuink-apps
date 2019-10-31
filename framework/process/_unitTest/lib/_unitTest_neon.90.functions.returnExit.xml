@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->              
+              <Var name="context" key="message">Return exits the function</Var>
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              
+              <Var name="num">5</Var>
+
+              <Var name="fact">
+                <Call function="factorial">
+                  <Param name="num"><Var name="num"/></Param>
+                </Call>
+              </Var>
+
+              <Var name="result" key="code">
+                <If condition="$fact == 120">
+                  <Then>0</Then>
+                  <Else>-1</Else>
+                </If>
+              </Var>
+              <Var name="result" key="data"><String parse="true">Factorial of $num = $fact</String></Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            </Begin>
+        </Function>
+        
+        <Function scope="private" name="factorial" doc="Returns before end">
+            <Params>
+              <Param name="num"/>
+            </Params>
+            <Return type="int" doc="factorial recursive"/>
+            <Begin>
+              <Var name="num" dump="true"/>
+              <If condition="$num==0">
+                <Then>
+                  <Return>1</Return>
+                </Then>
+              </If>
+              <Var name="auxNum" value="$num - 1"/>
+              <Var name="factAuxNum">
+                <Int>
+                  <Call function="factorial">
+                    <Param name="num"><Var name="auxNum"/></Param>
+                  </Call>
+                </Int>
+              </Var>
+              
+              <Var name="result" value="$num * $factAuxNum"/>
+              <Return>
+                <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Libraries />
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen id="scr01">
+      <Form name="form01">
+        <Header id="h1" label="Select - Change value to Option 2"/>
+
+        <Select id="id_test">
+          <Options>
+            <Option id="1">Option 1</Option>
+            <Option id="2">Option 2</Option>
+          </Options>        
+        </Select>
+          
+        <Header id="h2" label="Fixed Field and Fixed Rule"/>
+        <Select id="id_test2" label="applyRules" visible="true">
+          <Rule runat="client" attr="visible" condition="$id_test==2" value="false"/>
+        </Select>
+
+        <Header id="h3" label="Fixed Field and Dynamically added Rule"/>
+        <Select id="id_test3" label="applyRules" visible="true"/>
+
+        <Header id="h4" label="Dynamically added Field and Dynamically added Rule"/>
+        <Container id="c1"/>
+                          
+        <ButtonGroup>
+          <Button type="submit" label="save" id="submitusername"
+            action="process" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scr01">
+       
+      <Control method="addFieldRule" object="form01">
+        <Param>id_test3</Param>
+        <Param>
+          <Set>
+            <Element name="runat">client</Element>
+            <Element name="attr">visible</Element>
+            <Element name="condition">$id_test == 2</Element>
+            <Element name="valuetrue">false</Element>
+            <Element name="valuefalse">true</Element>
+            <!--Element name="datasource">call:ss</Element>
+            <Element name="bindid">id</Element>                
+            <Element name="bindvalue">name</Element>
+            <Element name="datasourceparams">ids=$ids</Element-->
+          </Set>
+        </Param>
+      </Control>
+
+      <Control method="addField" object="form01">
+        <Param>
+          <Set>
+            <Element name="container">c1</Element>
+            <Element name="type">Select</Element>
+            <Element name="id">id_test4</Element>
+            <Element name="visible">true</Element>
+          </Set>
+        </Param>
+      </Control>
+
+      <Control method="addFieldRule" object="form01">
+        <Param>id_test4</Param>
+        <Param>
+          <Set>
+            <Element name="runat">client</Element>
+            <Element name="attr">visible</Element>
+            <Element name="condition">$id_test == 2</Element>
+            <Element name="valuetrue">false</Element>
+            <Element name="valuefalse">true</Element>
+            <!--Element name="datasource">call:x</Element>
+            <Element name="bindid">id</Element>                
+            <Element name="bindvalue">name</Element>
+            <Element name="datasourceparams">ids=$ids</Element-->
+          </Set>
+        </Param>
+      </Control>
+      
+    </Action>
+
+    <Action name="process">
+      <Var name="POSTDATA" dump="true" />
+    </Action>
+  </Actions>
+  <Library />
+</Node>

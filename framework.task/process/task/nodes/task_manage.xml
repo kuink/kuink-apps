@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib"/>
+		<Use name="MathLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+		<Screen id="scTasks">
+			<Form name="frmCronStatus" title="cronStatus" freeze="true">
+				<DateTime id="_modification" help="false">
+					<Formatter name="DateTime" method="shortDateTime"/>
+				</DateTime>
+				<Int id="num_tasks_executed" help="false"/>
+			</Form>
+			<Form name="frmTasks">
+			 <ButtonGroup>
+			   <Button type="submit" id="executeAll" label="executeAll" action="executeAll" icon="play"/>
+			   <!--Button type="submit" decoration="success" id="add" label="add" action="add" icon="plus-sign"/-->
+			   <Button type="add" id="add" label="add" action="add"/>
+			 </ButtonGroup>
+			</Form>
+			<Grid name="grdTasks" title="scheduledTasks">
+				<Template>
+					<Columns>
+						<Column name="id"/>
+						<Column name="description"/>
+						
+						<Column name="run_last">
+							<Formatter name="DateTime" method="shortDateTime"/>
+						</Column>
+						<Column id="start_date" name="start_date" label="schedule">
+							<Formatter name="DateTime" method="shortDate"/>
+							<Formatter name="Separator" method="pipe"/>
+						</Column>
+						<Column id="end_date" name="end_date" inline="true">
+							<Formatter name="DateTime" method="shortDate"/>
+							<Formatter name="Separator" method="newLine"/>
+						</Column>
+						<Column id="day_of_week" name="day_of_week" inline="true">
+							<Formatter name="DateTime" method="dayOfWeekSeparated"/>
+							<Formatter name="Separator" method="newLine"/>
+						</Column>
+						<Column name="start_time" inline="true">
+							<Formatter name="Separator" method="pipe"/>
+						</Column>
+						<Column name="end_time" inline="true">
+							<Formatter name="Separator" method="pipe"/>
+						</Column>
+						<Column name="run_interval" inline="true"/>
+						<Column name="run_next">
+							<Formatter name="DateTime" method="shortDateTime"/>
+						</Column>
+						<Column name="log_level"/>
+						<Column name="result_code"/>
+						<Column name="active">
+							<Formatter name="Icon" size="24">
+								<Param name="1">success.png</Param>
+								<Param name="0">pending.png</Param>
+							</Formatter>
+						</Column>
+					</Columns>
+					<Actions separator="true">
+ 						<Action name="execute" actionvalue="id" confirm="true" icon="play"/>
+						<Action name="edit" label="edit" actionvalue="id" icon="pencil"/>
+ 						<Action name="delete" actionvalue="id" confirm="true" icon="trash-o"/>
+						<Action name="disable" conditionalfield="active" conditionalvalue="1" actionvalue="id" confirm="true" icon="circle"/>
+						<Action name="enable" conditionalfield="active" conditionalvalue="0" actionvalue="id" confirm="true" icon="circle-o"/>
+						<Action name="history" actionvalue="id" icon="list"/>
+					</Actions>
+				</Template>
+			</Grid>
+			
+		</Screen>
+		<Screen id="scTaskExecuted">
+			<Form name="frmOptions">
+			 <ButtonGroup>
+			   <Button type="submit" id="ok" label="ok" action="init"/>
+			 </ButtonGroup>
+			</Form>
+		</Screen>
+
+	</Screens>
+	<Actions>
+
+		<Action name="init" screen="scTasks">
+			<Var name="tasks">
+				<Call library="framework,scheduledTasks,api" function="getAll"/>
+			</Var>
+			<Var name="cronStatus">
+				<Execute method="framework,generic,load">
+					<Param name="table">fw_task_cron_status</Param>
+					<Param name="id">1</Param>
+				</Execute>
+			</Var>
+			<Control method="bind" object="frmCronStatus">
+				<Param><Var name="cronStatus"/></Param>
+			</Control>
+			<Control method="bind" object="grdTasks">
+				<Param><Var name="tasks"/></Param>
+			</Control>
+			
+            <!-- Check if the request can be abolished right now -->
+            <Var name="lastRunInterval">
+            	<MathLib method="subtract">
+            		<Param><DateTimeLib method="Now"/></Param>
+            		<Param><Var name="cronStatus" key="_modification"/></Param>
+            	</MathLib>
+            </Var>
+            <If>
+              <Condition><Gt>
+                <Param><Var name="lastRunInterval"/></Param>
+                <Param>86400</Param>
+              </Gt></Condition>
+              <Then>
+              	<UserMessage type="warning">
+              		<Lang key="cronStopped"/>
+              	</UserMessage>  
+              </Then>
+            </If>			
+		</Action>
+		
+		<Action name="execute" screen="scTaskExecuted">
+			<Call library="framework,scheduledTasks,api" function="executeTask">
+				<Param name="id"><ActionValue/></Param>
+			</Call>
+			<UserMessage type="information">
+				<Lang key="taskExecuted"/>
+			</UserMessage>
+		</Action>
+		
+		<Action name="disable">
+			<Call library="framework,scheduledTasks,api" function="disableTask">
+				<Param name="id"><ActionValue/></Param>
+			</Call>
+			<Action name="init"/>
+		</Action>
+
+		<Action name="delete">
+			<Call  library="framework,scheduledTasks,api" function="deleteTask">
+				<Param name="id"><ActionValue/></Param>
+			</Call>
+			<Action name="init"/>
+		</Action>
+		
+		<Action name="enable">
+			<Call  library="framework,scheduledTasks,api" function="enableTask">
+				<Param name="id"><ActionValue/></Param>
+			</Call>
+			<Action name="init"/>
+		</Action>
+		
+		<Action name="executeAll" screen="scTaskExecuted">
+			<Call library="framework,scheduledTasks,api" function="executeScheduledTasks">
+				<Param name="id"><ActionValue/></Param>
+			</Call>
+			<UserMessage type="information">
+				<Lang key="scheduledTasksExecuted"/>
+			</UserMessage>
+		</Action>
+
+		<Action name="add">
+			<RaiseEvent name="add"/>
+		</Action>
+
+		<Action name="history" >
+			<RaiseEvent name="showHistory">
+				<Param name="idTask"><ActionValue/></Param>
+			</RaiseEvent>
+		</Action>
+
+		<Action name="edit" >
+			<RaiseEvent name="edit">
+				<Param name="id"><ActionValue/></Param>
+			</RaiseEvent>
+		</Action>
+		
+	</Actions>
+</Node>
+

@@ -1,0 +1,837 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="add" doc="Adds a class in the rm system">
+      <Params>
+        <Param name="producer" type="string"/>
+        <Param name="ref_pgd_mec" type="string"/>
+        <Param name="id_parent" type="int"/>
+        <Param name="code" type="string"/>
+        <Param name="name" type="string"/>
+        <Param name="description" type="string"/>
+        <Param name="business_process" type="string"/>
+        <Param name="is_open" type="string"/>
+        <Param name="year_from" type="string"/>
+        <Param name="year_to" type="string"/>
+        <Param name="id_archival_medium" type="int"/>
+        <Param name="medium" type="string"/>
+        <Param name="linear_meters" type="string"/>
+        <Param name="location" type="string"/>
+        <Param name="obs_private" type="string"/>
+        <Param name="id_manager" type="int"/>
+        <Param name="related_serie_num" type="string"/>
+        <Param name="related_serie_title" type="string"/>
+        <Param name="related_serie_type" type="string"/>
+        <Param name="id_component_type" type="int"/>
+        <Param name="id_plugin" type="int"/>
+        <Param name="last_xml" type="text"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.class::invalidParentClass" doc="The parent does not exists"/>
+        <Exception name="framework/rm.class::duplicatedCode" doc="There is allready a class with the given code"/>
+      </Exceptions>
+      <Return type="int" doc="The id_class in the system"/>
+      <Begin>
+       <Permissions>
+         <Allow>
+           <Capability name="framework/rm::manage"/>
+         </Allow>
+       </Permissions>      
+        <!-- Load the parent class -->
+        <Var name="parentClass">
+	        <DataAccess method="load">
+						<Param name="_entity">fw_rm_class</Param>
+						<Param name="id"><Var name="id_parent"/></Param>
+					</DataAccess>
+				</Var>
+        <If condition="$parentClass->__length == 0">
+        <Then>
+          <Exception><String parse="true">framework/rm.class::invalidParentClass</String></Exception>
+        </Then>
+        </If>
+
+        <!-- Check the code-->
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="code"><Var name="code"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$class->__length != 0">
+	        <Then>
+	          <Exception><String parse="true">framework/rm.class::duplicatedCode</String></Exception>
+	        </Then>
+        </If>
+
+        <Var name="data"><Var name="PARAMS"/></Var>
+        <Var name="data" key="uuid"><Uuid/></Var>
+        <Var name="data" key="id" clear="true"/>
+        <!-- Create an empty disposal schedule -->
+        <Var name="data" key="id_disposal_schedule">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_disposal_schedule</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="producers"><Var name="data" key="producers"/></Var>
+        <Var name="data" key="producers" clear="true"/>
+
+        <Var name="id">
+          <DataAccess method="insert" params="data">
+						<Param name="_entity">fw_rm_class</Param>
+					</DataAccess>
+        </Var>
+
+        <ForEach var="producers" item="isSet" key="id_producer">
+          <If condition="$isSet == 1">
+            <Then>
+              <Call library="framework,rm.class,api" function="addProducer">
+                <Param name="id"><Var name="id"/></Param>
+                <Param name="id_producer"><Var name="id_producer"/></Param>
+              </Call>             
+            </Then>
+          </If>
+        </ForEach>
+
+        <Return><Var name="id"/></Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="addMetadataTemplate" doc="Adds a metadata template to a class">
+      <Params>
+        <Param name="id_class" type="int" doc="The class id"/>
+        <Param name="id_template" type="int" doc="The template to add"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.class::invalidClass" doc="The Class does not exist"/>
+        <Exception name="framework/rm.class::invalidTemplate" doc="The template does noe exist"/>
+      </Exceptions>
+      <Return type="int" doc="The id of the relation in the system"/>
+      <Begin>
+			  <Permissions>
+			    <Allow>
+			      <Capability name="framework/rm::manage"/>
+			    </Allow>
+			  </Permissions>
+
+        <Exception><String parse="true">framework/rm.class::invalidClass</String></Exception>
+
+        <Exception><String parse="true">framework/rm.class::invalidTemplate</String></Exception>
+
+        <Var name="id">0</Var>
+
+        <Return><Var name="id"/></Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="getIdByCode" doc="Get id by class code">
+      <Params>
+        <Param name="code" doc="The class code"/>
+      </Params>
+      <Return type="int" doc="The id of the class"/>
+      <Begin>
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code" />
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="class" key="id" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="searchFullText" doc="Search class by text">
+        <Params>
+            <Param name="text"/>
+            <Param name="pagesize"/>
+            <Param name="pagenum"/>
+        </Params>
+        <Return type="multiple"/>
+        <Begin>
+            <Var name="returnValue">
+            <DataAccess method="this,this,class.searchFullText">
+                <Param name="text" wildcard="fullSplit">
+                     <Var name="PARAMS" key="text" />
+                </Param>
+                    <Param name="_pageSize">
+                       <Var name="PARAMS" key="pagesize" />
+                    </Param>
+                    <Param name="_pageNum">
+                       <Var name="PARAMS" key="pagenum" />
+                    </Param>
+            </DataAccess>
+            </Var>
+            <Return><Var name="returnValue" /></Return>
+        </Begin>
+    </Function>
+
+    <Function name="searchFullTextComplete" doc="Search class by text">
+        <Params>
+            <Param name="text"/>
+            <Param name="pagesize"/>
+            <Param name="pagenum"/>
+        </Params>
+        <Return type="multiple"/>
+        <Begin>
+            <Var name="returnValue">
+            <DataAccess method="this,this,class.searchFullTextComplete">
+                <Param name="text" wildcard="fullSplit">
+                     <Var name="PARAMS" key="text" />
+                </Param>
+                    <Param name="_pageSize">
+                       <Var name="PARAMS" key="pagesize" />
+                    </Param>
+                    <Param name="_pageNum">
+                       <Var name="PARAMS" key="pagenum" />
+                    </Param>
+            </DataAccess>
+            </Var>
+            <Return><Var name="returnValue" /></Return>
+        </Begin>
+    </Function>
+
+
+    <Function name="get" doc="Get a class data by id or code">
+        <Params>
+            <Param name="id" doc="Class id"/>
+            <Param name="code" doc="Class code"/>
+        </Params>
+        <Return type="single" doc="">
+            <External name="id" type="int" doc=""/>
+            <External name="uuid" type="text" doc=""/>
+            <External name="code" type="text" doc=""/>
+            <External name="name" type="text" doc=""/>
+        </Return>
+        <Begin>
+            <Var name="class">
+                <DataAccess method="load">
+                    <Param name="_entity">fw_rm_class</Param>
+                    <Param name="id"><Var name="id"/></Param>
+                    <Param name="code"><Var name="code"/></Param>
+                </DataAccess>
+            </Var>
+			      <Var name="producers">      
+			        <Call library="framework,rm.class,api" function="getProducers">
+			          <Param name="id"><Var name="class" key="id"/></Param>
+			        </Call>      
+			      </Var>
+            <Trace><String>Getting Workflows...</String></Trace>
+            <Var name="class" dump="true"/>
+            <Var name="PARAMS" dump="true"/>
+            <If condition="$class->__length &gt; 0">
+              <Then>
+                <Var name="workflows">      
+                  <Call library="framework,rm.class.workflow,api" function="getWorkflows">
+                    <Param name="id"><Var name="class" key="id"/></Param>
+                  </Call>      
+                </Var>            
+              </Then>
+            </If>
+			      <Var name="class" key="producers"><Var name="producers"/></Var>
+            <Var name="class" key="codename"><String.parse>$class->code-$class->name</String.parse></Var>
+            <Var name="class" key="has_workflows">
+              <If condition="$workflows->__length &gt; 0">
+                <Then><Int>1</Int></Then>
+                <Else><Int>0</Int></Else>
+              </If>
+            </Var>
+            <Return>
+                <Var name="class"/>
+            </Return>
+        </Begin>
+    </Function>
+
+    <Function name="getFirstWithFieldNotEmpty" doc="Get first class with selected field not empty">
+      <Params>
+        <Param name="id" required="true" />
+        <Param name="field" required="true" />
+      </Params>
+      <Return type="multiple" doc="First Class with selected field not empty" />
+      <Begin>
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id" /></Param>
+          </DataAccess>
+        </Var>
+        <Var name="result">
+          <DataAccess method="framework,rm.class,class.getFirstWithFieldNotEmpty">
+            <Param name="tree_path"><Var name="class" key="tree_path" /></Param>
+            <Param name="field"><Var name="field" /></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="result" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getIdByCode" doc="Given the code return the id">
+      <Params>
+        <Param name="code" type="string" required="true" />
+      </Params>
+      <Return type="int" doc="Return the id of the class" />
+      <Begin>
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="code"><Var name="code" /></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$class->__length == 0">
+					<Then>
+            <Var name="class" key="id">-1</Var>					
+					</Then>
+				</If>
+        <Return>
+          <Var name="class" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getChilds" doc="Return the child classes of a given class">
+      <Params>
+        <Param name="id" type="int" required="false" />
+        <Param name="code" type="string" required="false" />
+      </Params>
+      <Return type="multiple" doc="Return the child classes" />
+      <Begin>
+        <Var name="childs"><Set/></Var>
+        <Var name="parent">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id" /></Param>
+            <Param name="code"><Var name="code" /></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$parent->__length != 0">
+          <Then>
+	          <Var name="childs">
+	            <DataAccess method="this,this,class.getChilds">
+	              <Param name="id_parent"><Var name="parent" key="id"/></Param>
+	              <Param name="_lang"><Var name="USER" key="lang"/></Param>
+	            </DataAccess>
+	          </Var>
+          </Then>
+        </If>
+        <Return>
+          <Var name="childs"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    
+		<Function scope="public" name="updateDisposalSchedule" doc="Updates the disposal of a class">
+			<Params>
+       <Param name="id" type="int" doc="The class id"/>
+       <Param name="code" type="string" doc="The class code"/>
+
+			 <Param name="action_duration" type="int" doc="Action Duration"/>
+			 <Param name="id_action_interval_code" type="int" doc="Action interval code, year, month, week, day"/>
+			 <Param name="id_action_code" type="int" doc="Action code destroy, retain, ..."/>
+			 <Param name="action_justification" type="text" doc="Disposal Action justification"/>
+			 <Param name="interval_justification" type="text" doc="Disposal Interval justification"/>
+			</Params>
+			<Return type=""/>
+			<Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/rm::manage"/>
+          </Allow>
+        </Permissions>
+			   <Var name="class">
+			    <DataAccess method="load">
+						<Param name="_entity">fw_rm_class</Param>
+						<Param name="id"><Var name="id"/></Param>
+						<Param name="code"><Var name="code"/></Param>
+					</DataAccess>
+				</Var>
+			  <If condition="$class->__length == 0">
+					<Then>
+					 <Exception><String.parse>Class $code not found</String.parse></Exception>
+					</Then>
+				</If>
+				<DataAccess method="update">
+					<Param name="_entity">fw_rm_disposal_schedule</Param>
+					<Param name="id"><Var name="class" key="id_disposal_schedule"/></Param>
+					<Param name="interval_justification"><Var name="interval_justification"/></Param>
+					<Param name="action_justification"><Var name="action_justification"/></Param>
+					<Param name="action_duration"><Var name="action_duration"/></Param>
+					<Param name="id_action_interval_code"><Var name="id_action_interval_code"/></Param>
+					<Param name="id_action_code"><Var name="id_action_code"/></Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+			</Begin>
+		</Function>
+
+    <Function scope="public" name="updateParent" doc="Updates the parent class with childs data (action name and action intervals)">
+      <Params>
+       <Param name="id" type="int" doc="The class id"/>
+       <Param name="code" type="string" doc="The class code"/>
+      </Params>
+      <Return type=""/>
+      <Begin>
+         <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id"/></Param>
+            <Param name="code"><Var name="code"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$class->__length == 0">
+          <Then>
+           <Exception><String.parse>Class $code $id not found</String.parse></Exception>
+          </Then>
+        </If>
+        <Call function="updateOfflineDisposalData">
+					<Param name="id"><Var name="class" key="id_parent"/></Param>
+				</Call>
+      </Begin>
+    </Function>
+    
+    <Function scope="public" name="update" doc="Updates the class data">
+      <Params>
+        <Param name="id" type="int" doc="The class id"/>
+				<Param name="producer" type="string"/>
+				<Param name="ref_pgd_mec" type="string"/>
+				<Param name="id_parent" type="int"/>
+				<Param name="code" type="string"/>
+				<Param name="name" type="string"/>
+				<Param name="description" type="string"/>
+				<Param name="business_process" type="string"/>
+				<Param name="is_open" type="string"/>
+				<Param name="year_from" type="string"/>
+				<Param name="year_to" type="string"/>
+				<Param name="id_archival_medium" type="int"/>
+				<Param name="medium" type="string"/>
+				<Param name="linear_meters" type="string"/>
+				<Param name="location" type="string"/>
+				<Param name="obs_private" type="string"/>
+				<Param name="id_manager" type="int"/>
+				<Param name="related_serie_num" type="string"/>
+				<Param name="related_serie_title" type="string"/>
+				<Param name="related_serie_type" type="string"/>
+				<Param name="id_component_type" type="int"/>
+				<Param name="id_plugin" type="int"/>
+				<Param name="last_xml" type="text"/>
+      </Params>
+      <Return type=""/>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/rm::manage"/>
+          </Allow>
+        </Permissions>
+          <Var name="dsParams"><Var name="PARAMS"/></Var>  
+         <If condition="$dsParams->id_manager == 0">
+					 <Then><Var name="dsParams" key="id_manager" clear="true"/></Then>
+	 			 </If>
+         <If condition="$dsParams->year_from == 0">
+           <Then><Var name="dsParams" key="year_from" clear="true"/></Then>
+         </If>
+         <If condition="$dsParams->year_to == 0">
+           <Then><Var name="dsParams" key="year_to" clear="true"/></Then>
+         </If>
+
+         <Var name="producers"><Var name="dsParams" key="producers"/></Var>
+         <Var name="dsParams" key="producers" clear="true"/>
+				 <Call library="framework,rm.class,api" function="removeAllProducers">
+				  <Param name="id"><Var name="PARAMS" key="id"/></Param>
+				 </Call>         
+         <ForEach var="producers" item="isSet" key="id_producer">
+          <If condition="$isSet == 1">
+						<Then>
+							<Call library="framework,rm.class,api" function="addProducer">
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+								<Param name="id_producer"><Var name="id_producer"/></Param>
+							</Call>						  
+						</Then>
+					</If>
+         </ForEach>
+
+         <Var name="class">
+          <DataAccess method="update" params="dsParams">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id"/></Param>
+          </DataAccess>
+        </Var>
+        <Call function="updateParent">
+          <Param name="id"><Var name="id"/></Param>
+        </Call>
+      </Begin>
+    </Function>    
+    
+    
+    <Function scope="public" name="updateOfflineDisposalData" doc="Updates the parent class from childs data (action name and action intervals)">
+      <Params>
+       <Param name="id" type="int" doc="The class id"/>
+       <Param name="code" type="string" doc="The class code"/>
+      </Params>
+      <Return type=""/>
+      <Begin>
+          <Var name="PARAMS"/>
+         <Var name="parentClass">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id"/></Param>
+            <Param name="code"><Var name="code"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$parentClass->__length == 0">
+          <Then>
+           <Exception><String.parse>Parent class of $code $id not found</String.parse></Exception>
+          </Then>
+        </If>
+
+        <!-- Claculate parent class disposal schedule with childs data -->
+        <Var name="childsData">
+          <DataAccess method="this,this,class.getChildsDisposalSchedulesData">
+            <Param name="id_parent"><Var name="parentClass" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Var name="data" key="action_justification"><String/></Var>
+        <Var name="data" key="interval_justification"><String/></Var>
+        <ForEach var="childsData" item="childData">
+          <If condition="$data->action_justification == ''">
+						<Then>
+              <Var name="data" key="action_justification"><String.parse><![CDATA[$childData->action_name]]></String.parse></Var>
+						</Then>
+						<Else>
+						  <Var name="data" key="action_justification"><String.parse><![CDATA[$data->action_justification<br/>$childData->action_name]]></String.parse></Var>
+						</Else>
+					</If>
+          <If condition="$data->interval_justification == ''">
+            <Then>
+              <Var name="data" key="interval_justification"><String.parse><![CDATA[$childData->action_duration]]></String.parse></Var>
+            </Then>
+            <Else>
+              <Var name="data" key="interval_justification"><String.parse><![CDATA[$data->interval_justification<br/>$childData->action_duration]]></String.parse></Var>
+            </Else>
+          </If>
+        </ForEach>
+        <Var name="data"/>
+        
+        <!-- Check to see if parent class has a disposal schedule, if not, create one -->
+        <Var name="parentDisposalSchedule">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_disposal_schedule</Param>
+            <Param name="id"><Var name="parentClass" key="id_disposal_schedule"/></Param>
+          </DataAccess>
+        </Var>
+                
+        <If condition="$parentDisposalSchedule->__length == 0">
+          <Then>
+             <!-- Create the parent disposal schedule -->
+             <Var name="id_disposal_schedule">
+               <DataAccess method="insert">
+                 <Param name="_entity">fw_rm_disposal_schedule</Param>
+	               <Param name="_action_name_childs"><Var name="data" key="action_justification"/></Param>
+	               <Param name="_action_interval_childs"><Var name="data" key="interval_justification"/></Param>
+               </DataAccess>
+             </Var>
+             <DataAccess method="update">
+               <Param name="_entity">fw_rm_class</Param>
+               <Param name="id"><Var name="parentClass" key="id"/></Param>
+               <Param name="id_disposal_schedule"><Var name="id_disposal_schedule"/></Param>
+             </DataAccess>             
+          </Then>
+          <Else>
+             <!-- Update the parent disposal schedule -->
+             <DataAccess method="update">
+               <Param name="_entity">fw_rm_disposal_schedule</Param>
+               <Param name="id"><Var name="parentDisposalSchedule" key="id"/></Param>
+               <Param name="_action_name_childs"><Var name="data" key="action_justification"/></Param>
+               <Param name="_action_interval_childs"><Var name="data" key="interval_justification"/></Param>
+             </DataAccess>
+          </Else>
+        </If>
+      </Begin>
+    </Function>    
+
+    <Function scope="public" name="getDisposalData" doc="Get the disposal Data of the class">
+      <Params>
+       <Param name="id" type="int" doc="The class id"/>
+       <Param name="code" type="string" doc="The class code"/>
+      </Params>
+      <Return type="single"/>
+      <Begin>
+         <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id"/></Param>
+            <Param name="code"><Var name="code"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$class->__length == 0">
+          <Then>
+           <Exception><String.parse>Class $code $id not found</String.parse></Exception>
+          </Then>
+        </If>
+        
+        <!-- Check to see if parent class has a disposal schedule, if not, create one -->
+        <Var name="ds">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_disposal_schedule</Param>
+            <Param name="id"><Var name="class" key="id_disposal_schedule"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Var name="dsData" key="action_duration"><Var name="ds" key="action_duration"/></Var>
+        <Var name="dsData" key="id_action_interval_code"><Var name="ds" key="id_action_interval_code"/></Var>
+        <Var name="dsData" key="id_action_code"><Var name="ds" key="id_action_code"/></Var>
+        <Var name="dsData" key="interval_justification"><Var name="ds" key="interval_justification"/></Var>
+        <Var name="dsData" key="action_justification"><Var name="ds" key="action_justification"/></Var>
+        <Return><Var name="dsData"/></Return>        
+      </Begin>
+    </Function>    
+
+    <Function scope="public" name="getDisposalDataComplete" doc="Get the disposal Data of the class to the viewer">
+      <Params>
+       <Param name="id" type="int" doc="The class id"/>
+       <Param name="code" type="string" doc="The class code"/>
+      </Params>
+      <Return type="single"/>
+      <Begin>
+         <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id"/></Param>
+            <Param name="code"><Var name="code"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$class->__length == 0">
+          <Then>
+           <Exception><String.parse>Class $code $id not found</String.parse></Exception>
+          </Then>
+        </If>
+        
+        <!-- Check to see if parent class has a disposal schedule, if not, create one -->
+        <Var name="ds">
+          <DataAccess method="this,this,class.getDisposalDataComplete">
+            <Param name="id"><Var name="class" key="id_disposal_schedule"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Return><Var name="ds"/></Return>        
+      </Begin>
+    </Function>    
+
+
+
+    <!-- Maintenance Functions -->
+
+    <Function scope="public" name="updateAllParents" doc="Updates all the parent classes with childs data (action name and action intervals) use for data correction because this should be automatically done">
+      <Params>
+      </Params>
+      <Return type=""/>
+      <Begin>
+        <Permissions>
+          <Allow>
+            <Capability name="framework/rm::manage"/>
+          </Allow>
+        </Permissions>
+        <Var name="leafs">
+          <DataAccess method="this,this,class.getLeafs"/>
+        </Var>
+        <ForEach var="leafs" item="class">
+	        <Call function="updateOfflineDisposalData">
+	          <Param name="id"><Var name="class" key="id_parent"/></Param>
+	        </Call>          
+        </ForEach>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="fixDisposalSchedules" doc="Creates a disposal schedule for classes that doesnt have one">
+      <Params>
+      </Params>
+      <Return type=""/>
+      <Begin>
+        <Var name="classes">
+          <DataAccess method="this,this,class.getWithoutDisposalScheduler"/>
+        </Var>
+        <ForEach var="classes" item="class">
+           <Var name="id_disposal_schedule">
+             <DataAccess method="insert">
+               <Param name="_entity">fw_rm_disposal_schedule</Param>
+             </DataAccess>
+           </Var>
+           <DataAccess method="update">
+             <Param name="_entity">fw_rm_class</Param>
+             <Param name="id"><Var name="class" key="id"/></Param>
+             <Param name="id_disposal_schedule"><Var name="id_disposal_schedule"/></Param>
+           </DataAccess>             
+        </ForEach>
+      </Begin>
+    </Function>
+
+    <Function name="getProducers" doc="Get all the producers of a given class">
+      <Params>
+       <Param name="id" type="int" doc="The class id"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Var name="result">
+          <Call library="framework,rm.entity.relation,api" function="getRelations">
+            <Param name="id_entity"><Var name="id"/></Param>
+            <Param name="entity_type"><String>class</String></Param>
+            <Param name="entity_type_relation"><String>producer</String></Param>
+          </Call>        
+        </Var>
+        <Var name="producers">
+          <Null />
+        </Var>
+        <ForEach var="result" item="prod">
+          <Var name="producers" key="$prod->id">1</Var>
+        </ForEach>
+        
+        <Return>
+          <Var name="producers"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <Function name="addProducer" doc="Adds a producer to the class">
+      <Params>
+        <Param name="id" type="int" required="true" doc="The class id"/>
+        <Param name="id_producer" type="int" required="true" doc="The id of the producer to add"/>
+      </Params>
+      <Exceptions/>
+      <Return type="int" doc="The id of the entity relation created"/>
+      <Begin>
+
+        <!-- Get the aggregation -->
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Get class entity_type -->
+        <Var name="classEntityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><String>class</String></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Get producer entity_type -->
+        <Var name="producerEntityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><String>producer</String></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Add entity_relation between class and producer -->
+        <Var name="idRelation">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_entity_relation</Param>
+            <Param name="id_entity"><Var name="class" key="id"/></Param>
+            <Param name="id_entity_type"><Var name="classEntityType" key="id"/></Param>
+            <Param name="id_entity_relation"><Var name="id_producer"/></Param>
+            <Param name="id_entity_type_relation"><Var name="producerEntityType" key="id"/></Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Return id_entity_relation -->
+        <Return><Var name="idRelation"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="removeAllProducers" doc="Removes all producers from a class">
+      <Params>
+        <Param name="id" type="int" required="true" doc="The class id"/>
+      </Params>
+      <Exceptions/>
+      <Return type="int" doc="The id of the entity relation created"/>
+      <Begin>
+
+        <!-- Get the aggregation -->
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Get class entity_type -->
+        <Var name="classEntityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><String>class</String></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Get producer entity_type -->
+        <Var name="producerEntityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><String>producer</String></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Add entity_relation between class and producer -->
+        <Var name="idRelation">
+          <DataAccess method="delete">
+            <Param name="_entity">fw_rm_entity_relation</Param>
+            <Param name="id_entity"><Var name="class" key="id"/></Param>
+            <Param name="id_entity_type"><Var name="classEntityType" key="id"/></Param>
+            <Param name="id_entity_type_relation"><Var name="producerEntityType" key="id"/></Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Return id_entity_relation -->
+        <Return><Var name="idRelation"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getProducersData" doc="Get all the producers data of a given class">
+      <Params>
+       <Param name="id" type="int" doc="The class id"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Var name="result">
+          <Call library="framework,rm.entity.relation,api" function="getRelations">
+            <Param name="id_entity"><Var name="id"/></Param>
+            <Param name="entity_type"><String>class</String></Param>
+            <Param name="entity_type_relation"><String>producer</String></Param>
+          </Call>        
+        </Var>
+        
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

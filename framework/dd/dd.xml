@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Domains>
+    <Domain name="id">
+      <Type>Int</Type>
+      <Size>19</Size>
+      <AutoNumber>true</AutoNumber>
+    </Domain>
+    <Domain name="name">
+      <Type>Text</Type>
+      <Size>80</Size>
+    </Domain>
+    <Domain name="code">
+      <Type>Text</Type>
+      <Size>20</Size>
+    </Domain>
+    <Domain name="guid">
+      <Type>Text</Type>
+      <Size>32</Size>
+    </Domain>
+    <Domain name="ip">
+      <Type>Text</Type>
+      <Size>30</Size>
+    </Domain>
+    <Domain name="bool">
+      <Type>Bool</Type>
+    </Domain>
+    <Domain name="timestamp">
+      <Type>DateTime</Type>
+      <Size>19</Size>
+      <Formatter name="DateTime" method="small"/>
+    </Domain>
+  </Domains>
+
+  <Entities>
+    <Entity name="fw_file" doc="Files">
+      <Attributes>
+        <Attribute name="id" domain="id"/>
+      </Attributes>
+    </Entity>  
+    <Entity name="fw_test" doc="Multi company support. Defines a company base data">
+      <Attributes>
+        <Attribute name="id" domain="id" required="true" autonumber="true" pk="true"/>
+        <Attribute name="name" domain="name"/>
+        <Attribute name="code" domain="code"/>
+        <Attribute name="is_active" domain="bool"/>
+        <Attribute name="_creation" domain="timestamp"/>
+        <Attribute name="_creation_ip" domain="ip"/>
+        <Attribute name="_modification" domain="timestamp"/>
+        <Attribute name="_modification_ip" domain="ip"/>
+      </Attributes>
+     </Entity>
+    <Entity name="fw_company" doc="Multi company support. Defines a company base data">
+      <Attributes>
+        <Attribute name="id" domain="id" foreign="id_company" required="true" autonumber="true" pk="true"/>
+        <Attribute name="name" domain="name"/>
+        <Attribute name="code" domain="code"/>
+        <Attribute name="is_active" domain="bool"/>
+        <Attribute name="_creation" domain="timestamp"/>
+        <Attribute name="_creation_ip" domain="ip"/>
+        <Attribute name="_modification" domain="timestamp"/>
+        <Attribute name="_modification_ip" domain="ip"/>
+      </Attributes>
+      <Relations>
+        <Entity name="fw_user_company" doc="User company relation">
+          <Attributes>
+            <Attribute name="id" foreign="id_user" domain="id" required="true" autonumber="true" pk="true"/>
+            <Attribute name="id_person" domain="id"/>
+            <Attribute name="is_active" domain="bool"/>
+            <Attribute name="is_default" domain="bool"/>
+            <Attribute name="_creation" domain="timestamp"/>
+            <Attribute name="_creation_ip" domain="ip"/>
+            <Attribute name="_modification" domain="timestamp"/>
+            <Attribute name="_modification_ip" domain="ip"/>
+          </Attributes>
+          <Relations>
+            <Entity name="fw_user" doc="Framework user data">
+              <Attributes>
+                <Attribute name="id" foreign="id_user" domain="id" required="true" autonumber="true" pk="true"/>
+                <Attribute name="username" type="Text" length="45"/>
+                <Attribute name="email" type="Text" length="128"/>
+                <Attribute name="display_name" type="Text" length="256"/>
+                <Attribute name="_creation" domain="timestamp"/>
+                <Attribute name="_creation_ip" domain="ip"/>
+                <Attribute name="_modification" domain="timestamp"/>
+                <Attribute name="_modification_ip" domain="ip"/>
+              </Attributes>
+              <Relations>
+                <Entity name="fw_allocation" minoccurs="0" maxoccurs="*" doc="Roles of a user">
+                  <Attributes>
+                    <Attribute name="id" domain="id" required="true" autonumber="true" pk="true"/>
+                  </Attributes>
+                  <Relations>
+                    <Entity name="fw_role" minoccurs="1" maxoccurs="*" doc="Roles of a user">
+                      <Attributes>
+                        <Attribute name="id" domain="id" foreign="id_role" required="true" autonumber="true" pk="true"/>
+                        <Attribute name="name" domain="name"/>
+                        <Attribute name="code" domain="code"/>
+                        <Attribute name="is_active" domain="bool"/>
+                        <Attribute name="_creation" domain="timestamp"/>
+                        <Attribute name="_creation_ip" domain="ip"/>
+                        <Attribute name="_modification" domain="timestamp"/>
+                        <Attribute name="_modification_ip" domain="ip"/>
+                      </Attributes>
+                      <Relations>
+                        <Entity attribute="id_company" ref="fw_company" minoccurs="1" maxoccurs="1" doc="Role Company"/>
+
+                        <Entity name="fw_capability" relation="fw_role_capability" minoccurs="*" maxoccurs="*" doc="Role capabilities">
+                          <Attributes>
+                            <Attribute name="id" domain="id" foreign="id_capability" required="true" autonumber="true" pk="true"/>
+                            <Attribute name="name" domain="name"/>
+                            <Attribute name="code" domain="code"/>
+                            <Attribute name="is_global" domain="bool" doc="Applys to all companies?"/>
+                            <Attribute name="_creation" domain="timestamp"/>
+                            <Attribute name="_creation_ip" domain="ip"/>
+                            <Attribute name="_modification" domain="timestamp"/>
+                            <Attribute name="_modification_ip" domain="ip"/>
+                          </Attributes>
+                        </Entity>
+                      </Relations>
+                    </Entity>
+                  </Relations>
+                </Entity>
+              </Relations>
+            </Entity>
+          </Relations>
+        </Entity>
+
+
+      </Relations>
+    </Entity>
+
+    <Entity name="fw_request" doc="Framework request">
+      <Attributes>
+        <Attribute name="id" domain="id" required="true" autonumber="true" pk="true"/>
+        <Attribute name="name" domain="name" required="true" doc=""/>
+        <Attribute name="guid" domain="guid" required="true" doc="Request Guid used to process the request"/>
+        <Attribute name="_creation" domain="timestamp" required="true"/>
+        <Attribute name="_creation_ip" domain="ip" required="true"/>
+        <Attribute name="_modification" domain="timestamp" required="true"/>
+        <Attribute name="_modification_ip" domain="ip" required="true"/>
+      </Attributes>
+      <Relations>
+        <Entity attribute="id_request_category" name="fw_request_category" minoccurs="1" maxoccurs="1" lookup="call:framework,request.category,api,getAll" doc="Category of the request">
+          <Attributes>
+            <Attribute name="id" domain="id" required="true" autonumber="true" pk="true"/>
+            <Attribute name="name" domain="name" required="true"/>
+            <Attribute name="code" domain="code" required="true"/>
+          </Attributes>
+        </Entity>
+        <Entity attribute="id_request_status" name="fw_request_status" minoccurs="1" maxoccurs="1" lookup="call:framework,request.status,api,getAll">
+          <Attributes>
+            <Attribute name="id" domain="id" required="true" autonumber="true" pk="true"/>
+            <Attribute name="name" domain="name"/>
+            <Attribute name="code" domain="code"/>
+          </Attributes>
+        </Entity>
+        <Entity attribute="id_company" ref="fw_company" minoccurs="1" maxoccurs="1" doc="The reference company"/>
+      </Relations>
+    </Entity>
+
+  </Entities>
+
+</Node>

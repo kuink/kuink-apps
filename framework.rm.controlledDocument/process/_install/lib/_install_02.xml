@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Database change</String>
+       </Return>
+      </Begin>
+    </Function>
+    
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

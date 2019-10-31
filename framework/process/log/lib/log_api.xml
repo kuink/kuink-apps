@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+      <Use name="DateTimeLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library forceinterface="true"> <!-- Forces the calls to respect the interface: params and return  -->
+
+        <Function name="add">
+        	<Params>
+	        	<Param name="id" doc="Id reccord. Searchable by log api. Deprecated" />
+	        	<Param name="context" doc="Record context. Deprecated" />
+	        	<Param name="data" doc="Data to be logged. Deprecated" />
+	        	<Param name="log_key" doc="Desired Log Key" />
+        		<Param name="application" doc="Application" />
+        		<Param name="process" doc="Application process" />
+        		<Param name="node" doc="Process Node"/>
+        		<Param name="type" doc="Log type" />
+        		<Param name="context_data" doc="Context data" />
+        		<Param name="message" doc="Desired message" />
+        		<Param name="action" doc="Desired action" />
+        	</Params>
+        	<Return type="int"/>
+        	<Begin>
+        		<Var name="paramData" key="log_key">
+        			<IsNull>
+        				<Param><Var name="PARAMS" key="id"/></Param>
+        				<Param><Var name="PARAMS" key="log_key"/></Param>
+        			</IsNull>
+        		</Var>
+        		<Var name="paramData" key="context_data">
+        			<IsNull>
+        				<Param><Var name="PARAMS" key="data"/></Param>
+        				<Param><Var name="PARAMS" key="context"/></Param>
+        				<Param><Var name="PARAMS" key="context_data"/></Param>
+        			</IsNull>
+        		</Var>
+        		<Var name="paramData" key="application">
+        			<IsNull>
+        				<Param><Var name="PARAMS" key="application"/></Param>
+        				<Param><Var name="CONTEXT" key="application"/></Param>
+        			</IsNull>
+        		</Var>
+        		<Var name="paramData" key="process">
+        			<IsNull>
+        				<Param><Var name="PARAMS" key="process"/></Param>
+        				<Param><Var name="CONTEXT" key="process"/></Param>
+        			</IsNull>
+        		</Var>
+        		<Var name="paramData" key="node">
+        			<IsNull>
+        				<Param><Var name="PARAMS" key="node"/></Param>
+        				<Param><Var name="CONTEXT" key="node"/></Param>
+        			</IsNull>
+        		</Var>
+        		<Var name="paramData" key="action">
+        			<IsNull>
+        				<Param><Var name="PARAMS" key="action"/></Param>
+        				<Param><Var name="CONTEXT" key="action"/></Param>
+        			</IsNull>
+        		</Var>
+        		
+        		<Var name="paramData" key="message"><Var name="PARAMS" key="message"/></Var>
+        		<Var name="paramData" key="type"><Var name="PARAMS" key="type"/></Var>
+        		
+
+        		<Var name="paramData" key="id_user"><Var name="USER" key="id"/></Var>
+        		<Var name="paramData" key="ip"><Var name="USER" key="ip"/></Var>
+        		<Var name="paramData" key="timestamp"><DateTimeLib method="now"/></Var>
+        		
+        		<DataAccess method="insert" params="paramData">
+        			<Param name="_entity">fw_log</Param>
+        		</DataAccess>
+			        	
+        	</Begin>
+        </Function>
+
+        <Function name="addNewTest">
+        	<Params>
+	        	<Param name="id" doc="Id reccord. Searchable by log api" />
+	        	<Param name="context" doc="Record context" />
+	        	<Param name="message" doc="Lang code for message" />
+	        	<Param name="data" doc="Data to be logged" required="false"/>
+
+        	</Params>
+        	<Return type="int"/>
+        	<Begin>
+
+        		<Execute method="framework,generic,insert">
+        			<Param name="table">fw_log</Param>
+        			<Param name="id_user"><Var name="USER" key="id"/></Param>
+        			<Param name="ip"><Var name="USER" key="ip"/></Param>
+        			<Param name="timestamp"><DateTimeLib method="now"/></Param>
+        			<Param name="application"><Var name="CONTEXT" key="application"/></Param>
+        			<Param name="process"><Var name="CONTEXT" key="process"/></Param>
+        			<Param name="node"><Var name="CONTEXT" key="node"/></Param>
+        			<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+        			<Param name="type"><Var name="PARAMS" key="context"/></Param>
+        			<Param name="context_data"><Var name="PARAMS" key="data"/></Param>
+        			<Param name="message"><Var name="PARAMS" key="message"/></Param>
+        			<Param name="action"><Var name="CONTEXT" key="action"/></Param>
+        		</Execute>
+
+        	</Begin>
+        </Function>
+
+		<Function name="search">
+			<Params>
+				<Param name="user"/>
+        		<Param name="application"/>
+        		<Param name="process"/>
+        		<Param name="node"/>
+        		<Param name="action"/>
+        		<Param name="key"/>
+			</Params>
+			<Return type="multiple" />
+			<Begin>
+				<Return>
+					<DataAccess method="this,this,log.search" params="PARAMS" />
+				</Return>
+			</Begin>
+		</Function>
+
+    </Library>
+</Node>
+

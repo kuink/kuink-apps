@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Params>
+  </Params>
+  <Doc lang="pt-PT">
+    This is a test application for imap datasource
+  </Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens>
+    <Screen id="scr001">
+      <Form name="frmTest" persist="true">
+        <Text id="application" required="true" />
+        <Text id="node" required="true" />
+        <Checkbox id="createForeignIndexes"/>
+        <Checkbox id="createForeignKeys"/>
+        <Checkbox id="dropTablesBeforeCreate"/>
+        <ButtonGroup>
+          <Button id="search" type="search" action="process" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+
+    <Action name="init" screen="scr001">
+    </Action>
+
+    <Action name="process">
+      <RaiseEvent name="process">
+        <Param name="application"><Var name="POSTDATA" key="application"/></Param>
+        <Param name="node"><Var name="POSTDATA" key="node"/></Param>
+        <Param name="createForeignIndexes">
+          <If condition="$POSTDATA->createForeignIndexes == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
+        <Param name="createForeignKeys">
+          <If condition="$POSTDATA->createForeignKeys == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
+        <Param name="dropTablesBeforeCreate">
+          <If condition="$POSTDATA->dropTablesBeforeCreate == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
+      </RaiseEvent>
+    </Action>
+
+  </Actions>
+</Node>
+

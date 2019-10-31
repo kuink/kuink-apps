@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="DateTimeLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+      
+          <Function name="add" scope="public" doc="Add a company in the system">
+            <Params>
+                <Param name="name" type="text" required="true" doc="Login username."/>
+                <Param name="code" type="text" required="true" doc="User display name,"/>
+                <Param name="is_active" type="int" required="true" doc="Is this role active?"/>
+            </Params>
+            <Return type="int" doc="the company id"/>
+            <Errors>
+              <Error code="-1" doc="Company allready exist"/>
+            </Errors>            
+            <Begin>
+              <Permissions>
+                <Allow>
+                  <Capability name="framework/company::manage"/>
+                  <Capability name="framework/all::admin"/>
+                </Allow>
+              </Permissions>
+              <!-- Set default values -->
+              <Var name="result">0</Var>
+              <Var name="cid">
+                <Call function="existsByCode">
+                  <Param name="code"><Var name="code"/></Param>
+                </Call>
+              </Var>
+
+              <If condition="$cid == 1">
+                <Then>
+                  <Var name="result">-1</Var>
+                </Then>
+              </If>
+              
+              <If condition="$result == 0">
+                <Then>
+                  <Var name="id">
+                    <Execute method="framework,generic,insert" params="PARAMS">
+                      <Param name="table" >fw_company</Param>
+                      <Param name="_creation"><DateTimeLib method="Now"/></Param>
+                      <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                      <Param name="_modification"><DateTimeLib method="Now"/></Param>
+                      <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                    </Execute>
+                  </Var>
+                  <Var name="result"><Var name="id"/></Var>
+                </Then>
+              </If>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function> 
+
+        <Function name="update" scope="public" doc="Updates a company in the system">
+            <Params>
+                <Param name="id" type="int" required="true" doc="Company Id"/>
+                <Param name="name" type="text" required="true" doc="Company name"/>
+                <Param name="code" type="text" required="true" doc="Company code"/>
+                <Param name="is_active" type="int" required="true" doc="Is this company active?"/>
+            </Params>
+            <Return type="int" doc="the company id"/>
+            <Errors>
+              <Error code="-1" doc="Company does not exist"/>
+            </Errors>            
+            <Begin>
+              <Permissions>
+                <Allow>
+                  <Capability name="framework/company::manage"/>
+                </Allow>
+              </Permissions>
+              <!-- Set default values -->
+              <Var name="result">0</Var>
+              <Var name="cid">
+                <Call function="existsById">
+                  <Param name="id"><Var name="id"/></Param>
+                </Call>
+              </Var>
+
+              <If condition="$cid == 0">
+                <Then>
+                  <Var name="result">-1</Var>
+                </Then>
+              </If>
+              
+              <If condition="$result == 0">
+                <Then>
+                  <Var name="id">
+                    <Execute method="framework,generic,update" params="PARAMS">
+                      <Param name="table" >fw_company</Param>
+                      <Param name="_creation"><DateTimeLib method="Now"/></Param>
+                      <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                      <Param name="_modification"><DateTimeLib method="Now"/></Param>
+                      <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                    </Execute>
+                  </Var>
+                  <Var name="result"><Var name="id"/></Var>
+                </Then>
+              </If>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>               
+                                          
+        <Function name="getActiveCompanies" doc="Get a list of active companies">
+            <Params>
+                <Param name="name" doc="Search by name."/>
+                <Param name="code" doc="Search by code."/>
+            </Params>
+            <Return type="multiple" doc="">
+              <External name="id" type="int" doc="Role Id"/>
+              <External name="name" type="text" doc="Role name"/>
+              <External name="code" type="text" doc="Role code"/>
+              <External name="is_active" type="int" doc="Role code"/>
+            </Return>            
+            <Begin>
+              <!-- bug in runtime - dont allow any permission -->
+              <!-- Permissions>
+                <Allow>
+                  <Capability name="framework/company::manage"/>
+                </Allow>
+              </Permissions -->
+
+               <Var name="companies">
+                   <Execute method="this,this,company.search">
+                       <Param name="name" wildcard="full"><Var name="name"/></Param>
+                       <Param name="code" wildcard="full"><Var name="code"/></Param>
+                       <Param name="is_active">1</Param>
+                   </Execute>
+               </Var>
+               <Return>
+                   <Var name="companies"/>
+               </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="getById" type="int" required="true" doc="Get a company data">
+            <Params>
+                <Param name="id" type="int" required="true" doc="company Id."/>
+            </Params>
+            <Return type="single" doc="">
+              <External name="id" type="int" doc="Role Id"/>
+              <External name="name" type="text" doc="Role name"/>
+              <External name="code" type="text" doc="Role code"/>
+              <External name="is_active" type="int" doc="Is this role active?"/>
+              <External name="_creation" type="int" doc="Creation timestamp"/>
+              <External name="_creation_ip" type="text" doc="Creation ip address"/>
+              <External name="_modification" type="int" doc="Creation timestamp"/>
+              <External name="_modification_ip" type="text" doc="Modification ip address"/>
+            </Return>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/company::manage"/>
+                </Allow>
+              </Permissions-->
+
+              <!-- Set default values -->
+               <Var name="company">
+                   <Execute method="framework,generic,load">
+                       <Param name="table" >fw_company</Param>
+                       <Param name="id"><Var name="id"/></Param>
+                   </Execute>
+               </Var>
+               <Return>
+                   <Var name="company"/>
+               </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="getByCode" type="int" required="true" doc="Get a company data">
+            <Params>
+                <Param name="code" type="text" required="true" doc="Company code."/>
+            </Params>
+            <Return type="single" doc="">
+              <External name="id" type="int" doc="Company Id"/>
+              <External name="name" type="text" doc="Company name"/>
+              <External name="code" type="text" doc="company code"/>
+              <External name="is_active" type="int" doc="Is this company active?"/>
+              <External name="_creation" type="int" doc="Creation timestamp"/>
+              <External name="_creation_ip" type="text" doc="Creation ip address"/>
+              <External name="_modification" type="int" doc="Creation timestamp"/>
+              <External name="_modification_ip" type="text" doc="Modification ip address"/>
+            </Return>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/company::manage"/>
+                </Allow>
+              </Permissions-->
+
+              <!-- Set default values -->
+               <Var name="company">
+                   <Execute method="framework,generic,load">
+                       <Param name="table" >fw_company</Param>
+                       <Param name="code"><Var name="code"/></Param>
+                   </Execute>
+               </Var>
+               <Return>
+                   <Var name="company"/>
+               </Return>
+            </Begin>
+        </Function>        
+
+
+        <Function name="existsById" doc="Check if the company exists">
+            <Params>
+                <Param name="id" type="int" required="true" doc="Company Id."/>
+            </Params>
+            <Return type="int" doc="1 if exists, 0 otherwise"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role:manage"/>
+                </Allow>
+              </Permissions-->
+
+              <Var name="result">0</Var>
+              <Var name="company">
+                <Execute method="framework,generic,load">
+                  <Param name="table">fw_company</Param>
+                  <Param name="id"><Var name="id"/></Param>  
+                </Execute>
+              </Var>
+              <Var name="cid">
+                <Var name="company" key="id"/>
+              </Var>
+              <If condition="$cid != ''">
+                <Then>
+                  <Var name="result">1</Var>
+                </Then>
+              </If>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>    
+        
+        <Function name="existsByCode" doc="Check if the company exists">
+            <Params>
+                <Param name="code" type="text" required="true" doc="Company code."/>
+            </Params>
+            <Return type="int" doc="1 if exists, 0 otherwise"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/role:manage"/>
+                </Allow>
+              </Permissions-->
+
+              <Var name="result">0</Var>
+              <Var name="company">
+                <Execute method="framework,generic,load">
+                  <Param name="table">fw_company</Param>
+                  <Param name="code"><Var name="code"/></Param>  
+                </Execute>
+              </Var>
+              <Var name="cid">
+                <Var name="company" key="id"/>
+              </Var>
+              <If condition="$cid != ''">
+                <Then>
+                  <Var name="result">1</Var>
+                </Then>
+              </If>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>            
+
+    </Library>
+</Node>
+

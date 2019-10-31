@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>    
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="result"/>
+  </Params>
+  <Screens>
+    <Screen id="scrLogin" doc="Login Screen">
+      <Form name="frmLogin">
+      	<Text id="username" label="username"/>
+      	<Password id="password" label="password"/>
+        <ButtonGroup>
+          <Button id="doLogin" type="execute" action="doLogin"/>
+        </ButtonGroup>
+      </Form>    
+    </Screen>
+    <Screen id="scrRedirect" doc="Redirect Screen">
+      <Redirect name="redirect" url="view.php"/>
+    </Screen>    
+	</Screens>
+
+  <Actions>
+    <Action name="init" screen="scrLogin">
+    </Action>
+
+    <Action name="doLogin">
+    	<If condition="$POSTDATA->username=='demo' &amp;&amp; $POSTDATA->password=='demo321'">
+				<Then>
+					<NativeCode>
+						<![CDATA[
+							$_SESSION['kuink.logged'] = 1;
+						]]>
+					</NativeCode>
+					<Action name="redirect"/>
+					<Exit/>
+				</Then>
+				<Else>
+					<UserMessage type="error">
+						<Lang key="failed"/>
+					</UserMessage>
+					<Action name="init"/>
+				</Else>
+			</If>
+    </Action>
+
+    <Action name="redirect" screen="scrRedirect">
+    </Action>
+        
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

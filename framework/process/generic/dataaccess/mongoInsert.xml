@@ -1,0 +1,7 @@
+<?xml version='1.0'?>
+<Method database="mongo">
+    <Params><Param name="*"/></Params>
+    <Body>
+        <Execute method="insert"/>
+    </Body>
+</Method>

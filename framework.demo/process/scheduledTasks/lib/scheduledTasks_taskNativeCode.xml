@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="StringLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	
+	<Library>
+	
+	 <Function name="execute">
+	 <Params>
+	   <Param name="date"/>
+	   <Param name="LOG" output="true"/>
+	 </Params>
+	 <Begin>
+	 	<NativeCode>
+		 	<![CDATA[ 
+			    /*
+			    * Get all timetables for a week_day
+			    **/
+			    function getTodayTimetablesByWeekDay($week_day, $variables){
+			        $host = $variables['host'];
+			    	$user = $variables['user'];
+			    	$pass = $variables['pass'];
+			    	$dbname = $variables['dbname'];
+			    	
+			        mysql_connect($host, $user, $pass, $dbname);
+			        mysql_select_db($dbname);
+			        
+			        $sql = "SELECT * FROM timetable t
+			        INNER JOIN class_subject cs ON (t.id_class_subject=cs.id) 
+			        WHERE t.week_day='{$week_day}' AND t.is_active=1
+			        AND cs.start_date<UNIX_TIMESTAMP() AND cs.end_date>UNIX_TIMESTAMP()
+			        ORDER BY t.week_day ASC, t.id_class_subject ASC, t.start_hour ASC
+			        ";
+			        
+			        /*
+			         * USE THIS TO CREATE ONLY ONE LESSON (debug only)
+			         * 
+			         * */
+			        /*
+			        $sql = "SELECT * FROM timetable t
+			        INNER JOIN class_subject cs ON (t.id_class_subject=cs.id) 
+			        WHERE t.id=3929";
+			        */
+			        //var_dump($sql); die;
+			        
+			        $result = mysql_query($sql);
+			        $out = array();
+			        while($row = mysql_fetch_object($result)){
+			            $out[] = $row;
+			        }
+			        mysql_free_result($result);
+			        mysql_close();
+			        return $out;
+			    }
+			    
+			    /**
+			    * Get a class subject
+			    **/
+			    function getClassSubject($id, $variables){
+			        $host = $variables['host'];
+			    	$user = $variables['user'];
+			    	$pass = $variables['pass'];
+			    	$dbname = $variables['dbname'];
+
+			        mysql_connect($host, $user, $pass, $dbname);
+			        mysql_select_db($dbname);
+			        $sql = "SELECT * FROM class_subject WHERE id='{$id}'";
+			        $result = mysql_query($sql);
+			        $out = array();
+			        while($row = mysql_fetch_object($result)){
+			            $out[] = $row;
+			        }
+			        mysql_free_result($result);
+			        mysql_close();
+			        if (count($out)>0)
+			            return $out[0];
+			        return $out;    
+			    }
+			    
+			    /**
+			    * Insert a lesson into database - table: lesson
+			    **/
+			    function insertLesson($lesson, $variables){
+			    	
+			        $host = $variables['host'];
+			    	$user = $variables['user'];
+			    	$pass = $variables['pass'];
+			    	$dbname = $variables['dbname'];
+
+			        mysql_connect($host, $user, $pass, $dbname);
+			        mysql_select_db($dbname);
+			        $success = true;
+			        $sql = "INSERT INTO lesson 
+			                (
+			                    start_date,
+			                    end_date,
+			                    number,
+			                    id_creator,
+			                    is_substitution,
+			                    id_class_subject,
+			                    id_class_subject_planned,
+			                    id_group_guid,
+			                    id_class,
+			                    id_room,
+			                    id_room_planned,
+			                    is_numbered,
+			                    _creation
+			                )
+			                VALUE
+			                (
+			                    '{$lesson->start_date}',
+			                    '{$lesson->end_date}',
+			                    '{$lesson->number}',
+			                    '{$lesson->id_creator}',
+			                    '{$lesson->is_substitution}',
+			                    '{$lesson->id_class_subject}',
+			                    '{$lesson->id_class_subject_planned}',
+			                    '{$lesson->id_group_guid}',
+			                    '{$lesson->id_class}',
+			                    '{$lesson->id_room}',
+			                    '{$lesson->id_room_planned}',
+			                    '1',
+			                    UNIX_TIMESTAMP()
+			                )";
+			         
+			        if (! mysql_query($sql) ){
+			            return false;
+			        }else{
+			            $lastId = mysql_insert_id();
+			            
+			            foreach ($lesson->teachers as $teacher){
+			            $sql = "INSERT INTO lesson_teacher_planned
+			                (
+			                    id_lesson,
+			                    id_teacher,
+			                    is_signed
+			                )
+			                VALUE
+			                (
+			                    '{$lastId}',
+			                    '{$teacher->id_person}',
+			                    '0'
+			                )";
+			             $success = $success && mysql_query($sql);
+			           }
+			          
+			        }
+			        //var_dump($success);
+			        return $success;
+			    }
+			    
+			    
+			    /**
+			    * Get the last lesson number by id_class_subject
+			    **/
+			    function getLastLessonNumber($idClassSubject, $variables){
+			    	
+			        $host = $variables['host'];
+			    	$user = $variables['user'];
+			    	$pass = $variables['pass'];
+			    	$dbname = $variables['dbname'];
+
+			        mysql_connect($host, $user, $pass, $dbname);
+			        mysql_select_db($dbname);
+			        $sql = "SELECT MAX(number) as 'number' FROM lesson WHERE is_numbered=1 and id_class_subject='{$idClassSubject}'";
+			        $result = mysql_query($sql);
+			        $out = array();
+			        while($row = mysql_fetch_object($result)){
+			            $out[] = $row;
+			        }
+			        mysql_free_result($result);
+			        mysql_close();
+			        if (count($out)>0)
+			            return $out[0]->number;
+			        return 0; //if no lessons teached, return 0
+			    }
+			    
+			    function getTeachersByClassSubject($idClassSubject, $variables){
+			    	
+			        $host = $variables['host'];
+			    	$user = $variables['user'];
+			    	$pass = $variables['pass'];
+			    	$dbname = $variables['dbname'];
+			        mysql_connect($host, $user, $pass, $dbname);
+			        mysql_select_db($dbname);
+			        $sql = "SELECT * FROM class_sub_teacher where id_class_subject='{$idClassSubject}'";
+			
+			        $result = mysql_query($sql);
+			        $out = array();
+			        while($row = mysql_fetch_object($result)){
+			            $out[] = $row;
+			        }
+			        mysql_free_result($result);
+			        mysql_close();
+			        return $out;
+			    }
+			    
+			    $host   = "localhost";
+			    $user   = "neon";
+			    $pass   = "Vs49P7nSSHzYemXY";
+			    $dbname = "gecol";
+			    
+			    $variables['host'] = $host;
+			    $variables['user'] = $user;
+			    $variables['pass'] = $pass;
+			    $variables['dbname'] = $dbname;
+			    
+			    $_date = $variables['date'];
+			    date_default_timezone_set("UTC");
+
+			    $day_of_week = date('w', strtotime($_date));
+			    print "Day of week = {$day_of_week}\n";
+			    print "Date = {$_date}\n";
+			    //die;
+			    //$day_of_week = 1;//date('w');
+				//$_date = "2012-09-10";
+			    
+			    $todayLessons = getTodayTimetablesbyWeekDay($day_of_week, $variables);
+			
+			    //var_dump($todayLessons); die;
+			    $counter = 0;
+			    foreach ($todayLessons as $l){
+			        date_default_timezone_set("UTC");	
+			        $start_timestamp = strtotime($_date.' '.$l->start_hour);
+			        $end_timestamp = strtotime($_date.' '.$l->end_hour);
+			        
+			        $class_subject = getClassSubject($l->id_class_subject, $variables);
+			        
+			        /*
+			            start_date
+			            end_date
+			            number
+			            id_creator
+			            is_substitution
+			            id_class_subject
+			            id_class_subject_planned
+			            id_group_guid
+			            id_class
+			            id_room
+			            id_room_planned
+			            
+			            +
+			            
+			            teachers -> lesson_teacher_planned
+			            
+			        
+			        */
+			        
+			        //$lesson->id = $l->id; //..debug...
+			        $lesson->start_date = $start_timestamp;
+			        $lesson->end_date = $end_timestamp;
+			        $lesson->number = getLastLessonNumber($class_subject->id, $variables) + 1; //next
+			        $lesson->id_creator = 0; //automatic creator id
+			        $lesson->is_substitution = 0; //by default isn't a replacement lesson
+			        $lesson->id_class_subject_planned = $class_subject->id;
+			        $lesson->id_class_subject = $class_subject->id;
+			        $lesson->id_group_guid = ((int)$l->id_group_guid)*100+date('W',strtotime($_date.' '.$l->start_hour)+3600);         
+			        $lesson->id_class = $class_subject->id_class;
+			        $lesson->id_room_planned = $l->id_room;
+			        $lesson->id_room = $l->id_room;
+			        $lesson->teachers = getTeachersByClassSubject($class_subject->id, $variables);
+			        
+			        
+			        
+			        //var_dump($lesson); 
+			
+			
+			
+			        //only count inserted lessons
+			        //$inserted = insertLesson($lesson);
+			
+			        
+			        
+			        
+			        
+			        if (insertLesson($lesson, $variables)){
+			            $counter++;
+			        }
+			
+			        //...debug...
+			        /*
+			        echo "<pre>";
+			        echo var_dump($lesson);
+			        echo "</pre>";
+			        */
+			        //$counter++;
+			    }
+			    print($counter);
+			    $variables['LOG'] = date("Y-m-d H:i:s")." - Inserted {$counter} lessons into lesson table\n";
+			    print( $variables['LOG'] );
+		 	]]>
+	 	</NativeCode>
+		<Return>OK</Return>
+	 </Begin>
+	 </Function>
+	 
+	</Library>
+</Node>
+

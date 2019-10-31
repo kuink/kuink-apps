@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+ 
+    <String key="framework.rm.controlledDocument" value="Documentos Controlados"/>
+		<String key="manage" value="Gerir/Consultar"/>
+		<String key="viewer" value="Visualizar"/>
+		<String key="notify" value="Notificar Alterações"/>
+    <String key="controlledDocument" value="Documento Controlado"/>
+    <String key="controlledDocumentType" value="Gerir Tipos"/>
+    <String key="documentDetails" value="Documento Controlado"/>
+    <String key="baseData" value="Dados Base"/>
+    <String key="currentVersion" value="Versão Atual"/>
+    <String key="newVersionSuccess" value="Nova versão criada com sucesso!"/>
+    <String key="id_controlled_document_type" value="Tipo"/>
+    <String key="type_name" value="Tipo"/>
+    <String key="code" value="Código"/>
+    <String key="code_name" value="Código"/>
+    <String key="version_code" value="Código"/>
+    <String key="version_approval_date" value="Aprovação"/>
+    <String key="approved" value="Aprovado"/>
+    <String key="version_reason" value="Motivo para a nova versão"/>
+    <String key="reason" value="Motivo para a nova versão"/>
+    <String key="newVersion" value="Nova versão"/>
+    <String key="copyVersion" value="Copiar versão"/>
+    <String key="is_active" value="Ativo"/>
+    <String key="is_notified" value="Mail"/>
+    <String key="type" value="Tipo"/>
+    <String key="preview" value="Pré-visualizar"/>
+    <String key="download" value="Descarregar"/>
+    <String key="text" value="Texto"/>
+    <String key="startWorkflow" value="Iniciar workflow"/>
+    <String key="submitToApproval" value="Submeter para aprovação"/>
+    <String key="obs" value="Observações"/>
+    <String key="public_key" value="Foto"/>
+    
+    <String key="formatWarning" value="A previsualização do documento pode aparecer desformatada, no entanto, ao descarregar o documento este está com as formatações corretas."/>
+    <String key="classification" value="Classificação"/>
+    <String key="disposal_info" value="Destino Final"/>
+    <String key="location" value="Localização"/>
+    <String key="class" value="Código Classificação"/>
+    <String key="class_code" value="Código Classificação"/>
+    <String key="class_full_name" value="Código Classificação"/>
+    <String key="classTemplate" value="Classe - Template"/>
+    <String key="full_name" value="Nome"/>    
+    <String key="viewDownload" value="Ver/Descarregar"/>
+    <String key="id_controlled_document_class_template" value="Código de Classificação"/>
+    
+    <String key="classNotEmpty" value="A class já tem um modelo atribuído"/>
+    <String key="nothingToNotify" value="Não há novos documentos a notificar"/>
+    <String key="notifySuccess" value="Notificação enviada"/>
+    
+    <String key="version" value="Versão"/>
+    <String key="versions" value="Versões"/>
+    <String key="previewDoc" value="Pré-visualizar Documento"/>
+    <String key="previewTpl" value="Pré-visualizar Tpl"/>
+    <String key="template_src" value="Fonte Tpl"/>
+    <String key="test_data" value="Dados de Teste"/>
+    <String key="file" value="Documento"/>
+
+    <!--  ***** Approval *****  -->
+    <String key="document" value="Documento"/>
+    <String key="versionDetails" value="Detalhes da versão"/>
+    <String key="obs" value="Observações"/>
+    <String key="obs_public" value="Observações Públicas"/>
+    <String key="obs_private" value="Observações Privadas"/>
+    <String key="approve" value="Aprovar"/>
+    <String key="reject" value="Rejeitar"/>
+
+
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

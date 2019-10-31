@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+		<Function name="get" doc="Get a file record">
+			<Params>
+				<Param name="id"/>
+			</Params>
+			<Exceptions>
+        <Exception name="framework/file::invalid" doc="The file does not exists"/>
+      </Exceptions>
+			<Return type="single" doc=""/>
+      <Begin>
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$file->id == ''">
+          <Then>
+            <Exception><String parse="true">framework/file::invalid ($PARAMS->id)</String></Exception>
+          </Then>
+        </If>
+        <Return>
+          <Var name="file"/>
+        </Return>
+      </Begin>
+		</Function>
+
+    <Function name="getFileIdByGuid" doc="Get a file id ">
+      <Params>
+        <Param name="guid" type="string" required="true"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/file::invalid" doc="The file does not exists"/>
+      </Exceptions>
+
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$file->id == ''">
+          <Then>
+            <Exception><String parse="true">framework/file::invalid ($PARAMS->guid)</String></Exception>
+          </Then>
+        </If>
+        <Return>
+          <Var name="file" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getFileGuidById" doc="Get a file guid">
+      <Params>
+        <Param name="id" type="string" required="true"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/file::invalid" doc="The file does not exists"/>
+      </Exceptions>
+
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$file->id == ''">
+          <Then>
+            <Exception><String parse="true">framework/file::invalid ($PARAMS->guid)</String></Exception>
+          </Then>
+        </If>
+        <Return>
+          <Var name="file" key="guid"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="move" doc="Moves a file to a different folder">
+			<Params>
+			 <Param name="id_file" type="int" required="true" doc="The file to move"></Param>
+			 <Param name="dest_path" type="string" required="true" doc="The destination path to move the file"></Param>
+			 <Param name="dest_filename" type="string" required="false" doc="The destination file name"></Param>
+			</Params>
+			<Return type="int"/>
+			<Begin>
+        <Var name="file">
+          <DataAccess method="load">
+						<Param name="_entity">fw_file</Param>
+						<Param name="id"><Var name="id_file"/></Param>
+					</DataAccess>
+        </Var>
+
+        <If condition="$dest_filename == ''">
+					<Then>
+            <Var name="dest_filename"><Var name="file" key="name"/></Var>
+					</Then>
+				</If>
+
+        <Var name="original" dump="true"><String.parse>$file->path/$file->name</String.parse></Var>
+        <Var name="destination" dump="true"><String.parse>$dest_path/$dest_filename</String.parse></Var>
+        <FileLib method="moveFiles">
+          <Param name="originalPath"><Var name="original"/></Param>
+          <Param name="destinationPath"><Var name="destination"/></Param>
+        </FileLib>
+        <Var name="fullDestPath" dump="true"><String.parse>$SYSTEM->baseUploadDir/$dest_path</String.parse></Var>
+        <DataAccess method="update">
+					<Param name="_entity">fw_file</Param>
+					<Param name="id"><Var name="id_file"/></Param>
+					<Param name="path"><Var name="dest_path"/></Param>
+					<Param name="name"><Var name="dest_filename"/></Param>
+					<Param name="original_name"><Var name="dest_filename"/></Param>
+				</DataAccess>
+        <Return><Var name="id_file"/></Return>
+			</Begin>
+		</Function>
+
+  </Library>
+</Node>

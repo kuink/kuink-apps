@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Params>
+  </Params>
+  <Doc lang="pt-PT">
+    This is a test application for imap datasource
+  </Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens>
+    <Screen id="scr001">
+      <Form name="frmTest">
+        <Text id="template" required="true"/>      
+        <ButtonGroup>
+          <Button id ="execute" type="execute" action="showTemplate"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    
+    <Screen id="scr002">
+      <Form name="frmTest">
+        <ButtonGroup>
+          <Button id ="back" type="back" action="init"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    
+  </Screens>
+  <Actions>
+  
+    <Action name="init" screen="scr001">
+      <!--DataAccess method="getEntityChanges">
+        <Param name="application">framework</Param>
+        <Param name="node">rm</Param>
+      </DataAccess-->
+      
+      <DataAccess method="processEntityChanges">
+        <Param name="application">framework</Param>
+        <Param name="node">rm</Param>
+      </DataAccess>
+      
+    </Action>
+    
+    <Action name="showTemplate" screen="scr002">
+      <Var name="template" ><Var name="POSTDATA" key="template"/></Var>
+      
+      <Var name="result" >
+        <Template name="this,this,$template">
+          <Param name="id">123</Param>
+          <Param name="name">TEST</Param>
+        </Template>
+      </Var>
+      
+    </Action>
+    
+  </Actions>
+</Node>
+

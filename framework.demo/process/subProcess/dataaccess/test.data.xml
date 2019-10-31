@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Returns test timestamp dates
+    </Doc>
+    <Params/>
+    <Body>
+        <Sql>
+            <![CDATA[
+                SELECT 1 as id, 'Aula :: AIB 12' as subject FROm dual
+                UNION
+                SELECT 2 as id, 'Aula :: AIB 12' as subject FROm dual
+            ]]>
+        </Sql>
+    </Body>
+</Method>

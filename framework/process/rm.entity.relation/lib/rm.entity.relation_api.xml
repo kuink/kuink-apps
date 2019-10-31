@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+  </Libraries>
+  <Configuration/>
+  <Screens />
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getAll" doc="Get all entity relations">
+      <Params>
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="multiple" doc="Get all entity relations"/>
+      <Begin>
+        <Var name="entityRelations">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_rm_entity_relation</Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="entityRelations" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="add" doc="Add a new entity relation, if it doesn't already exists">
+      <Params>
+        <Param name="id_entity" type="int" required="true"/>
+        <Param name="id_entity_type" type="int" required="true"/>
+        <Param name="id_entity_relation" type="int" required="true"/>
+        <Param name="id_entity_type_relation" type="int" required="true"/>
+        <Param name="minoccurs" type="string" required="false"/>
+        <Param name="maxoccurs" type="string" required="false"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.entity.relation::cannotAddEntityRelation" doc="The entity relation already exists"/>
+      </Exceptions>
+      <Return type="int" doc="id of the new entity relation"/>
+      <Begin>
+        <Var name="exists">
+          <Call function="exist">
+            <Param name="id_entity"><Var name="id_entity"/></Param>
+            <Param name="id_entity_type"><Var name="id_entity_type"/></Param>
+            <Param name="id_entity_relation"><Var name="id_entity_relation"/></Param>
+            <Param name="id_entity_type_relation"><Var name="id_entity_type_relation"/></Param>
+          </Call>
+        </Var>
+        <If condition="$exists == 0">
+          <Then>
+            <Var name="entityRelation">
+              <DataAccess method="insert">
+                <Param name="_entity">fw_rm_entity_relation</Param>
+                <Param name="id_entity"><Var name="id_entity"/></Param>
+                <Param name="id_entity_type"><Var name="id_entity_type"/></Param>
+                <Param name="id_entity_relation"><Var name="id_entity_relation"/></Param>
+                <Param name="id_entity_type_relation"><Var name="id_entity_type_relation"/></Param>
+                <Param name="_base">true</Param>
+              </DataAccess>
+            </Var>
+          </Then>
+          <Else><Exception><String parse="true">framework/rm.entity.relation::cannotAddEntityRelation $exists</String></Exception></Else>
+        </If>
+        <Return><Var name="entityRelation" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getRelations" doc="Gets a list of relations">
+      <Params>
+        <Param name="id_entity" type="int" required="true"/>
+        <Param name="entity_type" type="string" required="true" doc="the entity type code"/>
+        <Param name="entity_type_relation" type="string" required="true" doc="the related entity type code"/>
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="multiple" doc="The relations"/>
+      <Begin>
+        <Var name="entityType">
+          <DataAccess method="load">
+						<Param name="_entity">fw_rm_entity_type</Param>
+						<Param name="code"><Var name="entity_type"/></Param>
+					</DataAccess>
+        </Var>
+        <If condition="$entityType->__length == 0">
+					<Then><Exception><String parse="true">framework/rm.entity.relation::invalidRelationType $entity_type</String></Exception></Then>
+				</If>
+        <Var name="entityTypeRelation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><Var name="entity_type_relation"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$entityTypeRelation->__length == 0">
+          <Then><Exception><String parse="true">framework/rm.entity.relation::invalidRelationType $entity_type_relation</String></Exception></Then>
+        </If>
+      
+        <Var name="entityRelation">
+          <DataAccess method="this,this,getEntityRelations">
+            <Param name="id_entity"><Var name="id_entity"/></Param>
+            <Param name="id_entity_type"><Var name="entityType" key="id"/></Param>
+            <Param name="entity_type_table"><Var name="entityType" key="table"/></Param>
+            <Param name="id_entity_type_relation"><Var name="entityTypeRelation" key="id"/></Param>
+            <Param name="entity_type_relation_table"><Var name="entityTypeRelation" key="table"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$entityRelation->__length &lt;= 0"><Then><Var name="entityRelation"><Int>0</Int></Var></Then></If>
+        <Return><Var name="entityRelation"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="exist" doc="Verify if the entity relation already exists">
+      <Params>
+        <Param name="id_entity" type="int" required="true"/>
+        <Param name="id_entity_type" type="int" required="true"/>
+        <Param name="id_entity_relation" type="int" required="true"/>
+        <Param name="id_entity_type_relation" type="int" required="true"/>
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="int" doc="id of the entity relation, 0 otherwise"/>
+      <Begin>
+        <Var name="entityRelation">
+          <DataAccess method="this,this,getEntityRelation">
+            <Param name="id_entity"><Var name="id_entity"/></Param>
+            <Param name="id_entity_type"><Var name="id_entity_type"/></Param>
+            <Param name="id_entity_relation"><Var name="id_entity_relation"/></Param>
+            <Param name="id_entity_type_relation"><Var name="id_entity_type_relation"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$entityRelation->__length &lt;= 0"><Then><Var name="entityRelation"><Int>0</Int></Var></Then></If>
+        <Return><Var name="entityRelation"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="delete" doc="delete a existing entity relation">
+      <Params>
+        <Param name="id_entity_relation" type="int" required="true"/>
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="int" doc="1 if deleted, 0 otherwise"/>
+      <Begin>
+        <Var name="entityRelation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_relation</Param>
+            <Param name="id"><Var name="id_entity_relation"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <If condition="$entityRelation->__length &gt; 0">
+            <Then>
+              <DataAccess method="delete">
+                <Param name="_entity">fw_rm_entity_relation</Param>
+                <Param name="id"><Var name="id_entity_relation"/></Param>
+              </DataAccess>
+            </Then>
+            <Else>0</Else>
+          </If>
+        </Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

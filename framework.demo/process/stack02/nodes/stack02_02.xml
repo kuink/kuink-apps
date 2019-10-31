@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+	</Libraries>
+	<Configuration />
+	<Screens>
+		<Screen id="screen001">
+			<Form name="test" title="02.02">
+			 <ButtonGroup>
+			   <Button type="cancel" id="prev" label="prev" action="prev"/>  
+			   <Button type="submit" id="next" label="next" action="next"/>
+			 </ButtonGroup>
+			</Form>
+		</Screen>
+	</Screens>
+	<Actions>
+		<Action name="init" screen="screen001">
+		</Action>
+
+    <Action name="prev" >
+      <RaiseEvent name="prev"/>
+    </Action>
+
+    <Action name="next" >
+      <RaiseEvent name="next"/>
+    </Action>
+
+	</Actions>
+</Node>
+

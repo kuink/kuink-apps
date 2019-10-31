@@ -1,0 +1,10 @@
+<?xml version='1.0'?>
+<Application name="framework.application" version="1.0.0">
+    <Configuration>
+        <!-- Global configuration... -->
+    </Configuration>
+    <Menus>
+        <Menu role="Teacher" startuc="manage" startnode="" event="init" label="manage" default="true"/>
+        <Menu role="Teacher" startuc="manage" startnode="" event="prerequisites" label="prerequisites"/>
+    </Menus>
+</Application>

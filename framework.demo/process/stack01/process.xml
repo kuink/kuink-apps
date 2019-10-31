@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<Process>
+     <Transitions>
+        <Flow role='Teacher' startnode='' event='init' endnode='01' />
+        <Flow role='Teacher' startnode='' event='s4' endnode='04' />
+        <!-- 01 -->
+        <Flow role='Teacher' startnode='01' event='next' endnode='02' />
+        <Flow role='Teacher' startnode='01' event='prev' endnode='' />
+        <!-- 02 -->
+        <Flow role='Teacher' startnode='02' event='next' endnode='xp04' />
+        <Flow role='Teacher' startnode='02' event='prev' endnode='x03' />
+        <!-- 03 -->
+        <Flow role='Teacher' startnode='03' event='next' endnode='x03' />
+        <Flow role='Teacher' startnode='03' event='prev' endnode='02' />
+        <!-- x03 -->
+        <Flow role='Teacher' startnode='x03' event='prev' endnode='01' />
+        <Flow role='Teacher' startnode='x03' event='next' endnode='xp04' />
+        <!-- xp04 -->
+        <Flow role='Teacher' startnode='xp04' event='exit' endnode='02' />
+        <Flow role='Teacher' startnode='xp04' event='prev' endnode='x03' />
+     </Transitions>
+</Process>

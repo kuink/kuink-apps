@@ -1,0 +1,36 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Search all active companies
+    </Doc>
+    <Params>
+        <Param name="name"/>
+        <Param name="code"/>
+        <Param name="is_active"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        c.id, c.name, c.code, c.is_active
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        {table_prefix}fw_company c
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1 = 1</XCondition>
+                    <XCondition optional="name">AND name LIKE '{param->name}'</XCondition>
+                    <XCondition optional="code">AND code LIKE '{param->code}'</XCondition>
+                    <XCondition optional="is_active">AND is_active = {param->is_active}</XCondition>
+                </XWhere>
+                <XOrderBy>
+                    c.code asc
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

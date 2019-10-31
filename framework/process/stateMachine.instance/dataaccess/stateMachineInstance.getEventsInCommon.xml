@@ -1,0 +1,38 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Get the bulk event transitions
+    </Doc>
+    <Params>
+    	<Param name="ids"></Param>
+    	<Param name="role"></Param>
+    	<Param name="numOfInstances" doc="Number of instances to get the intersect events"></Param>
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[        
+								SELECT 
+									COUNT(smt.event) as countEvents,
+									smt.event,
+								  smt.event_description as description,
+								  smf.field_list
+								FROM
+									fw_state_machine_instance smi 
+									INNER JOIN fw_state_machine_transition smt ON (smt.id_start_state = smi.id_current_state)
+								  INNER JOIN fw_state_machine_state sms ON (sms.id = smt.id_end_state)
+									LEFT OUTER JOIN fw_state_machine_form smf ON (smf.id = smt.id_form)
+								WHERE
+									smt.is_active = 1
+									AND smi.id in ({param->ids})
+									AND FIND_IN_SET('{param->role}', smt.role_list)
+ 								GROUP BY 
+ 									smt.event, 
+ 									smt.event_description,
+ 									smf.field_list
+ 								HAVING 
+ 									COUNT(smt.event) = '{param->numOfInstances}' 
+ 								ORDER BY smt.event_description ASC
+        ]]>
+        </Sql>
+    </Body>
+</Method>

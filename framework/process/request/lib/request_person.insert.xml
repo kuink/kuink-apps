@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="StringLib" type="lib"/>
+		<Use name="FileLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	
+	<Library>
+		<Function name="execute">
+		<Params>
+		  <Param name="data" doc="The data to process, in this case is the student id_person"/>
+		  <Param name="log" output="true" />
+		</Params>
+		<Begin>
+			<!-- preEnroll Create Person -->
+			<Var name="parsedData" dump="true"><JsonToSet><Var name="PARAMS" key="data"/></JsonToSet></Var>
+
+			<Var name="log">
+				<Call library="framework,em.execution,api" function="execute">
+					<Param name="objectCode">person</Param>
+					<Param name="actionCode">insert</Param>
+					<Param name="object"><Var name="parsedData" key="addedPerson"/></Param>
+					<Param name="task"><Var name="parsedData" key="personTypeCode"/></Param>
+					<Param name="taskList"><Var name="parsedData" key="taskList"/></Param>
+				</Call>			
+			</Var>
+
+			<Var name="result">ok</Var>	
+			<ForEach var="log" item="logItem">
+				<If condition="$logItem->result == 'ERROR'">
+					<Then>
+  					<Var name="result">error</Var>
+					</Then>
+				</If>
+			</ForEach>
+      <Return><Var name="result" dump="true"/></Return>
+    </Begin>
+    </Function>
+	</Library>
+</Node>

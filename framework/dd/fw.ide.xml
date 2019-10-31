@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+    <!-- Override domain inherited definitions or add local definitions here -->
+  </Domains>
+  <Templates>
+    <!-- Override template inherited definitions or add local definitions here -->
+  </Templates>
+  <Entities>
+    <Entity name="fw_ide_recent_files" doc="Recent files in IDE">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="file" type="string" size="256" required="true" doc="The file path"/>
+        <Attribute name="kuink_type" type="string" size="256" required="false" doc="The file kuink type"/>
+        <Attribute name="id_user" domain="foreign" refentity="fw_user" refattr="id" required="true" doc="Id of the user who has approved this version"/>
+
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+  </Entities>
+</Node>

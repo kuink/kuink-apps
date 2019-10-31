@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<Method>
+  <Doc>
+    Gets process instance token history
+  </Doc>
+  <Params>
+    <Param name="id_process_instance" />
+  </Params>
+  <Body>
+    <GetAll>
+      <XSql>
+        <XSelect>
+          <XField>
+            wfth.*,
+            p1.public_key as creator_public_key,
+            p1.display_name as creator_display_name,
+            p2.public_key as updater_public_key,
+            p2.display_name as updater_display_name,
+            IF (p3.id IS NULL, p2.public_key, p3.public_key) as token_public_key,
+            IF (p3.id IS NULL, p2.display_name, p3.display_name) as token_display_name
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_wf_process_instance wfpi 
+            INNER JOIN fw_wf_token wft ON (wft.id_process_instance = wfpi.id)
+            INNER JOIN fw_wf_token_history wfth ON (wfth.id_token = wft.id)
+            INNER JOIN person p1 ON (p1.id = wfth._id_creator)
+            INNER JOIN person p2 ON (p2.id = wfth._id_updater)
+            LEFT OUTER JOIN fw_wf_inbox_task it ON (it.id = wfth.id_inbox_task)
+            LEFT OUTER JOIN person p3 ON (p3.id = it.id_person)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>wfpi.id = {param->id_process_instance}</XCondition>
+        </XWhere>
+      </XSql>
+    </GetAll>
+  </Body>
+</Method>
+

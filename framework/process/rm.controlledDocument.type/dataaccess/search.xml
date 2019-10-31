@@ -1,0 +1,36 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Searches logs
+    </Doc>
+    <Params>
+        <Param name="user"/>
+        <Param name="application"/>
+        <Param name="process"/>
+        <Param name="node"/>
+        <Param name="action"/>
+        <Param name="key"/>
+    </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        e.*
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_rm_controlled_document_type e
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1=1</XCondition>
+                </XWhere>
+                <XOrderBy>
+                    <XOrder>id desc</XOrder>
+                </XOrderBy>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

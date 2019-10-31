@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="name" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="guid" type="text" required="false"/>
+        <Param name="is_active" type="checkbox" required="false"/>
+        <Param name="is_configurable" type="checkbox" required="false"/>
+        <Param name="init_flow" type="text" required="false"/>
+        <Param name="configuration" type="textarea" required="false"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,insert">
+            <Param name="table">fw_widget</Param>
+            <Param name="name">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="guid">
+              <Var name="PARAMS" key="guid"/>
+            </Param>
+            <Param name="is_active">
+              <Var name="PARAMS" key="is_active"/>
+            </Param>
+            <Param name="is_configurable">
+              <Var name="PARAMS" key="is_configurable"/>
+            </Param>
+            <Param name="init_flow">
+              <Var name="PARAMS" key="init_flow"/>
+            </Param>
+            <Param name="configuration">
+              <Var name="PARAMS" key="configuration"/>
+            </Param>
+            <Param name="_creation">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_creation_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+            <Param name="_modification">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_modification_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_widget">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+  		</Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_widget</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table fw_widget">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,delete">
+            <Param name="table">fw_widget</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_widget">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="guid" type="text" required="false"/>
+        <Param name="is_active" type="checkbox" required="false"/>
+        <Param name="is_configurable" type="checkbox" required="false"/>
+        <Param name="init_flow" type="text" required="false"/>
+        <Param name="configuration" type="textarea" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <Execute method="framework,generic,update" params="paramData">
+          <Param name="table">fw_widget</Param>
+          <Param name="_modification">
+            <DateTimeLib method="Now"/>
+          </Param>
+          <Param name="_modification_ip">
+            <Var name="USER" key="ip"/>
+          </Param>
+        </Execute>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table fw_widget">
+      <Params>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="guid" type="text" doc=""/>
+        <External name="is_active" type="checkbox" doc=""/>
+        <External name="is_configurable" type="checkbox" doc=""/>
+        <External name="init_flow" type="text" doc=""/>
+        <External name="configuration" type="textarea" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="this,this,search">
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_widget">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="guid" type="text" doc=""/>
+        <External name="is_active" type="checkbox" doc=""/>
+        <External name="is_configurable" type="checkbox" doc=""/>
+        <External name="init_flow" type="text" doc=""/>
+        <External name="configuration" type="textarea" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,getAll">
+            <Param name="table">fw_widget</Param>
+            <Param name="fields">*</Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="getById" doc="Get a record by id from table fw_widget">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="guid" type="text" doc=""/>
+        <External name="is_active" type="checkbox" doc=""/>
+        <External name="is_configurable" type="checkbox" doc=""/>
+        <External name="init_flow" type="text" doc=""/>
+        <External name="configuration" type="textarea" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,load">
+            <Param name="table">fw_widget</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getByGuid" doc="Get a record by uuid from table fw_widget">
+      <Params>
+        <Param name="uuid" type="text" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="is_active" type="checkbox" doc=""/>
+        <External name="is_configurable" type="checkbox" doc=""/>
+        <External name="init_flow" type="text" doc=""/>
+        <External name="configuration" type="textarea" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_widget</Param>
+            <Param name="uuid">
+              <Var name="PARAMS" key="uuid"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+  </Library>
+</Node>

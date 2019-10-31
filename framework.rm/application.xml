@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<Application name="framework.rm.controlledDocument" version="1.0.0">
+    <Configuration>
+        <!-- Global configuration... -->
+    </Configuration>
+    <Menus>
+        <Menu role="Student,Teacher" startuc="class" startnode="" event="view" label="viewer" default="true"/>
+        <Menu role="Teacher,Student" startuc="class" label="manage">
+          <Menu role="Teacher,Student" startuc="class" startnode="" event="init" label="classification"/>
+          <Menu role="Teacher,Student" startuc="record" startnode="" event="init" label="records"/>
+        </Menu>
+    </Menus>
+</Application>

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" id="NeonLang" vc:minVersion="1.1" version="0.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="Node" type="NodeType">
+		<xs:annotation>
+			<xs:documentation>kuink node definition</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+    <xs:complexType name="NodeType">
+      <xs:sequence minOccurs="0">
+        <xs:element minOccurs="0" name="Params"/>
+        <xs:element minOccurs="0" name="Screens" />
+        <xs:element name="Actions">
+          <xs:complexType>
+            <xs:sequence maxOccurs="unbounded" minOccurs="0">
+              <xs:element form="qualified" name="Action"
+                type="ActionType" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="validate" type="xs:string" use="optional">
+        <xs:annotation>
+          <xs:documentation>A schema xsd validation is forced for this node. The default is false.</xs:documentation>
+        </xs:annotation></xs:attribute>
+    
+    </xs:complexType>
+	<xs:complexType name="ActionType">
+		<xs:sequence maxOccurs="unbounded" minOccurs="0">
+			<xs:element ref="Instruction"/>
+		</xs:sequence>
+		<xs:attribute name="name" use="required"/>
+		<xs:attribute name="screen" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="InstructionType"/>
+	<xs:complexType mixed="true" name="InstructionContainerType">
+		<xs:sequence maxOccurs="unbounded" minOccurs="0">
+			<xs:element ref="Instruction"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element abstract="true" name="Instruction" type="InstructionType"/>
+	<xs:complexType final="" mixed="true" name="VarType">
+		<xs:complexContent>
+			<xs:extension base="InstructionType">
+				<xs:sequence minOccurs="0">
+					<xs:element ref="Instruction"/>
+				</xs:sequence>
+				<xs:attribute name="name" use="required"/>
+				<xs:attribute name="key" use="optional"/>
+				<xs:attribute name="clear" type="xs:boolean" use="optional"/>
+				<xs:attribute name="dump" type="xs:boolean" use="optional"/>
+				<xs:attribute name="sum" type="xs:int" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Var" substitutionGroup="Instruction" type="VarType"/>
+	<xs:complexType name="IfType">
+		<xs:complexContent>
+			<xs:extension base="InstructionType">
+				<xs:sequence>
+					<xs:element name="Then" type="InstructionContainerType"/>
+					<xs:element minOccurs="0" name="Else" type="InstructionContainerType"/>
+				</xs:sequence>
+				<xs:attribute name="condition" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="If" substitutionGroup="Instruction" type="IfType"/>
+	<xs:complexType mixed="true" name="PrintType">
+		<xs:complexContent>
+			<xs:extension base="InstructionType">
+				<xs:sequence minOccurs="0">
+					<xs:element ref="Instruction"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Print" substitutionGroup="Instruction" type="PrintType"/>
+	<xs:complexType mixed="true" name="ForEachType">
+		<xs:complexContent>
+			<xs:extension base="InstructionType">
+				<xs:sequence minOccurs="0">
+					<xs:element ref="Instruction"/>
+				</xs:sequence>
+				<xs:attribute name="var" use="required"/>
+				<xs:attribute name="item" use="required"/>
+				<xs:attribute name="key" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ForEach" substitutionGroup="Instruction" type="ForEachType"/>
+	<xs:complexType mixed="true" name="ParamType">
+		<xs:complexContent>
+			<xs:extension base="InstructionType">
+				<xs:sequence minOccurs="0">
+					<xs:element ref="Instruction"/>
+				</xs:sequence>
+				<xs:attribute name="name" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Param" substitutionGroup="Instruction" type="ParamType"/>
+	<xs:complexType mixed="true" name="CallType">
+		<xs:complexContent>
+			<xs:extension base="InstructionType">
+				<xs:sequence minOccurs="0">
+					<xs:element ref="Param"/>
+				</xs:sequence>
+				<xs:attribute name="library" use="optional"/>
+				<xs:attribute name="function" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Call" substitutionGroup="Instruction" type="CallType"/>
+	<xs:complexType mixed="true" name="ExecuteType">
+		<xs:complexContent>
+			<xs:extension base="InstructionType">
+				<xs:sequence minOccurs="0">
+					<xs:element ref="Param"/>
+				</xs:sequence>
+				<xs:attribute name="method" use="required"/>
+				<xs:attribute name="params" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Execute" substitutionGroup="Instruction" type="ExecuteType"/>
+
+</xs:schema>

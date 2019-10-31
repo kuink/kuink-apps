@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Params>
+    <Param name="application"/>
+    <Param name="process"/>
+    <Param name="node"/>
+    <Param name="action"/>
+    <Param name="key"/>
+    <Param name="type"/>
+  </Params>
+  <Libraries>
+  </Libraries>
+  
+  <Screens>
+    <Screen id="searchRecords">
+      <Grid name="searchResult" title="history">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="id_user" label="user">
+            	<Formatter name="Separator" method="pipe"/>
+            </Column>
+            <Column name="display_name" label="display_name" inline="true"/>
+            <Column name="timestamp" label="timestamp"><DateTimeFormatter method="shortDateTimeSec"/></Column>
+            <Column name="message" label="message"/>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="searchRecords">
+    <Var name="PARAMS" />
+      <GridControl method="bind" object="searchResult">
+        <Param>
+          <Execute method="this,this,log.search">
+            <Param name="application"><Var name="PARAMS" key="application"/></Param>
+            <Param name="process"><Var name="PARAMS" key="process"/></Param>
+            <Param name="node"><Var name="PARAMS" key="node"/></Param>
+            <Param name="action"><Var name="PARAMS" key="action"/></Param>
+            <Param name="key"><Var name="PARAMS" key="key"/></Param>
+            <Param name="type" wildcard="fullSplit"><Var name="PARAMS" key="type"/></Param>
+          </Execute>
+        </Param>
+      </GridControl>
+    </Action>
+  </Actions>
+</Node>
+

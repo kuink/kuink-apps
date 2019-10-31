@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions> </Permissions>
+  <Doc lang="pt-PT"> </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="TemplateLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+
+  <Screens>
+    <Screen id="sc01">
+      <Ide name="ide"/>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="sc01">
+      <RegisterAPI>framework,ide,api,setFileContent</RegisterAPI>
+      <RegisterAPI>framework,ide,api,getFileType</RegisterAPI>
+      <RegisterAPI>framework,ide,api,getFileContent</RegisterAPI>
+      <RegisterAPI>framework,ide,api,getDirContent</RegisterAPI>
+      <RegisterAPI>framework,ide,api,createFileOrDirectory</RegisterAPI>
+      <RegisterAPI>framework,ide,api,renameFileOrDirectory</RegisterAPI>
+      <RegisterAPI>framework,ide,api,deleteFileOrDirectory</RegisterAPI>
+      <RegisterAPI>framework,ide,api,getFunctionMetadata</RegisterAPI>
+      <RegisterAPI>framework,ide,api,getFunctionsMetadata</RegisterAPI>
+      <RegisterAPI>framework,ide,api,searchLibrary</RegisterAPI>
+    </Action>
+
+    <Action name="manageEntity">
+      <Trace>Raising event</Trace>
+      <RaiseEvent name="manageEntity"/>
+    </Action>
+
+  </Actions>
+
+</Node>

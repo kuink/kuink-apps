@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all code templates items
+    </Doc>
+    <Params>
+      <Param name="id_code_template"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        cti.*, ct.name as code_template, CONCAT(ct.name,'.',cti.code) as code_template_tpl
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_code_template_item cti
+                        INNER JOIN fw_code_template ct ON (ct.id =cti.id_code_template)
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition optional="id_code_template">cti.id_code_template = '{param->id_code_template}'</XCondition>
+                </XWhere>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

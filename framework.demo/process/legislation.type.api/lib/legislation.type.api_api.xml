@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Updates a record in table ">
+      <Params>
+        <Param name="name" type="text" required="true"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Begin>
+        <Execute method="framework,generic,insert">
+          <Param name="table">legislation_type</Param>
+          <Param name="name">
+            <Var name="PARAMS" key="name"/>
+          </Param>
+          <Param name="code">
+            <Var name="PARAMS" key="code"/>
+          </Param>
+          <Param name="description">
+            <Var name="PARAMS" key="description"/>
+          </Param>
+        </Execute>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table legislation_type">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="name" type="text" required="true"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Begin>
+        <Execute method="framework,generic,update">
+          <Param name="table">legislation_type</Param>
+          <Param name="id">
+            <Var name="PARAMS" key="id"/>
+          </Param>
+          <Param name="name">
+            <Var name="PARAMS" key="name"/>
+          </Param>
+          <Param name="code">
+            <Var name="PARAMS" key="code"/>
+          </Param>
+          <Param name="description">
+            <Var name="PARAMS" key="description"/>
+          </Param>
+        </Execute>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a record by id from table legislation_type">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,load">
+            <Param name="table">legislation_type</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table legislation_type">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,delete">
+            <Param name="table">legislation_type</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table legislation_type">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="framework,generic,getAll">
+            <Param name="table">legislation_type</Param>
+            <Param name="fields">*</Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table legislation_type">
+      <Params>
+        <Param name="name" type="text"/>
+        <Param name="code" type="text"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <Execute method="this,this,search">
+            <Param name="name" wildcard="full">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="code" wildcard="full">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="pagenum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="pagesize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </Execute>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

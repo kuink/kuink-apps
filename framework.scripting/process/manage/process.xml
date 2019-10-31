@@ -1,0 +1,10 @@
+<?xml version='1.0'?>
+<Process>
+  <Transitions>
+    <Flow role='Teacher' startuc='manage' startnode='' event='init' enduc='manage' endnode='list' />
+    <Flow role='Teacher' startuc='manage' startnode='list' event='view' enduc='manage' endnode='view' />
+    <Flow role='Teacher' startuc='manage' startnode='view' event='execute' enduc='manage' endnode='execute' />
+    <Flow role='Teacher' startuc='manage' startnode='view' event='back' enduc='manage' endnode='list' />
+    <Flow role='Teacher' startuc='manage' startnode='execute' event='back' enduc='manage' endnode='view' />
+  </Transitions>
+</Process>

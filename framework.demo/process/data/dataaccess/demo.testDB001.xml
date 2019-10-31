@@ -1,0 +1,28 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Gets the total number of records as well as the page of records itself.
+    </Doc>
+    <Params />
+    <Body>
+        <Sql>
+            <!--
+            <![CDATA[        
+            	SELECT COUNT( * ) AS  "values", pt.name AS category
+				FROM person p
+				INNER JOIN person_type pt ON ( p.id_person_type = pt.id ) 
+				GROUP BY (
+				pt.id
+				)
+				LIMIT 0 , 30
+            ]]>
+            -->
+            <![CDATA[
+            	 SELECT 1 as id, 'Compromisso' as `name` FROM enroll UNION
+            	 SELECT 2 as id, 'Compromisso' as `name` FROM enroll UNION
+            	 SELECT 3 as id, 'Compromisso' as `name` FROM enroll UNION
+            	 SELECT 4 as id, 'é um acento' as `name` FROM enroll        	
+            ]]>
+        </Sql>
+    </Body>
+</Method>

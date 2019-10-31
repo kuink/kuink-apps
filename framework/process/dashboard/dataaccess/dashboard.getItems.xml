@@ -1,0 +1,31 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Gets all dashboard items for a given dashboard
+    </Doc>
+    <Params>
+        <Param name="id_dashboard"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        d.*
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        {table_prefix}fw_dashboard_item d
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>d.id_dashboard = {param->id_dashboard}</XCondition>
+                </XWhere>
+                <XOrderBy>
+                    d.position, d.order
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

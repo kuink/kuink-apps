@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Domains>
+    <Domain name="id" type="int" size="10" autonumber="true" required="true" pk="true" />
+    <Domain name="idNotAI" type="int" size="10" required="true" pk="true" />
+    <Domain name="foreign" type="int" size="10" />
+    <Domain name="foreignPk" type="int" size="10" required="true" pk="true"/>
+    <Domain name="lang" type="string" size="10" />
+    <Domain name="langPk" type="string" size="10" required="true" pk="true"/>    
+    <Domain name="uuid" type="string" size="36" required="true" />
+    <Domain name="guid" type="string" size="32" required="true" />
+    <Domain name="bool" type="bool" />
+    <Domain name="int" type="int" size="10" />
+    <Domain name="string" type="string" size="128" />
+    <Domain name="longString" type="string" size="1024" />
+    <Domain name="occurs" type="string" size="5" />
+    <Domain name="text" type="text"/>
+    <Domain name="json" type="text"/>    
+    <Domain name="html" type="text"/>
+    <Domain name="xml" type="text"/>
+    <Domain name="longText" type="longtext"/>
+    <Domain name="positiveInt" type="int" size="10" />
+    <Domain name="real" type="decimal" size="7,4" />
+    <Domain name="name" type="string" size="64" />
+    <Domain name="longName" type="string" size="256" />
+    <Domain name="value" type="string" size="256" />
+    <Domain name="order" type="int" size="10" />
+    <Domain name="description" type="string" size="128" />
+    <Domain name="longDescription" type="string" size="512" />
+    <Domain name="code" type="string" unique="true" size="30" />
+    <Domain name="longCode" type="string" unique="true" size="128" />
+    <Domain name="codeNotUnique" type="string" size="30" />
+    <Domain name="template" type="string" size="128" />
+    <Domain name="value" type="string" size="30" />
+    <Domain name="apiLibrary" type="string" size="128" />
+    <Domain name="apiFunction" type="string" size="128" />
+    <Domain name="apiParams" type="string" size="256" />
+    <Domain name="timestamp" type="datetime" />
+    <Domain name="ip" type="string" size="128" doc="Supports ipv4 and ipv6" />
+    <Domain name="url" type="string" size="256" doc="url specification"/>
+  </Domains>
+  <Templates>
+    <Template name="fw.base">
+      <Attribute name="id_company" required="true" domain="foreign" refentity="fw_company" refattr="id" doc="Foreign id of the company"/>
+      <Attribute name="_id_creator" domain="int"  required="false" doc="The person who created the record"/>
+      <Attribute name="_id_updater" domain="int" required="false" doc="The person who updated the record"/>
+      <Attribute name="_creation" domain="timestamp"/>
+      <Attribute name="_creation_ip" domain="ip"/>
+      <Attribute name="_modification" domain="timestamp"/>
+      <Attribute name="_modification_ip" domain="ip"/>
+    </Template>
+    <Template name="fw.usageDates">
+      <Attribute name="originated" domain="timestamp" doc="The date and time of origin of a record or other entity" />
+      <Attribute name="first_used" domain="timestamp" doc="System generated date and time indicating when an entity was first used" />
+      <Attribute name="destroyed" domain="timestamp" doc="System set date and time when the entity was destroyed" />
+    </Template>
+	  <Template name="fw.identity">
+	    <Attribute name="uuid" domain="uuid" required="true" doc="The uuid to identify the object"/>
+	    <Attribute name="code" domain="code" required="true" doc="The object code"/>
+	    <Attribute name="name" domain="name" required="true" doc="The object name"/>
+	    <Attribute name="description" domain="longDescription" required="false" doc="The object description"/>
+	  </Template>
+	  <Template name="fw.identity.long">
+	    <Attribute name="uuid" domain="uuid" required="true" doc="The uuid to identify the object"/>
+	    <Attribute name="code" domain="longCode" required="true" doc="The object code"/>
+	    <Attribute name="name" domain="longName" required="true" doc="The object name"/>
+	    <Attribute name="description" domain="longDescription" required="false" doc="The object description"/>
+	  </Template>
+	  <Template name="fw.identity.notRequired">
+	    <Attribute name="uuid" domain="uuid" required="false" doc="The uuid to identify the object"/>
+	    <Attribute name="code" domain="code" required="false" doc="The object code"/>
+	    <Attribute name="name" domain="name" required="false" doc="The object name"/>
+	    <Attribute name="description" domain="longDescription" required="false" doc="The object description"/>
+	  </Template>
+	  <Template name="fw.identity.notRequired.long">
+	    <Attribute name="uuid" domain="uuid" required="false" doc="The uuid to identify the object"/>
+	    <Attribute name="code" domain="longCode" required="false" doc="The object code"/>
+	    <Attribute name="name" domain="longName" required="false" doc="The object name"/>
+	    <Attribute name="description" domain="longDescription" required="false" doc="The object description"/>
+	  </Template>	  
+	  	  
+	  <Template name="fw.identity.multilang">
+	    <Attribute name="uuid" domain="guid" required="true" doc="The guid to identify the object"/>
+	    <Attribute name="code" domain="code" required="true" doc="The object code, not multilang"/>
+	    <Attribute name="name" domain="name" required="true" multilang="true" doc="The object name"/>
+	    <Attribute name="description" domain="longDescription" required="false" multilang="true" doc="The object description"/>
+	  </Template>
+	  <Template name="fw.identity.multilang.long">
+	    <Attribute name="uuid" domain="guid" required="true" doc="The guid to identify the object"/>
+	    <Attribute name="code" domain="code" required="true" doc="The object code, not multilang"/>
+	    <Attribute name="name" domain="longName" required="true" multilang="true" doc="The object name"/>
+	    <Attribute name="description" domain="longDescription" required="false" multilang="true" doc="The object description"/>
+	  </Template>
+
+	  <Template name="fw.dateRestriction">
+      <Attribute name="date_from" domain="timestamp" doc="The from date and time" />
+      <Attribute name="date_to" domain="timestamp" doc="The to date and time" />
+    </Template>
+	  <Template name="fw.active">
+      <Attribute name="is_active" domain="bool" doc="The record is active or not" />
+    </Template>
+
+  </Templates>
+
+  <Entities>
+    <!--Entity name="fw_company"/>
+    <Entity name="fw_person"/>
+    <Entity name="fw_user"/-->
+    
+    <!-- Permissions -->
+		<Entity name="fw_permission" doc="The role or capability base data">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity.long" />        
+				<Attribute name="is_role" domain="bool" default="1" doc="Is this permission a role or a capability?" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>    
+		<Entity name="fw_permission_relation" doc="The roles can be related to other permissions (roles or capabilities)">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_role" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The role"/>
+        <Attribute name="id_permission" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The permission can be either role or capability"/>
+        <Attribute name="_path" domain="string" required="false" doc="Only for role to role relation help get the child capabilities"/>
+        <Template name="fw.base" />        
+      </Attributes>
+    </Entity>
+    
+    <!-- Access Control Lists -->
+    <Entity name="fw_access_control_list" doc="Access Control List (acl)">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_parent" domain="foreign" refentity="fw_access_control_list" refattr="id" doc="The parent"/>
+        <Attribute name="_path" domain="string" doc="Auxiliary tree path to facilitate list childs and parents "/>
+        <Attribute name="is_inherited" domain="bool" doc="Inherits entries from parent?"/>
+        <Template name="fw.identity.notRequired.long"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_access_control_list_entry" doc="An entry in an acl">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_acl" domain="foreign" refentity="fw_access_control_list" refattr="id" doc="The access control list"/>
+        <Attribute name="id_permission" domain="foreign" refentity="fw_permission" refattr="id" doc="The role of this entry to apply to group or person"/>
+        <Attribute name="id_person_group" domain="foreign" refentity="fw_person_group" refattr="id" doc="The group to apply this role"/>
+        <Attribute name="id_person" domain="foreign" refentity="fw_person" refattr="id" doc="The person to apply this role"/>
+        <!--Attribute name="is_allowed" domain="bool" doc="Allow (1) or Deny (0) "/-->
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>    
+    
+    <!-- Pages widgets and Menus -->
+    <Entity name="fw_widget" doc="An element to display on a page">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity.long" />
+				<Attribute name="init_flow" domain="xml" required="false" doc="The application init_flow" />
+				<Attribute name="configuration" domain="xml" required="false" doc="Application configuration" />
+				<Attribute name="is_active" domain="bool" default="1" doc="Is this page active?" />
+				<Attribute name="is_configurable" domain="bool" default="1" doc="Is this page active?" />
+				<Attribute name="modal" domain="string" required="false" doc="Modal template to load the widget." />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_page" doc="A page is a collection of widgets to display">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity.long" />
+				<Attribute name="is_active" domain="bool" default="1" doc="Is this page active?" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_page_widget" doc="Page Widgets">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_page" domain="foreign" refentity="fw_page" refattr="id" required="true" doc="The page"/>
+        <Attribute name="id_widget" domain="foreign" refentity="fw_widget" refattr="id" required="true" doc="The widget"/>
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_menu" doc="A page is a collection of widgets to display">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity.long" />
+				<Attribute name="is_menu" domain="bool" default="1" doc="Is this a menu or a menu item?" />				
+				<Attribute name="is_active" domain="bool" default="1" doc="Is this menu active?" />
+				<!-- Not a menu -->
+				<Attribute name="id_menu_item" domain="foreign" refentity="fw_menu" refattr="id" required="false" doc="The menu"/>
+        <Attribute name="id_page" domain="foreign" refentity="fw_page" refattr="id" required="false" doc="The page"/>
+        <Attribute name="url" domain="string" required="false" doc="An external url to go to"/>
+        <Attribute name="icon" domain="string" required="false" doc="Menu item icon"/>
+        <Attribute name="type" domain="string" required="false" doc="Menu item type for the color"/>
+				
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>    
+    
+    <!-- Legacy roles -->
+    
+    <!-- Entity name="fw_role" doc="The role base data">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity" />        
+				<Attribute name="is_active" domain="bool" default="1" doc="Is this role active?" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_capability" doc="The capability base data">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Template name="fw.identity" />
+        <Attribute name="is_global" domain="bool" default="0" doc="This capability is only for one company or applies to all companies?" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_role_capability" doc="Link between role and capability">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_role" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The role"/>
+        <Attribute name="id_capability" domain="foreign" refentity="fw_capability" refattr="id" required="true" doc="The role"/>
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_allocation" doc="Link between a user and a role">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_user" domain="foreign" refentity="fw_user" refattr="id" required="true" doc="The user"/>
+        <Attribute name="id_role" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The role"/>
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity-->
+    
+    <!--Entity name="fw_template" doc="The template for components/plugins">
+      <Attributes>
+        <Attribute name="id" domain="id" doc="id" />
+        <Attribute name="name" domain="name" doc="Name for template" />
+        <Attribute name="short_name" domain="text" doc="Short name for template" />
+        <Attribute name="code" domain="code" doc="Code for template" />
+        <Attribute name="order" domain="order" doc="Order for sorting template" />
+        <Attribute name="minoccurs" domain="occurs" doc="min occurencies" />
+        <Attribute name="maxoccurs" domain="occurs" doc="max occurencies" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_template_attribute" doc="The template attributes for components/plugins">
+      <Attributes>
+        <Attribute name="id" domain="id" doc="id" />
+        <Attribute name="id_template" domain="foreign" refentity="fw_rm_template" refattr="id" doc="id of template" />
+        <Attribute name="name" domain="name" doc="Name for attribute" />
+        <Attribute name="short_name" domain="text" doc="Short name for attribute" />
+        <Attribute name="code" domain="code" doc="Code for attribute" />
+        <Attribute name="value" domain="value" doc="Value for attribute" />
+        <Attribute name="order" domain="order" doc="Order for sorting attribute" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity-->
+
+  </Entities>
+</Node>

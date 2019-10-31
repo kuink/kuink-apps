@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions>
+    </Permissions>
+    <Params>
+        <Param name="aggregation_code" />
+        <Param name="guid" />
+    </Params>
+    <Doc lang="pt-PT">
+    </Doc>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib" />
+        <Use name="UtilsLib" type="lib" />
+    </Libraries>
+    <Configuration />
+    <Screens>
+        <Screen id="FW_RecordsManagment_screenAggregation" name="FW_RecordsManagment_screenAggregation">
+            <Grid name="FW_RecordsManagment_RecordsGrid" id="FW_RecordsManagment_RecordsGrid"
+                tree="true" treeid="id" treeparentid="id_parent" treecollapsed="true">
+                <Template>
+                    <Columns>
+                        <Column id="id" name="id" visible="false" />
+                        <Column id="id_parent" name="id_parent" visible="false" />
+                        <Column id="name" name="name" />
+                        <Column id="id_file" name="id_file">
+                            <Formatter name="FileDownload" />
+                        </Column>
+                        <Column id="_creation" name="_creation">
+                            <Formatter name="DateTime" method="shortDateTimeSec" />
+                        </Column>
+                        <Column id="has_record" name="has_record" visible="false" />
+                    </Columns>
+                    <Actions>
+                        <Action name="deleteRecord" label="delete" conditionalfield="has_record" icon="times"
+                            conditionalvalue="1" actionvalue="name" />
+                    </Actions>
+                </Template>
+            </Grid>
+        </Screen>
+    </Screens>
+    <Actions>
+
+        <Action name="init" screen="FW_RecordsManagment_screenAggregation">
+            <Var name="PARAMS" dump="true"/>
+            <Var name="aggregation_type" >
+                <Call library="framework,record.aggregation.type,api" function="getByCode">
+                    <Param name="code">
+                        <Var name="PARAMS" key="aggregation_code" />
+                    </Param>
+                </Call>
+            </Var>
+
+
+            <!-- 1) Get aggregation type -->
+            <Var name="aggregationType" >
+                <Call library="framework,record.aggregation.type,api" function="getByCode">
+                    <Param name="code">
+                        <Var name="PARAMS" key="aggregation_code" />
+                    </Param>
+                </Call>
+            </Var>
+            <!-- 1.1) Create row without id_parent -->
+            <Var name="aggregation" key="id">
+                <UtilsLib method="GuidClean" />
+            </Var>
+            <Var name="aggregation" key="name">
+                <Var name="aggregationType" key="name" />
+            </Var>
+            <Var name="data" key="">
+                <Var name="aggregation" />
+            </Var>
+
+            <!-- 2) Get all classification items by aggregation type and guid -->
+            <Var name="classificationItems" >
+                <Call library="framework,classification.item,api" function="getClassificationItemsByAggregationType">
+                    <Param name="id_aggregation_type">
+                        <Var name="aggregationType" key="id" />
+                    </Param>
+                    <Param name="guid">
+                        <Var name="PARAMS" key="guid" />
+                    </Param>
+                </Call>
+            </Var>
+            <!-- 2.1) ForEach classification item -->
+            <ForEach var="classificationItems" item="classificationItem">
+                <!-- 2.1.1) Create a row for classification item (parent = aggregation type id) -->
+                <Var name="classificationItemRow" key="id">
+                    <Var name="classificationItem" key="id" />
+                </Var>
+                <Var name="classificationItemRow" key="name">
+                    <Var name="classificationItem" key="name" />
+                </Var>
+                <Var name="classificationItemRow" key="id_parent">
+                    <Var name="aggregation" key="id" />
+                </Var>
+                <Var name="data" key="">
+                    <Var name="classificationItemRow" />
+                </Var>
+                <!-- 2.1.2) Get records by classification item -->
+                <Var name="recordsByClassificationItem">
+                    <Call library="framework,record,api" function="getByAggregationTypeCode">
+                        <Param name="aggregation_type_code">
+                            <Var name="PARAMS" key="aggregation_code" />
+                        </Param>
+                        <Param name="guid">
+                            <Var name="PARAMS" key="guid" />
+                        </Param>
+                        <Param name="id_classification_item">
+                            <Var name="classificationItem" key="id" />
+                        </Param>
+                    </Call>
+                </Var>
+                <!-- 2.1.2.1) ForEach record -->
+                <ForEach var="recordsByClassificationItem" item="record">
+                    <!-- 2.1.2.2) Create row for record (parent = classification item) -->
+                    <Var name="record" key="id">
+                        <Var name="record" key="id" />
+                    </Var>
+                    <Var name="record" key="id_parent">
+                        <Var name="classificationItem" key="id" />
+                    </Var>
+                    <Var name="record" key="id_file">
+                        <Var name="record" key="id_file" />
+                    </Var>
+                    <Var name="record" key="name">
+                        <Var name="record" key="guid" />
+                    </Var>
+                    <Var name="record" key="has_record">1</Var>
+                    <Var name="record" key="_creation">
+                        <Var name="record" key="_creation" />
+                    </Var>
+                    <Var name="data" key="">
+                        <Var name="record" />
+                    </Var>
+                </ForEach>
+
+            </ForEach>
+            <Control method="bind" object="FW_RecordsManagment_RecordsGrid">
+                <Param>
+                    <Var name="data" dump="true"/>
+                </Param>
+            </Control>
+        </Action>
+
+        <Action name="deleteRecord"/>
+
+    </Actions>
+    <Library forceinterface="true">
+    </Library>
+</Node>

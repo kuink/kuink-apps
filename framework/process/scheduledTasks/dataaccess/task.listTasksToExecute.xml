@@ -1,0 +1,24 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+    returns the list of scheduled task to run
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <Sql>
+             <![CDATA[
+ 				SELECT 
+ 					t.*
+ 				FROM 
+ 					fw_task t
+ 				WHERE
+ 					t.active = 1 
+ 					AND t.run_next <= '{param->now}'
+                    AND t.run_next != 0 
+                    AND t.run_next != '' 
+                    AND t.run_next IS NOT NULL
+            ]]>
+        </Sql>
+    </Body>
+</Method>

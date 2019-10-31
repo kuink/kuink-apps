@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="FileLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getDirContent" doc="Get a directory content ">
+      <Params>
+        <Param name="path" type="string" required="true"/>
+      </Params>
+
+      <Return type="multiple" doc=""/>
+      <Begin>
+        <!-- if Id is 0 replace with empty -->
+        <Var name="currentPath"><Var name="path"/></Var>
+        <If condition="$path == '0'">
+          <Then><Var name="currentPath"><Null/></Var></Then>
+        </If>
+
+        <!--Determine level-->
+        <Var name="level">
+          <FileLib method="getLevel">
+            <Param name="path"><Var name="currentPath"/></Param>
+          </FileLib>
+        </Var>
+        <!-- Getting the subdirs and files -->
+        <Var name="dirs">
+          <FileLib method="getSubDirs">
+            <Param name="path"><Var name="currentPath"/></Param>
+          </FileLib>
+        </Var>
+        <Var name="files">
+          <FileLib method="getFiles">
+            <Param name="path"><Var name="currentPath"/></Param>
+          </FileLib>
+        </Var>
+        <!--Build the result -->
+        <ForEach var="dirs" item="dir">
+          <Var name="result" key="id">
+            <String parse="true">$currentPath/$dir</String>
+          </Var>
+          <Var name="result" key="name"><Var name="dir"/></Var>
+          <Var name="result" key="level"><Var name="level"/></Var>
+          <Var name="result" key="type">default</Var>
+          <Var name="nodes" key=""><Var name="result"/></Var>
+        </ForEach>
+        <ForEach var="files" item="file">
+          <Var name="result" key="id">
+            <String parse="true">$currentPath/$file</String>
+          </Var>
+          <Var name="result" key="name"><Var name="file"/></Var>
+          <Var name="result" key="level"><Var name="level"/></Var>
+          <Var name="result" key="type">default</Var>
+          <Var name="nodes" key=""><Var name="result"/></Var>
+        </ForEach>
+        <Var name="nodesResult" key="nodes"><Var name="nodes"/></Var>
+        <Return>
+          <Var name="nodesResult" dump="true"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getFileContent" doc="Get a file contents ">
+      <Params>
+        <Param name="path" type="string" required="true"/>
+      </Params>
+
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="result">
+          <FileLib method="getFileContent">
+            <Param name="path"><Var name="path"/></Param>
+          </FileLib>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="setFileContent" doc="Set a file content">
+      <Params>
+        <Param name="path" type="string" required="true"/>
+        <Param name="content" type="string" required="true"/>
+      </Params>
+
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="result">
+          <FileLib method="setFileContent">
+            <Param name="path"><Var name="path"/></Param>
+            <Param name="content"><Var name="content"/></Param>
+          </FileLib>
+        </Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="createFileOrDirectory" doc="Creates a file or directory. If it has a dot then is a file, else is a directory.">
+      <Params>
+        <Param name="path" type="string" required="true"/>
+        <Param name="name" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="createResult">
+          <FileLib method="createFileOrDirectory">
+            <Param name="path"><Var name="path"/></Param>
+            <Param name="name"><Var name="name"/></Param>
+          </FileLib>
+        </Var>
+
+        <Var name="result" key="id">
+          <String parse="true">$path/$name</String>
+        </Var>
+        <Var name="result" key="name"><Var name="name"/></Var>
+        <Var name="result" key="level">
+            <FileLib method="getLevel">
+              <Param name="path"><Var name="result" key="id"/></Param>
+            </FileLib>
+        </Var>
+        <Var name="result" key="type">default</Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="renameFileOrDirectory" doc="Renames a file or directory. If it has a dot then is a file, else is a directory.">
+      <Params>
+        <Param name="oldName" type="string" required="true"/>
+        <Param name="path" type="string" required="true"/>
+        <Param name="name" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Var name="newName"><String parse="true">$path/$name</String></Var>
+        <Var name="renameResult">
+          <FileLib method="renameFileOrDirectory">
+            <Param name="oldName"><Var name="oldName"/></Param>
+            <Param name="newName"><Var name="newName"/></Param>
+          </FileLib>
+        </Var>
+
+        <Var name="result" key="id">
+          <Var name="newName"/>
+        </Var>
+        <Var name="result" key="name"><Var name="name"/></Var>
+        <Var name="result" key="level">
+            <FileLib method="getLevel">
+              <Param name="path"><Var name="newName"/></Param>
+            </FileLib>
+        </Var>
+        <Var name="result" key="type">default</Var>
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="deleteFileOrDirectory" doc="Deletes a file or directory. If it has a dot then is a file, else is a directory.">
+      <Params>
+        <Param name="path" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <FileLib method="deleteFileOrDirectory">
+          <Param name="path"><Var name="path"/></Param>
+        </FileLib>
+
+        <Return>1</Return>
+      </Begin>
+    </Function>
+
+    <Function name="getFileType" doc="Get the kuink file type.">
+      <Params>
+        <Param name="path" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <FileLib method="getFileType">
+            <Param name="path"><Var name="path"/></Param>
+          </FileLib>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="saveRecentFile" doc="Saves a recent file">
+      <Params>
+        <Param name="path" type="string" required="true"/>
+        <Param name="type" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="getFunctionMetadata" doc="Gets a function metadata">
+      <Params>
+        <Param name="function" type="string" required="true" doc="Function complete reference app,proc,node,function"/>
+      </Params>
+      <Return type="single" doc=""/>
+      <Begin>
+        <Var name="metadata" dump="true">
+          <ReflectionLib method="getFunctionMetadata">
+            <Param><Var name="function"/></Param>
+          </ReflectionLib>
+        </Var>
+        <Return><Var name="metadata"/></Return>
+      </Begin>
+    </Function>    
+
+    <Function name="getFunctionsMetadata" doc="Gets an api functions metadata">
+      <Params>
+        <Param name="library" type="string" required="true" doc="Library complete reference app,proc,node"/>
+      </Params>
+      <Return type="multiple" doc=""/>
+      <Begin>
+      <Var name="splitedLibrary" dump="true"><ListToSet><Var name="library"/></ListToSet></Var>
+        <Var name="metadata" dump="true">
+          <ReflectionLib method="getApi">
+            <Param name="application"><Var name="splitedLibrary" key="0"/></Param>
+            <Param name="process"><Var name="splitedLibrary" key="1"/></Param>
+          </ReflectionLib>
+        </Var>
+        <Return><Var name="metadata"/></Return>
+      </Begin>
+    </Function> 
+
+    <Function name="searchLibrary" doc="Get libraries ">
+      <Params>
+        <Param name="id" type="string" required="false" doc=" if this is set, library is used the id: app,proc,node"/>
+        <Param name="library" type="string" required="false" doc="app,proc,node"/>
+      </Params>
+      <Return type="multiple" doc=""/>
+      <Begin>
+        <If condition="$id != ''">
+					<Then>
+					 <Var name="library"><Var name="id"/></Var>
+					</Then>
+				</If>
+        <Var name="splitedLibrary" dump="true"><ListToSet><Var name="library"/></ListToSet></Var>
+        <If condition="$splitedLibrary->__length == 1 ">
+					<Then>
+					 <Var name="bases">
+             <ReflectionLib method="getBases"/>
+					 </Var>
+					 <ForEach var="bases" item="base">
+             	<Var name="baseApps" dump="true">
+             	  <ReflectionLib method="getApplications">
+             	    <Param name="base"><Var name="base" key="name"/></Param>
+             	  </ReflectionLib>
+             	</Var>
+              <ForEach var="baseApps" item="app">
+                <Var name="contains">
+                  <StringLib method="startsWith">
+                    <Param><Var name="app" key="name"/></Param>
+                    <Param><Var name="splitedLibrary" key="0"/></Param>
+                  </StringLib>
+                </Var>
+                <If condition="$contains == 1">
+									<Then>
+		                <Var name="item" key="id"><Var name="app" key="name"/></Var>
+		                <Var name="item" key="name"><Var name="app" key="name"/></Var>
+		                <Var name="response" key=""><Var name="item"/></Var>									
+									</Then>
+								</If>
+              </ForEach>
+           </ForEach>
+					</Then>
+					<Else>
+					</Else>
+				</If>
+				
+        <If condition="$splitedLibrary->__length == 2">
+          <Then>
+           <Var name="application" dump="true"><Var name="splitedLibrary" key="0"/></Var>
+           <Var name="processSearch"><String><Var name="splitedLibrary" key="1"/></String></Var>
+           <Var name="processes" dump="true">
+             <ReflectionLib method="getApplicationProcesses">
+              <Param name="application"><Var name="application"/></Param>
+             </ReflectionLib>
+           </Var>
+           <ForEach var="processes" item="process">
+             <Var name="contains">
+               <StringLib method="startsWith">
+                 <Param><Var name="process" key="name"/></Param>
+                 <Param><Var name="splitedLibrary" key="1"/></Param>
+               </StringLib>
+             </Var>
+             <If condition="($contains == 1) || ($processSearch == '')">
+               <Then>
+                 <!-- Get the process libraries -->
+			           <Var name="libraries" dump="true">
+			             <ReflectionLib method="getProcessLibraries">
+			              <Param name="application"><Var name="application"/></Param>
+			              <Param name="process"><Var name="process" key="name"/></Param>
+			             </ReflectionLib>
+			           </Var>
+			           <ForEach var="libraries" item="library">
+	                 <Var name="item" key="id"><String parse="true">$application,$process->name,$library->name</String></Var>
+	                 <Var name="item" key="name"><String parse="true">$application,$process->name,$library->name</String></Var>
+	                 <Var name="response" key=""><Var name="item"/></Var>
+			           </ForEach>                                  
+              </Then>
+             </If>
+           </ForEach>
+          </Then>
+          <Else>
+          </Else>
+        </If>
+        <If condition="$splitedLibrary->__length == 3">
+          <Then>
+           <Var name="application"><Var name="splitedLibrary" key="0"/></Var>
+           <Var name="process"><Var name="splitedLibrary" key="1"/></Var>
+           <Var name="librarySearch"><Var name="splitedLibrary" key="2"/></Var>
+           <Var name="libraries" dump="true">
+             <ReflectionLib method="getProcessLibraries">
+              <Param name="application"><Var name="application"/></Param>
+              <Param name="process"><Var name="process"/></Param>
+             </ReflectionLib>
+           </Var>
+           <ForEach var="libraries" item="library">
+             <Var name="contains">
+               <StringLib method="startsWith">
+                 <Param><Var name="library" key="name"/></Param>
+                 <Param><Var name="splitedLibrary" key="2"/></Param>
+               </StringLib>
+             </Var>
+             <If condition="$contains == 1 || $librarySearch == ''">
+               <Then>
+                 <Var name="item" key="id"><String parse="true">$application,$process,$library->name</String></Var>
+                <Var name="item" key="name"><String parse="true">$application,$process,$library->name</String></Var>
+                <Var name="response" key=""><Var name="item"/></Var>
+               </Then>
+             </If>
+           </ForEach>
+          </Then>
+          <Else>
+          </Else>
+        </If>
+        <Var name="response" dump="true"/>
+				<Var name="returnResponse"><Var name="response"/></Var>
+        <If condition="$id != '' &amp;&amp; $response->__length &gt; 0">
+          <Then>
+           <Var name="returnResponse"><Var name="response" key="0"/></Var>
+          </Then>
+        </If>				
+        <Return><Var name="returnResponse" dump="true"/></Return>
+      </Begin>
+    </Function>    
+
+  </Library>
+</Node>

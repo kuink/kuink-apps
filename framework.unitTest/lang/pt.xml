@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+      <String key="run" value="Testes Unitários"/>
+      <String key="runTests" value="Correr Testes"/>
+      <String key="number" value="#Teste"/>
+      <String key="library" value="Biblioteca"/>
+      <String key="doc" value="Documentação"/>
+      <String key="result" value="Resultado"/>
+      <String key="data" value="Dados"/>
+      <String key="testResult" value="Resultado dos testes"/>
+      <String key="errorsFound" value="Foram encontrados {0} erro(s)!"/>
+      <String key="errorsNotFound" value="Não foram encontrados erros!"/>
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

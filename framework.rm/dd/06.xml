@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains>
+  </Domains>
+  <Templates>
+  </Templates>
+  <Entities>
+
+    <Entity name="fw_rm_aggregation_type" doc="Definition of an entity">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" doc="The identifying name or title of the entity" />
+        <Attribute name="code" domain="code" required="true" doc="The identifying code" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="rel_entity" domain="string" required="true" doc="The related entity name" />
+        <Attribute name="rel_attribute" domain="string" required="true" doc="The related entity ttribute in rel_entity" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>    
+    <Entity name="fw_rm_aggregation" doc="Aggregation of individual records or higher level aggregation of aggregations of records">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="id_aggregation_type" domain="foreign" refentity="fw_rm_aggregation_type" refattr="id" doc="The aggregation type it's needed to get the related data from the original entity" />        
+        <Attribute name="last_addition" domain="timestamp" doc="System set date and time indicating when the most recent record or child aggregation was added to the parent aggregation" />
+        <Attribute name="aggregated" domain="timestamp" doc="System set date and time when this child aggregation was created in, or added to, its current aggregation" />
+        <Attribute name="id_class" domain="foreign" refentity="fw_rm_class" refattr="id" doc="The classification of the entity, used by child aggregations and records to override the class they inherit from their parent aggregation" />
+        <Attribute name="name" domain="name" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="closed" domain="timestamp" doc="System set date and time when the aggregation was closed" />
+        <Attribute name="id_parent" domain="foreign" refentity="fw_rm_aggregation" refattr="id" doc="The parent aggregation for a child aggregation or record" />
+        <Attribute name="tree_path" domain="string" size="256" required="true" doc="Full path to this child in the tree" />
+        <Attribute name="tree_level" domain="positiveInt" required="true" doc="Level of this child in the tree" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_rm_record" doc="Record made up of one or more components">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="id_class" domain="foreign" required="true" refentity="fw_rm_class" refattr="id" doc="The classification of the entity, used by child aggregations and records to override the class they inherit from their parent aggregation" />
+        <Attribute name="id_disposal_schedule" domain="foreign" required="true" refentity="fw_rm_disposal_schedule" refattr="id" doc="id of the disposal schedule" />
+        <Attribute name="transferred" domain="timestamp" doc="System set date and time indicating when the transfer of the record was confirmed" />
+        <Attribute name="retention_date" domain="timestamp" doc="System generated date calculated from the record's disposal schedule" />
+        <Attribute name="disposal_due_date" domain="timestamp" doc="The calculated date that the record is due for disposal" />
+        <Attribute name="disposal_confirmation_date" domain="timestamp" doc="The calculated date by which confirmation of carrying out the disposal action is due" />
+        <Attribute name="disposal_alert_date" domain="timestamp" doc="System set date and time when an alert was sent because the record was overdue for disposal" />
+        <Attribute name="disposal_last_review_comment" domain="text" doc="Comment made by the user who last reviewed the record regarding the disposal decision" />
+        <Attribute name="disposal_last_review_date" domain="timestamp" doc="System set date and time of when the last review was completed" />
+        <Attribute name="last_xml" domain="longText" doc="The xml containing the metadata of the record" />
+        <Attribute name="is_archived" domain="bool" default="0" doc="Flag identifying if the record has been completely processed and archived" />
+        <Attribute name="is_final" default="1" domain="bool" doc="Flag that indicates whether or not a record is temporary" />
+        <Attribute name="id_wf_instance" domain="foreign" refentity="fw_wf_process_instance" refattr="id" doc="id of the workflow instance" />
+        <Attribute name="id_access_level_classification" domain="foreign" refentity="fw_rm_access_level_classification" refattr="id" doc="id of the access level classification" />        
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

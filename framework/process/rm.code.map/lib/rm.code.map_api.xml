@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getIdByCode" doc="Get id by code">
+      <Params>
+        <Param name="code" doc="The code"/>
+      </Params>
+      <Return type="int" doc="The id of code"/>
+      <Begin>
+        <Var name="code_map">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_code_map</Param>
+            <Param name="code"><Var name="PARAMS" key="code" /></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="code_map" key="id" />
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAllByTypeCode" doc="Get all code maps by type code">
+      <Params>
+        <Param name="type_code" doc="The code of the map_code_type"/>
+      </Params>
+      <Return type="multiple" doc=""/>
+      <Begin>
+        <Var name="code_map">
+          <DataAccess method="this,this,getAllByTypeCode">
+            <Param name="type_code"><Var name="PARAMS" key="type_code" /></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="code_map"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+  </Library>
+</Node>

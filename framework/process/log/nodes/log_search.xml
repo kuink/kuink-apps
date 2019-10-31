@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+        <Use name="FormControl" type="control"/>
+        <Use name="GridControl" type="control"/>
+        <Use name="UserFormatter" type="formatter"/>
+        <Use name="DateTimeFormatter" type="formatter"/>
+    </Libraries>
+    <Screens>
+        <Screen id="searchRecords">
+            <Form name="searchRecordsForm" >
+                <Header id="headSearch" label="search" help="true"/>
+                <!--Text id="nome" label="nome" visible="true" required="false"  help="true"/-->
+                <Text id="application" label="application"/>
+                <Text id="process" label="process"/>
+                <Text id="node" label="node"/>
+                <Text id="action_name" label="action"/>
+                <Text id="id_user" label="user"/>
+                <Text id="key" label="key"/>
+                <Header/>
+
+                    <Button type="submit" id="search" label="search" action="search"/>
+ 
+            </Form>
+            <Grid name="searchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search">
+                <Template>
+                    <Columns>
+                        <Column name="id" label="id"/>
+                        <Column name="id_user" label="user"><!--UserFormatter method="small"/--></Column>
+                        <Column name="display_name" label="display_name"/>
+                        <Column name="timestamp" label="timestamp"><DateTimeFormatter method="shortDate"/></Column>
+                        <Column name="application" label="application"/>
+                        <Column name="process" label="process"/>
+                        <Column name="node" label="node"/>
+                        <Column name="action" label="action"/>
+                        <Column name="log_key" label="key"/>
+                        <Column name="message" label="message"/>
+                    </Columns>
+                </Template>
+            </Grid>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init">
+            <Var name="searchFormDataSession" session="true" clear="true"/>
+            <Action name="search" />
+        </Action>
+        <Action name="search" screen="searchRecords">
+            <Var name="searchFormDataFilled">
+                <IsNull>
+                    <Param>
+                        <Var name="POSTDATA"/>
+                    </Param>
+                    <Param>
+                        <Var name="searchFormDataSession" session="true"/>
+                    </Param>
+                </IsNull>
+            </Var>
+            <Var name="searchFormDataSession" session="true">
+                <Var name="searchFormDataFilled"/></Var>
+            <Var name="searchRecords">
+                <!--Execute method="this,this,gerir.pesquisa"-->
+                <Execute method="this,this,log.search" params="searchFormDataFilled">
+                    <Param name="pagesize">
+                        <GridControl method="getPageSize" object="searchResult"/>
+                    </Param>
+                    <Param name="pagenum">
+                        <GetParam name="page"/>
+                    </Param>
+                </Execute>
+            </Var>
+            <FormControl method="bind" object="searchRecordsForm">
+                <Param>
+                    <Var name="searchFormDataSession" session="true"/>
+                </Param>
+            </FormControl>
+            <GridControl method="bind" object="searchResult">
+                <Param><Var name="searchRecords"/></Param>
+            </GridControl>
+        </Action>
+	</Actions>
+</Node>
+

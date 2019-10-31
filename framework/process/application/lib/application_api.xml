@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="ReflectionLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens />
+  <Actions>
+    <Action name="init"/>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getUpdateState" doc="">
+      <Params>
+        <Param name="id" type="int" doc="Application id"/>
+        <Param name="application" type="string" doc="Application code"/>
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="multiple" doc="The update state"/>
+      <Begin>
+        <Var name="application">
+          <DataAccess method="load">
+						<Param name="_entity">fw_application</Param>
+						<Param name="id"><Var name="id"/></Param>
+						<Param name="code"><Var name="application"/></Param>
+					</DataAccess>
+        </Var>
+      
+        <!-- Get all api's in _install process -->
+        <Var name="availableUpdates">
+          <ReflectionLib method="getProcessLibraries">
+            <Param name="application"><Var name="application" key="code"/></Param>
+            <Param name="process"><String>_install</String></Param>
+          </ReflectionLib>
+        </Var>
+        
+        <Var name="updateState"><Set/></Var>
+        
+        <ForEach var="availableUpdates" item="update">
+          <Var name="state"><Set/></Var>
+          <Var name="state" key="version"><Var name="update" key="name"/></Var>
+          <Var name="state" key="versionFullCode">
+						<String.concatenate>
+							<Param><Var name="application" key="code"/></Param>
+							<Param>,</Param>
+							<Param><Var name="update" key="name"/></Param>							
+						</String.concatenate>
+					</Var>
+          <Var name="installedUpdate">
+            <DataAccess method="load">
+							<Param name="_entity">fw_application_update</Param>
+							<Param name="id_application"><Var name="application" key="id"/></Param>
+							<Param name="version"><Var name="update" key="name"/></Param>
+						</DataAccess>
+          </Var>
+          <Var name="library">
+						<String.concatenate>
+							<Param><Var name="application" key="code"/></Param>
+							<Param>,_install,</Param>
+							<Param><Var name="update" key="name"/></Param>							
+						</String.concatenate>
+					</Var>
+          <Try>
+						<Instructions>
+              <Var name="state" key="releaseNotes">
+                <Call library="$library" function="getReleaseNotes"/>
+              </Var>
+						</Instructions>
+						<Catch>
+						  <Var name="state" key="releaseNotes"><Null/></Var>
+						</Catch>	
+					</Try>
+					<Var name="state" key="application"><Var name="application" key="code"/></Var>
+          
+          <If condition="$installedUpdate->__length != 0">
+						<Then>
+						  <Var name="state" key="id"><Var name="installedUpdate" key="id"/></Var>
+						  <Var name="state" key="installed"><Int>1</Int></Var>
+						  <Var name="state" key="_creation"><Var name="installedUpdate" key="_creation"/></Var>
+						  <Var name="state" key="_id_creator"><Var name="installedUpdate" key="_id_creator"/></Var>
+						</Then>
+						<Else>
+						  <Var name="state" key="id"><Null/></Var>
+              <Var name="state" key="installed"><Int>0</Int></Var>
+              <Var name="state" key="_creation"><Null/></Var>
+              <Var name="state" key="_creator"><Null/></Var>
+						</Else>
+					</If>
+          <Var name="updateState" key=""><Var name="state"/></Var>
+        </ForEach>
+        
+        <Return><Var name="updateState"/></Return>
+      </Begin>
+    </Function>
+    
+    <Function scope="public" name="numUpdatesToInstall" doc="Get the number of updates to intall">
+			<Params>
+			 <Param name="application" type="string" doc="The application code to check"/>
+			</Params>
+			<Return type="int"/>
+			<Begin>
+			   <Var name="updates">
+				  <Call function="getUpdateState">
+						<Param name="application"><Var name="application"/></Param>
+					</Call>
+				</Var>
+				<Var name="toInstall"><Int>0</Int></Var>
+			  <ForEach var="updates" item="update">
+			   <If condition="$update->installed == 0">
+						<Then>
+              <Var name="toInstall" sum="1"/>						
+						</Then>
+					</If>
+        </ForEach>
+        <Return><Var name="toInstall"/></Return>
+			</Begin>
+		</Function>
+
+    <Function scope="public" name="getAllWithUpdateState" doc="Get all applications registered and nor registered with update status">
+			<Params>
+			</Params>
+			<Return type="multiple" doc="">
+        <External name="base" type="text" doc=""/>
+				<External name="name" type="text" doc=""/>
+				<External name="is_registered" type="text" doc=""/>
+				<External name="to_install" type="text" doc=""/>
+				<External name="full_code" type="text" doc=""/>
+				<External name="in_maintenance" type="text" doc=""/>
+				<External name="is_active" type="text" doc=""/>
+			</Return>
+			<Begin>
+			 <Var name="applications"><Set/></Var>
+        <Var name="physicalBasesRaw">
+          <ReflectionLib method="getBases"/>
+        </Var>
+        <Var name="physicalBases"><Set/></Var>
+        <Var name="element" key="name">framework</Var>
+        <Var name="physicalBases" key=""><Var name="element"/></Var>
+        <ForEach var="physicalBasesRaw" item="physicalBaseRaw">
+        	<If condition="$physicalBaseRaw->name != 'framework'">
+						<Then>
+			        <Var name="physicalBases" key=""><Var name="physicalBaseRaw"/></Var>
+						</Then>
+					</If>
+        </ForEach>
+        
+        <ForEach var="physicalBases" item="physicalBase">
+          <!-- Get all physycalApplications -->
+	        <Var name="physicalApplications">
+	          <ReflectionLib method="getApplications">
+	            <Param name="base"><Var name="physicalBase" key="name"/></Param>
+	          </ReflectionLib>
+	        </Var>
+	        <ForEach var="physicalApplications" item="physicalApplication">
+	          <!-- Check to see if this is really an application by checking application.xml -->
+		        <Var name="isApplication">
+			        <ReflectionLib method="isPhysicalApplication">
+	              <Param name="base"><Var name="physicalBase" key="name"/></Param>
+	              <Param name="application"><Var name="physicalApplication" key="name"/></Param>
+	            </ReflectionLib>
+		        </Var>
+		        <If condition="$isApplication == 1">
+							<Then>
+							 <Var name="logicalApplication">
+							   <DataAccess method="load">
+										<Param name="_entity">fw_application</Param>
+										<Param name="code"><Var name="physicalApplication" key="name"/></Param>
+									</DataAccess>
+							 </Var>
+							
+							 <Var name="updatesToInstall">
+								 <Call function="numUpdatesToInstall">
+										<Param name="application"><Var name="physicalApplication" key="name"/></Param>
+									</Call>
+							 </Var>
+               <Var name="isRegistered">
+                 <Call function="isRegistered">
+                    <Param name="application"><Var name="physicalApplication" key="name"/></Param>
+                  </Call>
+               </Var>
+							 <Var name="physicalApplication" key="is_registered"><Var name="isRegistered"/></Var>
+							 <If condition="$isRegistered == 0">
+									<Then>
+									   <Var name="physicalApplication" key="to_install"><Int>-1</Int></Var>
+									   <Var name="physicalApplication" key="update_status"><String/></Var>
+									</Then>
+									<Else>
+			               <Var name="physicalApplication" key="to_install"><Var name="updatesToInstall"/></Var>
+			               <Var name="updateLang"><Lang key="update"/></Var>
+			               <Var name="physicalApplication" key="update_status">
+			                 <If condition="$updatesToInstall == 0">
+			                    <Then><Lang key="updated"/></Then>
+			                    <Else><String.parse>$updateLang ($updatesToInstall)</String.parse></Else>
+			                  </If>
+			               </Var>
+									</Else>
+							 </If>
+									
+							 <Var name="physicalApplication" key="base"><Var name="physicalBase" key="name"/></Var>
+							 <Var name="physicalApplication" key="full_code"><String.parse>$physicalBase->name,$physicalApplication->name</String.parse></Var>
+							 
+							 <If condition="$logicalApplication->__length > 0">
+									<Then>
+								    <Var name="physicalApplication" key="in_maintenance"><Var name="logicalApplication" key="in_maintenance"/></Var>	
+								    <Var name="physicalApplication" key="is_active"><Var name="logicalApplication" key="is_active"/></Var>
+									</Then>
+									<Else>
+                    <Var name="physicalApplication" key="in_maintenance"><Int>0</Int></Var>									
+                    <Var name="physicalApplication" key="is_active"><Int>0</Int></Var>
+									</Else>
+							 </If>
+								
+							 <Var name="applications" key=""><Var name="physicalApplication"/></Var>
+							</Then>
+							<Else>
+								<!--Trace><String.parse>Not an app: $physicalApplication->name $isApplication</String.parse></Trace-->
+							</Else>
+						</If>
+          </ForEach>	        
+        </ForEach>
+        <Return><Var name="applications"/></Return>			 
+			</Begin>
+		</Function>
+
+    <Function scope="public" name="register" doc="Registers an application in the system">
+      <Params>
+       <Param name="base" type="string" doc="The base of the application"/>
+       <Param name="application" type="string" doc="Application code"/>
+      </Params>
+      <Return type="int"/>
+      <Begin>
+				<Var name="app">
+					<DataAccess method="load">
+						<Param name="_entity">fw_application</Param>
+            <Param name="app_base"><Var name="base"/></Param>
+            <Param name="code"><Var name="application"/></Param>
+					</DataAccess>
+				</Var>
+				<If condition="$app->__length == 0">
+					<Then>
+						<Var name="id">
+							<DataAccess method="insert">
+									<Param name="_entity">fw_application</Param>
+									<Param name="app_base"><Var name="base"/></Param>
+									<Param name="code"><Var name="application"/></Param>
+									<Param name="is_active"><Int>1</Int></Param>
+									<Param name="in_maintenance"><Int>0</Int></Param>
+									<Param name="version"><String>1.0.0</String></Param>
+									<Param name="_base"><String>true</String></Param>
+							</DataAccess>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="id"><Var name="app" key="id"/></Var>
+					</Else>
+				</If>
+        <Return><Var name="id"/></Return>
+      </Begin>
+    </Function>
+
+		<Function scope="public" name="isRegistered" doc="Check if an application is registered">
+			<Params>
+			 <Param name="application" type="string" doc="Application to check"/>
+			</Params>
+			<Return type="bool"/>
+			<Begin>
+			 <Var name="app">
+			   <DataAccess method="load">
+						<Param name="_entity">fw_application</Param>
+						<Param name="code"><Var name="application"/></Param>
+					</DataAccess>
+			 </Var>
+			 <Var name="registered"><Int>1</Int></Var>
+			 <If condition="$app->__length == 0">
+				  <Then>
+             <Var name="registered"><Int>0</Int></Var>
+				  </Then>
+				</If>
+			  <Return><Var name="registered"/></Return>
+			</Begin>
+		</Function>
+		
+    <Function scope="public" name="toggleMaintenance" doc="Toggle maintenance mode">
+      <Params>
+       <Param name="application" type="string" doc="Application to check"/>
+      </Params>
+      <Return type="bool"/>
+      <Begin>
+       <Var name="app">
+         <DataAccess method="load">
+            <Param name="_entity">fw_application</Param>
+            <Param name="code"><Var name="application"/></Param>
+          </DataAccess>
+       </Var>
+       <Var name="value">
+        <If condition="$app->in_maintenance == 1">
+					<Then><Int>0</Int></Then>
+					<Else><Int>1</Int></Else>
+				</If>
+       </Var>
+       <DataAccess method="update">
+					<Param name="_entity">fw_application</Param>
+					<Param name="code" pk="true"><Var name="application"/></Param>
+					<Param name="in_maintenance"><Var name="value"/></Param>
+				</DataAccess>
+       <Return><Var name="value"/></Return>
+      </Begin>
+    </Function>
+    
+    <Function scope="public" name="toggleActive" doc="Toggle active">
+      <Params>
+       <Param name="application" type="string" doc="Application to check"/>
+      </Params>
+      <Return type="bool"/>
+      <Begin>
+       <Var name="app">
+         <DataAccess method="load">
+            <Param name="_entity">fw_application</Param>
+            <Param name="code"><Var name="application"/></Param>
+          </DataAccess>
+       </Var>
+       <Var name="value">
+        <If condition="$app->is_active == 1">
+          <Then><Int>0</Int></Then>
+          <Else><Int>1</Int></Else>
+        </If>
+       </Var>
+       <DataAccess method="update">
+          <Param name="_entity">fw_application</Param>
+          <Param name="code" pk="true"><Var name="application"/></Param>
+          <Param name="is_active"><Var name="value"/></Param>
+        </DataAccess>
+       <Return><Var name="value"/></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="update" doc="Apply an update to an application">
+      <Params>
+       <Param name="application" type="string" doc="Application code"/>
+       <Param name="update" type="string" doc="The update code to apply"/>
+      </Params>
+      <Return type="multiple" doc="The update log"/>
+      <Begin>
+	      <Var name="app">
+	        <DataAccess method="load">
+	           <Param name="_entity">fw_application</Param>
+	           <Param name="code"><Var name="application"/></Param>
+	         </DataAccess>
+	      </Var>
+	      
+	      <!-- Install the database changes if they exist-->
+        <Var name="ddExists" dump="true">
+          <ReflectionLib method="nodeExists">
+            <Param name="application"><Var name="application"/></Param>
+            <Param name="process"><Null/></Param>
+            <Param name="node"><Var name="update"/></Param>
+            <Param name="type"><String>dd</String></Param>
+          </ReflectionLib>
+        </Var>
+
+        <Var name="log"><Set/></Var>
+	      <If condition="$ddExists">
+					<Then>
+		        <Var name="ddLog">
+		          <DataAccess method="applyEntityChanges">
+		            <Param name="application"><Var name="application"/></Param>
+		            <Param name="node"><Var name="update"/></Param>
+		            <Param name="createForeignIndexes"><Config key="update.createForeignIndexes"/></Param>
+		            <Param name="createForeignKeys"><Config key="update.createForeignKeys"/></Param>          
+		            <Param name="dropTablesBeforeCreate"><Config key="update.dropTablesBeforeCreate"/></Param>          
+		          </DataAccess>
+		        </Var>
+	          <Var name="logEntry" key="message"><String>Database update available:</String></Var>
+	          <Var name="logEntry" key="result"><String/></Var>
+	          <Var name="log" key=""><Var name="logEntry"/></Var>
+
+		        <ForEach var="ddLog" item="ddLogItem">
+		           <Var name="logEntry" key="message"><Var name="ddLogItem" key="sqlStatement"/></Var>
+		           <Var name="logEntry" key="result"><Var name="ddLogItem" key="status"/></Var>
+		           <Var name="log" key=""><Var name="logEntry"/></Var>
+						</ForEach>
+					</Then>
+					<Else>
+					 <Var name="logEntry" key="message"><String>No database update available in this update</String></Var>
+					 <Var name="logEntry" key="result"><String/></Var>
+					 <Var name="log" key=""><Var name="logEntry"/></Var>
+					</Else>
+				</If>
+	      
+	      <!-- Install the update changes -->
+				<Var name="library">
+					<String.concatenate>
+						<Param><Var name="application"/></Param>
+						<Param>,_install,</Param>
+						<Param><Var name="update"/></Param>							
+					</String.concatenate>
+				</Var>
+	      <Var name="executeLog">
+	         <Call library="$library" function="execute"/>
+	      </Var>
+        <ForEach var="executeLog" item="ddLogItem">
+           <Var name="logEntry" key="message"><Var name="ddLogItem" key="message"/></Var>
+           <Var name="logEntry" key="result"><Var name="ddLogItem" key="result"/></Var>
+           <Var name="log" key=""><Var name="logEntry"/></Var>
+        </ForEach>
+	      
+        <!--Serialize the update-->
+        <Var name="logSerialized"><SetToJson><Var name="log"/></SetToJson></Var>
+        
+        <!-- Register the update -->
+        <DataAccess method="insert">
+					<Param name="_entity">fw_application_update</Param>
+					<Param name="id_application"><Var name="app" key="id"/></Param>
+					<Param name="version"><Var name="update"/></Param>
+					<Param name="log"><Var name="logSerialized"/></Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+      
+        <Return><Var name="log"/></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="updateAll" doc="Apply all updates">
+      <Params>
+       <Param name="application" type="string" doc="The application"/>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+        <Var name="updateState">
+          <Call function="getUpdateState">
+						<Param name="application"><Var name="application"/></Param>
+					</Call>
+        </Var>
+        <ForEach var="updateState" item="update">
+          <If condition="$update->installed == 0">
+						<Then>
+						  <!-- Install the update -->
+						  <Call function="update">
+								<Param name="application"><Var name="application"/></Param>
+								<Param name="update"><Var name="update" key="version"/></Param>
+							</Call>
+						</Then>
+					</If>
+        </ForEach>
+        
+        <Return></Return>
+      </Begin>
+    </Function>
+
+
+		<Function scope="public" name="getUpdateLog" doc="Gets the log of a given update">
+			<Params>
+			 <Param name="id" type="int" doc="The update id"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+			  <Var name="appUpdate">
+	   		  <DataAccess method="load">
+					 <Param name="_entity">fw_application_update</Param>
+					 <Param name="id"><Var name="id"/></Param>
+  				</DataAccess>
+			  </Var>
+			  <Return><JsonToSet><Var name="appUpdate" key="log"/></JsonToSet></Return>
+			</Begin>
+		</Function>
+		
+  </Library>
+</Node>

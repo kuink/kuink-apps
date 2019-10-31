@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>    
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="result"/>
+  </Params>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Grid name="grdSearchResult" title="updates" freeze="false">
+        <Template>
+          <Columns>
+            <Column name="base"/>
+            <Column name="name"/>
+            <Column name="version"/>
+            <Column name="is_active">
+              <Formatter name="Icon" size="24">
+                <Param name="0">error.png</Param>
+                <Param name="1">success.png</Param>
+              </Formatter>            
+            </Column>
+            <Column name="is_registered">
+              <Formatter name="Icon" size="24">
+                <Param name="0">error.png</Param>
+                <Param name="1">success.png</Param>
+              </Formatter>            
+            </Column>
+            <Column name="in_maintenance">
+              <Formatter name="Icon" size="24">
+                <Param name="0">successInactive.png</Param>
+                <Param name="1">success.png</Param>
+              </Formatter>            
+            </Column>
+            <Column name="update_status">
+              <Formatter name="Badge" min="0" max="$to_install" showvalue="true" pallete="success">
+                  <Param name="$max == 0">success</Param>
+                  <Param name="$max != 0">warning</Param>
+              </Formatter>
+            </Column>
+          </Columns>
+          <Actions separator="true">
+            <!--Action name="process" actionvalue="guid" type="execute"/>
+            <Action name="showLog" actionvalue="id" label="log"/-->
+            <Action name="toggleActive" actionvalue="name" label="activate" icon="eye" condition="$is_active == 0 &amp;&amp; $is_registered == 1"/>
+            <Action name="toggleActive" actionvalue="name" label="deactivate" icon="eye-slash" condition="$is_active == 1  &amp;&amp; $is_registered == 1"/>
+            <Action name="toggleMaintenance" actionvalue="name" label="maintenance" icon="wrench" condition="$is_registered == 1"/>
+            <Action name="appUpdatesRegister" actionvalue="name" label="listUpdates" icon="list" condition="$is_registered == 1"/>
+            
+            <Action name="appUpdatesRegister" actionvalue="name" label="update" condition="$to_install > 0"/>
+            <Action name="register" actionvalue="full_code" label="register" condition="$is_registered == 0" type="execute"/>            
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+    <Screen id="scrUpdates" doc="Show the updates of an application">
+      <Grid name="grdUpdates" pageable="false" collapsible="false" title="result">
+        <Template>
+          <Columns>
+            <Column name="version"/>
+            <Column name="versionFullCode"/>
+            <Column name="releaseNotes"/>
+            <Column name="installed">
+              <Formatter name="Icon" size="24">
+                <Param name="0">error.png</Param>
+                <Param name="1">success.png</Param>
+              </Formatter>            
+            </Column>
+            <Column name="_creation">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
+            <Column name="_id_creator"/>
+          </Columns>
+            <Actions>
+              <Action name="showLog" actionvalue="id" label="showLog" condition="$installed == 1"/>
+              <Action name="entityChanges" actionvalue="versionFullCode" label="update" condition="$installed == 0" type="execute"/>
+            </Actions>
+        </Template>
+      </Grid>
+      <Form name="frmOptions">
+        <ButtonGroup>
+          <Button id="back" type="back" action="init"/>
+          <Button id="updateAll" type="execute" action="updateAll" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen> 
+
+    <Screen id="scrEntityChanges">
+      <Grid name="changesGrid" title="result">
+        <Template>
+          <Columns>
+            <Column name="entity"/>
+            <Column name="change" label="operation"/>            
+            <Column name="attributes">
+              <Formatter name="ArrayKey" key="debug"/>
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>    
+      <Form name="actions">
+        <ButtonGroup>
+          <Button id="back" type="back" action="init" />
+          <Button id="apply" type="add" action="applyChanges" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    
+    <Screen id="scrLog" doc="Show log">
+      <Grid name="grdLog" pageable="false" collapsible="false" title="result">
+        <Template>
+          <Columns>
+            <Column name="message"/>
+            <Column name="result"/>
+          </Columns>
+        </Template>
+      </Grid>
+      <Form name="frmOptions" title="options">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="appUpdates"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>  
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scrSearch">
+      <Var name="appUpdate" process="true" clear="true"/>
+      <Var name="apps">
+        <Call library="framework,application,api" function="getAllWithUpdateState"/>
+      </Var>            
+      <Control method="bind" object="grdSearchResult">
+        <Param><Var name="apps"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="toggleMaintenance">
+			<Call library="framework,application,api" function="toggleMaintenance">
+  			<Param name="application"><ActionValue/></Param>
+			</Call>      
+      <Action name="init"/>
+    </Action>
+
+    <Action name="toggleActive">
+      <Call library="framework,application,api" function="toggleActive">
+        <Param name="application"><ActionValue/></Param>
+      </Call>      
+      <Action name="init"/>
+    </Action>
+
+    <Action name="register">
+      <Var name="appFullCode" >
+	      <StringLib method="explode">
+	        <Param>,</Param>
+	        <Param><ActionValue/></Param>
+	      </StringLib>       
+      </Var>
+      <If condition="$appFullCode->__length != 2">
+				<Then>
+				  <Exception><String.parse>Invalid application full code</String.parse></Exception>
+				</Then>
+			</If>
+    
+      <Call library="framework,application,api" function="register">
+        <Param name="base"><Var name="appFullCode" key="0"/></Param>
+        <Param name="application"><Var name="appFullCode" key="1"/></Param>
+      </Call>      
+      <Action name="init"/>
+    </Action>
+
+    <Action name="appUpdatesRegister">
+      <Var name="appUpdate" process="true"><ActionValue/></Var>
+      <Action name="appUpdates"/>
+    </Action>
+
+    <Action name="appUpdates" screen="scrUpdates">
+      <Var name="appUpdates" >
+	      <Call library="framework,application,api" function="getUpdateState">
+	        <Param name="application"><Var name="appUpdate" process="true"/></Param>
+	      </Call>      
+      </Var>
+      <Control method="setProperty" object="grdUpdates">
+        <Param><String>title</String></Param>
+        <Param><Var name="appUpdate" process="true"/></Param>
+      </Control>
+      
+      <Control method="bind" object="grdUpdates">
+        <Param><Var name="appUpdates"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="entityChanges" screen="scrEntityChanges">
+      <Var name="actionValue"><ActionValue/></Var>
+      <Var name="updateFullCode" process="true">
+        <StringLib method="explode">
+          <Param>,</Param>
+          <Param><ActionValue/></Param>
+        </StringLib>       
+      </Var>
+      <If condition="@updateFullCode->__length != 2">
+        <Then>
+          <Exception><String.parse>Invalid update full code</String.parse></Exception>
+        </Then>
+      </If>
+      <Var name="ddExists">
+        <ReflectionLib method="nodeExists">
+          <Param name="application"><Var name="updateFullCode" key="0" process="true"/></Param>
+          <Param name="process"><Null/></Param>
+          <Param name="node"><Var name="updateFullCode" key="1" process="true"/></Param>
+          <Param name="type"><String>dd</String></Param>
+        </ReflectionLib>
+      </Var>
+      <If condition="$ddExists == 1">
+				<Then>
+		      <Var name="changes">
+		        <DataAccess method="getEntityChanges">
+		          <Param name="application"><Var name="updateFullCode" key="0" process="true"/></Param>
+		          <Param name="node"><Var name="updateFullCode" key="1" process="true"/></Param>
+		          <Param name="dropTablesBeforeCreate"><Config key="update.dropTablesBeforeCreate"/></Param>          
+		        </DataAccess>
+		      </Var>
+		      <Control method="bind" object="changesGrid">
+		        <Param> 
+		          <Var name="changes"/>
+		        </Param>        
+		      </Control>
+				</Then>
+				<Else>
+				  <UserMessage type="information">noDatabaseChanges</UserMessage>
+				  <!-- Hide the controls -->
+				  <Control method="setProperty" object="changesGrid">
+				    <Param>visible</Param>
+				    <Param>false</Param>
+				  </Control>
+          <Control method="setProperty" object="actions">
+            <Param>visible</Param>
+            <Param>false</Param>
+          </Control>
+          <Action name="applyChanges"/>
+				  <Exit/>
+				</Else>
+			</If>
+    </Action>
+
+    <Action name="applyChanges">
+      <Var name="log" dump="true">
+        <Call library="framework,application,api" function="update">
+          <Param name="application"><Var name="updateFullCode" key="0" process="true"/></Param>
+          <Param name="update"><Var name="updateFullCode" key="1" process="true"/></Param>
+        </Call>      
+      </Var>
+      <Action name="appUpdates"/>
+    </Action>
+
+    <Action name="updateAll">
+      <Call library="framework,application,api" function="updateAll">
+        <Param name="application"><Var name="appUpdate" process="true"/></Param>
+      </Call>      
+      <Action name="appUpdates"/>
+    </Action>
+
+
+    <Action name="showLog" screen="scrLog">
+      <Var name="log">
+        <Call library="framework,application,api" function="getUpdateLog">
+          <Param name="id"><ActionValue/></Param>
+        </Call>      
+      </Var>
+      <Control method="bind" object="grdLog">
+        <Param><Var name="log"/></Param>
+      </Control>      
+    </Action>
+
+        
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

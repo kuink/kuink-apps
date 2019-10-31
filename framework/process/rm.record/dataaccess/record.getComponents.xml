@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search all class
+  </Doc>
+  <Params>
+	  <Param name="id_record" required="true"/>
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+        	<XField>
+						cc.id,
+						cc.name,
+						cc.settings,
+						ccp.name as plugin_name,
+						ccp.code as plugin_code,
+						cc._creation
+						
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+						fw_rm_component cc
+						INNER JOIN fw_rm_component_plugin ccp ON (ccp.id = cc.id_component_plugin)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              cc.id_record = {param->id_record}
+            </XCondition>
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[cc._creation desc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search all class
+  </Doc>
+  <Params>
+	  <Param name="text" required="false"/>
+	  <Param name="class_code" required="false"/>
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+        	<XField>
+						r.id,
+						r.uuid,
+						r.name,
+						r.description,
+						r.retention_date ,
+						r.disposal_due_date,
+						r.destroyed,
+						r.transferred,
+						r.last_xml,
+						r._creation
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+						fw_rm_record r
+						INNER JOIN fw_rm_class c ON (c.id = r.id_class)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              1=1
+            </XCondition>
+	        <XCondition optional="text">
+	            <![CDATA[AND ( r.name like '{param->text}' OR r.description like '{param->text}' OR r.uuid like '{param->text}' OR r.last_xml like '{param->text}')]]>
+	        </XCondition>
+          <XCondition optional="class_code">
+              <![CDATA[AND c.code =  '{param->class_code}']]>
+          </XCondition>
+	        
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[r._creation desc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

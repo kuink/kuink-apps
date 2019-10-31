@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- tasks -->
+		<String key="scheduledTasks" value="Tarefas agendadas"/>
+		<String key="description" value="Descrição"/>
+		<String key="run_next" value="Próxima execução"/>
+		<String key="elapsed_time" value="Duração (segundos)"/>
+		<String key="run_last" value="Última execução"/>
+		<String key="library" value="Biblioteca"/>
+		<String key="params" value="Parâmetros"/>
+		<String key="run_interval" value="Intervalo (segundos)"/>
+		<String key="log_level" value="Nível de log"/>
+		<String key="status" value="Estado"/>
+		<String key="result_code" value="Resultado"/>
+		<String key="result_message" value="Mensagem"/>
+		<String key="executeAll" value="Executar tarefas agendadas"/>
+		<String key="add" value="Nova tarefa"/>
+		<String key="enable" value="Ativar"/>
+		<String key="disable" value="Desativar"/>
+		<String key="execute" value="Executar"/>
+		<String key="taskExecuted" value="Tarefa executada"/>
+		<String key="saved" value="Gravada com sucesso"/>
+		<String key="history" value="Histórico"/>
+		<String key="cronStatus" value="Estado do cron"/>
+		<String key="_modification" value="Última vez"/>
+		<String key="_creation" value="Execução"/>
+		<String key="id_task" value="Tarefa"/>
+		<String key="num_tasks_executed" value="N.º tarefas executadas"/>
+		<String key="cronStopped" value="As tarefas agendadas não são executadas pelo menos há 24 horas!"/>
+		<String key="manage"><![CDATA[Gestão]]></String>
+		<String key="TaskDescription"><![CDATA[Descrição]]></String>
+		<String key="TaskConfiguration"><![CDATA[Configurações]]></String>
+		<String key="TaskScheduler"><![CDATA[Agendamento]]></String>
+		<String key="just_one_time"><![CDATA[Apenas uma vez]]></String>
+		<String key="start_date"><![CDATA[Data de início]]></String>
+		<String key="end_date"><![CDATA[Data de fim]]></String>
+		<String key="start_time"><![CDATA[Hora de início]]></String>
+		<String key="end_time"><![CDATA[Hora de fim]]></String>
+		<String key="schedule"><![CDATA[Agendamento]]></String>
+		<String key="scheduledTasksExecuted"><![CDATA[Tarefas executadas]]></String>
+		<String key="framework.task"><![CDATA[Kuink | Scheduled Tasks]]></String>
+		<String key="task"><![CDATA[Tarefa]]></String>
+   </Strings>
+   <HelpStrings>
+        <Help key="description">
+            Descrição da tarefa.
+        </Help>
+        
+        <Help key="params">
+        	<![CDATA[
+	            Parâmetros, em XML, a passar para a função a executar<br/>
+	            ex:<br/>
+	            &lt;Params&gt;<br/>
+	            	&lt;type&gt;<br/>
+	            	2</br>
+	            	&lt;\type&gt;<br/>
+	            &lt;\Params&gt;<br/>
+        	]]>
+        </Help>
+        
+        <Help key="library">
+        	<![CDATA[
+            Biblioteca a executar:<br/>
+            aplicação,processo,biblioteca<br/>
+            <br/>
+            ex: framework.demo,scheduledTasks,test
+        	]]>
+        </Help>
+
+
+        <Help key="run_interval">
+        	<![CDATA[
+	            Intervalo em segundos até à próxima execução.<br/>
+	            60      - 1 minuto<br/>
+	            300     - 5 minutos<br/>
+	            600     - 10 minutos<br/>
+	            1800    - 30 minutos<br/>
+	            3600    - 1 hora<br/>
+	            7200    - 2 horas<br/>
+	            18000   - 5 horas<br/>
+	            43200   - 12 horas<br/>
+	            86400   - 24 horas<br/>
+	            604800  - 1 semana<br/>
+	            2592000 - 30 dias (1 mês)<br/>
+        	]]>
+        </Help>
+
+        <Help key="log_level">
+        	<![CDATA[
+	            Indica o nível de log:<br/>
+	            0      - OFF: Desligado<br/>
+	            1      - GENERAL: Só mensagens gerais<br/>
+	            2      - VERBOSE :faz log de tudo o que acontece de relevância<br/> 
+        	]]>
+        </Help>
+        
+        <Help key="active">
+        	Indica se a tarefa está ativa ou não. Se estiver inativa só pode ser executada manualmente através da ação executar.
+        </Help>                
+   </HelpStrings>
+</Lang>

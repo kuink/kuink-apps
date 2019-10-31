@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all fw_permission_relation
+    </Doc>
+    <Params>
+                      <Param name="id_role"/>
+                  <Param name="id_permission"/>
+                                                                            </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_permission_relation t
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                  <XCondition>1 = 1</XCondition>
+                                                                                                                                                                                                        <XCondition optional="id_role">AND t.id_role = {param->id_role}</XCondition>
+                                                                                                                                <XCondition optional="id_permission">AND t.id_permission = {param->id_permission}</XCondition>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  </XWhere>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Get all the requests that are open and that are assynchronous
+    </Doc>
+    <Params>
+      <Param name="now" doc="The current dateTime"/>
+    </Params>
+    <Body>
+      <Sql>
+	      <XSql>
+	        <XSelect>
+	          <XField>
+               fr.id, fr.guid, fr.id_request_status, fr.id_request_category, fr.ttl, fr.data, fr.log, fr.attempts, fr.id_company, fr._creation,
+               frc.code as category_code, frc.assync,
+               frs.code as status_code,
+               p.public_key as photo
+	          </XField>
+	        </XSelect>
+	        <XFrom>
+	          <XTable>
+	            fw_request fr
+              INNER JOIN fw_request_category frc ON (frc.id = fr.id_request_category)
+              INNER JOIN fw_request_status frs ON (frs.id = fr.id_request_status)
+              INNER JOIN person p ON (p.id = fr._id_creator)
+	          </XTable>
+	        </XFrom>
+	        <XWhere>
+	          <XCondition>
+	          <![CDATA[
+	            frc.assync = 1 AND
+              frs.code = 'new'
+	          ]]>
+	          </XCondition>
+	          <XCondition optional="now">
+	          <![CDATA[
+	            AND (fr._creation + fr.ttl) >= {param->now}
+	          ]]>
+	          </XCondition>
+	        </XWhere>
+	      </XSql>        
+            
+      </Sql>
+  </Body>
+</Method>

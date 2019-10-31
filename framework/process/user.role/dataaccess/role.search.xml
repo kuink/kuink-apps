@@ -1,0 +1,48 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Search all roles
+    </Doc>
+    <Params>
+        <Param name="id_company"/>
+        <Param name="name"/>
+        <Param name="code"/>
+        <Param name="capabilities"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        r.id, r.name, r.code
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>{table_prefix}fw_role r</XTable>
+                    <XTable optional="capabilities">
+                      INNER JOIN fw_role_capability rc ON (rc.id_role = r.id)
+                      INNER JOIN fw_capability c ON (c.id = rc.id_capability)                        
+                    </XTable>  
+                    
+                </XFrom>
+                <XWhere>
+                    <XCondition>r.id_company = {param->id_company}</XCondition>
+                    <XCondition optional="name">AND name LIKE '{param->name}'</XCondition>
+                    <XCondition optional="code">AND code LIKE '{param->code}'</XCondition>
+                    <XCondition optional="capabilities">AND c.code IN ({param->capabilities})</XCondition>
+                    <!--XCondition optional="capabilities">AND c.code IN ('framework/company::manage','framework/all::admin')</XCondition-->
+                </XWhere>
+                <XGroupBy>
+                    <XCondition>
+                      r.id, r.name, r.code
+                    </XCondition>
+                </XGroupBy>
+                <XOrderBy>
+                  <XOrder>
+                    r.code asc
+                  </XOrder>
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

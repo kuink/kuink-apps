@@ -1,0 +1,825 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Insert Producers</String>
+       </Return>
+      </Begin>
+    </Function>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+        <Var name="log"><Set/></Var>
+
+        <Var name="logEntry" key="message"><String>Entity Type: Adding...</String></Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+        <DataAccess method="insert">
+          <Param name="_entity">fw_rm_entity_type</Param>
+          <Param name="uuid"><![CDATA[09a6b156-81a2-44a8-b66f-7313341f5480]]></Param>
+          <Param name="name"><![CDATA[producer]]></Param>
+          <Param name="code"><![CDATA[producer]]></Param>
+          <Param name="table"><![CDATA[fw_rm_producer]]></Param>
+          <Param name="description"><![CDATA[Producer]]></Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+        <Var name="logEntry" key="message"><String>Getting the fond</String></Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+        <Var name="fond">
+          <DataAccess method="load">
+						<Param name="_entity">fw_rm_fond</Param>
+						<Param name="code"><String>CSCM-Lx</String></Param>
+					</DataAccess>
+        </Var>
+        <If condition="$fond->id > 0">
+          <Then><Var name="logEntry" key="result"><String.parse>Found fond id $fond->id</String.parse></Var></Then>
+          <Else><Var name="logEntry" key="result">Found CSCM-Lx not found</Var></Else>
+        </If>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+        
+        <Var name="logEntry" key="message"><String>Producers: Adding...</String></Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>DP</String></Param>
+            <Param name="name"><String>Direção pedagógica</String></Param>
+            <Param name="description"><String>Direção pedagógica</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>SDP</String></Param>
+            <Param name="name"><String>Secretária da direção</String></Param>
+            <Param name="description"><String>Secretária da direção</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CP</String></Param>
+            <Param name="name"><String>Conselho pedagógico</String></Param>
+            <Param name="description"><String>Conselho pedagógico</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CT</String></Param>
+            <Param name="name"><String>Conselho de turma</String></Param>
+            <Param name="description"><String>Conselho de turma</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CD</String></Param>
+            <Param name="name"><String>Coordenadores de departamento</String></Param>
+            <Param name="description"><String>Coordenadores de departamento</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>DC</String></Param>
+            <Param name="name"><String>Departamentos curriculares</String></Param>
+            <Param name="description"><String>Departamentos curriculares</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>DT</String></Param>
+            <Param name="name"><String>Diretores de turma</String></Param>
+            <Param name="description"><String>Diretores de turma</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>PT</String></Param>
+            <Param name="name"><String>Professores titulares</String></Param>
+            <Param name="description"><String>Professores titulares</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>D</String></Param>
+            <Param name="name"><String>Docentes</String></Param>
+            <Param name="description"><String>Docentes</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>E</String></Param>
+            <Param name="name"><String>Educadoras</String></Param>
+            <Param name="description"><String>Educadoras</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>SE</String></Param>
+            <Param name="name"><String>Secretariado de exames</String></Param>
+            <Param name="description"><String>Secretariado de exames</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>EH</String></Param>
+            <Param name="name"><String>Equipa de horários</String></Param>
+            <Param name="description"><String>Equipa de horários</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>EP</String></Param>
+            <Param name="name"><String>Equipa da pastoral</String></Param>
+            <Param name="description"><String>Equipa da pastoral</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CJG</String></Param>
+            <Param name="name"><String>Centro Jean Gailhac</String></Param>
+            <Param name="description"><String>Centro Jean Gailhac</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CAEC</String></Param>
+            <Param name="name"><String>Coordenador das atividades de enriquecimento curricular</String></Param>
+            <Param name="description"><String>Coordenador das atividades de enriquecimento curricular</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>PAEC</String></Param>
+            <Param name="name"><String>Professores das atividades de enriquecimento curricular</String></Param>
+            <Param name="description"><String>Professores das atividades de enriquecimento curricular</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CJIPE</String></Param>
+            <Param name="name"><String>Coordenador do jardim de infância e do pré-escolar</String></Param>
+            <Param name="description"><String>Coordenador do jardim de infância e do pré-escolar</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>C1CEB</String></Param>
+            <Param name="name"><String>Coordenador do 1.º ciclo</String></Param>
+            <Param name="description"><String>Coordenador do 1.º ciclo</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>C2CEB</String></Param>
+            <Param name="name"><String>Coordenador do 2.º ciclo</String></Param>
+            <Param name="description"><String>Coordenador do 2.º ciclo</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>C3CEB</String></Param>
+            <Param name="name"><String>Coordenador do 3.º ciclo</String></Param>
+            <Param name="description"><String>Coordenador do 3.º ciclo</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CSEC</String></Param>
+            <Param name="name"><String>Coordenador do secundário</String></Param>
+            <Param name="description"><String>Coordenador do secundário</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>SEE</String></Param>
+            <Param name="name"><String>Serviço de educação especial</String></Param>
+            <Param name="description"><String>Serviço de educação especial</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>SP</String></Param>
+            <Param name="name"><String>Serviço de psicologia</String></Param>
+            <Param name="description"><String>Serviço de psicologia</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RGCI</String></Param>
+            <Param name="name"><String>Responsável de gabinete de comunicação imagem</String></Param>
+            <Param name="description"><String>Responsável de gabinete de comunicação imagem</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>GCI</String></Param>
+            <Param name="name"><String>Gabinete de comunicação imagem</String></Param>
+            <Param name="description"><String>Gabinete de comunicação imagem</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>STI</String></Param>
+            <Param name="name"><String>Serviço técnico de informática</String></Param>
+            <Param name="description"><String>Serviço técnico de informática</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>SA</String></Param>
+            <Param name="name"><String>Serviço de arquivo</String></Param>
+            <Param name="description"><String>Serviço de arquivo</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>BCR</String></Param>
+            <Param name="name"><String>Biblioteca e centro de recursos</String></Param>
+            <Param name="description"><String>Biblioteca e centro de recursos</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RBCR</String></Param>
+            <Param name="name"><String>Responsável pela biblioteca e centro de recursos</String></Param>
+            <Param name="description"><String>Responsável pela biblioteca e centro de recursos</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>DE</String></Param>
+            <Param name="name"><String>Diretor de emergência</String></Param>
+            <Param name="description"><String>Diretor de emergência</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RRH</String></Param>
+            <Param name="name"><String>Coordenador de equipa (responsável de recursos humanos)</String></Param>
+            <Param name="description"><String>Coordenador de equipa (responsável de recursos humanos)</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>EAQS</String></Param>
+            <Param name="name"><String>Equipa de Ambiente, Qualidade e Segurança</String></Param>
+            <Param name="description"><String>Equipa de Ambiente, Qualidade e Segurança</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RA</String></Param>
+            <Param name="name"><String>Responsável pelo ambiente</String></Param>
+            <Param name="description"><String>Responsável pelo ambiente</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>ES</String></Param>
+            <Param name="name"><String>Empresa Senha</String></Param>
+            <Param name="description"><String>Empresa Senha</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RRP</String></Param>
+            <Param name="name"><String>Responsável pela reprografia</String></Param>
+            <Param name="description"><String>Responsável pela reprografia</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RRF</String></Param>
+            <Param name="name"><String>Responsável pelo refeitório</String></Param>
+            <Param name="description"><String>Responsável pelo refeitório</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RSL</String></Param>
+            <Param name="name"><String>Responsável pelos serviços de limpeza</String></Param>
+            <Param name="description"><String>Responsável pelos serviços de limpeza</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>ENF</String></Param>
+            <Param name="name"><String>Enfermaria</String></Param>
+            <Param name="description"><String>Enfermaria</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CI</String></Param>
+            <Param name="name"><String>Coordenadores das instalações</String></Param>
+            <Param name="description"><String>Coordenadores das instalações</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>DIED</String></Param>
+            <Param name="name"><String>Diretor de instalações e equipamentos desportivos</String></Param>
+            <Param name="description"><String>Diretor de instalações e equipamentos desportivos</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>AE</String></Param>
+            <Param name="name"><String>Associação de estudantes</String></Param>
+            <Param name="description"><String>Associação de estudantes</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RC</String></Param>
+            <Param name="name"><String>Rececionista</String></Param>
+            <Param name="description"><String>Rececionista</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RQS</String></Param>
+            <Param name="name"><String>Requisitante</String></Param>
+            <Param name="description"><String>Requisitante</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RB</String></Param>
+            <Param name="name"><String>Responsável pelo bar</String></Param>
+            <Param name="description"><String>Responsável pelo bar</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RS</String></Param>
+            <Param name="name"><String>Responsável pela secretaria</String></Param>
+            <Param name="description"><String>Responsável pela secretaria</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>SEC</String></Param>
+            <Param name="name"><String>Secretaria</String></Param>
+            <Param name="description"><String>Secretaria</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RPAP</String></Param>
+            <Param name="name"><String>Responsável pela papelaria</String></Param>
+            <Param name="description"><String>Responsável pela papelaria</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>PAP</String></Param>
+            <Param name="name"><String>Papelaria</String></Param>
+            <Param name="description"><String>Papelaria</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>FAR</String></Param>
+            <Param name="name"><String>Fotógrafo Andrade da Rocha</String></Param>
+            <Param name="description"><String>Fotógrafo Andrade da Rocha</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>ADM</String></Param>
+            <Param name="name"><String>Administração</String></Param>
+            <Param name="description"><String>Administração</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CSA</String></Param>
+            <Param name="name"><String>Chefe dos serviços administrativos</String></Param>
+            <Param name="description"><String>Chefe dos serviços administrativos</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>CNT</String></Param>
+            <Param name="name"><String>Contabilidade</String></Param>
+            <Param name="description"><String>Contabilidade</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>RH</String></Param>
+            <Param name="name"><String>Recursos humanos</String></Param>
+            <Param name="description"><String>Recursos humanos</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="id_producer">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_producer</Param>
+            <Param name="id_fond"><Var name="fond" key="id"/></Param>
+            <Param name="uuid"><Uuid/></Param>   
+            <Param name="code"><String>TS</String></Param>
+            <Param name="name"><String>Tesouraria</String></Param>
+            <Param name="description"><String>Tesouraria</String></Param>
+            <Param name="is_active">1</Param>
+            <Param name="is_collective">1</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+		    <Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

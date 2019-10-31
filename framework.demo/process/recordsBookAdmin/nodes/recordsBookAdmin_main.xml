@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Params />
+    <Permissions>
+    </Permissions>
+    <Doc lang="pt-PT">
+        Mains screen of recordsbook admin
+    </Doc>
+    <Libraries />
+    <Configuration/>
+    <Screens>
+    	<Screen id="mainScreen">
+    		<Form name="chooseMenu">
+    			<Header label="chooseAction" />
+    			<ActionGroup id="dates" label="">
+    				<Action name="viewTimetable" id="viewTimetable" label="viewTimetable"/>
+    			</ActionGroup>
+    		</Form>
+    	</Screen>
+    </Screens>
+    <Actions>
+    	<Action name="init" screen="mainScreen">
+    	</Action>
+    	<Action name="viewTimetable">
+    		<RaiseEvent name="viewTimetable">
+    			<Params>
+    				<Param name="idSchoolYear" value="201213" />
+    			</Params>
+    		</RaiseEvent>
+    	</Action>
+    </Actions>
+</Node>

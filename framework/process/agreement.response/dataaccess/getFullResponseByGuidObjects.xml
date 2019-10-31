@@ -1,0 +1,60 @@
+<?xml version='1.0'?>
+<Method>
+    <Params>
+        <Param name="guidObjectList"/>
+        <Param name="_lang" doc="Language to retrieve statements"/>
+        <Param name="entity" doc="Entity to retrieve the context data. The guidobject belongs to this entity"/>
+        <Param name="entityGuidObjectKey" doc="Entity guid object key name"/>
+        <Param name="entityAttributeList" doc="Entity attributes to retrieve"/>
+        <Param name="entitySort" doc="Entity attributes to sort"/>
+        <Param name="idAgreementStatementType" doc="Filter by this statement type"/>
+        <Param name="startDate" doc="The start date of the guid object list"/>
+    </Params>
+    <Body>
+        <Sql>
+          <XSql>
+            <XSelect>
+              <XField>
+                <![CDATA[
+                  ag.id as id_agreement,
+                  {param->entityAttributeList},
+                  agsl.name as statement_name,
+                  agr.agreement_statement_response as statement_response,
+                  agr.agreement_statement_response as statement_response_dup
+                ]]> 
+              </XField>
+            </XSelect>
+            <XFrom>
+              <XTable>
+                <![CDATA[
+                  {param->entity} e 
+                  INNER JOIN fw_agreement ag ON (ag.guid_object = e.{param->entityGuidObjectKey} AND ag.is_active = 1)
+                  INNER JOIN fw_agreement_response agr ON (agr.id_agreement = ag.id)   
+                  INNER JOIN fw_agreement_statement ags ON (ags.id = agr.id_agreement_statement)
+                  INNER JOIN fw_agreement_statement_lang agsl ON (agsl.id = ags.id)
+                  INNER JOIN fw_agreement_statement_type agst ON (agst.id = ags.id_agreement_statement_type)
+                ]]>
+              </XTable>
+            </XFrom>
+            <XWhere> 
+              <XCondition>
+                  agsl.lang = '{param->_lang}'
+                  AND ag.guid_object IN ({param->guidObjectList})
+              </XCondition>
+              <XCondition optional="idAgreementStatementType">
+                  AND ags.id_agreement_statement_type = {param->idAgreementStatementType}
+              </XCondition>
+              <XCondition optional="startDate">
+                  AND ag.start_date = {param->startDate}
+              </XCondition>
+            </XWhere>
+            <XOrderBy>
+              <XOrder>
+                  <![CDATA[ {param->entitySort}, ags.code asc ]]> 
+              </XOrder>
+            </XOrderBy>
+          </XSql>
+        </Sql>
+    </Body>
+    
+</Method>

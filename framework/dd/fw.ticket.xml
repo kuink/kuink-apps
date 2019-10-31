@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+    <!-- Override domain inherited definitions or add local definitions here -->
+  </Domains>
+  <Templates>
+    <!-- Override template inherited definitions or add local definitions here -->
+  </Templates>
+  <Entities>
+    <Entity doc="Ticketing entity" name="fw_ticket">
+      <Attributes>
+        <Attribute domain="id" name="id"/>
+        <Attribute domain="foreign" name="id_handler" required="true" refentity="fw_ticket_handler" refattr="id" />
+        <Attribute domain="text" name="message"/>
+        <Attribute domain="int" name="id_person" required="true"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  
+    <Entity doc="Ticket handlers" multilang="true" name="fw_ticket_handler">
+      <Attributes>
+        <Attribute domain="id" name="id"/>
+        <Attribute domain="code" name="code"/>
+        <Attribute domain="string" name="email" doc="Handler email"/>
+        <Attribute multilang="true" name="name" required="true" size="256" type="string" doc="Handler name" />
+        <Attribute multilang="true" name="description" required="true" size="256" type="string" doc="Handler description" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

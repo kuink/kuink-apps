@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+	
+	<!-- HOOK -->
+	 <Function name="execute">
+	 <Params>
+	 	<Param name="type"/>
+	 </Params>
+	 <Begin>
+		<!-- Code to Execute -->
+	 </Begin>
+	 </Function>
+	
+	<!-- AUX FUNCTIONS -->
+	 <Function name="aux">
+	 <Params>
+	 </Params>
+	 <Begin>
+	   <Return><Var name="USER"/></Return>
+		<!-- Auxiliary functions -->
+	 </Begin>
+	 </Function>
+	
+	</Library>
+</Node>
+

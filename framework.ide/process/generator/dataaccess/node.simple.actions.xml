@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Node actions simple functions list
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <Dataset>
+            <r1>
+                <id>1</id>
+                <type>Node.simple</type>
+                <fx>search</fx>
+            </r1>
+            <r2>
+                <id>2</id>
+                <type>Nodes.simple</type>
+                <fx>add</fx>
+            </r2>
+            <r3>
+                <id>3</id>
+                <type>Nodes.simple</type>
+                <fx>delete</fx>
+            </r3>
+            <r4>
+                <id>4</id>
+                <type>Nodes.simple</type>
+                <fx>view</fx>
+            </r4>
+            <r5>
+                <id>5</id>
+                <type>Nodes.simple</type>
+                <fx>edit</fx>
+            </r5>
+        </Dataset>
+    </Body>
+</Method>

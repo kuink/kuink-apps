@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get all records with disposal due date
+  </Doc>
+  <Params>
+	  <Param name="date" required="true"/>
+  </Params>
+  <Body>
+      <XSql>
+        <XSelect>
+        	<XField>
+            r.*, cm.code as `action`
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+            fw_rm_record r
+            inner join fw_rm_disposal_schedule ds on (r.id_disposal_schedule=ds.id)
+            inner join fw_rm_code_map cm on (cm.id=ds.id_action_code)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              <![CDATA[ r.disposal_due_date >= '{param->date}' ]]>
+            </XCondition>
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder>r.id</XOrder>
+	    </XOrderBy>
+      </XSql>
+  </Body>
+</Method>

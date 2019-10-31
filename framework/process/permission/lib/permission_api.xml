@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib" />
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+	</Actions>
+	<Library forceinterface="true">
+		<Function name="add" doc="Adds a record in table ">
+			<Params>
+				<Param name="code" type="text" required="true" />
+				<Param name="name" type="text" required="true" />
+				<Param name="description" type="text" required="false" />
+				<Param name="is_role" type="int" required="false" />
+			</Params>
+			<Return type="int" doc="The inserted record id" />
+			<Begin>
+				<!-- Check if it allready exists -->
+				<Var name="permission">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<If condition="$permission->__length == 0">
+					<Then>
+						<Var name="id_permission">
+							<DataAccess method="insert">
+								<Param name="_entity">fw_permission</Param>
+								<Param name="_base">true</Param>
+								<Param name="uuid"><Uuid/></Param>
+								<Param name="code">
+									<Var name="PARAMS" key="code" />
+								</Param>
+								<Param name="name">
+									<Var name="PARAMS" key="name" />
+								</Param>
+								<Param name="description">
+									<Var name="PARAMS" key="description" />
+								</Param>
+								<Param name="is_role">
+									<Var name="PARAMS" key="is_role" />
+								</Param>
+							</DataAccess>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="id_permission"><Var name="permission" key="id"/></Var>					
+					</Else>
+				</If>
+				<Return>
+					<Var name="id_permission"/>
+				</Return>
+			</Begin>
+		</Function>
+		<Function name="delete"
+			doc="Delete a record by id from table fw_permission">
+			<Params>
+				<Param name="id" type="int" required="true" />
+			</Params>
+			<Return type="int" doc="" />
+			<Begin>
+				<Return>
+					<DataAccess method="delete">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id" />
+						</Param>
+					</DataAccess>
+				</Return>
+			</Begin>
+		</Function>
+		<Function name="update" doc="Updates a record in table fw_permission">
+			<Params>
+				<Param name="id" type="int" required="true" />
+				<Param name="uuid" type="text" required="false" />
+				<Param name="code" type="text" required="false" />
+				<Param name="name" type="text" required="false" />
+				<Param name="description" type="text" required="false" />
+				<Param name="is_role" type="int" required="false" />
+			</Params>
+			<Begin>
+				<Var name="paramData">
+					<UtilsLib method="filterNotNull">
+						<Param>
+							<Var name="PARAMS" />
+						</Param>
+					</UtilsLib>
+				</Var>
+				<DataAccess method="update" params="paramData">
+					<Param name="_entity">fw_permission</Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+			</Begin>
+		</Function>
+		<Function name="search" doc="Search records from table fw_permission">
+			<Params>
+				<Param name="uuid" type="text" />
+				<Param name="code" type="text" />
+				<Param name="name" type="text" />
+				<Param name="pagenum" type="int" />
+				<Param name="pagesize" type="int" />
+			</Params>
+			<Return type="multiple" doc="">
+				<External name="id" type="int" doc="" />
+				<External name="uuid" type="text" doc="" />
+				<External name="code" type="text" doc="" />
+				<External name="name" type="text" doc="" />
+				<External name="description" type="text" doc="" />
+				<External name="is_role" type="int" doc="" />
+				<External name="id_company" type="int" doc="" />
+				<External name="_id_creator" type="int" doc="" />
+				<External name="_id_updater" type="int" doc="" />
+				<External name="_creation" type="int" doc="" />
+				<External name="_creation_ip" type="text" doc="" />
+				<External name="_modification" type="int" doc="" />
+				<External name="_modification_ip" type="text" doc="" />
+			</Return>
+			<Begin>
+				<Return>
+					<DataAccess method="this,this,search">
+						<Param name="uuid" wildcard="full">
+							<Var name="PARAMS" key="uuid" />
+						</Param>
+						<Param name="code" wildcard="full">
+							<Var name="PARAMS" key="code" />
+						</Param>
+						<Param name="name" wildcard="full">
+							<Var name="PARAMS" key="name" />
+						</Param>
+						<Param name="_pageNum">
+							<Var name="PARAMS" key="pagenum" />
+						</Param>
+						<Param name="_pageSize">
+							<Var name="PARAMS" key="pagesize" />
+						</Param>
+					</DataAccess>
+				</Return>
+			</Begin>
+		</Function>
+		<Function name="getAll" doc="Get all records from table fw_permission">
+			<Params />
+			<Return type="multiple" doc="">
+				<External name="id" type="int" doc="" />
+				<External name="uuid" type="text" doc="" />
+				<External name="code" type="text" doc="" />
+				<External name="name" type="text" doc="" />
+				<External name="description" type="text" doc="" />
+				<External name="is_role" type="int" doc="" />
+				<External name="id_company" type="int" doc="" />
+				<External name="_id_creator" type="int" doc="" />
+				<External name="_id_updater" type="int" doc="" />
+				<External name="_creation" type="int" doc="" />
+				<External name="_creation_ip" type="text" doc="" />
+				<External name="_modification" type="int" doc="" />
+				<External name="_modification_ip" type="text" doc="" />
+			</Return>
+			<Begin>
+				<Return>
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_permission</Param>
+					</DataAccess>
+				</Return>
+			</Begin>
+		</Function>
+		<Function name="getById" doc="Get a record by id from table fw_permission">
+			<Params>
+				<Param name="id" type="int" required="true" />
+			</Params>
+			<Return type="single" doc="">
+				<External name="id" type="int" doc="" />
+				<External name="uuid" type="text" doc="" />
+				<External name="code" type="text" doc="" />
+				<External name="name" type="text" doc="" />
+				<External name="description" type="text" doc="" />
+				<External name="is_role" type="int" doc="" />
+				<External name="id_company" type="int" doc="" />
+				<External name="_id_creator" type="int" doc="" />
+				<External name="_id_updater" type="int" doc="" />
+				<External name="_creation" type="int" doc="" />
+				<External name="_creation_ip" type="text" doc="" />
+				<External name="_modification" type="int" doc="" />
+				<External name="_modification_ip" type="text" doc="" />
+			</Return>
+			<Begin>
+				<Return>
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id" />
+						</Param>
+					</DataAccess>
+				</Return>
+			</Begin>
+		</Function>
+		<Function name="getIdByCode"
+			doc="Get a record id by its code from entity fw_permission">
+			<Params>
+				<Param name="code" type="string" required="true" />
+			</Params>
+			<Return type="int" doc="">
+			</Return>
+			<Begin>
+				<Var name="record">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="code">
+							<Var name="PARAMS" key="code" />
+						</Param>
+					</DataAccess>
+				</Var>
+				<Return>
+					<If condition="$record->__length == 0">
+						<Then>
+							<Null/>
+						</Then>
+						<Else>
+							<Var name="record" key="id" />
+						</Else>
+					</If>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="addRelationByCode" doc="Adds a relation between a role and a (role or capability)">
+			<Params>
+				<Param name="role_code" type="string" doc="The code of the role to add the permission"/>
+				<Param name="permission_code" type="string" doc="The code of the permission to relate (role or capability)"/>
+			</Params>
+			<Return type="int"/>
+			<Begin>
+				<Var name="role">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="code"><Var name="PARAMS" key="role_code"/></Param>
+					</DataAccess>
+				</Var>
+				<If condition="$role->__length == 0">
+					<Then>
+						<Exception name="framework/permission::invalidCode">
+							<Param><Var name="PARAMS" key="role_code"/></Param>
+						</Exception>
+					</Then>
+				</If>
+				<!-- Check if this is really a role-->
+				<If condition="$role->is_role == 0">
+					<Then>
+						<Exception name="framework/permission::permissionNotARole">
+							<Param><Var name="PARAMS" key="role_code"/></Param>
+						</Exception>
+					</Then>
+				</If>
+
+				<Var name="permission">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="code"><Var name="PARAMS" key="permission_code"/></Param>
+					</DataAccess>
+				</Var>
+				<If condition="$permission->__length == 0">
+					<Then>
+						<Exception name="framework/permission::invalidCode">
+							<Param><Var name="PARAMS" key="permission_code"/></Param>
+						</Exception>
+					</Then>
+				</If>
+				
+				<!-- Check if both are roles and throw exception - Not implemented Yet-->
+				<If condition="$role->is_role == 1 &amp;&amp; $permission->is_role == 1">
+					<Then>
+						<Exception name="framework/permission::notImplemented">
+							<Param><Var name="PARAMS" key="role_code"/></Param>
+						</Exception>
+					</Then>
+				</If>
+				
+				<!-- Check if this relation is duplicated -->
+				<Var name="relation">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission_relation</Param>
+						<Param name="id_role"><Var name="role" key="id"/></Param>
+						<Param name="id_permission"><Var name="permission" key="id"/></Param>
+					</DataAccess>
+				</Var>				
+				
+				<!-- All data is validated, so insert the relation if it's not duplicated-->
+				<If condition="$relation->__length == 0">
+					<Then>
+						<Var name="relationId">
+							<DataAccess method="insert">
+								<Param name="_entity">fw_permission_relation</Param>
+								<Param name="id_role"><Var name="role" key="id"/></Param>
+								<Param name="id_permission"><Var name="permission" key="id"/></Param>
+							</DataAccess>
+						</Var>
+					</Then>
+					<Else>
+						<!-- Return the one allready inserted -->
+						<Var name="relationId"><Var name="relation" key="id"/></Var>
+					</Else>
+				</If>
+				
+				<Return><Var name="relationId"/></Return>
+			</Begin>
+		</Function>
+
+
+		<Function scope="public" name="addRelation" doc="Adds a relation between a role and a (role or capability)">
+			<Params>
+				<Param name="id_role" type="string" doc="The code of the role to add the permission"/>
+				<Param name="id_permission" type="string" doc="The code of the permission to relate (role or capability)"/>
+			</Params>
+			<Return type="int"/>
+			<Begin>
+				<Var name="role">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="id"><Var name="PARAMS" key="id_role"/></Param>
+					</DataAccess>
+				</Var>
+				<If condition="$role->__length == 0">
+					<Then>
+						<Exception name="framework/permission::invalidId">
+							<Param><Var name="PARAMS" key="id_role"/></Param>
+						</Exception>
+					</Then>
+				</If>
+				<!-- Check if this is really a role-->
+				<If condition="$role->is_role == 0">
+					<Then>
+						<Exception name="framework/permission::permissionNotARole">
+							<Param><Var name="PARAMS" key="id_role"/></Param>
+						</Exception>
+					</Then>
+				</If>
+
+				<Var name="permission">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission</Param>
+						<Param name="id"><Var name="PARAMS" key="id_permission"/></Param>
+					</DataAccess>
+				</Var>
+				<If condition="$permission->__length == 0">
+					<Then>
+						<Exception name="framework/permission::invalidId">
+							<Param><Var name="PARAMS" key="id_permission"/></Param>
+						</Exception>
+					</Then>
+				</If>
+				
+				<!-- Check if both are roles and throw exception - Not implemented Yet-->
+				<If condition="$role->is_role == 1 &amp;&amp; $permission->is_role == 1">
+					<Then>
+						<Exception name="framework/permission::notImplemented"/>
+					</Then>
+				</If>
+				
+				<!-- Check if this relation is duplicated -->
+				<Var name="relation">
+					<DataAccess method="load">
+						<Param name="_entity">fw_permission_relation</Param>
+						<Param name="id_role"><Var name="role" key="id"/></Param>
+						<Param name="id_permission"><Var name="permission" key="id"/></Param>
+					</DataAccess>
+				</Var>				
+				
+				<!-- All data is validated, so insert the relation if it's not duplicated-->
+				<If condition="$relation->__length == 0">
+					<Then>
+						<Var name="relationId">
+							<DataAccess method="insert">
+								<Param name="_entity">fw_permission_relation</Param>
+								<Param name="id_role"><Var name="role" key="id"/></Param>
+								<Param name="id_permission"><Var name="permission" key="id"/></Param>
+							</DataAccess>
+						</Var>
+					</Then>
+					<Else>
+						<!-- Return the one allready inserted -->
+						<Var name="relationId"><Var name="relation" key="id"/></Var>
+					</Else>
+				</If>
+				
+				<Return><Var name="relationId"/></Return>
+			</Begin>
+		</Function>
+
+
+
+	</Library>
+</Node>

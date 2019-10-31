@@ -1,0 +1,44 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Searches logs
+    </Doc>
+    <Params>
+        <Param name="user"/>
+        <Param name="application"/>
+        <Param name="process"/>
+        <Param name="node"/>
+        <Param name="action"/>
+        <Param name="key"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        l.*, l.action as action_name, p.display_name
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        {table_prefix}fw_log l
+                        INNER JOIN {table_prefix}person p ON (p.id = l.id_user) 
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1=1</XCondition>
+                    <XCondition optional="user">AND user={param->user}</XCondition>
+                    <XCondition optional="application">AND application='{param->application}'</XCondition>
+                    <XCondition optional="process">AND process='{param->process}'</XCondition>
+                    <XCondition optional="node">AND node='{param->node}'</XCondition>
+                    <XCondition optional="action">AND action='{param->action}'</XCondition>
+                    <XCondition optional="key">AND log_key='{param->key}'</XCondition>
+                    <XCondition optional="type">AND type like '{param->type}'</XCondition>
+                </XWhere>
+                <XOrderBy>
+                    <XOrder>id desc limit 100</XOrder>
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

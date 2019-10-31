@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<Process>
+     <Transitions>
+	 	<Flow role='Teacher' startuc='recordsBookAdmin' startnode='' event='init' enduc='recordsBookAdmin' endnode='main' />
+	 	<Flow role='Teacher' startuc='recordsBookAdmin' startnode='main' event='viewTimetable' enduc='recordsBookAdmin' endnode='timetable' />
+	 	<Flow role='Teacher' startuc='recordsBookAdmin' startnode='timetable' event='back' enduc='recordsBookAdmin' endnode='main' />
+	 	
+     </Transitions>
+</Process>

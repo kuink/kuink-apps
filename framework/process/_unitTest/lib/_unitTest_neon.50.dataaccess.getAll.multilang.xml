@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              <Var name="context" key="message">DataAccess getAll::multilang</Var>
+							<Var name="context" key="tableName">
+								<Call library="framework,_unitTest,neon.00.aux" function="createAuxMultilangTable"/>
+							</Var>               
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+      
+							            
+              <Var name="expectedResultPT"><String>teste</String></Var>
+              <Var name="expectedResultEN"><String>test</String></Var>
+              
+              <!-- Note that insert has allready been tested before this test -->
+              <Var name="multilang"><String.parse><![CDATA[<pt>$expectedResultPT</pt><en>$expectedResultEN</en>]]></String.parse></Var>
+              <Var name="id1">
+	              <DataAccess method="insert">
+									<Param name="_entity"><Var name="context" key="tableName"/></Param>
+									<Param name="name"><Var name="multilang"/></Param>
+									<Param name="_multilang_fields">name</Param>
+								</DataAccess>
+							</Var>
+              <Var name="multilang"><String.parse><![CDATA[<pt>$expectedResultPT</pt><en>$expectedResultEN</en>]]></String.parse></Var>
+              <Var name="id2">
+	              <DataAccess method="insert">
+									<Param name="_entity"><Var name="context" key="tableName"/></Param>
+									<Param name="name"><Var name="multilang"/></Param>
+									<Param name="_multilang_fields">name</Param>
+								</DataAccess>
+							</Var>
+														
+							<Var name="allPT">
+								<DataAccess method="getAll">
+									<Param name="_entity"><Var name="context" key="tableName"/></Param>
+									<Param name="_attributes">*</Param>
+									<Param name="_lang">pt</Param>
+								</DataAccess>
+							</Var>
+							<Var name="allEN">
+								<DataAccess method="getAll">
+									<Param name="_entity"><Var name="context" key="tableName"/></Param>
+									<Param name="_attributes">*</Param>
+									<Param name="_lang">en</Param>
+								</DataAccess>
+							</Var>
+							
+							<Var name="errors"><Int>0</Int></Var>
+							<Var name="expectedResult"><Var name="expectedResultPT"/></Var>
+							<Var name="id"><Int>1</Int></Var>
+							<ForEach var="allPT" item="item">
+								<If condition="($item->name != $expectedResult) || ($item->id != $id)">
+									<Then>
+										<Var name="errors" value="$errors + 1"/>
+									</Then>
+								</If>
+								<Var name="id" value="$id + 1"/>
+							</ForEach>
+							<Var name="expectedResult"><Var name="expectedResultEN"/></Var>
+							<Var name="id"><Int>1</Int></Var>
+							<ForEach var="allPEN" item="item">
+								<If condition="($item->name != $expectedResult) || ($item->id != $id)">
+									<Then>
+										<Var name="errors" value="$errors + 1"/>
+									</Then>
+								</If>
+								<Var name="id" value="$id + 1"/>
+							</ForEach>
+              <If condition="$errors == 0">
+                <Then><Var name="code">0</Var></Then>
+                <Else><Var name="code">-1</Var></Else>
+              </If>              
+              <Var name="result" key="code"><Var name="code"/></Var>
+              <Var name="result" key="data"><String.parse>Errors -&gt; $errors </String.parse></Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            	<Call library="framework,_unitTest,neon.00.aux" function="dropAuxMultilangTable">
+            		<Param name="tableName"><Var name="context" key="tableName"/></Param>
+            	</Call>             
+            </Begin>
+        </Function>
+        
+    </Library>
+</Node>
+

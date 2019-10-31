@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens />
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="getIdByCode" doc="Get plugin id by given code">
+      <Params>
+        <Param name="code" />
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component::invalidPluginCode" doc="The plugin code does not exist"/>
+      </Exceptions>
+      <Return type="int" doc="id of the plugin" />
+      <Begin>
+
+        <!-- get component type -->
+        <Var name="plugin">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component_plugin</Param>
+            <Param name="code"><Var name="PARAMS" key="code" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$plugin->__length &lt;= 0">
+          <Then>
+            <Exception><String parse="true">framework/rm.component.plugin::invalidPluginCode $PARAMS->code</String></Exception>
+          </Then>
+        </If>
+
+        <Return><Var name="plugin" key="id" /></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="getAll" doc="Get all plugins">
+			<Params>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+			 <Return>
+			   <DataAccess method="getAll">
+				 		<Param name="_entity">fw_rm_component_plugin</Param>
+				</DataAccess>
+			 </Return>
+			</Begin>
+		</Function>
+
+    <Function scope="public" name="getById" doc="Get plugin data by id">
+      <Params>
+        <Param name="id" type="int" doc="The plugin id"/>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+       <Return>
+         <DataAccess method="load">
+            <Param name="_entity">fw_rm_component_plugin</Param>
+            <Param name="id"><Var name="id"/></Param>
+        </DataAccess>
+       </Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

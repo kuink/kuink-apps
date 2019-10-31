@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="updateXml" doc="Update template's xml according to its metadata">
+      <Params>
+        <Param name="id_template" required="false" />
+      </Params>
+      <Return />
+      <Begin>
+
+        <If condition="$id_template != ''">
+          <Then>
+            <!-- get template to update -->
+            <Var name="template">
+              <DataAccess method="load">
+                <Param name="_entity">fw_rm_template</Param>
+                <Param name="id"><Var name="id_template" /></Param>
+              </DataAccess>
+            </Var>
+          </Then>
+          <Else>
+            <!-- get all templates to update -->
+            <Var name="templates">
+                <DataAccess method="getAll">
+                  <Param name="_entity">fw_rm_template</Param>
+                </DataAccess>
+            </Var>
+          </Else>
+        </If>
+
+        <Var name="entityType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code">template</Param>
+          </DataAccess>
+        </Var>
+
+        <!--Var name="entityTypeRelation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code">metadata_definition</Param>
+          </DataAccess>
+        </Var-->
+
+        <!-- get all metadata related to templates -->
+        <If condition="$templates->__length &gt; 0">
+          <Then>
+            <ForEach var="templates" item="template">
+              <Var name="metadata" key="$template->id">
+                  <DataAccess method="this,this,getTemplateMetadata">
+                      <Param name="id_template"><Var name="template" key="id" /></Param>
+                  </DataAccess>
+              </Var>
+              <!-- get template's parents -->
+              <Var name="templateParents">
+                <DataAccess method="getAll">
+                  <Param name="_entity">fw_rm_entity_relation</Param>
+                  <Param name="id_entity"><Var name="template" key="id" /></Param>
+                  <Param name="id_entity_type"><Var name="entityType" key="id" /></Param>
+                  <Param name="id_entity_type_relation"><Var name="entityType" key="id" /></Param>
+                </DataAccess>
+              </Var>
+              <!-- get template parents metadata -->
+              <ForEach var="templateParents" item="parent">
+                <Var name="parentMetadata"></Var>
+                <Var name="parentMetadata">
+                  <DataAccess method="this,this,getTemplateMetadata">
+                    <Param name="id_template"><Var name="parent" key="id_entity_relation" /></Param>
+                  </DataAccess>
+                </Var>
+                <If condition="$parentMetadata->__length &gt; 0">
+                  <Then>
+                    <Var name="parentsMetadata" key="$template->id"><Var name="parentMetadata" /></Var>
+                  </Then>
+                </If>
+              </ForEach>
+            </ForEach>
+            <Var name="parentsMetadata" dump="true" />
+          </Then>
+          <Else>
+
+            <Var name="metadata" key="$template->id">
+                <DataAccess method="this,this,getTemplateMetadata">
+                    <Param name="id_template"><Var name="template" key="id" /></Param>
+                </DataAccess>
+            </Var>
+            <!-- get template's parents -->
+            <Var name="templateParents">
+              <DataAccess method="getAll">
+                <Param name="_entity">fw_rm_entity_relation</Param>
+                <Param name="id_entity"><Var name="template" key="id" /></Param>
+                <Param name="id_entity_type"><Var name="entityType" key="id" /></Param>
+                <Param name="id_entity_type_relation"><Var name="entityType" key="id" /></Param>
+              </DataAccess>
+            </Var>
+
+            <!-- get template parents metadata -->
+            <ForEach var="templateParents" item="parent">
+              <!-- concatenate template's metadata with parent template's metadata -->
+              <StringLib method="concatenate">
+                  <Param><Var name="metadata" key="template->id" /></Param>
+                  <Param>
+                    <DataAccess method="this,this,getTemplateMetadata">
+                      <Param name="id_template"><Var name="parent" key="id" /></Param>
+                    </DataAccess>
+                  </Param>
+              </StringLib>
+            </ForEach>
+
+            <!--Var name="metas">
+              <Call function="getTemplateMetadata">
+                <Param name="id_entity"><Var name="template" key="id" /></Param>
+              </Call>
+            </Var-->
+          </Else>
+        </If>
+
+        <!-- concatenate the final xml with the enclosing metadata tags and all the metadata data retrieved from last step -->
+        <!--Var name="updatedXml"></Var>
+        <ForEach var="metas" key="metakey" item="meta">
+            <Var name="updatedXml" key="$metakey"></Var>
+            <Var name="updatedXml" key="$metakey">
+                <Lang key="metaTagOpening" />
+            </Var>
+            <ForEach var="meta" item="singleMeta">
+                <Var name="updatedXml" key="$metakey">
+                    <StringLib method="concatenate">
+                        <Param><Var name="updatedXml" key="$metakey"/></Param>
+                        <Param><Var name="singleMeta" key="metadata" /></Param>
+                    </StringLib>
+                </Var>
+            </ForEach>
+            <Var name="updatedXml" key="$metakey">
+                <StringLib method="concatenate">
+                    <Param><Var name="updatedXml" key="$metakey" /></Param>
+                    <Param><Lang key="metaTagClosing" /></Param>
+                </StringLib>
+            </Var>
+        </ForEach-->
+
+        <!-- update last_xml field in fw_rm_template table with updatedXml -->
+        <!--ForEach var="updatedXml" key="idEntity" item="xml">
+            <DataAccess method="this,this,updateTemplateData">
+                <Param name="last_xml"><Var name="xml" /></Param>
+                <Param name="id"><Var name="idEntity" /></Param>
+            </DataAccess>
+        </ForEach-->
+        <Return>0</Return>
+      </Begin>
+    </Function>
+
+    <Function name="getTemplateMetadata" doc="get all template's metadata">
+      <Params>
+        <Param name="id_entity" />
+        <Param name="id_entity_type" />
+        <Param name="id_entity_type_relation" />
+      </Params>
+      <Return type="multiple" />
+      <Begin>
+        <Var name="metadata">
+            <DataAccess method="this,this,getTemplatesMetadata">
+                <Param name="id_entity"><Var name="id_entity" /></Param>
+                <Param name="id_entity_type"><Var name="id_entity_type" /></Param>
+                <Param name="id_entity_type_relation"><Var name="entity_type_relation" /></Param>
+            </DataAccess>
+        </Var>
+        <Return><Var name="metadata" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getIdByCode" doc="Get template's id by given code">
+      <Params>
+        <Param name="code" />
+      </Params>
+      <Return type="int" doc="The template's id" />
+      <Begin>
+        <Var name="template">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_template</Param>
+            <Param name="code"><Var name="code" /></Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="template" key="id" /></Return>
+      </Begin>
+    </Function>
+
+  </Library>
+</Node>

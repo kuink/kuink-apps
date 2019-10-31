@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+        Get a controlled document versions
+    </Doc>
+  <Params>
+    <Param name="id_controlled_document"/>
+  </Params>
+  <Body>
+    <GetAll>
+      <XSql>
+        <XSelect>
+          <XField >
+            cdv.*,
+            IF (cdv.id_wf_instance IS NULL, 0, 1) as has_workflow,
+            IF ((cdv.id = cd.id_current_version AND cdv.is_active = 0 AND cdv.id_wf_instance IS NULL) OR (cdv.is_finished = 0), 1, 0) as can_start_workflow
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_rm_controlled_document_version cdv
+            INNER JOIN fw_rm_controlled_document cd ON (cd.id = cdv.id_controlled_document)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>cdv.id_controlled_document = {param->id_controlled_document}</XCondition>
+        </XWhere>
+      </XSql>
+    </GetAll>
+  </Body>
+</Method>

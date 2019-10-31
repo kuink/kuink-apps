@@ -1,0 +1,32 @@
+<?xml version='1.0'?>
+<Method>
+  <Doc>
+    Get the next rules to apply
+  </Doc>
+  <Params>
+    <Param name="ruleOrder" />
+    <Param name="ruleDirection" />
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+          <XField>
+            lr.*
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_login_router_rule lr
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition><![CDATA[`order` > {param->ruleOrder} AND lr.direction = {param->ruleDirection} AND lr.is_active = 1]]></XCondition>
+        </XWhere>
+        <XOrderBy>
+        	<XOrder>`order` ASC</XOrder>
+        </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

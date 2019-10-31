@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->              
+              <Var name="context" key="message">Instruction Lte::test 3 params - false</Var>
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              
+
+              <Var name="expectedResult"><Int>0</Int></Var>
+              <Var name="aux"><Int>2</Int></Var>
+              <Var name="test">
+                <Dummy>
+                  <Lte>
+                    <Param>2</Param>
+                    <Param>-4</Param>
+                    <Param><Var name="aux"/></Param>
+                  </Lte>
+                </Dummy>
+              </Var>
+              
+
+              <If condition="$test == $expectedResult">
+                <Then><Var name="code">0</Var></Then>
+                <Else><Var name="code">-1</Var></Else>
+              </If>
+              
+              <Var name="result" key="code"><Var name="code"/></Var>
+              <Var name="result" key="data">
+                <StringLib method="concatenate">
+                  <Param><Var name="test"/></Param>
+                  <Param>::</Param>
+                  <Param><Var name="expectedResult"/></Param>
+                </StringLib>
+              </Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

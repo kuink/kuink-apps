@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="result"/>
+  </Params>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Column id="col1"/>
+        <Text id="text" label="text"/>
+        <Column id="col2"/>
+        <Checkbox id="is_completed"/>
+        <Checkbox id="started_by_me"/>
+        <ButtonGroup>
+          <Button id="search" type="search" label="search" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="inbox">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="name"/>
+            <Column name="description"/>
+            <Column name="due_date">
+              <Formatter name="DateTime" format="longDateTime"/>
+            </Column>
+            <Column name="is_completed">
+              <Formatter name="Icon" size="24">
+                <Param name="0">error.png</Param>
+                <Param name="1">success.png</Param>
+              </Formatter>
+            </Column>            
+          </Columns>
+          <Actions>
+            <Action name="doIt" actionvalue="id" type="execute" condition="$can_handle == 1"/>
+            <Action name="history" actionvalue="id" />
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen id="scrHistory" doc="Token history">
+      <Grid name="grdHistory" title="result">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="node"/>
+            <Column name="started">
+              <Formatter name="DateTime" method="longDateTime"/>            
+            </Column>
+            <Column name="ended">
+              <Formatter name="DateTime" method="longDateTime"/>
+            </Column>
+            <Column name="_id_creator"/>            
+            <Column name="_id_updater"/>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <If condition="$PARAMS->result != ''">
+				<Then>
+					<Trace>Result found:</Trace>
+					<Var name="PARAMS" key="result" dump="true"/>
+				</Then>
+			</If>
+    
+      <Var name="defaultData" key="is_completed" process="true"><Int>0</Int></Var>
+      <Var name="defaultData" key="started_by_me" process="true"><Int>0</Int></Var>
+      <!--Print><Var name="defaultData" key="is_completed" process="true" dump="true" /></Print-->
+      <Var name="defaultData" process="true" dump="true"/>
+      
+      <!--Var name="newVar" key="is_completed" process="true"><Int>7</Int></Var>
+      <Print><Var name="newVar" key="is_completed" process="true"/></Print>
+      <Var name="newVar" process="true" dump="true"/-->
+      <Action name="search"/>
+    </Action>
+    
+    <Action name="doIt">
+      <Var name="task" dump="true">
+				<Call library="framework,wf.inbox,api" function="getTask">
+  				<Param name="id_task"><ActionValue/></Param>
+				</Call>      
+      </Var>
+      
+      <RaiseEvent name="doIt">
+        <Param name="handler"><Var name="task" key="handler"/></Param>
+        <Param name="id_object"><Var name="task" key="id_object"/></Param>
+        <Param name="id_task"><ActionValue/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="search" screen="scrSearch">
+      <Var name="defaultData" process="true" dump="true"/>    
+      <If condition="@defaultData->__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param><Var name="defaultData" process="true"/></Param>
+          </Control>
+        </Then>
+      </If>
+      <Var name="currentData" dump="true">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Call library="framework,wf.inbox,api" function="getMyInbox">
+            <Param name="is_completed"><Var name="currentData" key="is_completed"/></Param>
+            <Param name="started_by_me"><Var name="currentData" key="started_by_me"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+            <Param name="text"><Var name="currentData" key="text"/></Param>
+            <Param name="pagesize"><Control method="getPageSize" object="grdSearchResult"/></Param>
+            <Param name="pagenum"><Control method="getCurrentPage" object="grdSearchResult"/></Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="history">
+      <Var name="actionValue" dump="true"><ActionValue/></Var>
+      <Var name="id_process_instance" dump="true">
+        <Call library="framework,wf.inbox,api" function="getTaskProcessInstanceId">
+  				<Param name="id_task"><ActionValue/></Param>
+	   		</Call>
+      </Var>
+      <RaiseEvent name="history">
+        <Param name="id_process_instance"><Var name="id_process_instance"/></Param>
+      </RaiseEvent>
+    </Action>
+    
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

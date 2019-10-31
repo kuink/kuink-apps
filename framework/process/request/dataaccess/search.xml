@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search all fw_request
+  </Doc>
+  <Params>
+    <Param name="id" />
+    <Param name="guid" />
+    <Param name="id_company" />
+    <Param name="id_request_category" />
+    <Param name="id_request_status" />
+    <Param name="dateFrom" />
+    <Param name="dateTo" />
+    <Param name="attempts" />
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            t.*,
+            frc.code as category_code, frc.assync,
+            frs.code as status_code,
+            p.public_key as photo,
+            (SELECT count(*) FROM fw_request_comment frcm WHERE frcm.id_request = t.id) as comments_count
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_request t
+            INNER JOIN fw_request_category frc ON (frc.id = t.id_request_category)
+            INNER JOIN fw_request_status frs ON (frs.id = t.id_request_status)
+            INNER JOIN person p ON (p.id = t._id_creator)            
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>1 = 1</XCondition>
+          <XCondition optional="id">AND t.id = {param->id}
+          </XCondition>
+          <XCondition optional="guid">AND t.guid like
+            '{param->guid}'</XCondition>
+          <XCondition optional="id_company">AND t.id_company =
+            {param->id_company}</XCondition>
+          <XCondition optional="id_request_category">AND t.id_request_category =
+            {param->id_request_category}</XCondition>
+          <XCondition optional="id_request_status">AND t.id_request_status =
+            {param->id_request_status}</XCondition>
+          <XCondition optional="data">AND t.data like '{param->data}'</XCondition>
+          <XCondition optional="attempts">AND t.attempts =
+            {param->attempts}</XCondition>
+            <XCondition optional="now">
+            <![CDATA[AND (t._creation + t.ttl) >= {param->now}]]>
+            </XCondition>
+            <XCondition optional="dateFrom">
+              <![CDATA[AND t._creation >= {param->dateFrom} AND t._creation <= {param->dateTo}]]>
+            </XCondition>            
+        </XWhere>
+        <XOrderBy>
+          <XOrder>t._creation desc</XOrder>
+        </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

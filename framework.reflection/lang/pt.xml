@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+      <!-- cms -->
+      <String key="list" value="Lista"/>
+      <String key="class" value="Aplicação,Processo"/>
+      <String key="signature" value="Assinatura"/>
+      <String key="permissions" value="Permissões"/>
+      <String key="callNeon" value="Chamada Neon"/>
+      <String key="library" value="Biblioteca"/>
+      <String key="test" value="Testar"/>
+      <String key="call" value="Executar"/>
+      <String key="api" value="API"/>
+      <String key="entity" value="Entidade"/>
+      <String key="input" value="Entrada"/>
+      <String key="output" value="Saída"/>
+      <String key="dataSource" value="Fonte de Dados"/>
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

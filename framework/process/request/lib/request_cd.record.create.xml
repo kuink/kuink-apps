@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="StringLib" type="lib"/>
+		<Use name="FileLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	
+	<Library>
+		<Function name="execute">
+		<Params>
+		  <Param name="data" doc="The data to process, in this case is the controlled document id"/>
+		  <Param name="log" output="true" />
+		</Params>
+		<Begin>
+			<Var name="parsedData"><JsonToSet><Var name="PARAMS" key="data"/></JsonToSet></Var>
+
+			<!--Var name="log">
+				<Call library="framework,rm.controlledDocument,api" function="createRecord">
+					<Param name="id"><Var name="parsedData" key="id"/></Param>
+				</Call>			
+			</Var-->
+
+			<Var name="result">postponed</Var>	
+      <Return><Var name="result"/></Return>
+    </Begin>
+    </Function>
+	</Library>
+</Node>

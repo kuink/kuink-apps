@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- cms -->
+			<String key="page">Aplicação</String>
+			<String key="show">Mostrar</String>
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

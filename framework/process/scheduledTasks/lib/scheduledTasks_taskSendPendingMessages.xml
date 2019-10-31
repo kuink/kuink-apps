@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions />
+    <Doc lang="pt-PT">Send pending messages</Doc>
+    <Libraries>
+        <Use name="MessageLib" type="lib"/>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+	
+    <Configuration />
+    <Screens>
+    </Screens>
+    <Actions>
+        <Action name="init">
+        </Action>
+    </Actions>
+	
+    <Library>
+        <Function name="execute">
+            <Params>
+                <Param name="LOG" output="true"/>
+            </Params>
+            <Begin>
+	      
+	    <Var name="serverIp">
+	      <Var name="SYSTEM" key="ip" />
+	    </Var>
+	    <Var name="allowedIps">
+	      <UtilsLib method="split">
+		<Param><Config key="mailServerAllowed"/></Param>
+		<Param><![CDATA[,]]></Param>
+	      </UtilsLib>
+	    </Var>
+	    <Var name="isAllowed">
+	      <UtilsLib method="inArray">
+		<Param><Var name="serverIp"/></Param>
+		<Param><Var name="allowedIps" /></Param>
+	      </UtilsLib>
+	    </Var>
+
+	    <If condition="$isAllowed == true">
+	      <Then>
+		<!--
+	      <Var name="serverIp"  />
+	      <Var name="allowedIps"  />
+	      <Var name="isAllowed"  />
+	    -->
+                <Var name="pendingMessages">
+                    <Execute method="this,this,message.getPending">
+                        <Param name="now"><DateTimeLib method="now"/></Param> <!-- past messages -->
+                    </Execute>
+                </Var>
+                
+                <Var name="counter">0</Var>
+                <ForEach var="pendingMessages" item="msg">
+                    <Var name="msg" />
+                    <Var name="headers" >
+                        <UtilsLib method="base64Decode"><Param><Var name="msg" key="headers"/></Param></UtilsLib>
+                    </Var>
+<!--                    <Var name="headers" />-->
+                    
+                    <Var name="body" >
+                        <UtilsLib method="base64Decode">
+                            <Param>
+                                <Var name="msg" key="body"/>
+                            </Param>
+                        </UtilsLib>
+                    </Var>
+
+                    <Var name="isSent">
+
+                        <MessageLib method="sendMessage">
+                            <Param name="headers">
+                                    <Var name="headers"/>
+                            </Param>
+                            <Param name="body"><Var name="body"/></Param>
+                        </MessageLib>
+
+                    </Var>
+                    <If condition="$isSent == 0">
+                        <Then>
+                            <!-- email sent -->
+                            <Execute method="framework,generic,update">
+                                <Param name="table">fw_message</Param>
+                                <Param name="id"><Var name="msg" key="id"/></Param>
+                                <Param name="is_sent">1</Param>
+                                <Param name="_modification"><DateTimeLib method="now"/></Param>
+                            </Execute>
+                            <Var name="counter" sum="1"/>
+                        </Then>
+                        <Else>
+                            <!-- email not send - "To" header is empty -->
+                            <Execute method="framework,generic,update">
+                                <Param name="table">fw_message</Param>
+                                <Param name="id"><Var name="msg" key="id"/></Param>
+                                <Param name="is_sent">-1</Param>
+                                <Param name="_modification"><DateTimeLib method="now"/></Param>
+                            </Execute>
+                            <Var name="counter" sum="1"/>
+                        </Else>
+                    </If>
+                    
+
+                </ForEach>
+	      </Then>
+	      <Else>
+		<UserMessage type="error"><Lang key="notauthorized"/></UserMessage>
+	      </Else>
+	    </If>
+	    
+	    
+                
+                
+                
+                <!-- <Var name="counter" /> -->
+                <Return>OK</Return>
+            </Begin>
+        </Function>
+	 
+    </Library>
+</Node>
+

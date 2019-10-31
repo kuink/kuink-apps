@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries/>
+  <Configuration>
+  </Configuration>
+  <Params>
+      <Param name="code" doc="The class code to edit"/>
+  </Params>
+  <Screens>
+    <Screen id="scrEdit">
+      <Form name="frmEditClass" title="editClass">
+        <Column id="c1"/>
+        <Header id="baseData"/>
+        <Int id="id" label="id" hidden="true" disabled="true"/>
+        <Static id="uuid" label="uuid" disabled="true"/>
+        <Header id="producerHeader"/>
+        <TextArea id="producer"/>
+        <CheckBoxList id="producers" datasource="producers" bindid="id" bindvalue="name"/>
+        
+        <Text id="ref_pgd_mec"/>
+        <Select id="id_parent" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
+        <Text id="code" label="code" />
+        <TextArea id="name" label="name" maxlength="128" help="class_name"/>
+        <TextArea id="description" label="description" />
+        <TextArea id="business_process"/>
+        <Checkbox id="is_open"/>
+        <Int id="year_from"/>
+        <Int id="year_to"/>
+        
+        <Select id="id_archival_medium" label="id_archival_medium" datasource="call:framework,rm.archival.medium,api,getAll" bindid="id" bindvalue="name" />
+        <TextArea id="medium"/>
+        <Text id="linear_meters"/>
+        <TextArea id="location"/>
+        <TextArea id="obs_private"/>
+        <Select id="id_manager" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
+          datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
+        <Column id="c2"/>
+        <Header id="relatedSerieData"/>
+        <TextArea id="related_serie_num"/>
+        <TextArea id="related_serie_title"/>
+        <TextArea id="related_serie_type"/>
+                        
+        <Header id="disposalInfo"/>
+        <Int id="action_duration"/>
+        
+        <Select id="id_action_interval_code" datasource="intervals" bindid="id" bindvalue="name"/>
+        <TextArea id="interval_justification"/>
+        <Select id="id_action_code" datasource="actions" bindid="id" bindvalue="name"/>
+        <TextArea id="action_justification"/>
+
+        <Header id="componentsData"/>        
+        <Select id="id_component_type" label="id_component_type" datasource="call:framework,rm.component.type,api,getAll" bindid="id" bindvalue="name" />        
+        <Select id="id_plugin" label="id_plugin" datasource="call:framework,rm.component.plugin,api,getAll" bindid="id" bindvalue="name" />
+        
+        <Header id="metaData"/>
+        <TextArea id="last_xml" label="metadataDefinition"/>
+                
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>
+          <Button id="save" type="save" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdWorkflows" title="workflows" collapsible="false">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="type_code" />
+            <Column name="class_workflow_params">
+              <!--Formatter name="Json" method="prettyPrint"/-->
+              <Formatter name="Style" method="nl2br"/>
+            </Column>
+            <Column name="configuration_params">
+              <Formatter name="Json" method="prettyPrint"/>
+              <Formatter name="Style" method="nl2br"/>
+            </Column>
+            <Column name="process_code" />
+            <Column name="process_params">
+              <Formatter name="Json" method="prettyPrint"/>
+              <Formatter name="Style" method="nl2br"/>
+            </Column>
+          </Columns>
+          <Actions separator="true">
+            <Action name="editWorkflow" icon="edit" actionvalue="id"/>
+          </Actions>
+        </Template>
+      </Grid>  
+      <Form name="frmEditClassOptions">
+        <ButtonGroup>
+          <Button id="add" type="add" label="addWorkflow" action="addWorkflow"/>
+        </ButtonGroup>
+      </Form>          
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init">
+      <If condition="$PARAMS->code == null">
+        <Then>
+          <Action name="add"/>
+          <Exit/>
+        </Then>
+        <Else>
+          <Action name="edit"/>
+          <Exit/>
+        </Else>
+      </If>
+    </Action>
+
+    <Action name="add" screen="scrEdit">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>    
+      <Var name="class_code"><Var name="PARAMS" key="code"/></Var>
+      <If condition="$POSTDATA->class_code !== ''">
+        <Then>
+          <Var name="class_code"><Var name="POSTDATA" key="class_code"/></Var>
+        </Then>
+      </If>
+      <Var name="parentClass">
+        <Call library="framework,rm.class,api" function="get">
+          <Param name="code"><Var name="class_code"/></Param>
+        </Call>
+      </Var>
+      <Var name="class" key="id_parent"><Var name="parentClass" key="id"/></Var>
+      <Var name="class" key="is_open">1</Var>
+      <Var name="class" key="code"><String.parse>$parentClass->code.</String.parse></Var>
+      <Var name="class" key="id_manager"><Var name="USER" key="id"/></Var>
+      
+      <!-- Clear de id in the process - So we know this is an insert -->
+      <Var name="id_class" process="true" clear="true"/>
+      <Control method="addDataSource" object="frmEditClass">
+        <Param>producers</Param>
+        <Param><Call library="framework,rm.producer,api" function="getAll"/></Param>
+      </Control>
+      
+      <Control method="addDataSource" object="frmEditClass">
+        <Param>actions</Param>
+        <Param>
+          <Call library="framework,rm.code.map,api" function="getAllByTypeCode">
+            <Param name="type_code">action</Param>
+          </Call>          
+        </Param>
+      </Control>
+      <Control method="addDataSource" object="frmEditClass">
+        <Param>intervals</Param>
+        <Param>
+          <Call library="framework,rm.code.map,api" function="getAllByTypeCode">
+            <Param name="type_code">interval</Param>
+          </Call>          
+        </Param>
+      </Control>
+      <Control method="bind" object="frmEditClass">
+        <Param><Var name="class"/></Param>
+      </Control>      
+    </Action>
+
+    <Action name="edit" screen="scrEdit">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>
+      <Var name="class_code"><Var name="PARAMS" key="code"/></Var>
+      <If condition="$POSTDATA->class_code !== '' &amp;&amp; $POSTDATA->class_code !== null">
+				<Then>
+				  <Var name="class_code"><Var name="POSTDATA" key="class_code"/></Var>
+				</Then>
+			</If>
+      <Var name="class">
+        <Call library="framework,rm.class,api" function="get">
+					<Param name="code"><Var name="class_code"/></Param>
+				</Call>
+      </Var>
+      <!-- Store de id in the process -->
+      <Var name="id_class" process="true"><Var name="class" key="id"/></Var>
+      
+      <Var name="ds">
+        <Call library="framework,rm.class,api" function="getDisposalData">
+          <Param name="code"><Var name="class_code"/></Param>
+        </Call>
+      </Var>
+
+      <Var name="workflows">
+        <Call library="framework,rm.class.workflow,api" function="getWorkflows">
+          <Param name="id"><Var name="class" key="id"/></Param>
+        </Call>
+      </Var>      
+      
+      <Var name="actions">
+	      <Call library="framework,rm.code.map,api" function="getAllByTypeCode">
+	        <Param name="type_code">action</Param>
+	      </Call>          
+      </Var>
+      <Control method="addDataSource" object="frmEditClass">
+        <Param>producers</Param>
+        <Param><Call library="framework,rm.producer,api" function="getAll"/></Param>
+      </Control>			
+      <Control method="addDataSource" object="frmEditClass">
+        <Param>actions</Param>
+        <Param><Var name="actions"/></Param>
+      </Control>
+      <Control method="addDataSource" object="frmEditClass">
+        <Param>intervals</Param>
+        <Param>
+          <Call library="framework,rm.code.map,api" function="getAllByTypeCode">
+            <Param name="type_code">interval</Param>
+          </Call>          
+        </Param>
+      </Control>
+      
+      <Control method="bind" object="frmEditClass">
+        <Param><Var name="class"/></Param>
+      </Control>
+      <Control method="bind" object="frmEditClass">
+        <Param><Var name="ds"/></Param>
+      </Control> 
+      <Control method="bind" object="grdWorkflows">
+        <Param><Var name="workflows"/></Param>
+      </Control>   
+    </Action>
+
+    <Action name="save">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/rm::manage"/>
+        </Allow>
+      </Permissions>
+      <Var name="class"><Set/></Var>
+      <Var name="class" key="id"><Var name="id_class" process="true"/></Var>
+      <Var name="disposal"><Set/></Var>
+      <ForEach var="POSTDATA" item="value" key="key">
+        <If condition="$key == 'interval_justification' || $key == 'action_justification' || $key == 'action_duration' || $key == 'id_action_interval_code' || $key == 'id_action_code'">
+					<Then>
+					 <Var name="disposal" key="$key"><Var name="value"/></Var>
+					</Then>
+					<Else>
+					 <Var name="class" key="$key"><Var name="value"/></Var>
+					</Else>
+				</If>
+      </ForEach>
+      <If condition="@id_class == ''">
+				<Then>
+				  <!-- This is an insert -->
+				  <Var name="class" key="id">
+            <Call library="framework,rm.class,api" function="add" params="class"/>
+          </Var>
+				</Then>
+				<Else>
+		      <!-- Update class -->
+		      <Call library="framework,rm.class,api" function="update" params="class"/>
+				</Else>
+			</If>
+      <!-- Disposal schedule - Allways update -->
+      <Call library="framework,rm.class,api" function="updateDisposalSchedule" params="disposal">
+        <Param name="id"><Var name="class" key="id"/></Param>
+      </Call>
+        
+      <Action name="back"/>
+    </Action>
+
+    <Action name="editWorkflow">
+      <RaiseEvent name="editWorkflow">
+        <Param name="id"><ActionValue/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="addWorkflow">
+      <RaiseEvent name="addWorkflow">
+        <Param name="code"><Var name="PARAMS" key="code"/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

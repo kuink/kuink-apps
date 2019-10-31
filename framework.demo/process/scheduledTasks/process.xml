@@ -1,0 +1,14 @@
+<?xml version='1.0'?>
+<Process>
+     <Transitions>
+			 	<Flow role='Teacher' startuc='stack02' startnode='' event='init' enduc='stack02' endnode='01' />
+			 	<!-- 01 -->
+			 	<Flow role='Teacher' startuc='stack02' startnode='01' event='next' enduc='stack02' endnode='02' />
+			 	<Flow role='Teacher' startuc='stack02' startnode='01' event='prev' enduc='' endnode='' />
+        <!-- 02 -->
+        <Flow role='Teacher' startuc='stack02' startnode='02' event='next' enduc='stack02' endnode='03' />
+        <Flow role='Teacher' startuc='stack02' startnode='02' event='prev' enduc='stack02' endnode='01' />
+
+
+     </Transitions>
+</Process>

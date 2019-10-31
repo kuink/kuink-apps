@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains>
+  </Domains>
+  <Templates>
+  </Templates>
+  <Entities>
+
+    <Entity name="fw_rm_producer" doc="The producersin a given fond">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_fond" domain="foreign" refentity="fw_rm_fond" refattr="id" doc="The fond of this classification" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for a producer" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" required="true" doc="The process description"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Attribute name="is_collective" domain="bool" required="true" doc="Is this producer a collective entity or is a list of nominated users?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+  </Entities>
+</Node>

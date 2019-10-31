@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains>
+  </Domains>
+  <Templates>
+  </Templates>
+  <Entities>
+
+    <Entity name="fw_rm_class_workflow_type" multilang="true" doc="Workflows defined for this class">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="code" domain="code" required="true" doc="The identifying code" />        
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The workflow type name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The workflow type description"/>
+        <Attribute name="configuration" domain="json" required="true" doc="Json: The workflow type configuration. Other modules can place configurations here"/>
+        <Template name="fw.base" />        
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_class_workflow" doc="Workflows defined for this class">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_class" domain="foreign" refentity="fw_rm_class" refattr="id" doc="The class to apply this workflow" />
+        <Attribute name="id_workflow_configuration" domain="foreign" refentity="fw_wf_process_configuration" refattr="id" doc="The workflow configuration" />
+        <Attribute name="id_type" domain="foreign" refentity="fw_rm_class_workflow_type" refattr="id" doc="The workflow type to apply this class" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for this workflow" />
+        <Attribute name="params" domain="longText" doc="Params for overriding the params defined in process configuration" />
+        <Attribute name="_inherited" domain="bool" default="0" doc="This configuration is inherited from a parent class?" />        
+        <Attribute name="createOnChilds" domain="bool" default="0" doc="Create this configuration in all childs?" />        
+        <Template name="fw.base" />        
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_class" doc="Classification applied to records and aggregations of records">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_classification" domain="foreign" refentity="fw_rm_classification" refattr="id" doc="The classification table where this class belongs. The classification contains the fond." />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="longName" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="code" domain="codeNotUnique" required="true" doc="The identifying code" />
+        <Attribute name="description" domain="text" doc="Description of the entity" />
+        <Attribute name="last_xml" domain="longText" doc="The xml containing the metadata of the class" />
+        <Attribute name="id_disposal_schedule" domain="foreign" required="true" refentity="fw_rm_disposal_schedule" refattr="id" doc="id of the disposal schedule" />
+        <Attribute name="id_parent" domain="foreign" refentity="fw_rm_class" refattr="id" doc="Foreign id of the class parent" />
+        <Attribute name="tree_path" domain="string" size="256" required="true" doc="Full path to this child in the tree" />
+        <Attribute name="tree_level" domain="positiveInt" required="true" doc="Level of this child in the tree" />
+        <Attribute name="id_component_type" domain="foreign" refentity="fw_rm_component_type" refattr="id" doc="id of the component type" />
+        <Attribute name="id_plugin" domain="foreign" refentity="fw_rm_component_plugin" refattr="id" doc="id of the component plugin" />
+        <Attribute name="wf_instance" domain="bool" doc="true to trigger a workflow instance, false otherwise" />
+        <Attribute name="wf_code" domain="code" doc="Code for the workflow approval" />
+        <Attribute name="wf_params" domain="longText" doc="Params for the workflow approval" />
+        <Attribute name="is_open" domain="bool" default="1" doc="Is this class (serie) open?" />
+        <Attribute name="year_from" domain="int" doc="Year of the first document" />
+        <Attribute name="year_to" domain="int" doc="Year of the last document" />
+        <Attribute name="producer" domain="text" doc="The producers of records of this class. TODO: normalize in a table" />
+        <Attribute name="business_process" domain="text" doc="The related business process or legislation" />
+        <Attribute name="linear_meters" domain="string" doc="The length in meters of the documentation of this class" />
+        <Attribute name="location" domain="text" doc="Where the records are. TODO: normalize" />
+        <Attribute name="id_archival_medium" domain="foreign" required="true" refentity="fw_rm_archival_medium" refattr="id" doc="id of the archival medium" />
+        <Attribute name="medium" domain="text" doc="The medium where the records are. TODO: normalize" />
+
+        <Attribute name="ref_pgd_mec" domain="string" doc="TODO: normalize to allow other references" />
+        <Attribute name="related_serie_num" domain="string" doc="Related serie: external" />
+        <Attribute name="related_serie_title" domain="text" doc="Related serie: external" />
+        <Attribute name="related_serie_type" domain="string" doc="Related serie: external" />
+
+        <Attribute name="obs_public" domain="text" doc="Public observations, can be viewed by anyone with access to the class" />
+        <Attribute name="obs_private" domain="text" doc="Private observations, can be viewed by the manager" />
+
+        <Attribute name="id_manager" domain="foreign" required="false" refentity="fw_person" refattr="id"  doc="The person who manages this class"/>
+
+        <Attribute name="id_access_level_classification" domain="foreign" refentity="fw_rm_access_level_classification" refattr="id" doc="id of the access level classification" />
+        <Attribute name="metadata_handler" domain="apiFunction" doc="If is set, then the metadata handler id in this API, so call it when needed" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+  </Entities>
+</Node>

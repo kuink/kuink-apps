@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Search all active companies
+    </Doc>
+    <Params>
+        <Param name="name"/>
+        <Param name="code"/>
+        <Param name="is_active"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        s.id, s.description, s.script, s._creation, s._creation_ip, s._modification, s._modification_ip
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        {table_prefix}fw_script s
+                    </XTable>
+                </XFrom>
+                <XOrderBy>
+                    s.id
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

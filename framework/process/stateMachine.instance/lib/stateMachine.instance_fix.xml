@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Doc lang="pt-PT">
+    </Doc>
+    <Libraries>
+        <Use name="UtilsLib" type="lib"/>
+        <Use name="MathLib" type="lib"/>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="StringLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens>
+    </Screens>
+    <Actions>
+        <Action name="init">
+        </Action>
+    </Actions>
+    <Library>
+
+				<!-- TODO: This is not working yet. Fix it -->
+        <Function name="getTransitionId" doc="gets an id of a transition" scope="protected">
+            <Params>
+                <Param name="id" doc="The state machine instance id"/>
+                <Param name="event" type="string" doc="The event to be processed"/>
+                <Param name="role" type="string" doc="The role of the user to process the event"/>
+                <Param name="id_state" type="string" doc="The role of the user to process the event"/>
+            </Params>
+            <Exceptions>
+            	<Exception name="framework/stateMachine.instance::invalid" doc="Instance not found"/>
+            	<Exception name="framework/stateMachine.instance::invalidTransition" doc="The instance is not waiting for this event at this time"/>
+            	<Exception name="framework/stateMachine.instance::noPermission" doc="The role has no permission to execute this event"/>
+            </Exceptions>
+            <Return type="int" doc="The instance id"/>>
+            <Begin>
+            	<Transaction>
+            		<Var name="instance" dump="true">
+            			<DataAccess method="load">
+										<Param name="_entity">fw_state_machine_instance</Param>
+										<Param name="id"><Var name="PARAMS" key="id"/></Param>
+									</DataAccess>
+            		</Var>
+            		<If condition="$instance->__length == 0">
+									<Then>
+										<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
+									</Then>
+								</If>
+            		
+            		<!-- Check if this transition is valid else throw framework/stateMachine.instance::invalidTransition or if the user role can execute throw framework/stateMachine.instance::noPermission if not-->
+            		<Var name="transitions" dump="true">
+            			<DataAccess method="getAll">
+										<Param name="_entity">fw_state_machine_transition</Param>
+										<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
+										<Param name="event"><Var name="PARAMS" key="event"/></Param>
+										<Param name="is_active">1</Param>
+									</DataAccess>
+            		</Var>
+            		<If condition="$transitions->__length == 0">
+									<Then>
+										<Exception><String>framework/stateMachine.instance::invalidTransition</String></Exception>
+									</Then>
+								</If>
+            		
+            		<!-- Check Permissions - get the first-->
+            		<Var name="endStateId"><Int>-1</Int></Var>
+            		<Var name="eventDescription"><String/></Var>
+            		<Var name="found"><Int>0</Int></Var>
+            		<ForEach var="transitions" item="transition">
+            			<Var name="transitionRoles"><Set/></Var>
+            			<Var name="transitionRoles" dump="true"><ListToSet><Var name="transition" key="role_list"/></ListToSet></Var>
+            			<ForEach var="transitionRoles" item="transitionRole">
+            				<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
+											<Then>
+												<Var name="endStateId"><Var name="transition" key="id_end_state"/></Var>
+												<Var name="eventDescription"><Var name="transition" key="event_description"/></Var>
+												<Var name="found"><Int>1</Int></Var>
+											</Then>
+										</If>
+									</ForEach>
+								</ForEach>
+								<If condition="$found == 0">
+									<Then>
+										<Exception><String>framework/stateMachine.instance::noPermission</String></Exception>
+									</Then>
+								</If>								
+            		
+            		<!-- Update the current state with the one from the transition -->
+            		<DataAccess method="update">
+									<Param name="_entity">fw_state_machine_instance</Param>
+									<Param name="id" pk="true"><Var name="instance" key="id"/></Param>
+									<Param name="id_current_state"><Var name="endStateId"/></Param>
+								</DataAccess>
+								
+								<Var name="dataJson"><SetToJson><Var name="PARAMS" key="eventData"/></SetToJson></Var>
+            		
+            		<!-- Add the new state to the instance history -->
+            		<DataAccess method="insert">
+									<Param name="_entity">fw_state_machine_instance_history</Param>
+									<Param name="id_state_machine_instance"><Var name="instance" key="id"/></Param>
+									<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
+									<Param name="id_end_state"><Var name="endStateId"/></Param>
+									<Param name="event"><Var name="PARAMS" key="event"/></Param>
+									<Param name="event_description"><Var name="eventDescription"/></Param>
+									<Param name="role"><Var name="PARAMS" key="role"/></Param>
+									<Param name="event_data"><Var name="dataJson"/></Param>
+									<Param name="_base">true</Param>
+								</DataAccess>
+            		
+            		<!-- Automatically process the emails on the end state-->
+            		<Var name="endState">
+            			<DataAccess method="load">
+										<Param name="_entity">fw_state_machine_state</Param>
+										<Param name="id"><Var name="endStateId"/></Param>
+										<Param name="is_active"><Int>1</Int></Param>
+									</DataAccess>
+            		</Var>
+            		
+            		<If condition="$endState->emailAuto == 1">
+									<Then>
+										<!-- prepare the email to send -->
+									</Then>
+								</If>
+								
+							</Transaction>								
+              <Return>
+               	<Int>1</Int><!--Var name="instanceId"/-->
+              </Return>
+            </Begin>
+        </Function>
+
+
+        <Function scope="protected" name="updateHistoryIdTransition" doc="Get state machine id by code">
+            <Params>
+            </Params>
+            <Return type="int" doc=""/>>
+            <Begin>
+            
+            	<Var name="smHistory">
+            		<DataAccess method="getAll">
+									<Param name="_entity">fw_state_machine_instance_history</Param>
+								</DataAccess>
+            	</Var>
+
+							<ForEach var="smHistory" item="smHistoryItem">
+								
+							</ForEach>	
+              <Return>
+                  <Var name="stateMachine" key="id"/>
+              </Return>
+            </Begin>
+        </Function>
+
+
+        <Function scope="protected" name="updateHistoryEventData" doc="Update the event data to the new philosophy">
+            <Params>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            
+            	<Var name="smHistory">
+            		<DataAccess method="getAll">
+									<Param name="_entity">fw_state_machine_instance_history</Param>
+								</DataAccess>
+            	</Var>
+
+							<ForEach var="smHistory" item="smHistoryItem">
+								<Var name="eventData"><JsonToSet><Var name="smHistoryItem" key="event_data"/></JsonToSet></Var>
+								<Var name="newEventData"><Set/></Var>
+								<ForEach var="eventData" item="eventDatatItem">
+									<Var name="newEventData" key="$eventDatatItem->type"><Var name="eventDatatItem" key="value"/></Var>
+								</ForEach>
+								<Var name="newEventData" dump="true"/>
+								<Var name="newRole"><String/></Var>
+								<If condition="$smHistoryItem->role == 'sdp'">
+									<Then>
+										<Var name="newRole"><String>CLB.SDR</String></Var>
+									</Then>
+								</If>
+								<If condition="$smHistoryItem->role == 'grd'">
+									<Then>
+										<Var name="newRole"><String>GRD</String></Var>
+									</Then>
+								</If>
+								<If condition="$newRole != ''">
+									<Then>
+										<DataAccess method="update">
+											<Param name="_entity">fw_state_machine_instance_history</Param>
+											<Param name="id"><Var name="smHistoryItem" key="id"/></Param>
+											<Param name="role"><Var name="newRole"/></Param>
+										</DataAccess>									
+									</Then>
+								</If>
+								
+								<If condition="$newEventData->__length &gt; 0">
+									<Then>
+										<DataAccess method="update">
+											<Param name="_entity">fw_state_machine_instance_history</Param>
+											<Param name="id"><Var name="smHistoryItem" key="id"/></Param>
+											<Param name="event_data"><SetToJson><Var name="newEventData"/></SetToJson></Param>
+										</DataAccess>
+									</Then>
+								</If>	
+							</ForEach>
+              <Return><Int>0</Int></Return>
+            </Begin>
+        </Function>
+
+        
+        <Function scope="private" name="updateTransitionsFix" doc="Updating the transition data">
+					<Params>
+						<Param name="id_start_state" type="int" doc="Primary Key to get the transition"/>
+						<Param name="id_end_state" type="int" doc="Primary Key to get the transition"/>
+						<Param name="event" type="int" doc="Primary Key to get the transition"/>
+						<Param name="old_role_list" type="int" doc="Primary Key to get the transition"/>
+						<Param name="field_list" type="string" doc="The new field list (json)"/>
+						<Param name="actions" type="string" doc="The new actions (json)"/>
+						<Param name="role_list" type="string" doc="The new role_list (list)"/>
+					</Params>
+					<Return type=""/>
+					<Begin>
+						<!-- get the transition -->
+						<Var name="transition" dump="true">
+							<DataAccess method="load">
+								<Param name="_entity">fw_state_machine_transition</Param>
+								<Param name="id_start_state"><Var name="PARAMS" key="id_start_state"/></Param>
+								<Param name="id_end_state"><Var name="PARAMS" key="id_end_state"/></Param>
+								<Param name="event"><Var name="PARAMS" key="event"/></Param>
+								<Param name="role_list"><Var name="PARAMS" key="old_role_list"/></Param>
+							</DataAccess>
+						</Var>
+						<If condition="$transition == ''">
+							<Then>
+								<Exception><String.parse>Transition not found ($id_start_state, $event, $id_end_state)</String.parse></Exception>
+							</Then>
+						</If>
+						
+						<DataAccess method="update">
+							<Param name="_entity">fw_state_machine_transition</Param>
+							<Param name="id"><Var name="transition" key="id"/></Param>
+							<Param name="field_list"><Var name="PARAMS" key="field_list"/></Param>
+							<Param name="actions"><Var name="PARAMS" key="actions"/></Param>
+							<Param name="role_list"><Var name="PARAMS" key="role_list"/></Param>
+						</DataAccess>
+					</Begin>
+				</Function>
+        
+        
+    </Library>
+</Node>
+

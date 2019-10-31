@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Count the number of records related to the given aggregation
+  </Doc>
+  <Params>
+	  <Param name="id" required="true"/>
+  </Params>
+  <Body>
+      <XSql>
+        <XSelect>
+        	<XField>
+            COUNT(r.id)
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+            fw_rm_aggregation AS agg
+            INNER JOIN fw_rm_entity_relation AS er ON (er.id_entity=agg.id)
+            INNER JOIN fw_rm_entity_type AS et ON (et.id=er.id_entity_type)
+            INNER JOIN fw_rm_entity_type AS etr ON (etr.id=er.id_entity_type_relation)
+            INNER JOIN fw_rm_record AS r ON (r.id=er.id_entity_relation)
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              <![CDATA[ agg.id = '{param->id}' AND et.code = 'aggregation' AND etr.code = 'record' ]]>
+            </XCondition>
+	    </XWhere>
+      </XSql>
+  </Body>
+</Method>

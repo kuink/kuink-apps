@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+        Get the template of a given class
+    </Doc>
+  <Params>
+    <Param name="id" required="controlled document id"/>
+  </Params>
+  <Body>
+    <Load>
+      <XSql>
+        <XSelect>
+          <XField >
+              c.id as id_class,
+              c.code as class_code,
+              c.name as class_name,
+              cp.name as parent_name,
+              IFNULL(c.obs_private, cp.obs_private) as obs_private,
+              IFNULL(c.location, cp.location) as location, 
+              (SELECT count(*) FROM fw_rm_class cc WHERE cc.id_parent = c.id) as childs_count,
+              IF (cma.name IS NULL,
+               ds._action_name_childs,
+               cma.name) as final_destination,
+              
+              #The action duration can be either in cmi or in ds.interval_duration this is because in classes with childs the interval_duration has a concatenation of the childs intervals
+              IF (ds.action_duration IS NULL,
+               ds._action_interval_childs,
+               CONCAT(ds.action_duration,' ', cmi.name)) as disposal_duration
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_rm_controlled_document cd
+              #INNER JOIN fw_rm_controlled_document_class_template cdct ON (cdct.id_controlled_document = cd.id)
+            INNER JOIN fw_rm_class c ON (c.id = cd.id_class)
+            INNER JOIN fw_rm_class cp ON (cp.id = c.id_parent)
+            INNER JOIN fw_rm_disposal_schedule ds ON (ds.id = c.id_disposal_schedule)
+            LEFT OUTER JOIN fw_rm_code_map cma ON (cma.id = ds.id_action_code)
+            LEFT OUTER JOIN fw_rm_code_map cmi ON (cmi.id = ds.id_action_interval_code)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>cd.id = '{param->id}'</XCondition>
+        </XWhere>
+      </XSql>
+    </Load>
+  </Body>
+</Method>

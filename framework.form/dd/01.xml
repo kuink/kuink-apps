@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Forms">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <Entity name="fw_form_response" doc="Form responses">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_form" domain="foreign" required="true" refentity="fw_form" refattr="id" doc="id of the form"/>        
+        <Attribute name="id_person" domain="foreign" refentity="fw_person" refattr="id" doc="The person who gave the response"/>
+        <Attribute name="guid_object" domain="guid" doc="The guid object of the process that started this response. Used when the person is not registered in the system"/>
+        <Attribute name="start" domain="timestamp" required="false" doc="The timestamp when the user started filling the form"/>
+        <Attribute name="end" domain="timestamp" required="false" doc="The timestamp when the user ended filling the form"/>
+        <Attribute name="current_page" domain="int" required="true" doc="The page where the person is filling the form"/>
+        <Attribute name="is_completed" domain="bool" default="0" required="true" doc="Is this form active?"/>
+        <Attribute name="response_data" domain="xml" required="true" doc="An xml object containing all the response data"/>        
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

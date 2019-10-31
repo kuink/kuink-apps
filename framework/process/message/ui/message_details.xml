@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+        <Use name="HtmlContainerControl" type="control" />
+        <Use name="TemplateLib" type="lib"/>
+    </Libraries>
+    <Configuration>
+    </Configuration>
+    <Params> 
+        <Param name="guid"/>
+    </Params>
+    <Screens>
+        <Screen id="headerScreen">
+            <HtmlContainer name="messageHtml" id="messageHtml"/>
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="headerScreen" >
+            <Var name="message">
+                <Call library="framework,message,api" function="getMessageByGuid">
+                    <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+                </Call>
+            </Var>
+            <Var name="html">
+                <TemplateLib method="GetTemplateHtml" >
+                    <Param>custom/messageHtmlBlock</Param>
+                    <Param><Var name="message"/></Param>
+                </TemplateLib>
+            </Var>
+            <Control method="bind" object="messageHtml">
+                <Param><Var name="html"/></Param>
+            </Control>
+        </Action>
+    </Actions>
+</Node>

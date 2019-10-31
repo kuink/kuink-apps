@@ -1,0 +1,9 @@
+<?xml version='1.0'?>
+<Application name="framework.stateMachine" version="">
+    <Config>
+    </Config>
+    <Databases>
+    </Databases>
+    <Menus>
+    </Menus>
+</Application>

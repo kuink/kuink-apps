@@ -1,0 +1,34 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		Gets the version given its id
+	</Doc>
+	<Params>
+		<Param name="id" />
+	</Params>
+	<Body>
+		<Load>
+			<XSql>
+				<XSelect>
+					<XField>
+						cdv.code as version_code,
+						cdv.id as id_version,
+						cdv.*,
+						f.guid as file_guid,
+						cd.*
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						fw_rm_controlled_document_version cdv
+						INNER JOIN fw_rm_controlled_document cd ON (cd.id = cdv.id_controlled_document)
+            LEFT OUTER JOIN fw_file f ON (f.id = cdv.id_file)						
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>cdv.id = {param->id}</XCondition>
+				</XWhere>
+			</XSql>
+		</Load>
+	</Body>
+</Method>

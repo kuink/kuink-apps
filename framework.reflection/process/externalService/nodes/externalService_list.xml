@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="ReflectionLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+    <Use name="FormatterLib" type="lib"/>
+  </Libraries>
+  <Screens>
+    <Screen id="listApiScreen">
+      <Form name="search" persist="true">
+          <Text id="dataSource" label="dataSource"/>
+          <ButtonGroup>
+            <Button id="search" type="search" label="search" action="search"/>
+          </ButtonGroup>
+      </Form>
+      <Grid name="apiGrid" title="api">
+        <Template>
+          <Columns>
+            <Column name="entity" > <!--<Column name="doc" inline="true" -->
+              <Formatter name="Style" method="bold"/>
+              <Formatter name="Separator" method="NewLine"/>
+            </Column>
+            <Column name="doc" inline="true"/>
+            <Column name="input">
+              <Formatter name="Style" method="Bold"/>
+              <Formatter name="Separator" method="NewLine"/>
+            </Column>
+            <Column name="inputType" inline="true">
+              <Formatter name="Style" method="Size">
+                <Param name="size">80%</Param>
+              </Formatter>
+              <Formatter name="Style" method="collapsible">
+                <Param name="collapsed">false</Param>
+              </Formatter>              
+            </Column>
+            <Column name="output">
+              <Formatter name="Style" method="Bold"/>
+              <Formatter name="Separator" method="NewLine"/>
+            </Column>
+            <Column name="outputType" inline="true">
+              <Formatter name="Style" method="Size">
+                <Param name="size">80%</Param>
+              </Formatter>
+              <Formatter name="Style" method="collapsible">
+                <Param name="collapsed">false</Param>
+              </Formatter>              
+            </Column>
+          </Columns>
+          <Actions>
+            <Action name="test" actionvalue="entity"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+		
+    <Screen id="callFunctionScreen">
+      <Form name="callForm">
+        <Container id="fields"/>
+        <Checkbox id="_debug_" label="debug"/>
+        <ButtonGroup>
+          <Button id="back" type="back" action="search"/>
+          <Button id="call" type="save" action="test"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="resultGrid" infer="true" title="result"/>
+      <Form name="resultForm" infer="true" freeze="true" title="result"/>		  
+    </Screen>
+  </Screens>	
+	
+  <Actions>
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+    
+    <Action name="search" screen="listApiScreen">
+      <Var name="data">
+        <Control method="getCurrentData" object="search"/>
+      </Var>
+      <Var name="dataSource" process="true"><Var name="data" key="dataSource"/></Var>
+      <Var name="dataSource" process="true" dump="true"/>
+            
+      <If condition="@dataSource != ''">
+        <Then>
+          <Control method="bind" object="apiGrid">
+            <Param><DataAccess method="getEntities" datasource="@dataSource"/></Param>
+          </Control>
+        </Then>
+      </If>
+    </Action>
+		
+    <Action name="test" screen="callFunctionScreen">
+      <Var name="typeMatch" key="string">Text</Var>
+      <Var name="typeMatch" key="int">Int</Var>
+      <Var name="typeMatch" key="base64Binary">Text</Var>
+      
+      <Var name="actionValue"><ActionValue/></Var>
+      <If condition="$actionValue != ''">
+        <Then>
+          <Var name="entity" process="true"><ActionValue/></Var>
+        </Then>
+      </If>
+      <!-- Getting the input type to build the form -->
+      <Var name="entities"><DataAccess method="getEntities" datasource="@dataSource"/></Var>
+      <Var name="inputType">
+        <Var name="entities" key="@entity"/>
+      </Var>
+    
+      <Var name="fxMetadata">
+        <DataAccess method="getAttributes" datasource="@dataSource">
+          <Param name="_entity" value="$inputType->input"/>
+        </DataAccess>
+      </Var>
+      <Control method="setProperty" object="callForm">
+        <Param>title</Param>
+        <Param><Var name="entity" process="true"/></Param>
+      </Control>
+      <ForEach var="fxMetadata" item="attribute">
+        <Var name="fieldType">
+          <IsNull>
+            <Param><Var name="typeMatch" key="$attribute->type"/></Param>
+            <Param>Text</Param>
+          </IsNull>
+        </Var>
+        
+        <Control method="addField" object="callForm">
+          <Param>
+            <Set>
+              <Element name="container">fields</Element>
+              <Element name="id">
+                <Var name="attribute" key="name"/>
+              </Element>
+              <Element name="type"><Var name="fieldType"/></Element>
+              <Element name="label">
+                <Var name="attribute" key="name"/>
+              </Element>
+            </Set>
+          </Param>	    
+        </Control>
+      </ForEach>
+      
+      <Control method="bind" object="callForm">
+        <Param><Var name="POSTDATA"/></Param>
+      </Control>
+      
+      <If condition="$POSTDATA->__length != 0">
+        <Then>
+          <Var name="POSTDATA" key="_debug_" clear="true"/>
+          <Var name="result">
+            <DataAccess method="execute" datasource="@dataSource" params="POSTDATA">
+              <Param name="_entity" value="@entity"/>
+            </DataAccess>
+          </Var>
+          <!-- Check to see if  display as grid or form-->
+          <Control method="bind" object="resultGrid">
+            <Param><Var name="result"/></Param>
+          </Control> 
+        </Then>
+      </If>
+    </Action>
+
+  </Actions>
+  <Library/>
+</Node>
+

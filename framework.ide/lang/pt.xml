@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- IDE -->
+		<String key="ide" value="IDE"/>
+    
+    
+		<!-- Generator -->
+		<String key="generator" value="Gerador"/>
+		<String key="generate" value="Gerar"/>
+		<String key="entity" value="Entidade"/>
+		<String key="api" value="API"/>
+		<String key="nodes" value="Aplicação CRUD"/>
+		<String key="unitTests" value="Testes Unitários"/>
+		<String key="apiTemplate" value="Template API"/>
+		<String key="nodeTemplate" value="Template Aplicação CRUD"/>
+		<String key="unitTemplate" value="Template testes unitários"/>
+		
+		<String key="apiBase" value="Base"/>
+		<String key="apiApplication" value="Aplicação"/>
+		<String key="apiProcess" value="Processo"/>
+		<String key="nodeBase" value="Base"/>
+		<String key="nodeApplication" value="Aplicação"/>
+		<String key="nodeProcess" value="Processo"/>
+		<String key="unitBase" value="Base"/>
+		<String key="unitApplication" value="Aplicação"/>
+		<String key="unitProcess" value="Processo"/>		
+   </Strings>
+   <HelpStrings>              
+   </HelpStrings>
+</Lang>

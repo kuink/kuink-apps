@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="Agreement entities">
+  <Domains/>
+  <Templates/>
+  <Entities>
+ 
+    <Entity name="fw_agreement_statement_type" multilang="true" doc="Defines the statements for the agreements">
+    	<Attributes>
+	    	<Attribute name="id" domain="id" />
+				<Attribute name="order" domain="int" required="true" doc="The order of the statement inside type"/>
+	      <Template name="fw.identity.multilang"/>        
+	      <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  
+    <Entity name="fw_agreement_statement" doc="Defines the statements for the agreements" multilang="true">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="field" domain="json" required="true" doc="The form field type definition"/>
+        <Attribute name="id_agreement_statement_type" domain="foreign" required="true" refentity="fw_agreement_statement_type" refattr="id"  doc="The statement type" />
+        <Attribute name="is_active" domain="bool" required="true" default="1" doc="Is this agreement statement active?" />
+        <Attribute name="statement" domain="text" required="true"  multilang="true" doc="The statement text" />
+				<Attribute name="mandatory_response_value" domain="int" required="false" doc="Dont let save a response unless this statement has this value" />
+				<Attribute name="expire_date_expression" domain="string" required="false" doc="Expression that define the expire date of the agreement statement response. A NULL value means that the agreement statement response never expires" />
+        <Template name="fw.identity.multilang"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_agreement_schema" multilang="true" doc="Defines the schema of the statements for the agreements">
+      <Attributes>    
+	      <Attribute name="id" domain="id" />
+	    	<Template name="fw.identity.multilang"/>        
+	      <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_agreement_schema_statement" doc="Defines the schema of the statements for the agreements">
+    	<Attributes>
+	      <Attribute name="id" domain="id" />
+				<Attribute name="id_agreement_schema" domain="foreign" required="true" refentity="fw_agreement_schema" refattr="id"  doc="The schema" />
+				<Attribute name="id_agreement_statement" domain="foreign" required="true" refentity="agreement_statement" refattr="id" doc="The statement"/>
+				<Attribute name="id_agreement_statement_type" domain="foreign" required="false" refentity="fw_agreement_statement_type" refattr="id"  doc="This type will override the statement type" />
+				<Attribute name="order" domain="int" required="false" doc="The order of the statement inside type. Will override the order defined in agreement statement type"/>            
+	      <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_agreement" doc="Defines the agreement. This is the committed agreement. Only non temporary agreements are valid.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="guid_object" domain="guid" required="true" doc="The object where this agreement is linked"/>
+				<Attribute name="id_record" domain="foreign" refentity="agreement_statement" refattr="id" required="false" doc="The record witle the proof of the agreement. Only for committed agreements"/>
+				<Attribute name="is_temporary" domain="bool" default="1" required="true" doc="This agreement is waiting for a commit, so its not valid while temporary." />
+				<Attribute name="is_active" domain="bool" default="0" required="true" doc="This agreement is still active or there is a new one that will override it?" />
+				<Attribute name="_validation" domain="timestamp" required="false" doc="The timestamp of the commitment (validation)" />
+				<Attribute name="id_validator" domain="foreign" required="false" doc="The id of the person who validates this agreement"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_agreement_response" doc="Defines the agreement with the statement responses.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_agreement" domain="foreign" refentity="fw_agreement" refattr="id" required="true" doc="The agreement"/>        
+        <Attribute name="id_agreement_statement" domain="foreign" refentity="fw_agreement_statement" refattr="id" required="true" doc="The statement"/>
+        <Attribute name="agreement_statement_response" domain="int" required="true" doc="The value of the response"/>
+        <Attribute name="expire_date" domain="timestamp" required="false" doc="Commitment expire date. If null never expires. Based on the statement expire_date_expression" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+
+		<!-- Operations -->
+		<!-- Schemas will be referenced in level table -->
+		
+		<!-- schema.getByCode(schema_code) -->
+		<!-- Form.getBySchema(schema_code) -->
+		<!-- agreement.add(schema form POSTDATA) -->
+		<!-- agreement.add(guid_object, schema form POSTDATA) -->
+		<!-- agreement.commit(guid_object, callback) -->
+			<!-- Create Record -->			
+			<!-- Callback(id_agreement, id_record) to the object that called the commit -->			
+			
+		<!-- Person.API -->
+			<!-- SendAgreement(id_agreement, id_record) -->
+
+  </Entities>
+</Node>

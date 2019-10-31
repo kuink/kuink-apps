@@ -1,0 +1,25 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Get the bulk event transitions
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[        
+								SELECT DISTINCT
+									smt.event,
+								  smt.event_description,
+								  smt.role_list
+								FROM 
+									fw_state_machine_transition smt
+								  INNER JOIN fw_state_machine_state sms ON (sms.id = smt.id_end_state)
+								WHERE
+									sms.is_bulk = 1
+								ORDER BY 
+									smt.event_description ASC
+        ]]>
+        </Sql>
+    </Body>
+</Method>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="condition" type="text" required="true"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="is_active" type="int" required="true"/>
+        <Param name="start_date" type="int" required="true"/>
+        <Param name="end_date" type="int" required="true"/>
+        <Param name="id_person_delegate" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_wf_delegation_rule</Param>
+            <Param name="id_person">
+              <Var name="USER" key="id"/>
+            </Param>
+            <Param name="condition">
+              <Var name="PARAMS" key="condition"/>
+            </Param>
+            <Param name="name">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="is_active">
+              <Var name="PARAMS" key="is_active"/>
+            </Param>
+            <Param name="start_date">
+              <Var name="PARAMS" key="start_date"/>
+            </Param>
+            <Param name="end_date">
+              <Var name="PARAMS" key="end_date"/>
+            </Param>
+            <Param name="id_person_delegate">
+              <Var name="PARAMS" key="id_person_delegate"/>
+            </Param>
+            <Param name="id_company">
+              <Var name="USER" key="idCompany"/>
+            </Param>
+            <Param name="_creation">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_creation_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+            <Param name="_modification">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_modification_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="delete" doc="Delete a delegation rule">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_wf_delegation_rule</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+            <Param name="id_company"><Var name="USER" key="idCompany"/></Param>            
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="update" doc="Updates a record in table fw_wf_delegation_rule">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="condition" type="text" required="true"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="is_active" type="int" required="true"/>
+        <Param name="start_date" type="int" required="true"/>
+        <Param name="end_date" type="int" required="true"/>
+        <Param name="id_person_delegate" type="int" required="true"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_wf_delegation_rule</Param>
+          <Param name="id" pk="true"><Var name="id"/></Param>
+          <Param name="id_person" pk="true"><Var name="USER" key="id"/></Param>
+          <Param name="id_company" pk="true"><Var name="USER" key="idCompany"/></Param>
+          <Param name="_modification"><DateTimeLib method="Now"/></Param>
+          <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+    
+    <Function name="getMyRules" doc="Get all rules of the current user">
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_person" type="int" doc=""/>
+        <External name="condition" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="start_date" type="int" doc=""/>
+        <External name="end_date" type="int" doc=""/>
+        <External name="id_person_delegate" type="int" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_wf_delegation_rule</Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+            <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a record by id from table fw_wf_delegation_rule">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_person" type="int" doc=""/>
+        <External name="condition" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="start_date" type="int" doc=""/>
+        <External name="end_date" type="int" doc=""/>
+        <External name="id_person_delegate" type="int" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_wf_delegation_rule</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+            <Param name="id_company"><Var name="USER" key="idCompany"/></Param>            
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function scope="public" name="getPersonBasedOnDelegationRules" doc="Get the person by applying based delegation rules. It uses the current user">
+			<Params>
+			 <Param name="id_person" type="int" doc="The person to apply the rules"/>
+			 <Param name="data" type="array" doc="The data to check the condition of the rules"/>
+			</Params>
+			<Return type=""/>
+			<Begin>
+			  <Var name="PARAMS" dump="true"/>
+  			<!-- Load all rules -->
+  			<Var name="rules">
+					<DataAccess method="getAll">
+					  <Param name="_entity">fw_wf_delegation_rule</Param>
+		        <Param name="id_person"><Var name="id_person"/></Param>
+		        <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+		        <Param name="is_active">1</Param>
+					</DataAccess>
+				</Var>
+				<Var name="delegatedUser"><Var name="id_person"/></Var>
+        <ForEach var="rules" item="rule">
+          <Var name="cond" dump="true"><EvalCondition><Var name="rule" key="condition"/></EvalCondition></Var>
+          <If condition="$cond">
+						<Then>
+						  <Var name="delegatedUser"><Var name="rule" key="id_person_delegate"/></Var>
+						</Then>
+					</If>
+        </ForEach>
+        <Return><Var name="delegatedUser"/></Return>
+			</Begin>
+		</Function>
+    
+  </Library>
+</Node>

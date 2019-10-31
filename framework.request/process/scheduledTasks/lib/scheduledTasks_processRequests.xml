@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="StringLib" type="lib"/>
+		<Use name="FileLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	
+	<Library>
+		<Function name="execute">
+		<Params>
+		  <!-- Param name="LOG" output="true" /-->
+		</Params>
+		<Begin>
+      <Var name="log"><Set/></Var>
+			<!-- Get all the requests that are new and that assynchronous -->
+			<Var name="assyncRequests" dump="true">
+				<Call library="framework,request,api" function="getAssyncOpen">
+  				<Param name="inTTL">1</Param>
+				</Call>			 
+			</Var>
+			
+			<ForEach var="assyncRequests" item="assyncRequest">
+		    <Call library="framework,request,api" function="process">
+				  <Param name="guid"><Var name="assyncRequest" key="guid"/></Param>
+			  </Call>
+		  </ForEach>
+			    
+			<Return>OK</Return>
+	 </Begin>
+	 </Function>
+	 
+	</Library>
+</Node>
+

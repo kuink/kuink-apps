@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Get all template's metadata
+    </Doc>
+    <Params>
+        <Param name="id_template" />
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[
+                SELECT
+                    CONCAT('<Meta name="',rmmd.code,'"  minoccurs="',rmer.minoccurs,'"  maxoccurs="',rmer.maxoccurs,'">',rmmd.value,'</Meta>') as metadata
+                FROM
+                    fw_rm_template rmt
+                    INNER JOIN fw_rm_entity_relation rmer ON (rmer.id_entity = rmt.id)
+                    INNER JOIN fw_rm_metadata_definition rmmd ON (rmmd.id = rmer.id_entity_relation)
+                WHERE
+                    rmt.id = '{param->id_template}'
+                    AND rmer.id_entity_type = 8
+                    AND rmer.id_entity_type_relation = 6
+                GROUP BY
+                    rmmd.code
+                ORDER BY
+                    rmmd.order
+        ]]>
+        </Sql>
+    </Body>
+</Method>

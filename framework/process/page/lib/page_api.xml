@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="name" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="guid" type="text" required="false"/>
+        <Param name="is_active" type="int" required="false"/>
+        <Param name="is_configurable" type="int" required="false"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_page</Param>
+            <Param name="name">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="guid">
+              <Var name="PARAMS" key="guid"/>
+            </Param>
+            <Param name="is_active">
+              <Var name="PARAMS" key="is_active"/>
+            </Param>
+            <Param name="is_configurable">
+              <Var name="PARAMS" key="is_configurable"/>
+            </Param>
+            <Param name="_creation">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_creation_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+            <Param name="_modification">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_modification_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_page">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+  		</Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_page</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table fw_page">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_page</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_page">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="guid" type="text" required="false"/>
+        <Param name="is_active" type="int" required="false"/>
+        <Param name="is_configurable" type="int" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_page</Param>
+          <Param name="_modification">
+            <DateTimeLib method="Now"/>
+          </Param>
+          <Param name="_modification_ip">
+            <Var name="USER" key="ip"/>
+          </Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_page">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="guid" type="text" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="is_configurable" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_page</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="get" doc="Get a record by id from table fw_page">
+      <Params>
+        <Param name="id" type="int" required="false"/>
+        <Param name="guid" type="text" required="false"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="guid" type="text" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="is_configurable" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_page</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    
+    <Function name="getWidgets" doc="Get the widgets of a given page">
+      <Params>
+        <Param name="id" type="int" required="false"/>
+        <Param name="guid" type="text" required="false"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="is_active" type="text" doc=""/>
+        <External name="is_configurable" type="text" doc=""/>
+        <External name="init_flow" type="text" doc=""/>
+        <External name="configuration" type="text" doc=""/>
+        <External name="_creation" type="text" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="text" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="uuid"><Var name="PARAMS" key="uuid"/></Param>
+            <Param name="_sql">
+              <Xml>
+                <Sql>
+                  <XSql>
+                    <XSelect><XField>
+                      w.*
+                    </XField></XSelect>
+                    <XFrom><XTable>
+                      fw_page pg
+                      INNER JOIN fw_page_widget pgw ON (pgw.id_page = pg.id)
+                      INNER JOIN fw_widget w ON (w.id = pgw.id_widget)
+                    </XTable></XFrom>
+                    <XWhere>
+                      <XCondition>1 = 1</XCondition>
+                      <XCondition optional="id">AND pg.id = '{param->id}'</XCondition>
+                      <XCondition optional="uuid">AND pg.uuid = '{param->uuid}'</XCondition>
+                    </XWhere>
+                  </XSql>
+                </Sql>
+              </Xml>
+            </Param>          
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function scope="public" name="addWidget" doc="Adds a widget to a page">
+			<Params>
+				<Param name="id" type="int" doc="The page id"/>
+				<Param name="idWidget" type="int" doc="The widget id"/>
+			</Params>
+			<Return type=""/>
+			<Begin>
+				<Var name="relation">
+					<DataAccess method="load">
+						<Param name="_entity">fw_page_widget</Param>
+						<Param name="id_page"><Var name="PARAMS" key="id"/></Param>
+						<Param name="id_widget"><Var name="PARAMS" key="idWidget"/></Param>
+					</DataAccess>
+				</Var>
+				<If condition="$relation->__length == 0">
+					<Then>
+						<DataAccess method="insert">
+							<Param name="_entity">fw_page_widget</Param>
+							<Param name="id_page"><Var name="PARAMS" key="id"/></Param>
+							<Param name="id_widget"><Var name="PARAMS" key="idWidget"/></Param>
+							<Param name="_base">true</Param>
+						</DataAccess>
+					</Then>
+				</If>
+			</Begin>
+		</Function>
+  </Library>
+</Node>

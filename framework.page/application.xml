@@ -1,0 +1,13 @@
+<?xml version='1.0'?>
+<Application name="framework" version="1.0.0">
+    <Configuration>
+        <!-- Global configuration... -->
+    </Configuration>
+    <Databases>
+        <!-- type=(pgsql, mssql, mysqli, oci) -->
+        <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
+    </Databases>
+    <Menus>
+        <Menu role="Teacher" startuc="page" startnode="" event="init" description="page" default="true"/>
+    </Menus>
+</Application>

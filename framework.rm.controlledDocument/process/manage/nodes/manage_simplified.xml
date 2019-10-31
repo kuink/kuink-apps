@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+    <Use name="TemplateLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="guid_object" type="string" doc="The reference guid object"/>
+      <Param name="class_code" type="string" doc="Code of the classification class to link this controlled document"/>
+      <Param name="workflowAgents" type="string" doc="The workflow agents to inject in workflow"/>
+  </Params>
+  <Screens>
+    <Screen id="scrAddDocumentAndVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
+      <Form name="frmNewVersion" title="newVersion">
+        <Header id="h1" label="controlledDocument"/>>
+        <File id="file" required="true"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>
+          <Button id="save" type="update" label="submitToApproval" action="createDocAndSaveVersion"/>
+        </ButtonGroup>
+      </Form>  
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="code_complete" label="code" nowrap="true"/>
+            <Column name="type_name" label="type"/>
+            <Column name="name" label="name"/>
+            <Column name="description" label="description"/>
+            <Column name="class_full_name" label="class_full_name"/>
+            <!--Column name="version_reason" label="version_reason"/-->
+            <Column name="version_approval_date" label="version_approval_date">
+              <Formatter name="DateTime"/>
+            </Column>
+            <Column name="version_approval_status" label="approved">
+              <Formatter name="Icon" size="24">
+                <Param name="1">success.png</Param>
+                <Param name="0">successInactive.png</Param>
+                <Param name="-1">error.png</Param>
+              </Formatter>            
+            </Column>           
+          </Columns>
+          <Actions separator="true">
+            <Action name="viewComments" actionvalue="id" label="obs" icon="comments" condition="$comments_count &gt; 0"/>
+            <Action name="download" actionvalue="code" type="download" condition="$is_active == 1" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen id="scrAddVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
+      <Form name="frmNewVersion" title="newVersion">
+        <Header id="h1" label="controlledDocument"/>>
+        <Static id="code" label="code"/>
+        <Static id="description" label="description"/>                
+        <Header id="h2" label="newVersion"/>
+        <File id="file" required="true"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>
+          <Button id="save" type="update" label="submitToApproval" action="saveVersion"/>
+        </ButtonGroup>
+      </Form>      
+      <Grid name="grdVersions" title="versions">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="code" nowrap="true"/>
+            <Column name="reason"/>
+            <Column name="approval_date" label="version_approval_date">
+              <Formatter name="DateTime"/>
+            </Column>
+            <Column name="is_active">
+              <Formatter name="Icon" size="24">
+                <Param name="1">success.png</Param>
+                <Param name="0">error.png</Param>
+              </Formatter>
+            </Column>
+            <Column name="id_file">
+              <Formatter name="FileDownload"/>
+            </Column>
+            <!--Column name="is_finished"/-->
+          </Columns>
+          <Actions separator="true">
+            <Action name="history" label="workflow" actionvalue="id" conditionalfield="has_workflow" conditionalvalue="1"/>
+            <Action name="startWorkflow" label="startWorkflow" actionvalue="id" condition="$can_start_workflow == 1"/>
+            <Action name="deleteVersion" label="delete" actionvalue="id" condition="$is_finished == 0" confirm="true"/>
+            <Action name="finalize" label="finalize" actionvalue="id" condition="$is_finished == 0"/>
+          </Actions>
+        </Template>
+      </Grid>      
+    </Screen>
+    <Screen id="scrObservations" doc="Version observations">
+      <Form name="frmOptions">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="init"/>
+        </ButtonGroup>
+      </Form>    
+      <Grid name="grdObservations" title="obs">
+        <Template>
+          <Columns>
+            <Column name="version_code"/>
+            <Column name="public_key">
+              <Formatter name="Image" ext="jpg" path="photo"/>
+            </Column>            
+            <Column name="display_name"/>
+            <Column name="obs"/>
+            <Column name="timestamp">
+              <Formatter name="DateTime" method="shortDateTime"/>            
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>      
+    </Screen>
+  </Screens>
+  <Actions>
+
+    <Action name="init" screen="scrAddDocumentAndVersionSimplified">
+      <!-- Check to see if there is allready a guid object created. If so then list all the documents with thah guid_object -->
+      <!-- Setting is Manager to 1 to view document_types 0. There's no problem since the user can only see the guid_object documents -->
+      <Var name="documents">
+        <Call library="framework,rm.controlledDocument,api" function="search">
+          <Param name="text">
+            <Var name="PARAMS" key="guid_object"/>
+          </Param>
+          <Param name="isManager"><Int>1</Int></Param> 
+          <Param name="pagesize">
+            <Control method="getPageSize" object="grdSearchResult"/>
+          </Param>
+          <Param name="pagenum">
+            <Control method="getCurrentPage" object="grdSearchResult"/>
+          </Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param><Var name="documents"/></Param>
+      </Control>				
+    </Action>
+
+    <Action name="search">
+      <Action name="manageVersions"/>
+    </Action>
+
+    <Action name="manageVersions" screen="scrAddVersionSimplified">
+      <Var name="cntDoc" dump="true">
+        <Call library="framework,rm.controlledDocument,api" function="getById">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Var name="versions">
+        <Call library="framework,rm.controlledDocument,api" function="getVersions">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="grdVersions">
+        <Param><Var name="versions"/></Param>      
+      </Control>
+      <Control method="bind" object="frmNewVersion">
+        <Param><Var name="cntDoc"/></Param>
+      </Control>    
+    </Action>
+
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+
+    <Action name="download">
+      <Call library="framework,rm.controlledDocument,api" function="download">
+        <Param name="code"><ActionValue/></Param>
+      </Call>
+      <Action name="init"/>
+    </Action>
+
+    <Action name="viewComments" screen="scrObservations">
+      <Var name="comments" dump="true">
+        <Call library="framework,rm.controlledDocument,api" function="getAllVersionsObs">
+          <Param name="id_controlled_document"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="grdObservations">
+        <Param><Var name="comments"/></Param>
+      </Control>	      
+    </Action>
+
+    <Action name="createDocAndSaveVersion">
+      <Trace><String.parse>Document @selectedId</String.parse></Trace>
+      <!-- Upload the file, create the controlledDocument, the version and start version approval -->
+      <Var name="result">
+        <Call library="framework,rm.controlledDocument,api" function="simplifiedAddDocumentAndVersionWorkflow">
+          <Param name="class_code"><Var name="PARAMS" key="class_code"/></Param>
+          <Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>
+          <Param name="workflowAgents"><Var name="PARAMS" key="workflowAgents"/></Param>
+        </Call>
+      </Var>
+      <Var name="selectedId" process="true"><Var name="result" key="selectedId"/></Var>
+      <Var name="idVersion" process="true"><Var name="resuklt" key="idVersion"/></Var>
+
+      <UserMessage type="success"><Lang key="newVersionSuccess"/></UserMessage>
+      <!--Action name="startWorkflow"/-->
+      <Action name="init"/>
+    </Action>
+  </Actions>
+  
+  <Library forceinterface="true">
+  </Library>
+</Node>

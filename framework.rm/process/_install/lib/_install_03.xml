@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Fourth Install</String>
+       </Return>
+      </Begin>
+    </Function>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+        <Var name="log"><Set/></Var>
+
+        <Var name="logEntry" key="message"><String>Adding fond CSCM-Lx</String></Var>
+
+        <Var name="code"><String>CSCM-Lx</String></Var>
+        <Var name="name" key="pt"><String>CSCM-Lx</String></Var>
+        <Var name="description" key="pt"><String>Fundo do Colégio do Sagrado Coração de Maria de  Lisboa</String></Var>
+        <Var name="name" key="en"><String>CSCM-Lx</String></Var>
+        <Var name="description" key="en"><String>Base fond for Colégio do Sagrado Coração de Maria – Lisboa</String></Var>
+        <Var name="id_fond">
+	        <DataAccess method="insert">
+	          <Param name="_entity">fw_rm_fond</Param>
+	          <Param name="code"><Var name="code"/></Param>
+	          <Param name="name"><Var name="name"/></Param>
+	          <Param name="description"><Var name="description"/></Param>
+	          <Param name="is_active">1</Param>
+	          <Param name="_multilang_fields">name,description</Param>
+	          <Param name="_base">true</Param>
+	        </DataAccess>
+        </Var>
+        <If condition="$id_fond > 0">
+          <Then>
+            <Var name="logEntry" key="result">OK</Var>
+          </Then>
+          <Else>
+            <Var name="logEntry" key="result">ERROR</Var>
+          </Else>
+        </If>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+
+        <Var name="logEntry" key="message"><String>Adding classification CSCM-Lx</String></Var>
+
+        <Var name="code"><String>CSCM-Lx</String></Var>
+        <Var name="name" key="pt"><String>Classificação do CSCM-Lx</String></Var>
+        <Var name="description" key="pt"><String>Árvore de classificação CSCM-Lx</String></Var>
+        <Var name="name" key="en"><String>Classification tree for CSCM-Lx</String></Var>
+        <Var name="description" key="en"><String>Classification tree for Colégio do Sagrado Coração de Maria – Lisboa</String></Var>
+        <Var name="id_classification">
+					<DataAccess method="insert">
+						<Param name="_entity">fw_rm_classification</Param>
+            <Param name="id_fond"><Var name="id_fond"/></Param>
+            <Param name="code"><Var name="code"/></Param>
+            <Param name="name"><Var name="name"/></Param>
+            <Param name="description"><Var name="description"/></Param>
+            <Param name="is_active">1</Param>
+            <Param name="_multilang_fields">name,description</Param>
+            <Param name="_base">true</Param>
+					</DataAccess>
+				</Var>
+        <If condition="$id_classification > 0">
+          <Then>
+            <Var name="logEntry" key="result">OK</Var>
+          </Then>
+          <Else>
+            <Var name="logEntry" key="result">ERROR</Var>
+          </Else>
+        </If>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+
+
+        <Var name="logEntry" key="message"><String>Update classes</String></Var>
+
+        <Var name="classes">
+          <DataAccess method="getAll">
+						<Param name="_entity">fw_rm_class</Param>
+					</DataAccess>
+        </Var>
+        <ForEach var="classes" item="class">
+	        <DataAccess method="update">
+	          <Param name="_entity">fw_rm_class</Param>
+	          <Param name="id"><Var name="class" key="id"/></Param>
+	          <Param name="id_classification"><Var name="id_classification"/></Param>
+	        </DataAccess>
+        </ForEach>        
+        <Var name="logEntry" key="result">OK</Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+		    
+		    <Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

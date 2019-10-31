@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries />
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+
+        <Var name="id_process_engine">
+	        <DataAccess method="insert">
+						<Param name="_entity">fw_wf_process_engine</Param>
+						<Param name="code">camundaBPMNFileEngine</Param>
+						<Param name="name">Camunda bpmn file format</Param>
+						<Param name="description">Used for processes designed with camunda bpmn plugin</Param>
+						<Param name="handler">framework,wf.process,camundaBPMNFileEngine</Param>
+						<Param name="is_active">1</Param>
+						<Param name="_base">true</Param>
+					</DataAccess>
+        </Var>
+
+				<Var name="name" key="pt"><String>Aprovação 1 passo</String></Var>
+				<Var name="description" key="pt"><String>Aprovação que apenas necessita de 1 passo</String></Var>
+				<Var name="name" key="en"><String>One step approval</String></Var>
+				<Var name="description" key="en"><String>Approval that only needs one step</String></Var>
+				<DataAccess method="insert">
+				  <Param name="_entity">fw_wf_process</Param>
+				  <Param name="code">approval.1level</Param>
+				  <Param name="name"><Var name="name"/></Param>
+				  <Param name="description"><Var name="description"/></Param>
+				  <Param name="source">framework,generic,approval.1level</Param>
+				  <Param name="_multilang_fields">name, description</Param>
+				  <Param name="id_process_engine"><Var name="id_process_engine"/></Param>
+				  <Param name="is_active">1</Param>
+				  <Param name="_base">true</Param>
+				</DataAccess>
+
+        <Var name="name" key="pt"><String>Aprovação 2 passos</String></Var>
+        <Var name="description" key="pt"><String>Aprovação que necessita de 2 passos</String></Var>
+        <Var name="name" key="en"><String>Two step approval</String></Var>
+        <Var name="description" key="en"><String>Approval that needs two steps</String></Var>
+        <DataAccess method="insert">
+          <Param name="_entity">fw_wf_process</Param>
+          <Param name="code">approval.2level</Param>
+          <Param name="name"><Var name="name"/></Param>
+          <Param name="description"><Var name="description"/></Param>
+          <Param name="source">framework,generic,approval.2level</Param>
+          <Param name="_multilang_fields">name, description</Param>
+          <Param name="id_process_engine"><Var name="id_process_engine"/></Param>
+          <Param name="is_active">1</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+				<Var name="name" key="pt"><String>Records management approval</String></Var>
+        <Var name="description" key="pt"><String>Aprovação que necessita de 1 passo</String></Var>
+        <Var name="name" key="en"><String>One step approval</String></Var>
+        <Var name="description" key="en"><String>Approval that only needs one step</String></Var>
+        <DataAccess method="insert">
+          <Param name="_entity">fw_wf_process</Param>
+          <Param name="code">rm.disposalApproval</Param>
+          <Param name="name"><Var name="name"/></Param>
+          <Param name="description"><Var name="description"/></Param>
+          <Param name="source">framework,generic,approval.1level</Param>
+          <Param name="_multilang_fields">name, description</Param>
+          <Param name="id_process_engine"><Var name="id_process_engine"/></Param>
+          <Param name="is_active">1</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

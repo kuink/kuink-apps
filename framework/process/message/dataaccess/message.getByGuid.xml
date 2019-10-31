@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+      Get a message by guid
+    </Doc>
+    <Params>
+    	<Param name="guid"/>
+    </Params>
+    <Body>
+        <Load>
+          <![CDATA[
+            select * from fw_message where guid like '{param->guid}'
+          ]]>
+     	</Load>
+    </Body>
+</Method>

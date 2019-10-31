@@ -1,0 +1,18 @@
+<?xml version='1.0'?>
+<Process>
+	<Transitions>
+		<Flow role='Teacher' startnode='' event='init' endnode='manage' />
+		
+		<Flow role='Teacher' startnode='manage' event='actions' endnode='xManageActions' />
+		<Flow role='Teacher' startnode='xManageActions' event='back' endnode='manage' />
+
+		<Flow role='Teacher' startnode='manage' event='forms' endnode='xManageForms' />
+		<Flow role='Teacher' startnode='xManageForms' event='back' endnode='manage' />
+
+		<Flow role='Teacher' startnode='manage' event='transitions' endnode='xManageTransitions' />
+		<Flow role='Teacher' startnode='xManageTransitions' event='back' endnode='manage' />
+
+		<Flow role='Teacher' startnode='manage' event='states' endnode='xManageStates' />
+		<Flow role='Teacher' startnode='xManageStates' event='back' endnode='manage' />
+  </Transitions>
+</Process>

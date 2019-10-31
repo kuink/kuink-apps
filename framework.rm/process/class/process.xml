@@ -1,0 +1,17 @@
+<?xml version='1.0'?><Process>
+	<Transitions>
+		<Flow role='Teacher,Student' startnode='' event='init' endnode='manage' />
+		<Flow role='Teacher,Student' startnode='' event='view' endnode='viewer' />
+    <Flow role='Teacher,Student' startnode='' event='show' endnode='show' />
+		<Flow role='Teacher,Student' startnode='viewer' event='show' endnode='show' />
+		<Flow role='Teacher,Student' startnode='show' event='back' endnode='viewer' />
+		<Flow role='Teacher,Student' startnode='manage' event='edit' endnode='edit'/>
+		<Flow role='Teacher,Student' startnode='manage' event='showControlledDocument' endnode='xpControlledDocumentViewer'/>
+		<Flow role='Teacher,Student' startnode='edit' event='editWorkflow' endnode='editWorkflow'/>
+		<Flow role='Teacher,Student' startnode='edit' event='addWorkflow' endnode='addWorkflow'/>
+		<Flow role='Teacher,Student' startnode='editWorkflow' event='back' endnode='edit'/>
+		<Flow role='Teacher,Student' startnode='addWorkflow' event='back' endnode='edit'/>
+		<Flow role='Teacher,Student' startnode='edit' event='back' endnode='manage'/>
+		<Flow role='Teacher,Student' startnode='xpControlledDocumentViewer' event='back' endnode='manage'/>
+  </Transitions>
+</Process>

@@ -1,0 +1,718 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib" />
+		<Use name="FormatterLib" type="lib" />
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+	</Actions>
+	<Library forceinterface="true">
+
+    <Function scope="public" name="getAll" doc="Gets all processes">
+      <Params/>
+      <Return type="multiple" doc="All processes"/>
+      <Begin>
+        <Var name="process" >
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_wf_process</Param>
+          </DataAccess>
+        </Var>      
+        <Return><Var name="process"/></Return>
+      </Begin>
+    </Function>    
+
+		<Function name="getProcessParams" scope="public" doc="Gets a process definition params">
+			<Params>
+			 <Param name="id" type="int" doc="Workflow process id"/>
+			</Params>
+			<Return type="string" doc="json: The process definition params" />
+			<Begin>
+				<Var name="process">
+					<DataAccess method="load">
+						<Param name="_entity">fw_wf_process</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+				<Var name="params"><Var name="process" key="params"/></Var>
+				<Return><Var name="params" /></Return>
+			</Begin>
+		</Function>
+
+
+		<Function name="start" scope="public" doc="Starts a workflow in the system">
+			<Params>
+				<Param name="code" type="string" required="true" doc="The process code" />
+				<Param name="event" type="text" required="true" doc="The start event name of the process" />
+				<Param name="configuration" type="set" required="true" doc="The process instance configuration" />
+				<Param name="id_process_instance" type="int" required="false" doc="If this is a sub process, we need here the parent id_process_instance" />
+			</Params>
+			<Return type="int" doc="the id of the process" />
+			<Begin>
+        <!-- Get the process definition -->
+        <Var name="process" >
+          <DataAccess method="load">
+            <Param name="_entity">fw_wf_process</Param>
+            <Param name="code"><Var name="code" /></Param>
+          </DataAccess>
+        </Var>
+        
+        <If condition="$process->__length == 0">
+					<Then>
+						<Exception><String.parse>Process $code not found</String.parse></Exception>
+					</Then>
+				</If>
+        
+        <!-- Check if the process can be started -->
+        <If condition="$process->is_active == 0">
+          <Then>
+            <Return>-1</Return>
+          </Then>
+        </If>
+
+        <!-- Validate the configuration - call the engine -->
+
+        <!-- Create the process instance -->
+        <Var name="id_instance" >
+          <DataAccess method="insert">
+            <Param name="_entity">fw_wf_process_instance</Param>
+            <Param name="id_process"><Var name="process" key="id" /></Param>
+            <Param name="configuration"><SetToJson><Var name="configuration" /></SetToJson></Param>
+            <Param name="variables">{}</Param>
+            <Param name="is_started">1</Param>
+            <Param name="is_ended">0</Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Create the process instance token -->
+        <Var name="id_token" >
+          <DataAccess method="insert">
+            <Param name="_entity">fw_wf_token</Param>
+            <Param name="id_process_instance">
+              <Var name="id_instance" />
+            </Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+        <Call function="openTokenHistory">
+          <Param name="id_token"><Var name="id_token"/></Param>
+          <Param name="node"><Var name="event"/><Var name="nextNode"/></Param>
+        </Call>
+
+        <!-- Process the token -->
+        <Var name="flow">
+	        <Call function="processToken">
+	          <Param name="id_token"><Var name="id_token"/></Param>
+	          <Param name="result"><Set/></Param>
+	          <Param name="closeTask">0</Param>
+	        </Call>
+        </Var>
+
+				<Return><Var name="id_instance" /></Return>
+			</Begin>
+		</Function>
+
+    <Function scope="public" name="getByInstance" doc="Gets a process by instance">
+      <Params>
+       <Param name="id_process_instance" type="int" doc="Instance"/>
+      </Params>
+      <Return type="single" doc="The process info"/>
+      <Begin>
+        <Var name="process" dump="true">
+          <DataAccess method="this,this,process.getByInstance">
+            <Param name="id_process_instance"><Var name="id_process_instance"/></Param>
+          </DataAccess>
+        </Var>      
+                
+        <Return><Var name="process"/></Return>
+      </Begin>
+    </Function>
+
+
+    <Function scope="public" name="getTokenProcessIntanceId" doc="Gets a process instance given a token">
+      <Params>
+       <Param name="id_token" type="int" doc="Token"/>
+      </Params>
+      <Return type="int" doc="The process instance id"/>
+      <Begin>
+        <Var name="token" dump="true">
+          <DataAccess method="load">
+						<Param name="_entity">fw_wf_token</Param>
+						<Param name="id"><Var name="id_token"/></Param>
+					</DataAccess>
+        </Var>      
+                
+        <Return><Var name="token" key="id_process_instance"/></Return>
+      </Begin>
+    </Function>
+
+		<Function scope="public" name="getProcessInstanceHistory" doc="">
+			<Params>
+			 <Param name="id_process_instance" type="int" doc="Process instance"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+			  			
+        <Var name="history" dump="true">
+          <DataAccess method="this,this,processInstance.getHistory">
+            <Param name="id_process_instance"><Var name="id_process_instance"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Return><Var name="history" /></Return>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="getProcessInstanceHistoryData" doc="">
+			<Params>
+			 <Param name="id_process_instance" type="int" doc="Process instance"/>
+       <Param name="id_person" type="int" doc="The person to filter public/private observations"/> 
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+			  			
+        <!--Get all observations -->
+        <Var name="historyData" dump="true">
+          <DataAccess method="this,this,processInstance.getHistoryData">
+            <Param name="id_process_instance"><Var name="id_process_instance"/></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Filter the public and private observations -->
+        <Var name="filteredHistory"><Set/></Var>
+        <ForEach var="historyData" item="item">
+          <If condition="$item->obs_public != ''">
+            <Then>
+              <Var name="newItem"></Var>
+              <Var name="newItem" key="public_key"><Var name="item" key="public_key"/></Var>
+              <Var name="newItem" key="display_name"><Var name="item" key="display_name"/></Var>
+              <Var name="newItem" key="obs"><Var name="item" key="obs_public"/></Var>
+              <Var name="newItem" key="timestamp"><Var name="item" key="timestamp"/></Var>
+              <Var name="filteredHistory" key=""><Var name="newItem"></Var></Var>
+            </Then>
+          </If>
+          <If condition="$item->id_person == $PARAMS->id_person &amp;&amp; $item->obs_public != ''">
+            <Then>
+              <Var name="newItem"></Var>
+              <Var name="newItem" key="public_key"><Var name="item" key="public_key"/></Var>
+              <Var name="newItem" key="display_name"><Var name="item" key="display_name"/></Var>
+              <Var name="newItem" key="obs"><Var name="item" key="obs_private"/></Var>
+              <Var name="newItem" key="timestamp"><Var name="item" key="timestamp"/></Var>
+              <Var name="filteredHistory" key=""><Var name="newItem"></Var></Var>              
+            </Then>
+          </If>
+        </ForEach>
+
+        <Return><Var name="filteredHistory"/></Return>
+			</Begin>
+		</Function>
+
+
+    <Function scope="public" name="addProcessInstanceData" doc="Add data to the process instance, like observations.">
+    <Params>
+      <Param name="id_person" type="int" doc="The person adding the data"/>
+      <Param name="id_token" type="int" doc="The token associated to the data"/>
+      <Param name="data" type="array" doc="The data to add"/>
+    </Params>
+    <Return type="int" doc="id of the "/>
+    <Begin>
+      <Var name="data"><Var name="PARAMS" key="data"/></Var>
+      <Var name="token" dump="true">
+        <DataAccess method="load">
+          <Param name="_entity">fw_wf_token</Param>
+          <Param name="id"><Var name="PARAMS" key="id_token"/></Param>
+        </DataAccess>
+      </Var>
+      <Var name="id">
+        <DataAccess method="insert" params="data">
+          <Param name="_entity">fw_wf_process_instance_obs</Param>
+          <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+          <Param name="id_process_instance"><Var name="token" key="id_process_instance"/></Param>
+          <Param name="id_token"><Var name="PARAMS" key="id_token"/></Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Var>
+      <Return><Var name="id"/></Return>
+    </Begin>
+    </Function>
+
+    <Function name="processToken" scope="public" doc="Process a token">
+      <Params>
+        <Param name="id_token" type="int" required="true" doc="The token to process" />
+        <Param name="result" type="set" required="false" doc="The process instance variables" />
+        <Param name="closeTask" type="bool" required="true" doc="This call closes a task?">0</Param>
+      </Params>
+      <Return type="int" doc="the id of the process" />
+      <Begin>
+        <Var name="PARAMS" dump="true"/>
+        <!-- Get the token context info -->
+        <Var name="token" dump="true">
+					<DataAccess method="this,this,token.get">
+					 <Param name="id_token"><Var name="id_token"/></Param>
+					</DataAccess>
+        </Var>
+        <!-- Get the token history -->
+        <Var name="history" dump="true">
+	        <DataAccess method="load">
+						<Param name="_entity">fw_wf_token_history</Param>
+						<Param name="id"><Var name="token" key="id_current_history"/></Param>
+					</DataAccess>
+        </Var>
+        
+        <!-- Get the process configuration and variables -->
+        <Var name="instance" dump="true">
+          <DataAccess method="load">
+						<Param name="_entity">fw_wf_process_instance</Param>
+						<Param name="id"><Var name="token" key="id_process_instance"/></Param>
+					</DataAccess>
+        </Var>
+        <Var name="variables"><JsonToSet><Var name="instance" key="variables"/></JsonToSet></Var>
+        <!-- Update the instance with the result in param -->
+        <ForEach var="result" item="resultVar" key="key">
+          <Var name="variables" key="$key"><Var name="resultVar"/></Var>
+        </ForEach>
+        <Var name="varsJson" ><SetToJson><Var name="variables"/></SetToJson></Var>
+        <DataAccess method="update">
+          <Param name="_entity">fw_wf_process_instance</Param>
+          <Param name="id"><Var name="token" key="id_process_instance"/></Param>
+          <Param name="variables"><Var name="varsJson"/></Param>
+        </DataAccess>
+
+        <Var name="nextNode" dump="true"><Var name="history" key="node" /></Var>
+        
+        <If condition="$closeTask == 1">
+					<Then>
+					    <Trace>Testing....</Trace>
+              <Call library="$token->engine_handler" function="init">
+                <Param name="source"><Var name="token" key="process_source"/></Param>
+              </Call>
+					    <Trace>Testing....</Trace>
+							<Var name="oNode" dump="true">
+		            <Call library="$token->engine_handler" function="getNode">
+                  <Param name="source"><Var name="token" key="process_source"/></Param>		            
+		              <Param name="node"><Var name="nextNode"/></Param>
+		            </Call>
+		          </Var>			
+			        <Var name="outgoing"><Var name="oNode" key="outgoing"/></Var>
+			        <Var name="flow" dump="true"><Var name="outgoing" key="__first"/></Var>
+					
+              <Call function="closeTokenHistory">
+                <Param name="id_token"><Var name="id_token"/></Param>
+                <Param name="flow"><Var name="flow"/></Param>
+              </Call>
+              <Var name="oFlow" >
+                <Call library="$token->engine_handler" function="getNode">
+                  <Param name="source"><Var name="token" key="process_source"/></Param> 
+                  <Param name="node"><Var name="flow"/></Param>
+                </Call>
+              </Var>
+              
+              <Var name="attrs"><Var name="oFlow" key="attributes"/></Var>
+              <Var name="nextNode" ><Var name="attrs" key="targetRef"/></Var>
+					</Then>
+				</If>
+        
+        <While condition="$nextNode != ''">
+	        <Var name="oNode" >
+	          <Call library="$token->engine_handler" function="getNode">
+	            <Param name="source"><Var name="token" key="process_source"/></Param>
+	            <Param name="node"><Var name="nextNode"/></Param>
+	          </Call>
+	        </Var>
+        
+          <!-- Execute the node -->
+	        <Var name="flow" >
+	          <Call function="$oNode->type">
+	            <Param name="node"><Var name="oNode"/></Param>
+	            <Param name="id_token"><Var name="id_token"/></Param>
+              <Param name="configuration"><JsonToSet><Var name="instance" key="configuration"/></JsonToSet></Param>
+              <Param name="variables"><Var name="variables"/></Param>
+	          </Call>
+	        </Var>
+	        
+	        <If condition="$flow != ''">
+						<Then>
+			        <Var name="oFlow" >
+			          <Call library="$token->engine_handler" function="getNode">
+			            <Param name="source"><Var name="token" key="process_source"/></Param>
+			            <Param name="node"><Var name="flow"/></Param>
+			          </Call>
+			        </Var>
+							
+							<Var name="attrs"><Var name="oFlow" key="attributes"/></Var>
+							<Var name="nextNode" ><Var name="attrs" key="targetRef"/></Var>
+							
+							<!-- close the history -->
+              <Call function="closeTokenHistory">
+                <Param name="id_token_history"><Var name="token" key="id_current_history"/></Param>
+                <Param name="flow"><Var name="flow"/></Param>
+              </Call>
+							
+							<!-- open a new one -->
+							<Call function="openTokenHistory">
+								<Param name="id_token"><Var name="id_token"/></Param>
+								<Param name="node"><Var name="nextNode"/></Param>
+								<Param name="flow"><Var name="flow"/></Param>
+							</Call>
+							
+						</Then>
+						<Else>
+						  <Var name="nextNode"><String/></Var>
+						</Else>
+					</If>
+
+				</While>        
+        
+        <Return/>
+      </Begin>
+    </Function>
+
+		<Function name="openTokenHistory" scope="private" doc="Opens a token history to a given token">
+			<Params>
+				<Param name="id_token" type="int" required="true" doc="The token to add hostory" />
+				<Param name="node" type="string" required="true" doc="The node" />
+				<Param name="flow" type="string" required="true" doc="The flow that started the node" />
+			</Params>
+			<Return type="int" doc="the id of the history" />
+			<Begin>
+				<!-- Create the token history -->
+				<Var name="id_history" >
+					<DataAccess method="insert">
+						<Param name="_entity">fw_wf_token_history</Param>
+						<Param name="id_token"><Var name="id_token" /></Param>
+						<Param name="node"><Var name="node" /></Param>
+						<Param name="started"><Now /></Param>
+						<Param name="start_flow"><Var name="flow"/></Param>
+						<Param name="_base">true</Param>
+					</DataAccess>
+				</Var>
+
+				<!-- Update the token with this history -->
+				<DataAccess method="update">
+					<Param name="_entity">fw_wf_token</Param>
+					<Param name="id"><Var name="id_token" /></Param>
+					<Param name="id_current_history"><Var name="id_history" /></Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+
+				<Return><Var name="id_history" /></Return>
+			</Begin>
+		</Function>
+
+		<Function name="closeTokenHistory" scope="private" doc="Closes a token history of a given token">
+			<Params>
+				<Param name="id_token_history" type="int" required="true" doc="The token to add history" />
+				<Param name="flow" type="string" required="true" doc="The flow that ended the node" />
+			</Params>
+			<Return type="int" doc="The id of the history" />
+			<Begin>
+				<!-- Create the token history -->
+				<Var name="id_history" >
+					<DataAccess method="update">
+						<Param name="_entity">fw_wf_token_history</Param>
+						<Param name="id"><Var name="id_token_history" /></Param>
+						<Param name="end_flow"><Var name="flow" /></Param>
+						<Param name="ended"><Now /></Param>
+						<Param name="_base">true</Param>
+					</DataAccess>
+				</Var>
+				<Return><Var name="id_history" /></Return>
+			</Begin>
+		</Function>
+		
+    <Function name="setTokenHistoryTask" scope="private" doc="Set the task in the token history">
+      <Params>
+        <Param name="id_token_history" type="int" required="true" doc="The token to add history" />
+        <Param name="id_inbox_task" type="int" required="true" doc="The task to update the history" />
+      </Params>
+      <Return type="int" doc="The id of the history" />
+      <Begin>
+        <!-- Create the token history -->
+        <Var name="id_history" >
+          <DataAccess method="update">
+            <Param name="_entity">fw_wf_token_history</Param>
+            <Param name="id"><Var name="id_token_history" /></Param>
+            <Param name="id_inbox_task"><Var name="id_inbox_task" /></Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+        <Return><Var name="id_history" /></Return>
+      </Begin>
+    </Function>		
+
+		<Function name="splitToken" scope="private" doc="Splits a token">
+			<Params>
+				<Param name="id_token" type="int" required="true"
+					doc="The token to add hostory" />
+			</Params>
+			<Return type="int" doc="The id of child token" />
+			<Begin>
+				<!-- Create the token history -->
+				<Var name="id_child" >
+					<DataAccess method="insert">
+						<Param name="_entity">fw_wf_token</Param>
+						<Param name="id_parent"><Var name="id_token" /></Param>
+						<Param name="_base">true</Param>
+					</DataAccess>
+				</Var>
+				<Return><Var name="id_child" /></Return>
+			</Begin>
+		</Function>
+		
+		<Function scope="private" name="startEvent" doc="Function to handle startEvent node type">
+			<Params>
+			 <Param name="node" type="set" doc="The node data"/>
+       <Param name="id_token" type="set" doc="The token to process"/>			 
+			 <Param name="configuration" type="set" doc="The process instance configuration"/>
+			 <Param name="variables" type="set" doc="The process instance variables"/>
+			</Params>
+			<Return type=""/>
+			<Begin>
+			 <Trace><String.parse>*** $node->type ***</String.parse></Trace>
+			 <Var name="outgoing"><Var name="node" key="outgoing"/></Var>
+			 <Var name="flow" ><Var name="outgoing" key="__first"/></Var>
+			 <Return><Var name="flow"/></Return>
+			</Begin>
+		</Function>
+
+    <Function scope="private" name="userTask" doc="Function to handle userTask node type">
+      <Params>
+       <Param name="node" type="set" doc="The node data"/>
+       <Param name="id_token" type="set" doc="The token to process"/>
+       <Param name="configuration" type="set" doc="The process instance configuration"/>
+       <Param name="variables" type="set" doc="The process instance variables"/>
+      </Params>
+      <Return type="string"/>
+      <Begin>
+      <Var name="node" dump="true"/>
+       <Trace><String.parse>*** $node->type ***</String.parse></Trace>
+       <Var name="properties" dump="true"><Var name="node" key="properties"/></Var>
+       <Var name="configuration" />
+       <!-- Create an inbox task with this userTask data -->
+       <Var name="handler" ><Var name="properties" key="handler"/></Var>
+       
+       <!-- Apply delegation rules to check if the person  -->
+       <Var name="token" dump="true">
+        <DataAccess method="this,this,token.get">
+          <Param name="id_token"><Var name="id_token"/></Param>
+        </DataAccess>
+       </Var>
+       <Var name="data" key="processCode"><Var name="token" key="process_code"/></Var>
+       <Var name="data" key="taskName"><Var name="configuration" key="task_name"/></Var>
+       <Var name="data" key="taskDescription"><Var name="configuration" key="task_description"/></Var>
+       <Var name="data" key="idObject"><Var name="configuration" key="id_object"/></Var>
+       
+       <Var name="handler"><String.parse><Var name="handler"/></String.parse></Var>
+       <Var name="id_person"><String.parse><Var name="properties" key="id_person"/></String.parse></Var>
+              <!-- handle automatic delegation I-->
+       <Var name="id_person">
+         <Call library="framework,wf.delegationRule,api" function="getPersonBasedOnDelegationRules">
+           <Param name="id_person"><Var name="id_person"/></Param>
+           <Param name="data"><Var name="data"/></Param>
+         </Call>  
+       </Var>
+       
+       <Var name="id_task">
+        <DataAccess method="insert">
+					<Param name="_entity">fw_wf_inbox_task</Param>
+					<Param name="id_token"><Var name="id_token"/></Param>
+					<Param name="name"><Var name="configuration" key="task_name"/></Param>
+					<Param name="description"><Var name="configuration" key="task_description"/></Param>
+					<Param name="is_completed">0</Param>
+					<Param name="due_date"><Var name="configuration" key="due_date"/></Param>
+          <Param name="id_object"><Var name="configuration" key="id_object"/></Param>
+					<Param name="handler"><Var name="handler"/></Param>
+					<Param name="id_person"><Var name="id_person"/></Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+       </Var>
+       
+       <!-- Update the token history with the user task -->
+       <!-- Get the token history -->
+       <Var name="history" dump="true">
+         <DataAccess method="load">
+           <Param name="_entity">fw_wf_token_history</Param>
+           <Param name="id"><Var name="token" key="id_current_history"/></Param>
+         </DataAccess>
+       </Var>
+       <Call function="setTokenHistoryTask">
+					<Param name="id_token_history"><Var name="history" key="id"/></Param>
+					<Param name="id_inbox_task"><Var name="id_task"/></Param>
+			 </Call>
+       
+       <!-- Notify the user that a new inbox notification has arrived -->
+       <!-- Load the person -->
+       <Var name="person">
+         <Call library="gecol.core,person,api" function="get">
+					<Param name="id"><Var name="id_person"/></Param>
+				</Call>
+  		 </Var>
+       <!-- Send an email to the person -->  		 
+       <Var name="data"><Var name="configuration"/></Var>
+       <Var name="data" key="url"><Config key="wf.inbox.url"/></Var>
+       <Var name="data" key="personTitle"><Var name="person" key="title"/></Var>
+       <Var name="data" key="personDisplayName"><Var name="person" key="display_name"/></Var>
+       <Trace><String parse="true">Sending email to user ($person->email)</String></Trace>
+       <Try>
+        <Instructions>
+		       <Call library="framework,message,api" function="sendSimpleMessage">
+		         <Param name="template">framework,wf.process,newTask</Param>
+		         <Param name="to_name"><Var name="person" key="display_name"/></Param>
+		         <Param name="to_email"><Var name="person" key="email"/></Param>
+		         <Param name="from_name"><Config key="wf.inbox.fromName"/></Param>
+		         <Param name="from_email"><Config key="wf.inbox.fromEmail"/></Param>
+		         <Param name="guid"><Guid/></Param>
+		         <Param name="data"><Var name="data"/></Param>
+		       </Call>
+        </Instructions>
+        <Catch>
+           <UserMessage type="warning"><Lang key="errorSendingEmail"/></UserMessage>        
+        </Catch>
+       </Try>
+               
+       <!-- handle automatic delegation II- add the delegation log-->
+       <Trace><String.parse>** Original:$properties->id_person  Delegated:$id_person</String.parse></Trace>
+       <Var name="currentPerson"><Var name="USER" key="id"/></Var>
+       
+       <If condition="$currentPerson != $id_person">
+        <Then>
+          <!-- This is an automatic delegation -->
+          <DataAccess method="insert">
+            <Param name="_entity">fw_wf_inbox_task_delegation</Param>
+            <Param name="id_inbox_task"><Var name="id_task"/></Param>
+            <Param name="id_person"><Var name="currentPerson"/></Param>
+            <Param name="id_person_delegate"><Var name="id_person"/></Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Then>
+      </If>
+       
+       <Return><String/></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="private" name="exclusiveGateway" doc="Function to handle exclusiveGateway node type">
+      <Params>
+       <Param name="node" type="set" doc="The node data"/>
+       <Param name="id_token" type="set" doc="The token to process"/>      
+       <Param name="configuration" type="set" doc="The process instance configuration"/>
+       <Param name="variables" type="set" doc="The process instance variables"/>
+      </Params>
+      <Return type=""/>
+      <Begin>
+       <Trace><String.parse>*** $node->type ***</String.parse></Trace>
+       <Var name="variables" />
+       <Var name="properties" ><Var name="node" key="properties"/></Var>
+       <Var name="flow"><String/></Var>
+       <ForEach var="properties" item="property" key="key">
+          <Var name="cond" ><EvalCondition><Var name="property"/></EvalCondition></Var>
+          <If condition="$cond">
+						<Then>
+				      <Var name="flow"><Var name="key"/></Var>
+						</Then>
+					</If>
+       </ForEach>
+       <Return><Var name="flow"/></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="private" name="endEvent" doc="Function to handle end node type">
+      <Params>
+       <Param name="node" type="set" doc="The node data"/>
+       <Param name="id_token" type="set" doc="The token to process"/>      
+       <Param name="configuration" type="set" doc="The process instance configuration"/>
+       <Param name="variables" type="set" doc="The process instance variables"/>
+      </Params>
+      <Return type=""/>
+      <Begin>
+        <Trace><String.parse>*** $node->type ***</String.parse></Trace>
+        <!-- End the proces -->
+        <Var name="token" >
+          <DataAccess method="this,this,token.get">
+           <Param name="id_token"><Var name="id_token"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Var name="instance">
+          <DataAccess method="load">
+						<Param name="_entity">fw_wf_process_instance</Param>
+						<Param name="id"><Var name="token" key="id_process_instance"/></Param>
+					</DataAccess>
+        </Var>
+
+        <Var name="configuration">
+          <JsonToSet><Var name="instance" key="configuration"/></JsonToSet>
+        </Var>
+        <Var name="attrs"><Var name="node" key="attributes"/></Var>
+        
+        <DataAccess method="update">
+					<Param name="_entity">fw_wf_process_instance</Param>
+					<Param name="id"><Var name="id_token"/></Param>
+          <Param name="is_ended">1</Param>
+          <Param name="ended"><Now/></Param>
+          <Param name="end_event"><Var name="attrs" key="id"/></Param>
+          <Param name="_base">true</Param>
+				</DataAccess>
+        
+        <!-- Call the callback function -->
+        
+        <If condition="$configuration->callback == ''">
+					<Then>
+						<Exception><String.parse>End event callback function not defined. Instance {$token->id_process_instance}</String.parse></Exception>
+					</Then>
+				</If>
+        <Call library="$configuration->callback">
+		      <Param name="id_object"><Var name="configuration" key="id_object"/></Param>
+		      <Param name="id_process_instance"><Var name="token" key="id_process_instance"/></Param>
+		      <Param name="result"><Var name="attrs" key="id"/></Param>
+        </Call>      
+
+        <Call function="closeTokenHistory">
+          <Param name="id_token_history"><Var name="token" key="id_current_history"/></Param>
+          <Param name="flow"></Param>
+        </Call>
+        
+        <!-- Notify the process owner that it reached to an end -->        
+	       <Var name="person">
+	         <Call library="gecol.core,person,api" function="get">
+	          <Param name="id"><Var name="instance" key="_id_creator"/></Param>
+	        </Call>
+	       </Var>
+	       <!-- Send an email to the person -->      
+	       <Var name="data"><Var name="configuration"/></Var>
+	       <Var name="data" key="url"><Config key="wf.inbox.url"/></Var>
+	       <Var name="data" key="personTitle"><Var name="person" key="title"/></Var>
+	       <Var name="data" key="personDisplayName"><Var name="person" key="display_name"/></Var>
+	       <Var name="data" key="result"><Var name="variables" key="result"/></Var>
+	       <Trace><String parse="true">Sending email to user ($person->email)</String></Trace>
+	       <Try>
+	        <Instructions>
+	           <Call library="framework,message,api" function="sendSimpleMessage">
+	             <Param name="template">framework,wf.process,endTask</Param>
+	             <Param name="to_name"><Var name="person" key="display_name"/></Param>
+	             <Param name="to_email"><Var name="person" key="email"/></Param>
+	             <Param name="from_name"><Config key="wf.inbox.fromName"/></Param>
+	             <Param name="from_email"><Config key="wf.inbox.fromEmail"/></Param>
+	             <Param name="guid"><Guid/></Param>
+	             <Param name="data"><Var name="data"/></Param>
+	           </Call>
+	        </Instructions>
+	        <Catch>
+	           <UserMessage type="warning"><Lang key="errorSendingEmail"/></UserMessage>        
+	        </Catch>
+	       </Try>
+        
+       <Return><String/></Return>
+      </Begin>
+    </Function>
+
+	</Library>
+</Node>

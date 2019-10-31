@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>    
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="result"/>
+  </Params>
+  <Screens>
+
+    <Screen id="scrPrerequisites" doc="Show the prerequisites">
+      <Grid name="grdExtensions" pageable="false" collapsible="false" title="extensions">
+        <Template>
+          <Columns>
+            <Column name="name" label="extension">
+              <Formatter name="Style" method="bold" />
+            </Column>
+            <Column name="doc"/>
+            <Column name="required">
+              <Formatter name="YesNo" />
+            </Column>
+            <Column name="resultType">
+              <Formatter name="Icon" size="24">
+                <Param name="error">error.png</Param>
+                <Param name="success">success.png</Param>
+                <Param name="warning">warning.png</Param>
+              </Formatter>            
+            </Column>
+            <Column name="resultMessage">
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>
+      <Grid name="grdConfig" pageable="false" collapsible="false" title="configurations">
+        <Template>
+          <Columns>
+            <Column name="name" label="configuration">
+              <Formatter name="Style" method="bold" />
+            </Column>
+            <Column name="doc"/>
+            <Column name="required">
+              <Formatter name="YesNo" />
+            </Column>
+            <Column name="resultType">
+              <Formatter name="Icon" size="24">
+                <Param name="error">error.png</Param>
+                <Param name="success">success.png</Param>
+                <Param name="warning">warning.png</Param>
+              </Formatter>            
+            </Column>
+            <Column name="resultMessage">
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>
+
+    </Screen> 
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scrPrerequisites">
+      <Var name="prerequisites" dump="true">
+        <Core.core method="checkPrerequisites"/>
+      </Var>    
+      <Control object="grdExtensions" method="bind">
+        <Param><Var name="prerequisites" key="ext"/></Param>
+      </Control>
+      <Control object="grdConfig" method="bind">
+        <Param><Var name="prerequisites" key="ini"/></Param>
+      </Control>      
+    </Action>
+
+
+        
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

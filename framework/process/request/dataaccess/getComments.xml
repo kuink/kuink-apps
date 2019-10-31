@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+    <Doc>
+        Get all the requests that are open and that are assynchronous
+    </Doc>
+    <Params>
+      <Param name="id_request" doc="The Request"/>
+    </Params>
+    <Body>
+      <Sql>
+	      <XSql>
+	        <XSelect>
+	          <XField>
+               frc.comment,
+               frc._creation as comment_date,
+               p.public_key as photo
+	          </XField>
+	        </XSelect>
+	        <XFrom>
+	          <XTable>
+	            fw_request fr
+              INNER JOIN fw_request_comment frc ON (frc.id_request = fr.id)
+              INNER JOIN person p ON (p.id = frc._id_creator)
+	          </XTable>
+	        </XFrom>
+	        <XWhere>
+	          <XCondition>
+	          <![CDATA[
+	            fr.id = {param->id_request}
+	          ]]>
+	          </XCondition>
+	        </XWhere>
+	        <XOrderBy>
+	         <XOrder>frc._creation asc</XOrder>
+	        </XOrderBy>
+	      </XSql>        
+            
+      </Sql>
+  </Body>
+</Method>

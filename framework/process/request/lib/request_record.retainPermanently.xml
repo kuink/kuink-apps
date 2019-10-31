@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="StringLib" type="lib"/>
+		<Use name="FileLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+
+	<Library>
+		<Function name="execute">
+		<Params>
+		  <Param name="data" doc="The data to process, in this case is the record's id"/>
+		  <Param name="log" output="true" />
+		</Params>
+		<Begin>
+			<!-- get status -->
+			<Var name="log">
+				<Call library="framework,rm.record,api" function="archive">
+	   			<Param name="id_record"><Var name="data" /></Param>
+  			</Call>
+			</Var>
+			<Var name="result">ok</Var>
+			<ForEach var="log" key="logKey" item="logItem">
+				<If condition="$logKey == 'error'">
+					<Then>
+  					<Var name="result">error</Var>
+					</Then>
+				</If>
+			</ForEach>
+      <Return><Var name="result" /></Return>
+    </Begin>
+    </Function>
+	</Library>
+</Node>

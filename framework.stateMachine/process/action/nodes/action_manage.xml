@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Params>
+    <Param name="idStateMachine" type="int"/>
+  </Params>
+  <Libraries>
+    <Use name="FormatterLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Select id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <Text id="name"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>    
+          <Button id="search" type="search" label="search" action="search"/>
+          <Button id="insert" type="add" label="insert" action="insert"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="id_state_machine" label="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+            <Column name="code" label="code"/>
+            <Column name="name" label="name"/>            
+            <Column name="action_list" label="action_list">
+              <Formatter name="Json" method="prettyPrint"/>
+              <Formatter name="Style" method="nl2br"/>
+            </Column>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" actionvalue="id"/>
+            <Action name="edit" actionvalue="id"/>
+            <Action name="delete" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen id="scrView" doc="View Screen">
+      <Form name="frmView">
+        <Static id="id"/>
+        <Static id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <Static id="action_list">
+          <Formatter name="Json" method="prettyPrint"/>
+          <Formatter name="Style" method="nl2br"/>        
+        </Static>
+        <Static id="code"/>
+        <Static id="name"/>
+        <Static id="description"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+          <Button id="edit" type="update" label="edit" action="edit"/>
+          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    <Screen id="scrEdit" doc="Edit Screen">
+      <Form name="frmEdit">
+        <Static id="id" label="id" required="true"/>
+        <Int id="id_state_machine" label="id_state_machine" required="true" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <CodeEditor id="action_list" label="action_list" required="true"/>
+        <Text id="code" label="code" required="true"/>
+        <Text id="name" label="name" required="true"/>
+        <TextArea id="description" label="description" required="false"/>
+        <ButtonGroup>
+          <Button id="cancel" type="cancel" label="cancel" action="search"/>
+          <Button id="save" type="update" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+    <Action name="search" screen="scrSearch">
+      <Var name="defaultData"><Set/></Var>
+      <Var name="defaultData" key="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Var>
+      <If condition="$defaultData->__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param>
+              <Var name="defaultData"/>
+            </Param>
+          </Control>
+        </Then>
+      </If>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Call library="framework,stateMachine.action,api" function="search">
+            <Param name="id_state_machine">
+              <Var name="currentData" key="id_state_machine"/>
+            </Param>
+            <Param name="name">
+              <Var name="currentData" key="name"/>
+            </Param>
+            <Param name="pagesize">
+              <Control method="getPageSize" object="grdSearchResult"/>
+            </Param>
+            <Param name="pagenum">
+              <Control method="getCurrentPage" object="grdSearchResult"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="view" screen="scrView">
+      <Var name="selectedId" process="true">
+        <ActionValue/>
+      </Var>
+      <Control method="bind" object="frmView">
+        <Param>
+          <Call library="framework,stateMachine.action,api" function="getById">
+            <Param name="id">
+              <ActionValue/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="save">
+      <If condition="@selectedId == ''">
+        <Then>
+          <Call library="framework,stateMachine.action,api" function="add" params="POSTDATA"/>
+        </Then>
+        <Else>
+          <Call library="framework,stateMachine.action,api" function="update" params="POSTDATA">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Else>
+      </If>
+      <Action name="search"/>
+    </Action>
+    <Action name="insert" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <Null/>
+      </Var>
+    </Action>
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Call library="framework,stateMachine.action,api" function="delete">
+        <Param name="id">
+          <Var name="selectedId" process="true"/>
+        </Param>
+      </Call>
+      <Action name="search"/>
+    </Action>
+    <Action name="edit" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Var name="record">
+        <Call library="framework,stateMachine.action,api" function="getById">
+          <Param name="id">
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </Call>
+      </Var>
+      <Var name="record" key="action_list">
+        <FormatterLib method="format">
+          <Param>Json</Param>
+          <Param>prettyPrint</Param>
+          <Param><Var name="record" key="action_list"/></Param>
+        </FormatterLib>
+      </Var>
+      <Control method="bind" object="frmEdit">
+        <Param><Var name="record"/></Param>
+      </Control>
+    </Action>
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

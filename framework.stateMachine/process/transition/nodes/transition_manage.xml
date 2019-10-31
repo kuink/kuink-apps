@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Select id="id_start_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Select id="id_end_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Text id="event"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>
+          <Button id="search" type="search" label="search" action="search"/>
+          <Button id="insert" type="add" label="insert" action="insert"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="id_start_state" label="id_start_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="id_end_state" label="id_end_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="event" label="event"/>
+            <Column name="event_description" label="event_description"/>
+            <Column name="role_list" label="role_list"/>
+            <Column name="is_active" label="is_active"/>
+            <Column name="id_form" label="id_form" datasource="call:framework,stateMachine.form,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="id_action" label="id_action" datasource="call:framework,stateMachine.action,api,getAll" bindid="id" bindvalue="code"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" actionvalue="id"/>
+            <Action name="edit" actionvalue="id"/>
+            <Action name="delete" actionvalue="id" confirm="true"/>
+            <Action name="duplicate" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen id="scrView" doc="View Screen">
+      <Form name="frmView">
+        <Static id="id"/>
+        <Static id="id_start_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Static id="id_end_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Static id="event"/>
+        <Static id="event_description"/>
+        <Static id="role_list"/>
+        <Static id="is_active"/>
+        <Static id="notify_role_list"/>
+        <Static id="id_form" datasource="call:framework,stateMachine.form,api,getAll" bindid="id" bindvalue="code"/>
+        <Static id="id_action" datasource="call:framework,stateMachine.action,api,getAll" bindid="id" bindvalue="code"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+          <Button id="edit" type="update" label="edit" action="edit"/>
+          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    <Screen id="scrEdit" doc="Edit Screen">
+      <Form name="frmEdit">
+        <Static id="id" label="id" required="true"/>
+        <Select id="id_start_state" label="id_start_state" required="false" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Select id="id_end_state" label="id_end_state" required="false" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Text id="event" label="event" required="true"/>
+        <Text id="event_description" label="event_description" required="true"/>
+        <Text id="role_list" label="role_list" required="true"/>
+        <Checkbox id="is_active" label="is_active" required="true"/>
+        <Text id="notify_role_list" label="notify_role_list" />
+        <Select id="id_form" label="id_form" required="false" datasource="call:framework,stateMachine.form,api,getAll" bindid="id" bindvalue="code"/>
+        <Select id="id_action" label="id_action" required="false" datasource="call:framework,stateMachine.action,api,getAll" bindid="id" bindvalue="code"/>
+        <ButtonGroup>
+          <Button id="cancel" type="cancel" label="cancel" action="search"/>
+          <Button id="save" type="update" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+    <Action name="search" screen="scrSearch">
+      <If condition="$defaultData->__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param>
+              <Var name="defaultData"/>
+            </Param>
+          </Control>
+        </Then>
+      </If>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Call library="framework,stateMachine.transition,api" function="search">
+            <Param name="id_start_state">
+              <Var name="currentData" key="id_start_state"/>
+            </Param>
+            <Param name="id_end_state">
+              <Var name="currentData" key="id_end_state"/>
+            </Param>
+            <Param name="event">
+              <Var name="currentData" key="event"/>
+            </Param>
+            <Param name="pagesize">
+              <Control method="getPageSize" object="grdSearchResult"/>
+            </Param>
+            <Param name="pagenum">
+              <Control method="getCurrentPage" object="grdSearchResult"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="view" screen="scrView">
+      <Var name="selectedId" process="true">
+        <ActionValue/>
+      </Var>
+      <Control method="bind" object="frmView">
+        <Param>
+          <Call library="framework,stateMachine.transition,api" function="getById">
+            <Param name="id">
+              <ActionValue/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="save">
+      <If condition="@selectedId == ''">
+        <Then>
+          <Call library="framework,stateMachine.transition,api" function="add" params="POSTDATA"/>
+        </Then>
+        <Else>
+          <Call library="framework,stateMachine.transition,api" function="update" params="POSTDATA">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Else>
+      </If>
+      <Action name="search"/>
+    </Action>
+    <Action name="insert" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <Null/>
+      </Var>
+    </Action>
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Call library="framework,stateMachine.transition,api" function="delete">
+        <Param name="id">
+          <Var name="selectedId" process="true"/>
+        </Param>
+      </Call>
+      <Action name="search"/>
+    </Action>
+    <Action name="edit" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Control method="bind" object="frmEdit">
+        <Param>
+          <Call library="framework,stateMachine.transition,api" function="getById">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="duplicate" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <Null/>
+      </Var>
+      <Var name="record">
+        <Call library="framework,stateMachine.transition,api" function="getById">
+          <Param name="id"><ActionValue/></Param>
+        </Call>      
+      </Var>
+      <Var name="record" key="id" clear="true"/>
+      <Control method="bind" object="frmEdit">
+        <Param><Var name="record"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>    
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

@@ -1,0 +1,37 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Create a new message in framework.
+        This is in a dataacces because framework,generic,insert don't insert send_date field
+    </Doc>
+    <Params>
+    	<Param name="send_date"/>
+    	<Param name="headers"/>
+    	<Param name="body"/>
+    	<Param name="guid"/>
+    	<Param name="is_sent"/>
+    	<Param name="id_app"/>
+    	<Param name="context"/>
+    	<Param name="_creation"/>
+    	<Param name="_modification"/>
+    </Params>
+    <Body>
+        <Execute>
+          <![CDATA[
+            INSERT INTO fw_message (id,send_date,headers,body,guid,is_sent,id_app,context,_creation,_modification)
+            VALUES (
+                NULL,
+                '{param->send_date}',
+                '{param->headers}',
+                '{param->body}',
+                '{param->guid}',
+                '{param->is_sent}',
+                '{param->id_app}',
+                '{param->context}',
+                '{param->_creation}',
+                '{param->_modification}'
+            )
+          ]]>
+     	</Execute>
+    </Body>
+</Method>

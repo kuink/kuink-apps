@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+        Get the template of a given class
+    </Doc>
+  <Params>
+    <Param name="class_code" required="true"/>
+  </Params>
+  <Body>
+    <Load>
+      <XSql>
+        <XSelect>
+          <XField >
+            cdv.template as version_template
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_rm_controlled_document_class_template cdct
+            INNER JOIN fw_rm_controlled_document cd ON (cd.id = cdct.id_controlled_document)
+            INNER JOIN fw_rm_controlled_document_version cdv ON (cdv.id = cd.id_current_version)
+            INNER JOIN fw_rm_class c ON (c.id = cdct.id_class)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>c.code = '{param->class_code}'</XCondition>
+        </XWhere>
+      </XSql>
+    </Load>
+  </Body>
+</Method>

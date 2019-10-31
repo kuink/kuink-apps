@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="StringLib" type="lib" />
+  </Libraries>
+  <Configuration/>
+  <Screens />
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="add" doc="Add a component in rm system. This component must be added to a record.">
+      <Params>
+        <Param name="id_class" doc="id of the class that the component belongs to" />
+        <Param name="id_record" doc="id of the record that the component belongs to" />
+        <Param name="settings" type="array" doc="the component settings data" />
+        <Param name="id_plugin" type="int" required="false" doc="set the component plugin, if empty then class plugin will be used" />
+        <!--Param name="template_data" type="array" doc="Data to create the template's attributes" /-->
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component::invalidPlugin" doc="The plugin does not exist"/>
+        <Exception name="framework/rm.component::noPermission" doc="The user cannot declare records in the given class"/>
+      </Exceptions>
+      <Return type="int" doc="The id_component in the system"/>
+      <Begin>
+
+        <!-- get the class -->
+        <Var name="class">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_class</Param>
+            <Param name="id"><Var name="PARAMS" key="id_class" /></Param>
+          </DataAccess>
+        </Var>
+
+
+        <If condition="$PARAMS->id_plugin == ''">
+          <Then>
+            <Var name="id_plugin"><Var name="class" key="id_plugin" /></Var>
+          </Then>
+        </If>
+
+        <!-- get the plugin -->
+        <Var name="plugin">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component_plugin</Param>
+            <Param name="id"><Var name="id_plugin" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$plugin->__length &lt;= 0">
+          <Then>
+            <Exception><String parse="true">framework/rm.component::invalidPlugin $plugin</String></Exception>
+          </Then>
+        </If>
+
+        <!-- get the user's acl -->
+        <Var name="classACL">1</Var>
+
+        <If condition="$classACL != '1'">
+            <Then><Exception><String parse="true">framework/rm.component::noPermission</String></Exception></Then>
+        </If>
+
+        <!-- create component -->
+        <Var name="id">
+          <DataAccess method="insert">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="uuid"><UtilsLib method="Uuid" /></Param>
+            <Param name="id_record"><Var name="id_record" /></Param>
+            <Param name="id_component_type"><Var name="class" key="id_component_type" /></Param>
+            <Param name="id_component_plugin"><Var name="plugin" key="id" /></Param>
+            <!--Param name="id_template"><Var name="id_template" /></Param-->
+            <Param name="settings"></Param>
+            <Param name="name"><Var name="class" key="code" /></Param>
+            <Param name="description"><Var name="class" key="description" /></Param>
+            <Param name="automatic_deletion">1</Param>
+            <Param name="originated"><Now /></Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+        </Var>
+
+        <!-- call the plugin to handle the component -->
+        <Var name="library"><String parse="true">framework,rm.component.plugin,$plugin->code</String></Var>
+        <Var name="settings">
+          <Call library="$library" function="add">
+            <Param name="settings"><Var name="settings" /></Param>
+            <Param name="id_component"><Var name="id" /></Param>
+          </Call>
+        </Var>
+
+        <!-- settings UPDATE -->
+        <Var name="settingsXml">
+          <UtilsLib method="setToXml">
+            <Param>
+              <Var name="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <!-- update settings for component -->
+        <DataAccess method="update">
+          <Param name="_entity">fw_rm_component</Param>
+          <Param name="id"><Var name="id" /></Param>
+          <Param name="settings"><Var name="settingsXml" /></Param>
+        </DataAccess>
+
+        <Return><Var name="id" /></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getIdByCode" doc="Get component type id by given code">
+      <Params>
+        <Param name="code" />
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.component::invalidComponentCode" doc="The component code does not exist"/>
+      </Exceptions>
+      <Return type="int" doc="id of the component type" />
+      <Begin>
+
+        <!-- get component type -->
+        <Var name="componentType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component_type</Param>
+            <Param name="code"><Var name="PARAMS" key="code" /></Param>
+          </DataAccess>
+        </Var>
+
+        <If condition="$componentType->__length &lt;= 0">
+          <Then>
+            <Exception><String parse="true">framework/rm.component::invalidComponentCode $PARAMS->code</String></Exception>
+          </Then>
+        </If>
+
+        <Return><Var name="componentType" key="id" /></Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="getById" doc="Get component data by id">
+      <Params>
+        <Param name="id_component" type="int" doc="The component id"/>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+       <Return>
+         <DataAccess method="load">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component"/></Param>
+        </DataAccess>
+       </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getContent" doc="Stream the file">
+      <Params>
+        <Param name="id_component" />
+      </Params>
+      <Return />
+      <Begin>
+
+        <!-- get the component -->
+        <Var name="component">
+          <DataAccess method="load" dump="true">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- convert settingsXml to array -->
+        <Var name="settings">
+          <UtilsLib method="xmlToSet">
+            <Param>
+              <Var name="component" key="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <!-- get the plugin's code -->
+        <Var name="plugin">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component_plugin</Param>
+            <Param name="id"><Var name="component" key="id_component_plugin" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="library"><String parse="true">framework,rm.component.plugin,$plugin->code</String></Var>
+
+        <!-- call the stream function from the component's plugin -->
+        <Call library="$library" function="getStream">
+          <Param name="id_component"><Var name="id_component" /></Param>
+          <Param name="settings"><Var name="settings" /></Param>
+        </Call>
+        <Return />
+      </Begin>
+    </Function>
+
+    <Function name="getExtension" doc="Get the extension of the component">
+      <Params>
+        <Param name="id_component" />
+      </Params>
+      <Return />
+      <Begin>
+
+        <!-- get the component -->
+        <Var name="component">
+          <DataAccess method="load" dump="true">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- convert settingsXml to array -->
+        <Var name="settings">
+          <UtilsLib method="xmlToSet">
+            <Param>
+              <Var name="component" key="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <!-- get the plugin's code -->
+        <Var name="plugin">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component_plugin</Param>
+            <Param name="id"><Var name="component" key="id_component_plugin" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="library"><String parse="true">framework,rm.component.plugin,$plugin->code</String></Var>
+
+        <!-- call the stream function from the component's plugin -->
+        <Var name="extension">
+	        <Call library="$library" function="getExtension">
+	          <Param name="id_component"><Var name="id_component" /></Param>
+	        </Call>
+        </Var>
+        <Return><Var name="extension"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getMedium" doc="Get the medium of the component">
+      <Params>
+        <Param name="id_component" />
+      </Params>
+      <Return />
+      <Begin>
+
+        <!-- get the component -->
+        <Var name="component">
+          <DataAccess method="load" dump="true">
+            <Param name="_entity">fw_rm_component</Param>
+            <Param name="id"><Var name="id_component" /></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- convert settingsXml to array -->
+        <Var name="settings">
+          <UtilsLib method="xmlToSet">
+            <Param>
+              <Var name="component" key="settings" />
+            </Param>
+          </UtilsLib>
+        </Var>
+
+        <!-- get the plugin's code -->
+        <Var name="plugin">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_component_plugin</Param>
+            <Param name="id"><Var name="component" key="id_component_plugin" /></Param>
+          </DataAccess>
+        </Var>
+
+        <Var name="library"><String parse="true">framework,rm.component.plugin,$plugin->code</String></Var>
+
+        <!-- call the stream function from the component's plugin -->
+        <Var name="Medium">
+          <Call library="$library" function="getMedium">
+            <Param name="id_component"><Var name="id_component" /></Param>
+          </Call>
+        </Var>
+        <Return><Var name="Medium"/></Return>
+      </Begin>
+    </Function>
+
+
+
+    <Function scope="public" name="getPluginSettingsDefinition" doc=" Given a plugin id get it's settings definition">
+			<Params>
+			 <Param name="id_plugin" type="int" doc="id plugin"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+			 <Var name="plugin">
+			   <DataAccess method="load">
+						<Param name="_entity">fw_rm_component_plugin</Param>
+						<Param name="id"><Var name="id_plugin"/></Param>
+					</DataAccess>
+			 </Var>
+			 <Var name="settingsDef"><Set/></Var>
+			 <If condition="$plugin->__length > 0">
+				<Then>
+	        <Var name="library"><String parse="true">framework,rm.component.plugin,$plugin->code</String></Var>
+
+	        <!-- call the stream function from the component's plugin -->
+	        <Var name="settingsDef">
+	         <Call library="$library" function="getSettingsDefinition"/>
+	        </Var>
+				</Then>
+			</If>
+			<Return><Var name="settingsDef"/></Return>
+			</Begin>
+		</Function>
+
+  </Library>
+</Node>

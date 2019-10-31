@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+  </Libraries>
+  <Params>
+  </Params>
+  <Configuration>
+  </Configuration>
+  <Screens>
+    <Screen id="mainScreen">
+      <Form name="changePasswordForm" title="changePassword">
+        <Password id="userPassword" label="userPassword"
+          required="true" />
+        <ButtonGroup>
+          <Button id="deployAll" type="execute" label="deployAll" action="deployAll" />
+        </ButtonGroup>
+      </Form>
+      <Grid name="outputGrid" infer="true"/>
+    </Screen>
+  </Screens>
+  <Actions>
+
+    <Action name="init" screen="mainScreen">
+    </Action>
+
+    <Action name="deployAll" screen="mainScreen">
+      <Control method="bind" object="outputGrid">
+        <Param>
+          <Script source="/opt/scripts/kuink-script-deployment/scripts/updateAll.sh" user="root" password="$POSTDATA->userPassword"/>
+        </Param>
+      </Control>
+    </Action>
+
+  </Actions>
+</Node>
+

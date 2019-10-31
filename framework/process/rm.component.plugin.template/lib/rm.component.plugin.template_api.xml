@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+        <Function name="get" doc="Returns a template">
+            <Params>
+                <Param name="id" doc="template id" />
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="short_name" type="text" doc=""/>
+                <External name="description" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="context" type="text" doc=""/>
+                <External name="filename" type="text" doc=""/>
+                <External name="order" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_template</Param>
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Execute>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="getByName" doc="Returns a template by Name">
+            <Params>
+                <Param name="name" doc="template name" />
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="short_name" type="text" doc=""/>
+                <External name="description" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="context" type="text" doc=""/>
+                <External name="filename" type="text" doc=""/>
+                <External name="order" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_template</Param>
+                        <Param name="name">
+                            <Var name="PARAMS" key="name"/>
+                        </Param>
+                    </Execute>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="getAll">
+            <Params>
+                <Param name="context" doc="context filter"/>
+            </Params>
+            <Return type="multiple" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="short_name" type="text" doc=""/>
+                <External name="description" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="context" type="text" doc=""/>
+                <External name="filename" type="text" doc=""/>
+                <External name="order" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <Execute method="this,this,template.search" params="PARAMS"/>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="update">
+            <Params>
+                <Param name="id" doc="Template id"/>
+                <Param name="data"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_template</Param>
+                    <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    <Param name="name"><Var name="data" key="name"/></Param>
+                    <Param name="short_name"><Var name="data" key="short_name"/></Param>
+                    <Param name="description"><Var name="data" key="description"/></Param>
+                    <Param name="code"><Var name="data" key="code"/></Param>
+                    <Param name="context"><Var name="data" key="context"/></Param>
+                    <Param name="filename"><Var name="data" key="filename"/></Param>
+                    <Param name="order"><Var name="data" key="order"/></Param>
+                    <Param name="_modification"><DateTimeLib method="now"/></Param>
+                    <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                </Execute>
+            </Begin>
+        </Function>
+
+
+        <Function name="copy">
+            <Params>
+                <Param name="id" doc="id template"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="newTplColumns" key="_creation"><DateTimeLib method="now"/></Var>
+                <Var name="newTplColumns" key="_modification"><DateTimeLib method="now"/></Var>
+                <Var name="newTplColumns" key="_creation_ip"><Var name="USER" key="ip"/></Var>
+                <Var name="newTplColumns" key="_modification_ip"><Var name="USER" key="ip"/></Var>
+                <Var name="newTemplate" >
+                    <Call library="gecol.core,database,api" function="copyRow">
+                        <Param name="table">fw_template</Param>
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                        <Param name="changedColumns"><Var name="newTplColumns"/></Param>
+                    </Call>
+                </Var>
+
+                <Var name="attributes">
+                    <Call function="getAttributes">
+                        <Param name="id_template"><Var name="PARAMS" key="id"/></Param>
+                    </Call>
+                </Var>
+                <ForEach var="attributes" item="attribute">
+                    <Var name="attribute" />
+                    <Var name="changedColumns" key="id_template"><Var name="newTemplate" key="id"/></Var>
+                    <Var name="changedColumns" key="_creation"><DateTimeLib method="now"/></Var>
+                    <Var name="changedColumns" key="_modification"><DateTimeLib method="now"/></Var>
+                    <Var name="changedColumns" key="_creation_ip"><Var name="USER" key="ip"/></Var>
+                    <Var name="changedColumns" key="_modification_ip"><Var name="USER" key="ip"/></Var>
+                    <Call library="gecol.core,database,api" function="copyRow">
+                        <Param name="table">fw_template_attribute</Param>
+                        <Param name="id"><Var name="attribute" key="id"/></Param>
+                        <Param name="changedColumns"><Var name="changedColumns"/></Param>
+                    </Call>
+                </ForEach>
+            </Begin>
+        </Function>
+
+
+        <Function name="add">
+            <Params>
+                <Param name="data"/>
+            </Params>
+            <Return type="single"/>
+            <Begin>
+                <Var name="id">
+                    <Execute method="framework,generic,insert" params="data">
+                        <Param name="table">fw_template</Param>
+                        <Param name="_creation"><DateTimeLib method="now"/></Param>
+                        <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                        <Param name="_modification"><DateTimeLib method="now"/></Param>
+                        <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                    </Execute>
+                </Var>
+                <Return>
+                    <Call function="get">
+                        <Param name="id"><Var name="id"/></Param>
+                    </Call>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="remove">
+            <Params>
+                <Param name="id" doc="id template"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="attributes">
+                    <Call function="getAttributes">
+                        <Param name="id_template"><Var name="PARAMS" key="id"/></Param>
+                    </Call>
+                </Var>
+                <ForEach var="attributes" item="attribute">
+                    <Call function="removeAttribute">
+                        <Param name="id"><Var name="attribute" key="id"/></Param>
+                    </Call>
+                </ForEach>
+                <Execute method="framework,generic,delete">
+                    <Param name="table">fw_template</Param>
+                    <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                </Execute>
+            </Begin>
+        </Function>
+
+        <Function name="getAttributes">
+            <Params>
+                <Param name="id_template" doc="template id"/>
+            </Params>
+            <Return type="multiple"/>
+            <Begin>
+                <Return>
+                    <Execute method="this,this,template.getAttributes">
+                        <Param name="id_template"><Var name="PARAMS" key="id_template"/></Param>
+                    </Execute>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="removeAttribute">
+            <Params>
+                <Param name="id" doc="attribute id"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Execute method="framework,generic,delete">
+                    <Param name="table">fw_template_attribute</Param>
+                    <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                </Execute>
+            </Begin>
+        </Function>
+
+        <Function name="updateAttribute">
+            <Params>
+                <Param name="id"/>
+                <Param name="data"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Execute method="framework,generic,update">
+                    <Param name="table">fw_template_attribute</Param>
+                    <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    <Param name="name"><Var name="data" key="name"/></Param>
+                    <Param name="value"><Var name="data" key="value"/></Param>
+                    <Param name="order"><Var name="data" key="order"/></Param>
+                    <Param name="_modification"><DateTimeLib method="now"/></Param>
+                    <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                </Execute>
+            </Begin>
+        </Function>
+
+        <Function name="addAttribute">
+            <Params>
+                <Param name="id_template"/>
+                <Param name="data"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Execute method="framework,generic,insert" params="data">
+                    <Param name="table">fw_template_attribute</Param>
+                    <Param name="id_template"><Var name="PARAMS" key="id_template"/></Param>
+                    <Param name="_creation"><DateTimeLib method="now"/></Param>
+                    <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                    <Param name="_modificatio"><DateTimeLib method="now"/></Param>
+                    <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                </Execute>
+            </Begin>
+        </Function>
+    </Library>
+</Node>

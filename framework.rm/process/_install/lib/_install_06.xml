@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+    <Function name="getReleaseNotes">
+      <Params/>
+      <Return type="string"/>
+      <Begin>
+       <Return>
+         <String>Insert aggregation types</String>
+       </Return>
+      </Begin>
+    </Function>
+
+
+		<Function name="execute">
+			<Params></Params>
+      <Return></Return>
+			<Begin>
+        <Var name="log"><Set/></Var>
+
+        <Var name="logEntry" key="message"><String>Aggregation Types: Adding...</String></Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+
+
+				<DataAccess method="insert">
+					<Param name="_entity">fw_rm_aggregation_type</Param>
+          <Param name="uuid"><Uuid/></Param>
+					<Param name="name">Pessoa</Param>
+					<Param name="code">person</Param>
+					<Param name="rel_entity">person</Param>
+					<Param name="rel_attribute">private_key</Param>
+					<Param name="_base">true</Param>
+				</DataAccess>
+        
+        <DataAccess method="insert">
+          <Param name="_entity">fw_rm_aggregation_type</Param>
+          <Param name="uuid"><Uuid/></Param>
+          <Param name="name">Turma</Param>
+          <Param name="code">class</Param>
+          <Param name="rel_entity">class</Param>
+          <Param name="rel_attribute">guid</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+        <DataAccess method="insert">
+          <Param name="_entity">fw_rm_aggregation_type</Param>
+          <Param name="uuid"><Uuid/></Param>
+          <Param name="name">Aluno</Param>
+          <Param name="code">student</Param>
+          <Param name="rel_entity">person</Param>
+          <Param name="rel_attribute">private_key</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+
+        <DataAccess method="insert">
+          <Param name="_entity">fw_rm_aggregation_type</Param>
+          <Param name="uuid"><Uuid/></Param>
+          <Param name="name">Momento de Avaliação</Param>
+          <Param name="code">evaluationMoment</Param>
+          <Param name="rel_entity">evaluation_moment</Param>
+          <Param name="rel_attribute">guid</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+        
+        <DataAccess method="insert">
+          <Param name="_entity">fw_rm_aggregation_type</Param>
+          <Param name="uuid"><Uuid/></Param>
+          <Param name="name">Ano Letivo</Param>
+          <Param name="code">schoolYear</Param>
+          <Param name="rel_entity">school_year</Param>
+          <Param name="rel_attribute">guid</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>        
+        
+        <Var name="logEntry" key="message"><String>Aggregation Types: Added</String></Var>
+        <Var name="log" key=""><Var name="logEntry"/></Var>
+
+		    <Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

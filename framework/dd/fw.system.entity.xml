@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="System Entity to cache the status of persons in different systems">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <!-- System entity Module -->
+
+    <Entity name="fw_system_entity" doc="The systems where we want to exchange data in a controlled way">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="datasource" domain="code" required="true" doc="The kuink datasource used to sync systems"/>
+        <Attribute name="api" domain="api" required="true" doc="Api to make the interaction with the external system"/>
+        <Attribute name="config" domain="json" required="true" doc="System entity specific configurations"/>
+        <Template name="fw.active"/>
+        <Template name="fw.identity"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_system_entity_status_cache" doc="Caches the status of a person in different systems. Used for performance issues.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_system_entity" domain="foreign" required="true" refentity="fw_system_entity" refattr="id" doc="The system entity"/>
+				<Attribute name="id_person" domain="foreign" required="true" refentity="person" refattr="id" doc="The person to check the service"/>
+        <Attribute name="id_status" domain="int" required="true" doc="The status in the system 0-NOT CREATED, 1-CREATED, N-Other system specific status..."/>
+        <Attribute name="data" domain="json" required="true" doc="The system data to check"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_system_entity_status" doc="Define the set of status from the different systems">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+				<Attribute name="id_system_entity" domain="foreign" required="true" refentity="fw_system_entity" refattr="id" doc="The system entity"/>
+        <Attribute name="id_status" domain="foreign" required="true" refentity="fw_system_entity" refattr="id" doc="The system entity"/>
+        <Attribute name="type" domain="code" required="true" doc="The status type (success | error | warning | info)"/>
+        <Template name="fw.identity"/>        
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <!-- Entity Management Refactoring -->
+    <!--Entity name="fw_system_entity_operation" doc="The operations to synchronize systems">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Template name="fw.active"/>
+        <Template name="fw.identity"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_system_entity_operation_step" doc="The operation step to synchronize systems">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_system_entity" domain="foreign" required="true" refentity="fw_system_entity" refattr="id" doc="The system entity"/>        
+        <Attribute name="id_system_entity_operation" domain="foreign" required="true" refentity="fw_system_entity_operation" refattr="id" doc="The system entity operation"/>        
+        <Attribute name="condition" domain="longString" required="true" doc="The condition to apply to this step"/>                
+        <Attribute name="handler" domain="apiFunction" doc="The handler to execute in order to execute this step" required="false"/>
+        <Template name="fw.active"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity-->
+
+  </Entities>
+</Node>

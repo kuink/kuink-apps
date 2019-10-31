@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen id="testScreen">
+    
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="testScreen">
+      
+      <Var name="newFile" >
+        <FileLib method="copyFile">
+          <Param name="id">7478</Param>
+          <Param name="path">records/00001/</Param>
+          <Param name="newName">84884848484884848484884</Param>
+        </FileLib>
+      </Var>
+
+      <!--Var name="newFile" >
+      <FileLib method="createFile">
+        <Param name="filename">aaaa</Param>
+        <Param name="ext">meta.xml</Param>
+        <Param name="content">
+        <![CDATA[ 
+<Metadata schema="CSCM-Lx_Metadata" version="1">
+	<Meta name="Titulo">Pauta de Avaliiação</Meta>
+	<Meta name="Titulo_alternativo">PF_$school_year->id_$evaluation_moment->code_$class->code</Meta>
+	<Meta name="Identificador_tipo">GUID</Meta> 
+	<Meta name="Identificador_id_recurso">$record_guid</Meta>
+	<Meta name="Identificador_codigo_classificacao">750.30</Meta>
+	<Meta name="Produtor_setor">CSCM-LX/AP/$grade->code</Meta>
+	<Meta name="Produtor_id">$class_director->private_key</Meta>
+	<Meta name="Produtor_designacao">$class_director->name</Meta>
+	<Meta name="Produtor_tipo">$class->class_director_designation</Meta>
+	<Meta name="Assunto">Pauta de avaliação da turma $class->name do $evaluation_moment->name do ano letivo $school_year->name</Meta>
+	<Meta name="Idioma">PT</Meta>
+	<Meta name="Data_hora_registo">$record_date</Meta>
+	<Meta name="Formato_dados">PDF</Meta>
+	<Meta name="Formato_suporte">Ficheiro Digital</Meta>
+	<Meta name="Acessibilidade_classificacao_seguranca">$access_level_classification->name</Meta>
+	<Meta name="Ano_letivo">$school_year->name</Meta>
+	<Meta name="Momento_avaliacao">$evaluation_moment->name</Meta>
+	<Meta name="Turma">$class->name</Meta>
+	<Meta name="Turma_guid">$class->guid</Meta>
+	<Meta name="Ciclo">$grade->name</Meta>
+	<Meta name="Validador_guid">$validator->private_key</Meta>
+	<Meta name="Validador_designacao">$validator->name</Meta>
+</Metadata>
+        ]]>
+        </Param>
+        <Param name="path">records/00001/</Param>
+      </FileLib>
+      </Var-->
+      
+
+      <Var name="checksum" >
+        <FileLib method="getFileChecksum">
+          <Param name="id">7521</Param>
+        </FileLib>  
+      </Var>
+      
+      <Var name="newFile" >
+        <FileLib method="createFile">
+          <Param name="filename">84884848484884848484884</Param>
+          <Param name="ext">checksum.md5</Param>
+          <Param name="content">
+            <Var name="checksum"/>
+          </Param>
+          <Param name="path">records/00001/</Param>
+        </FileLib>
+      </Var>
+      
+      
+      
+    </Action>
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

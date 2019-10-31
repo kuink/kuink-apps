@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all fw_form
+    </Doc>
+    <Params>
+			<Param name="id_form"/>
+		</Params>
+    <Body>
+        <Load>
+            <XSql>
+               <XSelect>
+                   <XField >
+                       MAX(page) as maxPages
+                   </XField>
+               </XSelect>
+               <XFrom>
+                   <XTable>
+                       fw_form_field t
+                   </XTable>
+               </XFrom>
+               <XWhere>
+                 <XCondition>id_form = {param->id_form}</XCondition>
+							</XWhere>
+            </XSql>
+        </Load>
+    </Body>
+</Method>

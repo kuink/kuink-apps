@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- manage -->
+		<String key="application" value="Aplicações"/>
+		<String key="manage" value="Gerir"/>
+		
+		<String key="base" value="Base"/>
+		<String key="version" value="Versão"/>
+		<String key="is_active" value="Ativo"/>
+		<String key="is_registered" value="Registado"/>
+		<String key="in_maintenance" value="Em Manutenção"/>
+		<String key="update_status" value="Estado"/>
+		<String key="updates" value="Atualizações"/>
+		<String key="register" value="Registar"/>
+		<String key="installed" value="Instalada"/>
+		<String key="releaseNotes" value="Notas da Atualização"/>
+		<String key="showLog" value="Detalhes"/>
+		<String key="apply">Aplicar</String>
+		<String key="updateAll">Atualizar Tudo</String>
+    <String key="_id_creator" value="Responsável"/>		
+
+		<!-- Prerequisites -->
+		<String key="extensions" value="Extensões"/>
+		<String key="configurations" value="Configurações"/>
+		<String key="extension" value="Extensão"/>
+		<String key="configuration" value="Configuração"/>
+		<String key="doc" value="Documentação"/>
+		<String key="required" value="Obrigatório"/>
+		<String key="resultType" value="Resultado"/>
+		<String key="resultMessage" value="Mensagem"/>
+
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

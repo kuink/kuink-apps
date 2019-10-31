@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+		<!-- tasks -->
+        <String key="execute" value="Alteração de Senha"/>
+		<String key="changePassword" value="Dados"/>
+		<String key="uid" value="Utilizador"/>
+		<String key="oldPassword" value="Senha atual"/>
+		<String key="newPassword" value="Senha nova"/>
+		<String key="confirmNewPassword" value="Senha nova (confirmar)"/>
+		<String key="change" value="Alterar"/>
+        <String key="simple" value="Alterar"/>
+        <String key="forgotPassword" value="Ooops... Esqueci-me da senha!"/>
+		
+        <String key="changePasswordUser" value="Alteração de password para o utilizador {0} ."/>
+        <String key="passwordChanged" value="Senha alterada"/>
+        <String key="validationErrors" value="Existem {0} erro(s)."/>
+        <String key="invalidRequest" value="Pedido inválido"/>
+        <String key="captcha" value="Captcha"/>
+        <String key="captchaError" value="O código captcha que inseriu não está correto. Por favor tente de novo."/>
+        <String key="resetPasswordInfo" value="Após validação do utilizador ou do email, será enviado um email a solicitar a alteração da senha. Deverá seguir o link aí apresentado e só após esse passo poderá alterar a senha para uma nova."/>
+        <String key="resetPasswordEmailSubject" value="Pedido de alteração de senha"/>
+        <String key="resetPasswordSuccess" value="O pedido foi registado com sucesso. Deverá aguardar um email com as instruções para alterar a senha."/>        
+   </Strings>
+   <HelpStrings>
+        <Help key="uid">
+            Nome de utilizador para entrar no sistema.
+        </Help>
+        <Help key="oldPassword">
+            Senha que utiliza atualmente para entrar no sistema.
+        </Help>
+        <Help key="newPassword">
+            Nova senha respeitando as regras descritas acima.
+        </Help>
+        <Help key="confirmNewPassword">
+            Volte a introduzir a nova senha para confirmar.
+        </Help>
+        <Help key="captcha">
+            Introduza os números que vê na imagem. É só para termos a certeza de que se trata de um humano e não de um bot.
+        </Help>
+   </HelpStrings>
+</Lang>

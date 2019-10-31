@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+		<Use name="MathLib" type="lib"/>
+		<Use name="DateTimeLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	<Library>
+
+				<Function name="getYes" doc="Get yes datasource" scope="public">
+					<Params/>
+					<Return type="multiple" doc="">
+						<External name="id" type="text" doc="Option id"/>
+						<External name="value" type="text" doc="Option value name"/>
+					</Return>
+					<Begin>
+						<Var name="yesOption" key="id">1</Var>
+						<Var name="yesOption" key="value"><Lang key="yes"/></Var>
+						<Var name="options" key=""><Var name="yesOption"/></Var>
+						<Return><Var name="options"/></Return>
+					</Begin>
+				</Function>
+
+				<Function name="getYesNoDataSource" doc="Get yes/no datasource" scope="public">
+					<Params/>
+					<Return type="multiple" doc="">
+						<External name="id" type="text" doc="Option id"/>
+						<External name="value" type="text" doc="Option value name"/>
+					</Return>
+					<Begin>
+						<Var name="yesOption" key="id">1</Var>
+						<Var name="yesOption" key="value"><Lang key="yes"/></Var>
+						<Var name="noOption" key="id">0</Var>
+						<Var name="noOption" key="value"><Lang key="no"/></Var>
+						<Var name="options" key=""><Var name="yesOption"/></Var>
+						<Var name="options" key=""><Var name="noOption"/></Var>
+						<Return><Var name="options"/></Return>
+					</Begin>
+				</Function>
+
+
+				<Function name="getTrueFalseDataSource" doc="Get true/false datasource" scope="public">
+		            <Params/>
+		            <Return type="multiple" doc="">
+		                <External name="id" type="text" doc="Option id"/>
+		                <External name="value" type="text" doc="Option value name"/>
+		            </Return>
+		            <Begin>
+		                <Var name="yesOption" key="id">true</Var>
+		                <Var name="yesOption" key="value"><Lang key="true"/></Var>
+		                <Var name="noOption" key="id">false</Var>
+		                <Var name="noOption" key="value"><Lang key="false"/></Var>
+		                <Var name="options" key=""><Var name="yesOption"/></Var>
+		                <Var name="options" key=""><Var name="noOption"/></Var>
+		                <Return>
+		                    <Var name="options"/>
+		                </Return>
+		            </Begin>
+		        </Function>
+
+        <Function name="getDaysOfWeek" doc="Get the days of week according to ISO 8601">
+        	<Params/>
+        	<Return type="multiple"/>
+        	<Begin>
+        		<Var name="days"/>
+
+        		<Var name="monday" key="id">1</Var>
+        		<Var name="monday" key="name"><Lang key="monday"/></Var>
+        		<Var name="monday" key="code"><Lang key="mondayCode"/></Var>
+        		<Var name="days" key=""><Var name="monday"/></Var>
+
+        		<Var name="tuesday" key="id">2</Var>
+        		<Var name="tuesday" key="name"><Lang key="tuesday"/></Var>
+        		<Var name="tuesday" key="code"><Lang key="tuesdayCode"/></Var>
+        		<Var name="days" key=""><Var name="tuesday"/></Var>
+
+        		<Var name="wednesday" key="id">3</Var>
+        		<Var name="wednesday" key="name"><Lang key="wednesday"/></Var>
+        		<Var name="wednesday" key="code"><Lang key="wednesdayCode"/></Var>
+        		<Var name="days" key=""><Var name="wednesday"/></Var>
+
+        		<Var name="thursday" key="id">4</Var>
+        		<Var name="thursday" key="name"><Lang key="thursday"/></Var>
+        		<Var name="thursday" key="code"><Lang key="thursdayCode"/></Var>
+        		<Var name="days" key=""><Var name="thursday"/></Var>
+
+        		<Var name="friday" key="id">5</Var>
+        		<Var name="friday" key="name"><Lang key="friday"/></Var>
+        		<Var name="friday" key="code"><Lang key="fridayCode"/></Var>
+        		<Var name="days" key=""><Var name="friday"/></Var>
+
+        		<Var name="saturday" key="id">6</Var>
+        		<Var name="saturday" key="name"><Lang key="saturday"/></Var>
+        		<Var name="saturday" key="code"><Lang key="saturdayCode"/></Var>
+        		<Var name="days" key=""><Var name="saturday"/></Var>
+
+        		<Var name="sunday" key="id">7</Var>
+        		<Var name="sunday" key="name"><Lang key="sunday"/></Var>
+        		<Var name="sunday" key="code"><Lang key="sundayCode"/></Var>
+        		<Var name="days" key=""><Var name="sunday"/></Var>
+
+        		<Return><Var name="days"/></Return>
+        	</Begin>
+        </Function>
+
+
+        <Function scope="protected" name="createMenuEntry" doc="Create a menu entry">
+            <Params>
+                <Param name="id"/>
+                <Param name="name"/>
+            </Params>
+            <Return type="single"/>
+            <Begin>
+                <Var name="menuEntry"/>
+                <ForEach var="PARAMS" key="key" item="param">
+                    <Var name="menuEntry" key="$key"><Var name="param"/></Var>
+                </ForEach>
+                <Return>
+                    <Var name="menuEntry"/>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="getHours" doc="Get hour datasource data">
+          <Params/>
+          <Return type="multiple"/>
+          <Begin>
+            <Var name="hours"><Set/></Var>
+						<Var name="hour" key="id"><String>01</String></Var><Var name="hour" key="name"><String>01</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>02</String></Var><Var name="hour" key="name"><String>02</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>03</String></Var><Var name="hour" key="name"><String>03</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>04</String></Var><Var name="hour" key="name"><String>04</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>05</String></Var><Var name="hour" key="name"><String>05</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>06</String></Var><Var name="hour" key="name"><String>06</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>07</String></Var><Var name="hour" key="name"><String>07</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>08</String></Var><Var name="hour" key="name"><String>08</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>09</String></Var><Var name="hour" key="name"><String>09</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>10</String></Var><Var name="hour" key="name"><String>10</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>11</String></Var><Var name="hour" key="name"><String>11</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>12</String></Var><Var name="hour" key="name"><String>12</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>13</String></Var><Var name="hour" key="name"><String>13</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>14</String></Var><Var name="hour" key="name"><String>14</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>15</String></Var><Var name="hour" key="name"><String>15</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>16</String></Var><Var name="hour" key="name"><String>16</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>17</String></Var><Var name="hour" key="name"><String>17</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>18</String></Var><Var name="hour" key="name"><String>18</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>19</String></Var><Var name="hour" key="name"><String>19</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>20</String></Var><Var name="hour" key="name"><String>20</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>21</String></Var><Var name="hour" key="name"><String>21</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>22</String></Var><Var name="hour" key="name"><String>22</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>23</String></Var><Var name="hour" key="name"><String>23</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+						<Var name="hour" key="id"><String>24</String></Var><Var name="hour" key="name"><String>24</String></Var><Var name="hours" key=""><Var name="hour"/></Var>
+            <Return><Var name="hours"/></Return>
+          </Begin>
+        </Function>
+
+        <Function name="getMinutes15" doc="Get minutes with 15 interval">
+          <Params/>
+          <Return type="multiple"/>
+          <Begin>
+            <Var name="minutes"><Set/></Var>
+						<Var name="minute" key="id"><String>00</String></Var><Var name="minute" key="name"><String>00</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>15</String></Var><Var name="minute" key="name"><String>15</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>30</String></Var><Var name="minute" key="name"><String>30</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>45</String></Var><Var name="minute" key="name"><String>45</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+            <Return><Var name="minutes"/></Return>
+          </Begin>
+        </Function>
+
+        <Function name="getMinutes10" doc="Get minutes with 15 interval">
+          <Params/>
+          <Return type="multiple"/>
+          <Begin>
+            <Var name="minutes"><Set/></Var>
+						<Var name="minute" key="id"><String>00</String></Var><Var name="minute" key="name"><String>00</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>10</String></Var><Var name="minute" key="name"><String>10</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>20</String></Var><Var name="minute" key="name"><String>20</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>30</String></Var><Var name="minute" key="name"><String>30</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>40</String></Var><Var name="minute" key="name"><String>40</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>50</String></Var><Var name="minute" key="name"><String>50</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+            <Return><Var name="minutes"/></Return>
+          </Begin>
+        </Function>
+
+        <Function name="getMinutes5" doc="Get minutes with 5 interval">
+          <Params/>
+          <Return type="multiple"/>
+          <Begin>
+            <Var name="minutes"><Set/></Var>
+						<Var name="minute" key="id"><String>00</String></Var><Var name="minute" key="name"><String>00</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>05</String></Var><Var name="minute" key="name"><String>05</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>10</String></Var><Var name="minute" key="name"><String>10</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>15</String></Var><Var name="minute" key="name"><String>15</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>20</String></Var><Var name="minute" key="name"><String>20</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>25</String></Var><Var name="minute" key="name"><String>25</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>30</String></Var><Var name="minute" key="name"><String>30</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>35</String></Var><Var name="minute" key="name"><String>35</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>40</String></Var><Var name="minute" key="name"><String>40</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>45</String></Var><Var name="minute" key="name"><String>45</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>50</String></Var><Var name="minute" key="name"><String>50</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>55</String></Var><Var name="minute" key="name"><String>55</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+            <Return><Var name="minutes"/></Return>
+          </Begin>
+        </Function>
+
+        <Function name="getMinutes" doc="Get minutes with 1 interval">
+          <Params/>
+          <Return type="multiple"/>
+          <Begin>
+            <Var name="minutes"><Set/></Var>
+						<Var name="minute" key="id"><String>00</String></Var><Var name="minute" key="name"><String>00</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>01</String></Var><Var name="minute" key="name"><String>01</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>02</String></Var><Var name="minute" key="name"><String>02</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>03</String></Var><Var name="minute" key="name"><String>03</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>04</String></Var><Var name="minute" key="name"><String>04</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>05</String></Var><Var name="minute" key="name"><String>05</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>06</String></Var><Var name="minute" key="name"><String>06</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>07</String></Var><Var name="minute" key="name"><String>07</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>08</String></Var><Var name="minute" key="name"><String>08</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>09</String></Var><Var name="minute" key="name"><String>09</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>10</String></Var><Var name="minute" key="name"><String>10</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>11</String></Var><Var name="minute" key="name"><String>11</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>12</String></Var><Var name="minute" key="name"><String>12</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>13</String></Var><Var name="minute" key="name"><String>13</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>14</String></Var><Var name="minute" key="name"><String>14</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>15</String></Var><Var name="minute" key="name"><String>15</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>16</String></Var><Var name="minute" key="name"><String>16</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>17</String></Var><Var name="minute" key="name"><String>17</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>18</String></Var><Var name="minute" key="name"><String>18</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>19</String></Var><Var name="minute" key="name"><String>19</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>20</String></Var><Var name="minute" key="name"><String>20</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>21</String></Var><Var name="minute" key="name"><String>21</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>22</String></Var><Var name="minute" key="name"><String>22</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>23</String></Var><Var name="minute" key="name"><String>23</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>24</String></Var><Var name="minute" key="name"><String>24</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>25</String></Var><Var name="minute" key="name"><String>25</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>26</String></Var><Var name="minute" key="name"><String>26</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>27</String></Var><Var name="minute" key="name"><String>27</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>28</String></Var><Var name="minute" key="name"><String>28</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>29</String></Var><Var name="minute" key="name"><String>29</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>30</String></Var><Var name="minute" key="name"><String>30</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>31</String></Var><Var name="minute" key="name"><String>31</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>32</String></Var><Var name="minute" key="name"><String>32</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>33</String></Var><Var name="minute" key="name"><String>33</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>34</String></Var><Var name="minute" key="name"><String>34</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>35</String></Var><Var name="minute" key="name"><String>35</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>36</String></Var><Var name="minute" key="name"><String>36</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>37</String></Var><Var name="minute" key="name"><String>37</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>38</String></Var><Var name="minute" key="name"><String>38</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>39</String></Var><Var name="minute" key="name"><String>39</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>40</String></Var><Var name="minute" key="name"><String>40</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>41</String></Var><Var name="minute" key="name"><String>41</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>42</String></Var><Var name="minute" key="name"><String>42</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>43</String></Var><Var name="minute" key="name"><String>43</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>44</String></Var><Var name="minute" key="name"><String>44</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>45</String></Var><Var name="minute" key="name"><String>45</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>46</String></Var><Var name="minute" key="name"><String>46</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>47</String></Var><Var name="minute" key="name"><String>47</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>48</String></Var><Var name="minute" key="name"><String>48</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>49</String></Var><Var name="minute" key="name"><String>49</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>50</String></Var><Var name="minute" key="name"><String>50</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>51</String></Var><Var name="minute" key="name"><String>51</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>52</String></Var><Var name="minute" key="name"><String>52</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>53</String></Var><Var name="minute" key="name"><String>53</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>54</String></Var><Var name="minute" key="name"><String>54</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>55</String></Var><Var name="minute" key="name"><String>55</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>56</String></Var><Var name="minute" key="name"><String>56</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>57</String></Var><Var name="minute" key="name"><String>57</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>58</String></Var><Var name="minute" key="name"><String>58</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+						<Var name="minute" key="id"><String>59</String></Var><Var name="minute" key="name"><String>59</String></Var><Var name="minutes" key=""><Var name="minute"/></Var>
+            <Return><Var name="minutes"/></Return>
+          </Begin>
+        </Function>
+
+				<Function name="getRange" doc="Get a range of numbers from start to end in an array">
+					<Params>
+						<Param name="start"/>
+						<Param name="end"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+						<Var name="range"><Set/></Var>
+						<For var="count" start="$PARAMS->start" condition="$count &lt;= $PARAMS->end" step="1">
+							<Var name="aux" key="key"><Var name="count"/></Var>
+							<Var name="aux" key="value"><Var name="count"/></Var>
+							<Var name="range" key=""><Var name="aux"/></Var>
+						</For>
+						<Return><Var name="range"/></Return>
+					</Begin>
+				</Function>
+
+	</Library>
+</Node>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+    </Params>
+    <Libraries>
+    </Libraries>
+    <Screens>
+        <Screen id="masterScreen">
+        </Screen>
+    </Screens>
+    <Actions>
+        <Action name="init" screen="masterScreen">
+        </Action>
+	</Actions>
+</Node>
+

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+   
+    <Function name="init" doc="Initializes the engine resources">
+      <Params>
+        <Param name="source"/>
+      </Params>
+      <Return/>
+      <Begin>
+        <DataSource name="bpmnSource" connector="XmlConnector">
+          <Param name="filename"><Var name="source"/></Param>
+          <Param name="type">bpmn</Param>
+        </DataSource>
+        <Return/>
+      </Begin>
+    </Function>
+   
+    <Function name="getNode" doc="Get node data">
+      <Params>
+        <Param name="source" type="string" required="true" doc="The bpmn source file"/>
+        <Param name="node" type="string" required="true" doc="The node to get"/>
+      </Params>
+      <Return type="single"/>
+      <Begin>
+        <Call function="init">
+					<Param name="source"><Var name="source"/></Param>
+				</Call>
+        <Var name="id">@id</Var>
+        <Var name="node" >
+          <DataAccess method="load" datasource="bpmnSource">
+            <Param name="_entity"><String.parse>/bpmn2:definitions/bpmn2:process/*</String.parse></Param>
+            <Param name="_filter"><String.parse>[$id='$node']</String.parse></Param>
+          </DataAccess>
+        </Var>
+        
+        <Var name="oNode" key="type">
+          <StringLib method="replace">
+            <Param>bpmn2:</Param>
+            <Param><String/></Param>
+            <Param><Var name="node" key="_name"/></Param>
+          </StringLib>
+        </Var>
+        
+        <Var name="oNode" key="attributes"><Var name="node" key="_attributes"/></Var>
+        
+        <!-- Get the properties -->
+        <Var name="properties"><Set/></Var>
+        
+        <Var name="extElem"><Var name="node" key="bpmn2:extensionElements"/></Var>
+        <Var name="camProps"><Var name="extElem" key="camunda:properties"/></Var>
+        <Var name="camProp"><Var name="camProps" key="camunda:property"/></Var>
+        <ForEach var="camProp" item="prop">
+          <Var name="attrs"><Var name="prop" key="_attributes"/></Var>
+          <Var name="properties" key="$attrs->name"><Var name="attrs" key="value"/></Var>
+        </ForEach>
+
+        <Var name="oNode" key="properties"><Var name="properties"/></Var>
+        
+        <Var name="incoming"><Set/></Var>
+        <Var name="income"><Var name="node" key="bpmn2:incoming"/></Var>
+        <Var name="incFirst"><Var name="income" key="__first"></Var></Var>
+        <If condition="$incFirst->__isArray == 1">
+					<Then>
+            <ForEach var="income" item="in">
+              <Var name="incoming" key=""><Var name="in" key="_text"/></Var>
+            </ForEach>
+					</Then>
+					<Else>
+					 <Var name="incoming" key=""><Var name="income" key="_text"/></Var>
+					</Else>
+				</If>
+				<Var name="oNode" key="incoming"><Var name="incoming"/></Var>
+				
+        <Var name="outgoing"><Set/></Var>
+        <Var name="outgo"><Var name="node" key="bpmn2:outgoing"/></Var>
+        <Var name="outFirst"><Var name="outgo" key="__first"/></Var>
+        <Var name="outgo"><Var name="node" key="bpmn2:outgoing"/></Var>
+        <If condition="$outFirst->__isArray == 1">
+          <Then>
+            <ForEach var="outgo" item="out">
+              <Var name="outgoing" key=""><Var name="out" key="_text"/></Var>
+            </ForEach>
+          </Then>
+          <Else>
+            <Var name="outgoing" key=""><Var name="outgo" key="_text"/></Var>
+          </Else>          
+        </If>
+        <Var name="oNode" key="outgoing"><Var name="outgoing"/></Var>
+        
+        <Return><Var name="oNode" /></Return>
+      </Begin>
+    </Function>
+        
+  </Library>
+</Node>

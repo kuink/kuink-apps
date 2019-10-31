@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="string" type="text" required="false"/>
+        <Param name="integer" type="int" required="false"/>
+        <Param name="select" type="int" required="false"/>
+        <Param name="checkbox" type="int" required="false"/>
+        <Param name="datetime" type="int" required="false"/>
+        <Param name="text" type="text" required="false"/>
+        <Param name="id_company" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_demo_entity</Param>
+            <Param name="string">
+              <Var name="PARAMS" key="string"/>
+            </Param>
+            <Param name="integer">
+              <Var name="PARAMS" key="integer"/>
+            </Param>
+            <Param name="select">
+              <Var name="PARAMS" key="select"/>
+            </Param>
+            <Param name="checkbox">
+              <Var name="PARAMS" key="checkbox"/>
+            </Param>
+            <Param name="datetime">
+              <Var name="PARAMS" key="datetime"/>
+            </Param>
+            <Param name="text">
+              <Var name="PARAMS" key="text"/>
+            </Param>
+            <Param name="id_company">
+              <Var name="PARAMS" key="id_company"/>
+            </Param>
+            <Param name="_creation">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_creation_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+            <Param name="_modification">
+              <DateTimeLib method="Now"/>
+            </Param>
+            <Param name="_modification_ip">
+              <Var name="USER" key="ip"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table fw_demo_entity">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_demo_entity</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_demo_entity">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="string" type="text" required="false"/>
+        <Param name="integer" type="int" required="false"/>
+        <Param name="select" type="int" required="false"/>
+        <Param name="checkbox" type="int" required="false"/>
+        <Param name="datetime" type="int" required="false"/>
+        <Param name="text" type="text" required="false"/>
+        <Param name="id_company" type="int" required="true"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_demo_entity</Param>
+          <Param name="_modification">
+            <DateTimeLib method="Now"/>
+          </Param>
+          <Param name="_modification_ip">
+            <Var name="USER" key="ip"/>
+          </Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table fw_demo_entity">
+      <Params>
+        <Param name="id" type="int"/>
+        <Param name="string" type="text"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="string" type="text" doc=""/>
+        <External name="integer" type="int" doc=""/>
+        <External name="select" type="int" doc=""/>
+        <External name="checkbox" type="int" doc=""/>
+        <External name="datetime" type="int" doc=""/>
+        <External name="text" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,search">
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+            <Param name="string" wildcard="full">
+              <Var name="PARAMS" key="string"/>
+            </Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_demo_entity">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="string" type="text" doc=""/>
+        <External name="integer" type="int" doc=""/>
+        <External name="select" type="int" doc=""/>
+        <External name="checkbox" type="int" doc=""/>
+        <External name="datetime" type="int" doc=""/>
+        <External name="text" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_demo_entity</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a record by id from table fw_demo_entity">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="string" type="text" doc=""/>
+        <External name="integer" type="int" doc=""/>
+        <External name="select" type="int" doc=""/>
+        <External name="checkbox" type="int" doc=""/>
+        <External name="datetime" type="int" doc=""/>
+        <External name="text" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_demo_entity</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

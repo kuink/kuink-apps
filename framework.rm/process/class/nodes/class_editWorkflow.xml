@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries/>
+  <Configuration>
+  </Configuration>
+  <Params>
+      <Param name="id" doc="The workflow id"/>
+  </Params>
+  <Screens>
+    <Screen id="scrEdit">
+      <Form name="frmWfEdit" title="classWorkflow">
+        <Select id="wf_id_process" datasource="call:framework,wf.process,api,getAll" label="workflowProcess" bindid="id" bindvalue="code"/>               
+        <Select id="wf_type_code" datasource="call:framework,rm.class.workflow,api,getWorkflowTypes" label="workflowType" bindid="code" bindvalue="name"/>               
+        <TextArea id="wf_params_class"/>        
+        <Static id="wf_params_process">
+          <Formatter name="Json" method="prettyPrint"/>
+          <Formatter name="Style" method="nl2br"/>          
+        </Static>
+        <Static id="wf_params_process_configuration">
+          <Formatter name="Json" method="prettyPrint"/>
+          <Formatter name="Style" method="nl2br"/>
+        </Static>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="back"/>
+          <Button id="save" type="save" label="save" action="save"/>
+          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scrEdit">
+      <Var name="workflow">
+        <Call library="framework,rm.class.workflow,api" function="getWorkflowConfiguration">
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </Call>          
+      </Var>
+      <Control method="bind" object="frmWfEdit">
+        <Param><Var name="workflow"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="save">
+      <!-- Check to see if the json of wf_params is ok the following code will throw an exception if json is not well formed-->
+      <JsonToSet><Var name="POSTDATA" key="wf_params"/></JsonToSet>
+
+      <Call library="framework,rm.class.workflow,api" function="saveWorkflowConfiguration">
+        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        <Param name="wf_type_code"><Var name="POSTDATA" key="wf_type_code"/></Param>
+        <Param name="wf_params"><Var name="POSTDATA" key="wf_params_class"/></Param>
+        <Param name="wf_id_process"><Var name="POSTDATA" key="wf_id_process"/></Param>
+      </Call>   
+      <Action name="back"/>     
+    </Action>
+
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+
+
+    <Action name="delete">
+      <Call library="framework,rm.class.workflow,api" function="deleteWorkflowConfiguration">
+        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+      </Call>    
+      <Action name="back"/>
+    </Action>
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

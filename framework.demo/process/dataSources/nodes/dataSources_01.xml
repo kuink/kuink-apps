@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions />
+  <Params>
+    <Param name="id_feedback" />
+  </Params>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Screens>
+    <Screen id="scr001">
+      <Grid name="grdResults" infer="true"/>
+      <Form name="frmResult" infer="true" freeze="true"/>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scr001">
+      
+      <!-- Setting up a datasource dinamically on the fly -->
+      <Var name="dsName">NodeDS</Var>
+      <Var name="dsUser">neon</Var>
+      <Var name="dsPasswd">passwd</Var>
+      <DataSource name="$dsName" connector="sqlDatabaseConnector">
+        <Param name="type">mysql</Param>
+        <Param name="server">localhost</Param>
+        <Param name="user"><Var name="dsUser"/></Param>
+        <Param name="passwd"><Var name="dsPasswd"/></Param>
+        <Param name="database">gecol</Param>
+        <Param name="prefix"></Param>
+        <Param name="options">charset=utf8</Param>
+      </DataSource>
+      <Var name="obj1" >
+        <DataAccess method="load" datasource="NodeDS">
+          <Param name="_entity">school_year</Param>
+          <Param name="_attributes">*</Param>
+          <Param name="id">201314</Param>
+        </DataAccess>
+      </Var>
+          
+      <!--Var name="objs" > <DataAccess method="framework,generic,imapLoad"
+        datasource="imap"> <Param name="_entity">INBOX</Param> <Param name="_filter">KEYWORD 
+        _Arquivar</Param> </DataAccess> </Var -->
+      
+      <!--Trace >Test::load OK</Trace>
+      <Var name="obj1" >
+        <DataAccess method="load">
+          <Param name="_entity">school_year</Param>
+          <Param name="_attributes">*</Param>
+          <Param name="id">201314</Param>
+        </DataAccess>
+      </Var>
+      <Control method="bind" object="frmResult">
+        <Param><Var name="obj1"/></Param>
+      </Control-->
+      
+      <!--Trace>Test::getAll - OK</Trace>
+      <Var name="obj1" >
+        <DataAccess method="getAll">
+          <Param name="_entity">school_year</Param>
+          <Param name="_sort">id ASC</Param>
+          <Param name="_pageNum">0</Param>
+          <Param name="_pageSize">4</Param>
+        </DataAccess>
+      </Var>
+      <Control method="bind" object="grdResults">
+        <Param><Var name="obj1"/></Param>
+      </Control-->
+      
+      <!--Trace>Test::insert - OK</Trace>
+      <Var name="id" >
+        <DataAccess method="insert">
+          <Param name="_entity">annual_activity_plan</Param>
+          <Param name="name">2020/21</Param>
+          <Param name="code">PAA.202021</Param>
+          <Param name="id_school_year">202021</Param>
+        </DataAccess>
+      </Var-->
+      
+      <!--Trace>Test::delete - OK</Trace>
+      <Var name="id" >
+        <DataAccess method="delete">
+          <Param name="_entity">annual_activity_plan</Param>
+          <Param name="code">PAA.202021</Param>
+        </DataAccess>
+      </Var-->
+      
+      <!--Trace>Test::update - OK</Trace>
+      <Var name="id" >
+        <DataAccess method="update">
+          <Param name="_entity">annual_activity_plan</Param>
+          <Param name="id" pk="true">36</Param>
+          <Param name="code" pk="true">PAA.202021</Param>
+          <Param name="name">PAA 2020/21__NEW_b</Param>
+        </DataAccess>
+      </Var-->
+      
+      <!--Trace>Test::getAll with _sql - OK</Trace>
+      <Var name="objs1" >
+        <DataAccess method="getAll">
+          <Param name="_sql"><Xml><Sql>
+            <![CDATA[
+              SELECT * FROM annual_activity_plan t WHERE t.code = {param->code}
+            ]]>
+          </Sql></Xml></Param>
+          <Param name="code">PAA.202021</Param>
+        </DataAccess>
+      </Var>
+
+      <Var name="objs2" >
+        <DataAccess method="getAll">
+          <Param name="_sql"><Xml><Sql>
+            <XSql>
+              <XSelect><XField>
+                  *
+              </XField></XSelect>
+              <XFrom><XTable>
+                  annual_activity_plan t
+              </XTable></XFrom>
+              <XWhere>
+                <XCondition>1 = 1</XCondition>
+                <XCondition optional="code">AND t.code = '{param->code}'</XCondition>
+              </XWhere>
+            </XSql>
+          </Sql></Xml></Param>
+          <Param name="code">PAA.202021</Param>
+        </DataAccess>
+      </Var-->
+
+      <!--Trace>Test::load with _sql - OK</Trace>
+      <Var name="data" key="code">PAA.202021</Var>
+      <Var name="objs1" >
+        <DataAccess method="load" params="data">
+          <Param name="_sql"><Xml><Sql>
+            <![CDATA[
+              SELECT * FROM annual_activity_plan t WHERE t.code = '{param->code}'
+            ]]>
+          </Sql></Xml></Param>
+        </DataAccess>
+      </Var>
+
+      <Var name="objs2" >
+        <DataAccess method="load">
+          <Param name="_sql"><Xml><Sql>
+            <XSql>
+              <XSelect><XField>
+                  *
+              </XField></XSelect>
+              <XFrom><XTable>
+                  annual_activity_plan t
+              </XTable></XFrom>
+              <XWhere>
+                <XCondition>1 = 1</XCondition>
+                <XCondition optional="code">AND t.id = '{param->id}'</XCondition>
+              </XWhere>
+            </XSql>
+          </Sql></Xml></Param>
+          <Param name="id">1</Param>
+        </DataAccess>
+      </Var-->
+
+      <!--Trace>Test::insert sql - OK</Trace>
+      <Var name="id" >
+        <DataAccess method="insert">
+          <Param name="_sql"><Xml><Sql>
+            <![CDATA[
+              INSERT INTO annual_activity_plan (name, code, id_school_year) VALUES ('{param->name}', '{param->code}', {param->id_school_year})
+            ]]>
+          </Sql></Xml></Param>
+          <Param name="name">2032/33</Param>
+          <Param name="code">PAA.203233</Param>
+          <Param name="id_school_year">203233</Param>
+        </DataAccess>
+      </Var-->              
+
+      <!--Trace>Test::delete sql - OK</Trace>
+      <DataAccess method="delete">
+        <Param name="_sql"><Xml><Sql>
+          <![CDATA[
+            DELETE FROM annual_activity_plan WHERE id = '{param->id}'
+          ]]>
+        </Sql></Xml></Param>
+        <Param name="id"><Var name="id"/></Param>
+      </DataAccess-->
+
+      <!--Trace>Test::sqlPaginated - OK</Trace>
+      <Var name="objs" >
+      <DataAccess method="sqlPaginated">
+        <Param name="_sql"><Xml>
+          <SqlPaginated>
+            <XSql>
+              <XSelect>
+                <XField>
+                  *
+                </XField>
+              </XSelect>
+              <XFrom>
+                <XTable>
+                  school_year t
+                </XTable>
+              </XFrom>
+              <XWhere>
+                <XCondition>1 = 1</XCondition>
+                <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+                <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+              </XWhere>
+            </XSql>
+          </SqlPaginated>        
+        </Xml></Param>
+        <Param name="code">%%</Param>
+        <Param name="_pageNum">1</Param>
+        <Param name="_pageSize">4</Param>
+      </DataAccess>
+      </Var-->
+
+      <!--Var name="objs" >
+      <DataAccess method="sqlPaginated">
+        <Param name="_sql"><Xml>
+          <SqlPaginated>
+            <CountFieldsSql>
+              SELECT count(*) FROM person
+            </CountFieldsSql>
+            <GetFieldsSql>
+              SELECT * FROM person
+            </GetFieldsSql>      
+          </SqlPaginated>        
+        </Xml></Param>
+        <Param name="_pageNum">1</Param>
+        <Param name="_pageSize">4</Param>
+      </DataAccess>
+      </Var-->
+      
+      <!--Trace>Test::getAll paginated- OK</Trace>
+      <Var name="obj1" >
+        <DataAccess method="getAll">
+          <Param name="_entity">school_year</Param>
+          <Param name="_sort">id ASC</Param>
+          <Param name="_pageNum">0</Param>
+          <Param name="_pageSize">3</Param>
+        </DataAccess>
+      </Var-->
+
+      <!--Var name="objs2" >
+        <DataAccess method="getAll">
+          <Param name="_sql"><Xml><Sql>
+            <XSql>
+              <XSelect><XField>
+                  *
+              </XField></XSelect>
+              <XFrom><XTable>
+                  school_year
+              </XTable></XFrom>
+              <XWhere>
+                <XCondition>1 = 1</XCondition>
+              </XWhere>
+            </XSql>
+          </Sql></Xml></Param>
+          <Param name="_pageNum">0</Param>
+          <Param name="_pageSize">4</Param>
+        </DataAccess>
+      </Var-->
+
+      <!--Trace>Test::dataset - OK</Trace>
+      <Var name="objs2" >
+        <DataAccess method="dataset">
+          <Param name="_sql"><Xml>
+            <Dataset>
+                <r1>
+                    <id>1</id>
+                    <type>API.simple</type>
+                    <fx>Insert</fx>
+                </r1>
+                <r2>
+                    <id>2</id>
+                    <type>API.simple</type>
+                    <fx>Delete</fx>
+                </r2>
+                <r3>
+                    <id>3</id>
+                    <type>API.simple</type>
+                    <fx>Update</fx>
+                </r3>
+                <r4>
+                    <id>4</id>
+                    <type>API.simple</type>
+                    <fx>Search</fx>
+                </r4>
+                <r5>
+                    <id>5</id>
+                    <type>API.simple</type>
+                    <fx>getAll</fx>
+                </r5>
+                <r6>
+                    <id>6</id>
+                    <type>API.simple</type>
+                    <fx>getById</fx>
+                </r6>
+            </Dataset>          
+          </Xml></Param>
+        </DataAccess>
+      </Var-->
+      
+      <Var name="record" >
+        <DataAccess method="framework,generic,load">
+          <Param name="_entity">school_year</Param>
+          <Param name="id">201415</Param>
+        </DataAccess>
+      </Var>
+
+    </Action>
+  </Actions>
+</Node>
+

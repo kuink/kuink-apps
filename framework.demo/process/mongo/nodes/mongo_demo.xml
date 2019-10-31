@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+		Demo of data from a mongo db
+	</Doc>
+	<Libraries>
+		<Use name="FormControl" type="control" />
+		<Use name="GridControl" type="control" />
+		<Use name="ChartControl" type="control" />
+		<Use name="DateTimeFormatter" type="formatter" />
+		<Use name="HtmlContainerControl" type="control"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+		<Screen id="screen002">
+			<Grid name="grid001">
+				<Template>
+					<Columns>
+						<Column name="name" label="name" />
+						<Column name="quantity" label="quantity" />
+						<Column name="price" label="price" />	
+						<Column name="desc" label="desc" />
+					</Columns>
+				</Template>
+			</Grid>
+			<Form name="record">
+				<Text id="name" label="name"/>
+				<Text id="quantity" label="quantity"/>
+				<Text id="price" label="price"/>
+				<Text id="desc" label="desc"/>
+				<Button id="save" label="save" action="save"/>
+			</Form>
+		</Screen>
+	</Screens>
+	<Actions>
+		<Action name="init" screen="screen002">
+			<GridControl method="bind" object="grid001">
+				<Param>
+					<Execute method="this,this,mongo.getPrices"/>
+				</Param>
+			</GridControl>
+		</Action>
+		<Action name="save">
+			<Execute method="framework,generic,mongoInsert" params="POSTDATA">
+				<Param name="collection">guuu</Param>
+				<!--Param name="name">Batatas</Param>
+				<Param name="price">1.56</Param>
+				<Param name="quantity">2</Param-->
+			</Execute>
+			<Action name="init"/>
+		</Action>
+	</Actions>
+</Node>
+

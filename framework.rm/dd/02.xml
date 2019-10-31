@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+  </Domains>
+  <Templates>
+  </Templates>
+  <Entities>
+    <Entity name="fw_rm_fond" multilang="true" doc="The highest level of arrangement, and is usually used to describe the whole of the archives of an organisation.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="string" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_classification" multilang="true" doc="The highest level of arrangement, and is usually used to describe the whole of the archives of an organisation.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_fond" domain="foreign" refentity="fw_rm_fond" refattr="id" doc="The fond of this classification" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_template" doc="Template set of metadata definitions that can be used to add metadata to entities at creation or later">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" required="true" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="code" domain="code" required="true" doc="The identifying code" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <!--Attribute name="id_parent" domain="foreign" doc="The template parent" /-->
+        <Attribute name="source_data" domain="string" size="128" doc="The data array key to expand in this metadata" />
+        <Attribute name="last_xml" domain="longText" doc="The last updated xml of the final template" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <!--Entity name="fw_rm_relation_type" doc="Type of entity relation">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="relation_type_code" domain="code" doc="Code of the entity" />
+        <Attribute name="relation_table" domain="text" doc="Target table of the entity" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity-->
+    <Entity name="fw_rm_entity_relation" doc="Relation between entities">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_entity" domain="foreign" doc="id of the entity" />
+        <Attribute name="id_entity_type" domain="foreign" refentity="fw_rm_entity_type" refattr="id" doc="The type of the entity" />
+        <Attribute name="id_entity_relation" domain="int" doc="id of the entity relation" />
+        <Attribute name="id_entity_type_relation" domain="foreign" refentity="fw_rm_entity_type" refattr="id" doc="The type of the entity relation" />
+        <Attribute name="minoccurs" domain="occurs" doc="Min occurrencies of the entity relation" />
+        <Attribute name="maxoccurs" domain="occurs" doc="Max occurrencies of the entity relation" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_entity_type" doc="Definition of an entity">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" doc="The identifying name or title of the entity" />
+        <Attribute name="code" domain="code" required="true" doc="The identifying code" />
+        <Attribute name="table" domain="text" required="true" doc="The table name for the entity" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_class" doc="Classification applied to records and aggregations of records">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_classification" domain="foreign" refentity="fw_rm_classification" refattr="id" doc="The classification table where this class belongs. The classification contains the fond." />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="code" domain="codeNotUnique" required="true" doc="The identifying code" />
+        <Attribute name="description" domain="text" doc="Description of the entity" />
+        <Attribute name="last_xml" domain="longText" doc="The xml containing the metadata of the class" />
+        <Attribute name="id_disposal_schedule" domain="foreign" required="true" refentity="fw_rm_disposal_schedule" refattr="id" doc="id of the disposal schedule" />
+        <Attribute name="id_parent" domain="foreign" refentity="fw_rm_class" refattr="id" doc="Foreign id of the class parent" />
+        <Attribute name="tree_path" domain="string" size="256" required="true" doc="Full path to this child in the tree" />
+        <Attribute name="tree_level" domain="positiveInt" required="true" doc="Level of this child in the tree" />
+        <Attribute name="id_component_type" domain="foreign" refentity="fw_rm_component_type" refattr="id" doc="id of the component type" />
+        <Attribute name="id_plugin" domain="foreign" refentity="fw_rm_component_plugin" refattr="id" doc="id of the component plugin" />
+        <Attribute name="wf_instance" domain="bool" doc="true to trigger a workflow instance, false otherwise" />
+        <Attribute name="wf_code" domain="code" doc="Code for the workflow approval" />
+        <Attribute name="wf_params" domain="longText" doc="Params for the workflow approval" />
+        <Attribute name="is_open" domain="bool" default="1" doc="Is this class (serie) open?" />
+        <Attribute name="year_from" domain="int" doc="Year of the first document" />
+        <Attribute name="year_to" domain="int" doc="Year of the last document" />
+        <Attribute name="producer" domain="text" doc="The producers of records of this class. TODO: normalize in a table" />
+        <Attribute name="business_process" domain="text" doc="The related business process or legislation" />
+        <Attribute name="linear_meters" domain="string" doc="The length in meters of the documentation of this class" />
+        <Attribute name="location" domain="text" doc="Where the records are. TODO: normalize" />
+        <Attribute name="id_archival_medium" domain="foreign" required="true" refentity="fw_rm_archival_medium" refattr="id" doc="id of the archival medium" />
+        <Attribute name="medium" domain="text" doc="The medium where the records are. TODO: normalize" />
+
+        <Attribute name="ref_pgd_mec" domain="string" doc="TODO: normalize to allow other references" />
+        <Attribute name="related_serie_num" domain="string" doc="Related serie: external" />
+        <Attribute name="related_serie_title" domain="text" doc="Related serie: external" />
+        <Attribute name="related_serie_type" domain="string" doc="Related serie: external" />
+
+        <Attribute name="obs_public" domain="text" doc="Public observations, can be viewed by anyone with access to the class" />
+        <Attribute name="obs_private" domain="text" doc="Private observations, can be viewed by the manager" />
+        
+        <Attribute name="id_manager" domain="foreign" required="false" refentity="fw_person" refattr="id"  doc="The person who manages this class"/>        
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_disposal_schedule" doc="Schedule by which records are retained for a specified period of time followed by their planned disposal">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" required="true" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="mandate" domain="text" doc="Textual reference to a legal or other instrument that provides the authority for a disposal schedule or a disposal hold" />
+        <Attribute name="id_action_code" domain="foreign" required="true" refentity="fw_rm_code_map" refattr="id" doc="Code describing the action to be taken on disposal of the record" />
+        <Attribute name="id_action_interval_code" domain="foreign" refentity="fw_rm_code_map" refattr="id" doc="Unit of measurement of time as either days, weeks, months or years" />
+        <Attribute name="action_duration" domain="timestamp" doc="Number of days or weeks specified for performing the action" />
+        <Attribute name="id_retention_trigger_code" domain="foreign" refentity="fw_rm_code_map" refattr="id" doc="The specific conditions required for triggering the start of the retention period for a record" />
+        <Attribute name="id_retention_interval_code" domain="foreign" refentity="fw_rm_code_map" refattr="id" doc="Unit of measurement of time as either days, weeks, months or years" />
+        <Attribute name="retention_duration" domain="positiveInt" doc="Numbers of days, months or years specified for retaining a record" />
+        <Attribute name="id_confirmation_interval_code" domain="foreign" refentity="fw_rm_code_map" refattr="id" doc="Unit of measurement of time as either days or weeks" />
+        <Attribute name="confirmation_duration" domain="positiveInt" doc="Number of days or weeks allowed for confirming the disposal of record" />
+        <Attribute name="interval_justification" domain="text" doc="The disposal justification" />
+        <Attribute name="action_justification" domain="text" doc="The disposal action justification" />
+        <Attribute name="_action_name_childs" domain="text" doc="Automatic - the childs actions concatenated" />
+        <Attribute name="_action_interval_childs" domain="text" doc="Automatic - the childs actions interval concatenated" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_code_map_type" doc="The type of each item in code_map">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="name" domain="name" required="true" doc="The type name" />
+        <Attribute name="code" domain="code" required="true" doc="The type code" />
+        <Attribute name="description" domain="description" required="false" doc="The type description" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    
+    <Entity name="fw_rm_code_map" doc="Holds the codes for disposal, retention and confirmation">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="name" domain="name" required="true" doc="The identifying name" />
+        <Attribute name="code" domain="code" required="true" doc="The moreq code" />
+        <Attribute name="id_code_map_type" domain="foreign" refentity="fw_rm_code_map_type" refattr="id" doc="Type of this code_map item" />
+        <Attribute name="id_moreq" domain="foreign" required="true" doc="The id of the moreq" />
+        <Attribute name="library" domain="apiFunction" doc="The kuink function to execute automatically" />
+        <Attribute name="params" domain="apiParams" doc="The kuink function params to pass to the function" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_record_scheduled_action" doc="The schedule date to perform some action on the record">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_record" domain="foreign" refentity="fw_rm_record" refattr="id" doc="The record which this action will be performed" />
+        <Attribute name="action_date" domain="timestamp" doc="The date to perform the action" />
+        <Attribute name="id_action_code" domain="foreign" refentity="fw_rm_aggregation" refattr="id" doc="The action to perform" />
+        <Attribute name="result" domain="text" doc="The result of the action" />
+        <Attribute name="is_executed" domain="bool" doc="The action has already been executed" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_disposal_hold" doc="Legal or other hold preventing the scheduled destruction of records">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="id_record" domain="foreign" refentity="fw_rm_record" refattr="id" doc="The record with this disposal hold" />
+        <Attribute name="id_class" domain="foreign" refentity="fw_rm_class" refattr="id" doc="The class with this disposal hold" />
+        <Attribute name="id_aggregation" domain="foreign" refentity="fw_rm_aggregation" refattr="id" doc="The aggregation with this disposal hold" />
+        <Attribute name="name" domain="name" required="true" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="mandate" domain="text" doc="Textual reference for a disposal schedule" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <!--Entity name="fw_rm_hold_relation" doc="Relation between hold and (record/class/aggregation)">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_disposal_hold" domain="foreign" refentity="fw_rm_disposal_hold" refattr="id" doc="Foreign id of the disposal_hold" />
+        <Attribute name="id_relation_type" domain="foreign" refentity="fw_rm_hold_relation_type" refattr="id" doc="Foreign id of the hold relation type" />
+        <Attribute name="id_relation" domain="foreign" doc="Foreign id of the template relation" />
+        <Attribute name="minoccurs" domain="occurs" doc="Min occurrencies of the entity" />
+        <Attribute name="maxoccurs" domain="occurs" doc="Max occurrencies of the entity" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_hold_relation_type" doc="Type of hold relation (record/class/aggregation)">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="relation_code" domain="text" doc="Code of the entity" />
+        <Attribute name="relation_table" domain="text" doc="Target table of the entity" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity-->
+    <Entity name="fw_rm_retention_metadata" doc="The metadata associated with a record, or its parent aggregation, which contains the trigger date for a record's retention period">
+      <Attributes>
+        <Attribute name="id" domain="id"  autonumber="true" pk="true" />
+        <Attribute name="id_metadata" domain="foreign" refentity="fw_rm_metadata_definition" refattr="id" doc="id of the record/aggregation metadata" />
+        <Attribute name="id_disposal_schedule" domain="foreign" refentity="fw_rm_disposal_schedule" refattr="id" doc="id of the disposal schedule" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_metadata_definition" doc="Definition of the properties of a metadata">
+      <Attributes>
+        <Attribute name="id" domain="id"  autonumber="true" pk="true" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" required="true" doc="The identifying name" />
+        <Attribute name="code" domain="codeNotUnique" required="true" doc="The identifying code" />
+        <Attribute name="value" domain="value" required="true" doc="Value to fill with" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="order" domain="positiveInt" required="true" doc="A value used for determining the order in which items should be logically presented" />
+        <Attribute name="is_modifiable" domain="bool" doc="Flag indicating whether a metadata is modifiable by users" />
+        <!--Attribute name="is_entity_reference" domain="bool" doc="Flag indicating whether a metadata contains a reference to an entity or a different datatype value" /-->
+        <Attribute name="data_type" domain="longText" required="true" doc="XML datatype definition giving the precise format required for the value of a system or contextual metadata" />
+        <Attribute name="default_value" domain="text" doc="The default value for a metadata when it's first applied to an entity" />
+        <Attribute name="retain_on_hold" domain="bool" required="true" doc="Flag that indicates whether an event or a metadata should be deleted when the entity it belongs to is destroyed" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_metadata_entity_reference_type" doc="Bind metadata definition with entity types">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_metadata_definition" domain="foreign" refentity="fw_rm_metadata_definition" refattr="id" doc="foreign id of metadata definition" />
+        <Attribute name="id_entity_type" domain="foreign" refentity="fw_rm_entity_type" refattr="id" doc="foreign id of entity type" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_aggregation" doc="Aggregation of individual records or higher level aggregation of aggregations of records">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="last_addition" domain="timestamp" doc="System set date and time indicating when the most recent record or child aggregation was added to the parent aggregation" />
+        <Attribute name="aggregated" domain="timestamp" doc="System set date and time when this child aggregation was created in, or added to, its current aggregation" />
+        <Attribute name="id_class" domain="foreign" refentity="fw_rm_class" refattr="id" doc="The classification of the entity, used by child aggregations and records to override the class they inherit from their parent aggregation" />
+        <Attribute name="name" domain="name" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="closed" domain="timestamp" doc="System set date and time when the aggregation was closed" />
+        <Attribute name="id_parent" domain="foreign" refentity="fw_rm_aggregation" refattr="id" doc="The parent aggregation for a child aggregation or record" />
+        <Attribute name="tree_path" domain="string" size="256" required="true" doc="Full path to this child in the tree" />
+        <Attribute name="tree_level" domain="positiveInt" required="true" doc="Level of this child in the tree" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_record" doc="Record made up of one or more components">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="name" domain="name" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="id_class" domain="foreign" required="true" refentity="fw_rm_class" refattr="id" doc="The classification of the entity, used by child aggregations and records to override the class they inherit from their parent aggregation" />
+        <Attribute name="id_disposal_schedule" domain="foreign" required="true" refentity="fw_rm_disposal_schedule" refattr="id" doc="id of the disposal schedule" />
+        <Attribute name="transferred" domain="timestamp" doc="System set date and time indicating when the transfer of the record was confirmed" />
+        <Attribute name="retention_date" domain="timestamp" doc="System generated date calculated from the record's disposal schedule" />
+        <Attribute name="disposal_due_date" domain="timestamp" doc="The calculated date that the record is due for disposal" />
+        <Attribute name="disposal_confirmation_date" domain="timestamp" doc="The calculated date by which confirmation of carrying out the disposal action is due" />
+        <Attribute name="disposal_alert_date" domain="timestamp" doc="System set date and time when an alert was sent because the record was overdue for disposal" />
+        <Attribute name="disposal_last_review_comment" domain="text" doc="Comment made by the user who last reviewed the record regarding the disposal decision" />
+        <Attribute name="disposal_last_review_date" domain="timestamp" doc="System set date and time of when the last review was completed" />
+        <Attribute name="last_xml" domain="longText" doc="The xml containing the metadata of the record" />
+        <Attribute name="is_archived" domain="bool" default="0" doc="Flag identifying if the record has been completely processed and archived" />
+        <Attribute name="is_final" default="1" domain="bool" doc="Flag that indicates whether or not a record is temporary" />
+        <Attribute name="id_wf_instance" domain="foreign" refentity="fw_wf_process_instance" refattr="id" doc="id of the workflow instance" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_component_type" doc="Electronical or physycal">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="name" domain="name" required="true" doc="Identifying name of the type" />
+        <Attribute name="code" domain="code" required="true" doc="Code that identifies the type of the component" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_component_plugin" doc="Supported plugins for the components">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="name" domain="name" required="true" doc="Identifying name of the plugin" />
+        <Attribute name="code" domain="code" required="true" doc="Plugin code that maps the kuink api process" />
+        <Attribute name="settings" domain="longText" required="true" doc="Plugin settings xml" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+    <!--Entity name="fw_rm_component_plugin_settings" doc="Settings of a given component plugin">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_component" domain="foreign" required="true" refentity="fw_rm_component" refattr="id" doc="id of the component plugin to set or get the content" />
+        <Attribute name="name" domain="name" required="true" doc="Identifying name of the plugin field" />
+        <Attribute name="value" domain="value" required="true" doc="The value of the plugin field" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity-->
+    <Entity name="fw_rm_component" doc="Individual component of a record representing its content">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="uuid" domain="uuid" doc="Universally unique identifier for an entity" />
+        <Attribute name="id_record" domain="foreign" required="true" refentity="fw_rm_record" refattr="id" doc="id of the record" />
+        <Attribute name="id_component_type" domain="foreign" required="true" refentity="fw_rm_component_type" refattr="id" doc="id of the component type" />
+        <!--Attribute name="id_template" domain="foreign" required="true" refentity="framework,dd,fw_template" refattr="id" doc="The id of the template for the component" /-->
+        <Attribute name="settings" domain="longText" required="true" doc="Component settings xml" />
+        <Attribute name="id_component_plugin" domain="foreign" required="true" refentity="fw_rm_component_plugin" refattr="id" doc="id of the component plugin to set or get the content" />
+        <Attribute name="name" domain="name" required="true" doc="The identifying name or title of the entity [moreq:title]" />
+        <Attribute name="description" domain="description" doc="Description of the entity" />
+        <Attribute name="automatic_deletion" domain="bool" required="true" default="0" doc="Flag that indicates whether the content of the component can be automatically deleted when its record is destroyed" />
+        <Template name="fw.usageDates" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_installation_unit" multilang="true" doc="Installation unit">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_archival_medium" multilang="true" doc="The material that serves as the carrier of the content of a record and that, because of the manner in which it was made, has a very long life expectancy when properly stored and handled">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_dimension" multilang="true" doc="The extent of an object, especially its height, width, depth, or volume. - 2. Computing · A specification for the size of an array or variable.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <!-- TODO check this organization person,ou,group -->
+    <Entity name="fw_rm_entity_of_origin" multilang="true" doc="The corporate body, administrative unit, family, or individual that creates, receives, or accumulates a body of records, personal papers, or objects.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" required="true" doc="The process code"/>
+        <Attribute name="name" domain="name" multilang="true" required="true" doc="The process name"/>
+        <Attribute name="description" domain="description" multilang="true" required="true" doc="The process description"/>
+        <Attribute name="is_active" domain="bool" required="true" doc="Is this process active?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+    <Entity name="fw_rm_transfer" multilang="true" doc="The process of moving records as part of their scheduled disposition, especially from an office to a records center, or from a records center to an archives.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_class" domain="foreign" refentity="fw_rm_class" refattr="id" doc="The class of the records beeing transfered" />
+        <Attribute name="id_entity_origin" domain="foreign" refentity="fw_rm_entity_of_origin" refattr="id" doc="The entity of origin" />
+        <Attribute name="date_range_from" domain="timestamp" doc="The date range from the records beeing transfered. Mainly for physical archival." />
+        <Attribute name="date_range_to" domain="timestamp" doc="The date range from the records beeing transfered. Mainly for physical archival." />
+        <Attribute name="is_approved" domain="bool" doc="Has the transfer of this record been approved in the internal workflow?"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <!-- Check to see if we cannot get this info from thr transfered records... -->
+    <Entity name="fw_rm_transfer_installation_unit" multilang="true" doc="The installation units on this transfer">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_transfer" domain="foreign" refentity="fw_rm_transfer" refattr="id" doc="The record which this action will be performed" />
+        <Attribute name="id_installation_unit" domain="foreign" refentity="fw_rm_installation_unit" refattr="id" doc="The installation unit" />
+        <Attribute name="quantity" domain="real"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_transfer_archival_medium" multilang="true" doc="The installation units on this transfer">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_transfer" domain="foreign" refentity="fw_rm_transfer" refattr="id" doc="The record which this action will be performed" />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_rm_transfer_dimension" multilang="true" doc="The dimension transfered">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_transfer" domain="foreign" refentity="fw_rm_transfer" refattr="id" doc="The record which this action will be performed" />
+        <Attribute name="id_dimension" domain="foreign" refentity="fw_rm_dimension" refattr="id" doc="The installation unit" />
+        <Attribute name="quantity" domain="real"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+
+
+    <Entity name="fw_rm_transfer_record" multilang="true" doc="The records transfered after the approvals in workflow">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_transfer" domain="foreign" refentity="fw_rm_transfer" refattr="id" doc="The record which this action will be performed" />
+        <Attribute name="id_record" domain="foreign" refentity="fw_rm_record" refattr="id" doc="The record which this action will be performed" />
+        <Attribute name="date_range_from" domain="timestamp" doc="The date range from the records beeing transfered. Mainly for physical archival." />
+        <Attribute name="date_range_to" domain="timestamp" doc="The date range from the records beeing transfered. Mainly for physical archival." />
+        <Attribute name="original_position" domain="string" doc="Original position in the origin archive." />
+        <Attribute name="destination_position" domain="string" doc="The final position in the destination archive." />
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

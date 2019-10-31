@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries>
+     <Use name="FormatterLib" type="lib"/>   
+    </Libraries>
+    <Configuration>
+    </Configuration>
+	  <Params>
+      <Param name="schemaCode" doc="The schema code to get the statements. If empty, then last agreement will be returned"/>
+      <Param name="guidObject" doc="The guid object of the response"/>
+      <Param name="guidObjectContext" doc="The guid object context "/>
+      <Param name="data" doc="The postdata that the user submited"/>
+      <Param name="useTemporary" doc="If there's a temporary response, fill the form with that response, otherwise the form will be empty"/>
+			<Param name="statementList" type="string" doc="json: If the schemaCode is not provided, then this list will be uses it must contain [id_agreement_statement, context]. The context is a set with variables to expand in the statement text."/>
+			<Param name="startDate" type="int" doc="Only show statements active at this date"/>
+			<Param name="preMessage" type="string" doc="A emessage to include in the top of the agreement form"/>
+			<Param name="postMessage" type="string" doc="A emessage to include in the bottom of the agreement form"/>
+	  </Params>
+    <Screens>
+    	<Screen id="showScreen">
+				<Form name="statementsForm" title="statements">
+					<Container id="preMessageContainer"/>
+					<Container id="content"/>
+					<Container id="postMessageContainer"/>
+					<ButtonGroup>
+						<Button type="back" id="back" label="back" action="backAgreement" />
+						<Button type="save" id="save" label="save" action="saveAgreement" />
+					</ButtonGroup>
+				</Form>
+    	</Screen>
+    </Screens>
+    <Actions>
+      <Action name="init" screen="showScreen">
+      	<Var name="PARAMS"/>
+				<Var name="guidObjectContext"><JsonToSet><Var name="PARAMS" key="guidObjectContext"/></JsonToSet></Var>      	
+	      <If condition="$PARAMS->schemaCode != ''">
+					<Then>
+						<Var name="agreementStatements">      
+							<Call library="framework,agreement.schema,api" function="getFields">
+								<Param name="code"><Var name="PARAMS" key="schemaCode"/></Param>
+								<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+							</Call>      
+						</Var>
+					</Then>
+					<Else>
+						<Trace>********** STATEMENT LIST *************</Trace>
+						<Var name="statementList"><JsonToSet><Var name="PARAMS" key="statementList"/></JsonToSet></Var>
+
+						<Exception name="framework/agreement::emptySchemaCodeAndStatementList" condition="$statementList->__length == 0"/>
+						<!-- Get the statements from the statement list -->
+						<Var name="agreementStatements" dump="true">      
+							<Call library="framework,agreement.statement,api" function="getFieldsFromStatementList">
+								<Param name="statementList"><Var name="statementList"/></Param>
+								<Param name="contextFormat"><Var name="guidObjectContext" key="_contextFormat"/></Param>
+							</Call>      
+						</Var>
+
+						<Trace>***************************</Trace>
+					</Else>
+				</If>
+				<Var name="currentTypeCode"><String/></Var>
+      	<ForEach var="agreementStatements" item="agreementStatement">
+      		<Var name="expireDate"><String/></Var>
+      		<Var name="validUntil"><Lang key="validUntil"/></Var>
+
+					<!--Dont add the expire date to the statement description -->
+      		<!--If condition="$agreementStatement->expire_date_expression !== null">
+						<Then>
+							<Var name="expireDate"><String.parse><String.parse>$agreementStatement->expire_date_expression</String.parse></String.parse></Var>						
+							<Var name="expireDateFormated">
+								<FormatterLib method="format">
+									<Param>DateTimeFormatter</Param>
+									<Param>shortDate</Param>
+									<Param><Var name="expireDate"/></Param>
+								</FormatterLib>
+							</Var>
+							<Var name="expireDateFormatedComplete"><String.parse>($validUntil $expireDateFormated)</String.parse></Var>
+							<Var name="agreementStatement" key="statement"><String.parse>$agreementStatement->statement($validUntil $expireDateFormated)</String.parse></Var>
+						</Then>
+					</If-->
+      	
+      		<!-- Add all the statements to the form -->
+      		<If condition="$agreementStatement->statement_type_code != $currentTypeCode">
+						<Then>
+							<!-- Add an header -->
+							<Control method="addField" object="statementsForm">
+								<Param>
+									<Set>
+										<Element name="container">content</Element>
+										<Element name="id"><Uuid/></Element>
+										<Element name="type">Header</Element>
+										<Element name="label"><Var name="agreementStatement" key="statement_type_name"/></Element>
+									</Set>
+								</Param> <!-- Field Properties -->
+							</Control>
+							<Var name="currentTypeCode"><Var name="agreementStatement" key="statement_type_code"/></Var>
+						</Then>
+					</If>
+					<Var name="field"><JsonToSet><Var name="agreementStatement" key="statement_field"/></JsonToSet></Var>
+					<Control method="addField" object="statementsForm">
+						<Param>
+							<Set>
+								<Element name="container">content</Element>
+								<Element name="id"><Var name="agreementStatement" key="statement_code"/></Element>
+								<Element name="type"><Var name="field" key="type"/></Element>
+								<Element name="label"><Var name="agreementStatement" key="statement"/></Element>
+								<Element name="help">false</Element>
+								<Element name="datasource"><Var name="field" key="datasource"/></Element>
+								<Element name="bindid"><Var name="field" key="bindid"/></Element>
+								<Element name="bindvalue"><Var name="field" key="bindvalue"/></Element>
+								<Element name="required"><Var name="field" key="required"/></Element>
+								<Element name="labelsize">
+									<If condition="$field->labelsize != ''">
+										<Then><Var name="field" key="labelsize"/></Then>
+										<Else><String>small</String></Else>
+									</If>
+								</Element>
+								<Element name="labelposition">
+									<If condition="$field->labelposition != ''">
+										<Then><Var name="field" key="labelposition"/></Then>
+										<Else><String>left</String></Else>
+									</If>
+								</Element>
+							</Set>
+						</Param> <!-- Field Properties -->
+					</Control>
+				</ForEach>
+
+				<!-- Add the preMessage to the preMessageContainer -->
+				<If condition="$PARAMS->preMessage != ''">
+					<Then>
+						<Control method="addField" object="statementsForm">
+							<Param>
+								<Set>
+									<Element name="container">preMessageContainer</Element>
+									<Element name="id"><Uuid/></Element>
+									<Element name="type">Information</Element>
+									<Element name="label"><String/></Element>
+									<Element name="value"><Var name="PARAMS" key="preMessage"/></Element>
+								</Set>
+							</Param>
+						</Control>
+					</Then>
+				</If>
+
+				<!-- Add the postMessage to the postMessageContainer -->
+				<If condition="$PARAMS->postMessage != ''">
+					<Then>
+						<Control method="addField" object="statementsForm">
+							<Param>
+								<Set>
+									<Element name="container">postMessageContainer</Element>
+									<Element name="id"><Uuid/></Element>
+									<Element name="type">Information</Element>
+									<Element name="label"><String/></Element>
+									<Element name="help">false</Element>
+									<Element name="value"><Var name="PARAMS" key="postMessage"/></Element>
+								</Set>
+							</Param>
+						</Control>
+					</Then>
+				</If>
+
+      	<!-- Check if theres a temporary response and bind the form with that response -->
+      	<If condition="$PARAMS->useTemporary">
+					<Then>
+						<Var name="currentResponse" dump="true">
+							<Call library="framework,agreement.response,api" function="getCurrentResponse">
+								<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+								<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+								<Param name="contextFormat"><Var name="guidObjectContext" key="_contextFormat"/></Param>
+							</Call>
+						</Var>
+						<Control method="bind" object="statementsForm">
+							<Param><Var name="currentResponse"/></Param>
+						</Control>
+					</Then>
+				</If>
+				<If condition="$PARAMS->data != null">
+					<Then>
+						<Control method="bind" object="statementsForm">
+							<Param><JsonToSet><Var name="PARAMS" key="data"/></JsonToSet></Param>
+						</Control>
+					</Then>
+				</If>
+      
+      </Action>
+
+			<!-- Abstract Action, must be implemented in the node that uses this control -->
+      <Action name="backAgreement">
+      </Action>
+			<!-- Abstract Action, must be implemented in the node that uses this control -->
+      <Action name="saveAgreement">
+      </Action>
+      
+    </Actions>
+</Node>

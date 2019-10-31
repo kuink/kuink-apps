@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions />
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="StringLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+		<Action name="init">
+		</Action>
+	</Actions>
+	
+	<Library>
+	
+	 <Function name="execute">
+	 <Params>
+	   <Param name="type"/>
+	   <Param name="LOG" output="true"/>
+	 </Params>
+	 <Begin>
+	 	<Call library="framework.task,task,taskManager" function="addLog">
+	 		<Param name="LOG" var="LOG"/>
+	 		<Param name="logLevel">0</Param>
+	 		<Param name="message">Level 0.1 Message</Param>
+	 	</Call>
+
+	 	<Call library="framework.task,task,taskManager" function="addLog">
+	 		<Param name="LOG" var="LOG"/>
+	 		<Param name="logLevel">1</Param>
+	 		<Param name="message">Level 1.1 Message</Param>
+	 	</Call>
+
+	 	<Call library="framework.task,task,taskManager" function="addLog">
+	 		<Param name="LOG" var="LOG"/>
+	 		<Param name="logLevel">2</Param>
+	 		<Param name="message">Level 2.1 Message</Param>
+	 	</Call>
+
+	 	<Call library="framework.task,task,taskManager" function="addLog">
+	 		<Param name="LOG" var="LOG"/>
+	 		<Param name="logLevel">0</Param>
+	 		<Param name="message">Level 0.2 Message</Param>
+	 	</Call>
+
+	 	<Call library="framework.task,task,taskManager" function="addLog">
+	 		<Param name="LOG" var="LOG"/>
+	 		<Param name="logLevel">1</Param>
+	 		<Param name="message">Level 1.2 Message</Param>
+	 	</Call>
+
+	 	<Call library="framework.task,task,taskManager" function="addLog">
+	 		<Param name="LOG" var="LOG"/>
+	 		<Param name="logLevel">2</Param>
+	 		<Param name="message">Level 2.2 Message</Param>
+	 	</Call>
+	 	
+		<Return>OK</Return>
+	 </Begin>
+	 </Function>
+	 
+	</Library>
+</Node>
+

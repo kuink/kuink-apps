@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions>
+	</Permissions>
+	<Doc lang="pt-PT">
+	</Doc>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib" />
+		<Use name="FormatterLib" type="lib" />
+		<Use name="UtilsLib" type="lib" />
+		<Use name="SetLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens>
+	</Screens>
+	<Actions>
+	</Actions>
+	<Library forceinterface="true">
+
+
+		<Function name="personProxy" scope="public" doc="Executes an entity management action">
+			<Params>
+			 <Param name="id_person" type="int" doc="The id_person"/>
+			 <Param name="task" type="string" doc="The task to perform person.new.STD person.new.GRD"/>
+			</Params>
+			<Return type="multiple" doc="The propagation log" />
+			<Begin>
+
+				<Var name="person">
+					<Call library="gecol.core,person,api" function="get">
+						<Param name="id"><Var name="PARAMS" key="id_person"/></Param>
+					</Call>
+				</Var>
+
+				<!-- Include the guardians -->
+				<Var name="person" key="guardians">
+					<Call library="gecol.core,student,api" function="listGuardians">
+						<Param name="idStudent"><Var name="person" key="id"/></Param>
+					</Call>
+				</Var>
+
+				<Var name="log">
+					<Call library="framework,em.execution,api" function="execute">
+						<Param name="objectCode">person</Param>
+						<Param name="actionCode">get</Param>
+						<Param name="object"><Var name="person"/></Param>
+						<Param name="task"><Var name="PARAMS" key="task"/></Param>
+					</Call>
+				</Var>
+
+				<Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+
+		<Function name="execute" scope="public" doc="Executes an entity management action">
+			<Params>
+			 <Param name="objectCode" type="string" doc="The object code to execute"/>
+			 <Param name="actionCode" type="string" doc="The action code to execute"/>
+			 <Param name="object" type="array" doc="The source object to get the basic data"/>
+			 <Param name="task" type="string" doc="Config key to get the task list if not supplied "/>
+			 <Param name="taskList" type="string" doc="Comma separated list of tasks to do "/>
+			</Params>
+			<Return type="multiple" doc="The propagation log" />
+			<Begin>
+
+				<Var name="functionName" dump="true">
+					<String.parse>$PARAMS->objectCode.$PARAMS->actionCode.execute</String.parse>
+				</Var>
+
+				<Var name="log">
+					<Call function="$functionName">
+							<Param name="object"><Var name="PARAMS" key="object"/></Param>
+							<Param name="task"><Var name="PARAMS" key="task"/></Param>
+							<Param name="taskList"><Var name="PARAMS" key="taskList"/></Param>
+					</Call>
+				</Var>
+
+				<Return><Var name="log"/></Return>
+			</Begin>
+		</Function>
+
+
+		<Function name="person.insert.execute" scope="public" doc="Person insert actions to execute">
+			<Params>
+			 <Param name="object" type="array" doc="The source object to get the basic data"/>
+			 <Param name="task" type="string" doc="Config key to get the task list if not supplied "/>
+			 <Param name="taskList" type="string" doc="Comma separated list of tasks to do "/>
+			</Params>
+			<Return type="multiple" doc="The propagation log" />
+			<Begin>
+				<Var name="log"><Set/></Var>
+
+				<!-- $object->person_type_code == 'STD' || $object->person_type_code == 'CLB' || $object->person_type_code == 'GRD' || $object->person_type_code == 'RSCM' || $object->person_type_code == 'CJG' || $object->person_type_code == 'CLB.AEC' -->
+				<!-- Generate a new password for this person -->
+				<Var name="password" dump="true">
+					<Call library="framework,authentication,api" function="generatePassword"/>
+				</Var>
+
+				<If condition="$PARAMS->taskList == ''">
+					<Then>
+						<Var name="configuration" dump="true"><String.parse>entityManagement.$PARAMS->task</String.parse></Var>
+						<Var name="taskList" dump="true"><Config key="$configuration"/></Var>
+					</Then>
+					<Else>
+						<Var name="taskList" dump="true"><Var name="PARAMS" key="taskList"/></Var>
+					</Else>
+				</If>
+
+				<Var name="logEntry" key="result">OK</Var>
+				<Var name="logEntry" key="action"><String.parse>List of tasks to execute: $taskList</String.parse></Var>
+				<Var name="log" key=""><Var name="logEntry"/></Var>
+
+
+				<Var name="tasks" dump="true"><ListToSet><Var name="taskList"/></ListToSet></Var>
+				<Var name="all" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>all</Param>
+					</SetLib>
+				</Var>
+
+				<!-- Create the user in framework so it can use framework applications -->
+				<Var name="inFw" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>fw</Param>
+					</SetLib></Int>
+				</Var>
+
+				<If condition="($inFw == 1 || $all == 1) &amp;&amp; $object->uid !== '' &amp;&amp; $object->uid !== null ">
+					<Then>
+						<!-- It's supposed to add the fw user -->
+						<Var name="idUser" dump="true">
+							<Call library="framework,user,api" function="add">
+								<Param name="username"><Var name="object" key="uid"/></Param>
+								<Param name="display_name"><Var name="object" key="display_name"/></Param>
+								<Param name="email"><Var name="object" key="email"/></Param>
+							</Call>
+						</Var>
+						<Var name="logEntry" key="action"><String.parse>Creating person in fw</String.parse></Var>
+						<If condition="$idUser != ''">
+							<Then><Var name="logEntry" key="result">OK</Var></Then>
+							<Else><Var name="logEntry" key="result">ERROR</Var></Else>
+						</If>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+
+						<!-- Add the user to the company in a given person -->
+						<Call library="framework,user,api" function="addCompany">
+							<Param name="id"><Var name="idUser"/></Param>
+							<Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+							<Param name="id_person"><Var name="object" key="id"/></Param>
+							<Param name="is_default"><Int>1</Int></Param>
+						</Call>
+						<Var name="logEntry" key="result">OK</Var>
+						<Var name="logEntry" key="action"><String.parse>User Added to Company $USER->idCompany</String.parse></Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+				<If condition="$object->uid === '' || $object->uid === null ">
+					<Then>
+						<Var name="logEntry" key="result">Not created</Var>
+						<Var name="logEntry" key="message"><String.parse>FW invalid person uid $object->uid</String.parse></Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+
+				<!-- Create user in LDAP first -->
+				<Var name="inLdap" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>ldap</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inLdap == 1 || $all == 1">
+					<Then>
+            <Var name="ldapUser" dump="true" >
+              <DataAccess method="insert" datasource="CSCM-LX">
+                <!--Param name="_attributes">dn,cn,sn,givenname,mail</Param-->
+                <Param name="type">User</Param>
+                <Param name="id"><Var name="object" key="id"/></Param>
+                <Param name="uid"><Var name="object" key="uid"/></Param>
+								<Param name="pager"><Var name="object" key="id_card"/></Param>								
+                <Param name="name"><Var name="object" key="given_name"/></Param>
+                <Param name="email"><Var name="object" key="email"/></Param>
+                <Param name="password"><Var name="password"/></Param>
+                <Param name="surname"><Var name="object" key="surname"/></Param>
+                <Param name="display_name"><Var name="object" key="display_name"/></Param>
+                <Param name="gecos"><Var name="object" key="id"/></Param>
+                <Param name="personTypeCode"><Var name="object" key="person_type_code"/></Param>
+              </DataAccess>
+            </Var>
+            <!-- Workaround to flush caches? load the user after creation!!! -->
+						<!-- Sleeping for 4 seconds to give time before creating user in moodle -->
+						<Sleep>4</Sleep>
+            <Var name="ldapUserTest" dump="true" >
+              <DataAccess method="load" datasource="CSCM-LX">
+                <Param name="_attributes">dn,cn,sn,givenname,mail</Param>
+                <Param name="id"><Var name="object" key="uid"/></Param>
+              </DataAccess>
+            </Var>
+
+						<Var name="logEntry" key="action"><String.parse>Creating person in LDAP(AD) status:$ldapUserTest->__toStr</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$ldapUserTest->__length == 0 || $ldapUserTest == 'false'">
+								<Then>ERROR</Then>
+								<Else>OK</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+           </Then>
+         </If>
+
+				<!-- Create the person in moodle: STD,CLB,GRD,RSCM,CJG,CLB.AEC  -->
+				<Var name="inMoodle" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>moodle</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inMoodle == 1 || $all == 1">
+					<Then>
+						<Var name="statusMoodle" dump="true">
+							<Call library="gecol.core,moodle,api" function="createUserFromPerson">
+								<Param name="person"><Var name="object"/></Param>
+								<Param name="log" var="log"><Var name="log"/></Param>
+							</Call>
+						</Var>
+						<Var name="schoolYear">
+							<Call library="gecol.core,schoolYear,api" function="getCurrent"/>
+						</Var>
+						<Var name="logEntry" key="action"><String.parse>Creating person in moodle status:$statusMoodle</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$statusMoodle &gt; 0 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+						
+						<Var name="outLog" dump="true">
+							<Call library="gecol.core,moodle,api" function="personRebuild">
+								<Param name="id_school_year"><Var name="schoolYear" key="id"/></Param>
+								<Param name="id_person"><Var name="object" key="id"/></Param>
+							</Call>
+						</Var>
+						<ForEach var="outLog" item="outLogEntry">
+							<Var name="logEntry" key="action"><Var name="outLogEntry" key="action"/></Var>						            
+							<Var name="logEntry" key="result"><Var name="outLogEntry" key="result"/></Var>
+							<Var name="log" key=""><Var name="logEntry"/></Var>
+						</ForEach>
+					</Then>
+				</If>
+
+				<!-- Create the person in zimbra: CLB -->
+				<!--If condition="$object->person_type_code == 'CLB'">
+					<Then>
+						<Var name="statusZimbra" dump="true">
+								<DataAccess method="insert" datasource="googleAPIAdminSDK">
+									<Param name="_entity"></Param>
+									<Param name="id"><Var name="object" key="id"/></Param>
+									<Param name="given_name"><Var name="object" key="given_name"/></Param>
+									<Param name="surname"><Var name="object" key="surname"/></Param>
+									<Param name="password"><Var name="password"/></Param>
+									<Param name="email"><Var name="object" key="email"/></Param>
+								</DataAccess>
+							</Var>
+					</Then>
+				</If-->
+
+				<!-- Create the person in google: STD -->
+				<Var name="inGoogle" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>google</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inGoogle == 1 || $all == 1">
+					<Then>
+						<Var name="statusGoogle" dump="true">
+							<DataAccess method="insert" datasource="googleAPIAdminSDK">
+								<Param name="_entity">user</Param>
+								<Param name="given_name"><Var name="object" key="given_name"/></Param>
+								<Param name="surname"><Var name="object" key="surname"/></Param>
+								<Param name="password"><Var name="password"/></Param>
+								<Param name="email"><Var name="object" key="email"/></Param>
+							</DataAccess>
+						</Var>
+						<Var name="logEntry" key="action"><String.parse>Creating person in google status:$statusGoogle</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$statusGoogle == 1 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+
+				<!-- Create the person in access control -->
+				<Var name="inAccessControl" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>accessControl</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inAccessControl == 1 || $all == 1">
+					<Then>
+						<Var name="acResult" dump="true">
+							<Call library="gecol.core,accessControl,api" function="addPerson">
+								<Param name="id_person"><Var name="object" key="id"></Var></Param>
+							</Call>
+						</Var>
+						<Var name="logEntry" key="action"><String.parse>Creating person in accessControl status:$acResult</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$acResult == 0 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+
+				<!-- Create person in financial service application STD,CLB,GRD,RSCM,CJG,CLB.AEC -->
+				<Var name="inPrimavera" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>primavera</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inPrimavera == 1 || $all == 1">
+					<Then>
+						<Try>
+							<Instructions>
+								<Var name="test">
+									<Call library="gecol.core,primavera,api" function="saveClientByPerson">
+										<Param name="id_person"><Var name="object" key="id"/></Param>
+										<Param name="_datasource">PRIServices</Param>
+									</Call>
+								</Var>
+								<Var name="logEntry" key="action"><String.parse>Creating person in primavera status:$test->reference $test->error</String.parse></Var>						            
+								<Var name="logEntry" key="result">
+									<If condition="$test->success == 1">
+										<Then>OK</Then>
+										<Else>ERROR</Else>
+									</If>
+								</Var>
+								<Var name="log" key=""><Var name="logEntry"/></Var>								
+							</Instructions>
+							<Catch>
+							<Var name="EXCEPTION" dump="true"/>
+								<Var name="logEntry" key="action"><String.parse>Creating person in primavera status:$EXCEPTION->message</String.parse></Var>						            
+								<Var name="logEntry" key="result">ERROR</Var>
+								<Var name="log" key=""><Var name="logEntry"/></Var>								
+							</Catch>
+						</Try>
+					</Then>
+				</If>
+
+				<If condition="$inLdap == 1 || $all == 1">
+					<Then>
+						<Trace><String.parse>Setting password $password for user $object->uid</String.parse></Trace>
+						<Call library="framework,authentication,api" function="adminSetPassword">
+							<Param name="uid"><Var name="object" key="uid"/></Param>
+							<Param name="newPassword"><Var name="password"/></Param>
+							<Param name="confirmNewPassword"><Var name="password"/></Param>
+						</Call>
+						<Var name="logEntry" key="action"><String.parse>Setting password</String.parse></Var>						            
+						<Var name="logEntry" key="result">OK</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+				
+				<Var name="inSendPassword" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>sendPassword</Param>
+					</SetLib>
+				</Var>
+				<!-- Send the new password -->
+				<If condition="$inSendPassword == 1 || $all == 1">
+					<Then>
+						<Trace>Sending the new Password to the person by email $object->id  $object->email</Trace>
+						<Call library="gecol.core,authentication,api" function="sendNewPassword">
+							<Param name="id_person"><Var name="object" key="id"/></Param>
+							<Param name="password"><Var name="password"/></Param>
+						</Call>
+						<Var name="logEntry" key="action"><String.parse>Sending password to the person by email</String.parse></Var>						            
+						<Var name="logEntry" key="result">OK</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+				<Var name="log" dump="true"/>
+				<Return><Var name="log" /></Return>
+			</Begin>
+		</Function>
+
+		<Function name="person.get.execute" scope="public" doc="Get the person data in every system ">
+			<Params>
+			 <Param name="object" type="array" doc="The source object to get the basic data"/>
+			 <Param name="task" type="string" doc="Config key to get the task list if not supplied "/>
+			 <Param name="taskList" type="string" doc="Comma separated list of tasks to do "/>
+			</Params>
+			<Return type="multiple" doc="The propagation log" />
+			<Begin>
+				<Var name="result"><Set/></Var>
+
+				<If condition="$PARAMS->taskList == ''">
+					<Then>
+						<Var name="configuration" dump="true"><String.parse>entityManagement.$PARAMS->task</String.parse></Var>
+						<Var name="taskList" dump="true"><Config key="$configuration"/></Var>
+					</Then>
+					<Else>
+						<Var name="taskList" dump="true"><Var name="PARAMS" key="taskList"/></Var>
+					</Else>
+				</If>
+
+				<Var name="tasks" dump="true"><ListToSet><Var name="taskList"/></ListToSet></Var>
+				<Var name="all" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>all</Param>
+					</SetLib>
+				</Var>
+
+				<Var name="inFw" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>fw</Param>
+					</SetLib></Int>
+				</Var>
+				<If condition="($inFw == 1) || ($all == 1)">
+					<Then>
+						<!-- Get the framework user fw_user -->
+            <Var name="fwUser" dump="true" >
+							<Call library="framework,user,api" function="getByUsername">
+								<Param name="username"><Var name="object" key="uid"/></Param>
+							</Call>
+						</Var>
+            <Var name="entry"><Set/></Var>
+            <Var name="entry" key="datasource">fw</Var>
+            <Var name="entry" key="exists">
+            	<If condition="$fwUser->__length == 0">
+								<Then>
+									<Int>0</Int>
+								</Then>
+								<Else>
+									<Int>1</Int>
+								</Else>
+							</If>
+            </Var>
+            <Var name="entry" key="uid"><Var name="fwUser" key="username"/></Var>
+            <Var name="entry" key="givenname"><Var name="fwUser" key="display_name"/></Var>
+            <Var name="entry" key="surname"></Var>
+            <Var name="entry" key="email"><Var name="fwUser" key="email"/></Var>
+						<Var name="entry" key="specificKey">id</Var>
+            <Var name="entry" key="specificValue"><Var name="fwUser" key="id"/></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="fwUser"/></Param>
+							</FormatterLib>
+						</Var>
+            <Var name="result" key=""><Var name="entry"/></Var>
+					</Then>
+				</If>
+
+
+				<!-- Get the user in LDAP -->
+				<Var name="inLdap" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>ldap</Param>
+					</SetLib></Int>
+				</Var>
+				<If condition="($inLdap == 1) || ($all == 1)">
+					<Then>
+            <Var name="ldapUser" dump="true" >
+              <DataAccess method="load" datasource="CSCM-LX">
+                <Param name="_attributes">dn,cn,sn,givenname,mail</Param>
+                <Param name="id"><Var name="object" key="uid"/></Param>
+              </DataAccess>
+            </Var>
+            <Var name="entry"><Set/></Var>
+            <Var name="entry" key="datasource">ldap</Var>
+            <Var name="entry" key="exists">
+            	<If condition="$ldapUser->cn == ''">
+								<Then>
+									<Int>0</Int>
+								</Then>
+								<Else>
+									<Int>1</Int>
+								</Else>
+							</If>
+            </Var>
+            <Var name="entry" key="uid"><Var name="ldapUser" key="cn"/></Var>
+            <Var name="entry" key="givenname"><Var name="ldapUser" key="givenname"/></Var>
+            <Var name="entry" key="surname"><Var name="ldapUser" key="sn"/></Var>
+            <Var name="entry" key="email"><Var name="ldapUser" key="mail"/></Var>
+						<Var name="entry" key="specificKey">dn</Var>
+            <Var name="entry" key="specificValue"><Var name="ldapUser" key="dn"/></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="ldapUser"/></Param>
+							</FormatterLib>
+						</Var>						
+            <Var name="result" key=""><Var name="entry"/></Var>
+					</Then>
+				</If>
+
+				<!-- Get the person in moodle: STD,CLB,GRD,RSCM,CJG,CLB.AEC  -->
+				<Var name="inMoodle" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>moodle</Param>
+					</SetLib></Int>
+				</Var>
+				<If condition="($inMoodle == 1) || ($all == 1)">
+					<Then>
+						<Var name="moodleUser" dump="true">
+							<Call library="gecol.core,moodle,api" function="getUser">
+								<Param name="username"><Var name="object" key="uid"/></Param>
+								<Param name="log"><Var name="log"/></Param>
+							</Call>
+						</Var>
+            <Var name="entry"><Set/></Var>
+            <Var name="entry" key="datasource">moodle</Var>
+            <Var name="entry" key="exists">
+            	<If condition="$moodleUser->username == ''">
+								<Then>
+									<Int>0</Int>
+								</Then>
+								<Else>
+									<Int>1</Int>
+								</Else>
+							</If>
+            </Var>
+            <Var name="entry" key="uid"><Var name="moodleUser" key="username"/></Var>
+            <Var name="entry" key="givenname"><Var name="moodleUser" key="firstname"/></Var>
+            <Var name="entry" key="surname"><Var name="moodleUser" key="lastname"/></Var>
+            <Var name="entry" key="email"><Var name="moodleUser" key="email"/></Var>
+						<Var name="entry" key="specificKey">id_number</Var>
+            <Var name="entry" key="specificValue"><Var name="moodleUser" key="idnumber"/></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="moodleUser"/></Param>
+							</FormatterLib>
+						</Var>						
+            <Var name="result" key=""><Var name="entry"/></Var>
+					</Then>
+				</If>
+
+				<!-- Get the person in google: STD -->
+				<Var name="inGoogle" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>google</Param>
+					</SetLib></Int>
+				</Var>
+				<If condition="($inGoogle == 1) || ($all == 1)">
+					<Then>
+						<Try>
+							<Instructions>
+								<Var name="googleUser" dump="true">
+										<DataAccess method="load" datasource="googleAPIAdminSDK">
+											<Param name="uid"><Var name="object" key="uid"/></Param>
+										</DataAccess>
+								</Var>
+							</Instructions>
+							<Catch>
+								<Var name="googleUser"><Null/></Var>
+							</Catch>
+						</Try>
+						<Var name="googleUser" dump="true">
+								<DataAccess method="load" datasource="googleAPIAdminSDK">
+									<Param name="uid"><Var name="object" key="uid"/></Param>
+								</DataAccess>
+						</Var>
+            <Var name="entry"><Set/></Var>
+            <Var name="entry" key="datasource">google</Var>
+            <Var name="entry" key="exists">
+            	<If condition="$googleUser->uid == ''">
+								<Then>
+									<Int>0</Int>
+								</Then>
+								<Else>
+									<Int>1</Int>
+								</Else>
+							</If>
+            </Var>
+            <Var name="entry" key="uid"><Var name="googleUser" key="uid"/></Var>
+            <Var name="entry" key="givenname"><Var name="googleUser" key="givenname"/></Var>
+            <Var name="entry" key="surname"><Var name="googleUser" key="surname"/></Var>
+            <Var name="entry" key="email"><Var name="googleUser" key="email"/></Var>
+						<Var name="entry" key="specificKey">id</Var>
+            <Var name="entry" key="specificValue"><Var name="googleUser" key="id"/></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="googleUser"/></Param>
+							</FormatterLib>
+						</Var>							
+            <Var name="result" key=""><Var name="entry"/></Var>
+					</Then>
+				</If>
+
+				<Var name="inAccessControl" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>accessControl</Param>
+					</SetLib></Int>
+				</Var>
+				<If condition="($inAccessControl == 1) || ($all == 1)">
+					<Then>
+						<Var name="accessControlUser">
+							<Call library="gecol.core,accessControl,api" function="getPersonAuthorization">
+								<Param name="id_person"><Var name="object" key="id"/></Param>
+							</Call>
+						</Var>
+						<Var name="entry"><Set/></Var>
+            <Var name="entry" key="datasource">accessControl</Var>
+            <Var name="entry" key="exists">
+            	<If condition="$accessControlUser->id == ''">
+								<Then>
+									<Int>0</Int>
+								</Then>
+								<Else>
+									<Int>1</Int>
+								</Else>
+							</If>
+            </Var>
+            <Var name="entry" key="uid"><Var name="accessControlUser" key="rfid"/></Var>
+            <Var name="entry" key="givenname"><Var name="accessControlUser" key="display_name"/></Var>
+            <Var name="entry" key="surname"><String/></Var>
+            <Var name="entry" key="email"><String/></Var>
+						<Var name="entry" key="specificKey">timetable</Var>
+            <Var name="entry" key="specificValue"><String.parse>$accessControlUser->id_access_control_timetable_dow_2 $accessControlUser->id_access_control_timetable_dow_3 $accessControlUser->id_access_control_timetable_dow_4 $accessControlUser->id_access_control_timetable_dow_5 $accessControlUser->id_access_control_timetable_dow_6</String.parse></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="accessControlUser"/></Param>
+							</FormatterLib>
+						</Var>						
+            <Var name="result" key=""><Var name="entry"/></Var>
+					</Then>
+				</If>
+
+				<Var name="inPrimavera" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>primavera</Param>
+					</SetLib></Int>
+				</Var>
+				<If condition="($inPrimavera == 1) || ($all == 1)">
+					<Then>
+						<Var name="personService" dump="true">
+							<Call library="gecol.core,person,api" function="getService">
+								<Param name="id"><Var name="object" key="id"/></Param>
+							</Call>
+						</Var>
+						<Var name="primaveraUser" dump="true">
+              <Call library="gecol.core,primavera,api" function="getClient">
+                <Param name="id_client"><Var name="personService" key="id_client"/></Param>
+                <Param name="_datasource">PRIServices</Param>
+              </Call>
+						</Var>
+						<Var name="entry"><Set/></Var>
+            <Var name="entry" key="datasource">primavera</Var>
+            <Var name="entry" key="exists">
+            	<If condition="$primaveraUser->id_client == ''">
+								<Then><Int>0</Int></Then>
+								<Else><Int>1</Int></Else>
+							</If>
+            </Var>
+            <Var name="entry" key="uid"><String/></Var>
+            <Var name="entry" key="givenname"><String/></Var>
+            <Var name="entry" key="surname"><String/></Var>
+            <Var name="entry" key="email"><String/></Var>
+						<Var name="entry" key="specificKey">id_client</Var>
+            <Var name="entry" key="specificValue"><Var name="primaveraUser" key="id_client"/></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="primaveraUser"/></Param>
+							</FormatterLib>
+						</Var>						
+            <Var name="result" key=""><Var name="entry"/></Var>
+					</Then>
+				</If>
+
+				<!-- update system cache -->
+				<ForEach var="result" item="systemStatus">
+					<!--Load the system entity record -->
+					<Var name="idPerson"><Var name="object" key="id"/></Var>
+
+					<Var name="system">
+						<DataAccess method="load">
+							<Param name="_entity">fw_system_entity</Param>
+							<Param name="code"><Var name="systemStatus" key="datasource"/></Param>
+						</DataAccess>
+					</Var>
+					<Var name="data"><Set/></Var>
+					<Var name="data" key="specificKey"><Var name="systemStatus" key="specificKey"/></Var>
+					<Var name="data" key="specificValue"><Var name="systemStatus" key="specificValue"/></Var>
+
+					<!-- check if there is allready a cached value -->
+					<Var name="cache">
+						<DataAccess method="load">
+							<Param name="_entity">fw_system_entity_status_cache</Param>
+							<Param name="id_person"><Var name="idPerson"/></Param>
+							<Param name="id_system_entity"><Var name="system" key="id"/></Param>
+						</DataAccess>
+					</Var>
+					<If condition="$cache->__length == 0">
+						<Then>
+							<DataAccess method="insert">
+								<Param name="_entity">fw_system_entity_status_cache</Param>
+								<Param name="id_person"><Var name="idPerson"/></Param>
+								<Param name="id_system_entity"><Var name="system" key="id"/></Param>
+								<Param name="id_status"><Var name="systemStatus" key="exists"/></Param>
+								<Param name="data"><SetToJson><Var name="data"/></SetToJson></Param>
+								<Param name="_base">true</Param>
+							</DataAccess>
+						</Then>
+						<Else>
+							<DataAccess method="update">
+								<Param name="_entity">fw_system_entity_status_cache</Param>
+								<Param name="id_person" pk="true"><Var name="idPerson"/></Param>
+								<Param name="id_system_entity" pk="true"><Var name="system" key="id"/></Param>
+								<Param name="id_status"><Var name="systemStatus" key="exists"/></Param>
+								<Param name="data"><SetToJson><Var name="data"/></SetToJson></Param>
+								<Param name="_base">true</Param>								
+							</DataAccess>
+						</Else>
+					</If>
+				</ForEach>
+				
+				<Return><Var name="result" /></Return>
+			</Begin>
+		</Function>
+
+		<Function name="person.update.execute" scope="public" doc="Person update actions to execute">
+			<Params>
+			 <Param name="object" type="array" doc="The source object to get the basic data"/>
+			 <Param name="task" type="string" doc="Config key to get the task list if not supplied "/>
+			 <Param name="taskList" type="string" doc="Comma separated list of tasks to do "/>
+			</Params>
+			<Return type="multiple" doc="The propagation log" />
+			<Begin>
+				<Var name="log"><Set/></Var>
+
+				<!-- $object->person_type_code == 'STD' || $object->person_type_code == 'CLB' || $object->person_type_code == 'GRD' || $object->person_type_code == 'RSCM' || $object->person_type_code == 'CJG' || $object->person_type_code == 'CLB.AEC' -->
+				<If condition="$PARAMS->taskList == ''">
+					<Then>
+						<Var name="configuration" dump="true"><String.parse>entityManagement.$PARAMS->task</String.parse></Var>
+						<Var name="taskList" dump="true"><Config key="$configuration"/></Var>
+					</Then>
+					<Else>
+						<Var name="taskList" dump="true"><Var name="PARAMS" key="taskList"/></Var>
+					</Else>
+				</If>
+
+				<Var name="logEntry" key="result">OK</Var>
+				<Var name="logEntry" key="action"><String.parse>List of tasks to execute: $taskList</String.parse></Var>
+				<Var name="log" key=""><Var name="logEntry"/></Var>
+
+				<Var name="tasks" dump="true"><ListToSet><Var name="taskList"/></ListToSet></Var>
+				<Var name="all" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>all</Param>
+					</SetLib>
+				</Var>
+
+				<!-- Create the user in framework so it can use framework applications -->
+				<Var name="inFw" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>fw</Param>
+					</SetLib></Int>
+				</Var>
+
+				<If condition="($inFw == 1 || $all == 1) &amp;&amp; $object->uid !== '' &amp;&amp; $object->uid !== null ">
+					<Then>
+						<!-- Update the user -->
+						<Var name="fwUser">
+							<Call library="framework,user,api" function="getByUsername">
+								<Param name="username"><Var name="object" key="uid"/></Param>
+							</Call>						
+						</Var>
+						<Call library="framework,user,api" function="update">
+							<Param name="id"><Var name="fwUser" key="id"/></Param>
+							<Param name="username"><Var name="object" key="uid"/></Param>
+							<Param name="display_name"><Var name="object" key="display_name"/></Param>
+							<Param name="email"><Var name="object" key="email"/></Param>
+						</Call>
+					</Then>
+				</If>
+
+				<!-- Update user in LDAP -->
+				<Var name="inLdap" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>ldap</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inLdap == 1 || $all == 1">
+					<Then>
+            <Var name="ldapUser" dump="true" >
+              <DataAccess method="update" datasource="CSCM-LX">
+                <!--Param name="_attributes">dn,cn,sn,givenname,mail</Param-->
+                <Param name="type">User</Param>
+                <Param name="id"><Var name="object" key="id"/></Param>
+                <Param name="uid"><Var name="object" key="uid"/></Param>
+								<Param name="pager"><Var name="object" key="id_card"/></Param>
+                <Param name="name"><Var name="object" key="given_name"/></Param>
+                <Param name="email"><Var name="object" key="email"/></Param>
+                <Param name="surname"><Var name="object" key="surname"/></Param>
+                <Param name="display_name"><Var name="object" key="display_name"/></Param>
+                <Param name="gecos"><Var name="object" key="id"/></Param>
+                <Param name="personTypeCode"><Var name="object" key="person_type_code"/></Param>
+              </DataAccess>
+            </Var>
+						
+						<Var name="logEntry" key="action"><String.parse>Updating person in LDAP(AD)</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$ldapUser->__length == 0 || $ldapUser == 'false'">
+								<Then>ERROR</Then>
+								<Else>OK</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+           </Then>
+         </If>
+
+				<!-- Update the person in moodle: STD,CLB,GRD,RSCM,CJG,CLB.AEC  -->
+				<Var name="inMoodle" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>moodle</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inMoodle == 1 || $all == 1">
+					<Then>
+						<!-- Update the moodle -->
+						<Var name="schoolYear">
+							<Call library="gecol.core,schoolYear,api" function="getCurrent"/>
+						</Var>
+						<Var name="logEntry" key="action"><String.parse>Updating person in moodle</String.parse></Var>
+						
+						<Call library="gecol.core,moodle,api" function="updateUser">
+							<Param name="username"><Var name="object" key="uid"/></Param>
+							<Param name="firstname"><Var name="object" key="given_name"/></Param>
+							<Param name="lastname"><Var name="object" key="surname"/></Param>
+							<Param name="email"><Var name="object" key="email"/></Param>
+							<Param name="idnumber"><Var name="object" key="id"/></Param>
+						</Call>						
+												            
+						<Var name="logEntry" key="result">
+							<If condition="$statusMoodle === 0 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+						
+						<Var name="logEntry" key="action"><String.parse>Rebuilding person in moodle</String.parse></Var>
+						<Try>
+							<Instructions>
+								<Var name="outLog" dump="true">
+									<Call library="gecol.core,moodle,api" function="personRebuild">
+										<Param name="id_school_year"><Var name="schoolYear" key="id"/></Param>
+										<Param name="id_person"><Var name="object" key="id"/></Param>
+									</Call>
+								</Var>
+								<Var name="logEntry" key="result">OK</Var>
+							</Instructions>
+							<Catch>
+								<Var name="logEntry" key="result">ERROR</Var>
+							</Catch>
+						</Try>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+						
+						<ForEach var="outLog" item="outLogEntry">
+							<Var name="logEntry" key="action"><Var name="outLogEntry" key="action"/></Var>						            
+							<Var name="logEntry" key="result"><Var name="outLogEntry" key="result"/></Var>
+							<Var name="log" key=""><Var name="logEntry"/></Var>
+						</ForEach>
+					</Then>
+				</If>
+
+				<!-- Update the person in zimbra: CLB -->
+				<!--If condition="$object->person_type_code == 'CLB'">
+					<Then>
+						<Var name="statusZimbra" dump="true">
+						</Var>
+					</Then>
+				</If-->
+
+				<!-- Update the person in google: STD -->
+				<Var name="inGoogle" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>google</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inGoogle == 1 || $all == 1">
+					<Then>
+						<!-- Update the Google account -->
+						<Var name="logEntry" key="action"><String.parse>Updating person in google</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$statusGoogle !== 0 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+
+				<!-- Update the person in access control -->
+				<Var name="inAccessControl" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>accessControl</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inAccessControl == 1 || $all == 1">
+					<Then>
+						<!-- Update person in accessControl -->
+
+						<Var name="logEntry" key="action"><String.parse>Updating person in accessControl</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$acResult !== 0 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>
+				<!-- Update person in financial service application STD,CLB,GRD,RSCM,CJG,CLB.AEC -->
+				<Var name="inPrimavera" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>primavera</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inPrimavera == 1 || $all == 1">
+					<Then>
+						<Try>
+							<Instructions>
+								<Var name="test">
+									<Call library="gecol.core,primavera,api" function="saveClientByPerson">
+										<Param name="id_person"><Var name="object" key="id"/></Param>
+										<Param name="_datasource">PRIServices</Param>
+									</Call>
+								</Var>
+								<Var name="logEntry" key="action"><String.parse>Updating person in primavera status:$test->reference $test->error</String.parse></Var>						            
+								<Var name="logEntry" key="result">
+									<If condition="$test->success == 1">
+										<Then>OK</Then>
+										<Else>ERROR</Else>
+									</If>
+								</Var>
+								<Var name="log" key=""><Var name="logEntry"/></Var>								
+							</Instructions>
+							<Catch>
+							<Var name="EXCEPTION" dump="true"/>
+								<Var name="logEntry" key="action"><String.parse>Updating person in primavera status:$EXCEPTION->message</String.parse></Var>						            
+								<Var name="logEntry" key="result">ERROR</Var>
+								<Var name="log" key=""><Var name="logEntry"/></Var>								
+							</Catch>
+						</Try>
+					</Then>
+				</If>
+
+
+				<Var name="log" dump="true"/>
+				<Return><Var name="log" /></Return>
+			</Begin>
+		</Function>
+
+		<Function name="updateCache" scope="public" doc="Updates the system entity cache">
+			<Params>
+			 <Param name="id_person" type="int" doc="The id_person"/>
+			 <Param name="personTypeCode" type="int" doc="The person type code"/>
+			</Params>
+			<Return type="multiple" doc="The systems status" />
+			<Begin>
+
+				<Var name="person">
+					<Call library="gecol.core,person,api" function="get">
+						<Param name="id"><Var name="PARAMS" key="id_person"/></Param>
+					</Call>
+				</Var>
+
+				<!-- Update the cache... -->
+				<Var name="systems">
+					<Call library="framework,em.execution,api" function="execute">
+						<Param name="objectCode">person</Param>
+						<Param name="actionCode">get</Param>
+						<Param name="object"><Var name="person"/></Param>
+						<Param name="task"><String.parse>person.new.$personTypeCode</String.parse></Param>
+					</Call>
+				</Var>
+
+				<Return><Var name="systems"/></Return>
+			</Begin>
+		</Function>
+
+		<Function name="getSystemEntities" scope="public" doc="Gets a list of all system entities">
+			<Params>
+			</Params>
+			<Return type="multiple" doc="The system entities" />
+			<Begin>
+				<!-- Update the cache... -->
+				<Var name="systems">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_system_entity</Param>
+					</DataAccess>
+				</Var>
+
+				<Return><Var name="systems"/></Return>
+			</Begin>
+		</Function>
+
+		<Function name="getPersonSystemEntities" scope="public" doc="Gets a list of all system entities">
+			<Params>
+				<Param name="persons" type="array" doc="Array with person id's"/>
+				<Param name="systems" type="array" doc="Array with system codes"/>
+				<Param name="created" type="int" doc="1-created in all search systems; 0 - Not created in, at least, 1 of selected systems"/>
+			</Params>
+			<Return type="multiple" doc="The person system entities" />
+			<Begin>
+				<!-- Update the cache... -->
+				<Var name="systems">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_system_entity</Param>
+					</DataAccess>
+				</Var>
+
+				<Return><Var name="systems"/></Return>
+			</Begin>
+		</Function>
+
+
+	</Library>
+</Node>

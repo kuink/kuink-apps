@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+      <String key="run" value="Scripting"/>
+      <String key="scriptList" value="Lista de scripts"/>
+      <String key="setScriptId" value="Ver"/>
+
+   </Strings>
+   <HelpStrings>
+   </HelpStrings>
+</Lang>

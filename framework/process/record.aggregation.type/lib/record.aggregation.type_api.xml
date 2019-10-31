@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="get" scope="protected" doc="Get an aggregation type">
+            <Params>
+                <Param name="id" type="int" required="true"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="rel_table" type="text" doc=""/>
+                <External name="rel_field" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_aggregation_type</Param>
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </Execute>
+                </Return>
+            </Begin>
+        </Function>
+
+
+        <Function name="getByCode" scope="protected" doc="Get an aggregation type by code">
+            <Params>
+                <Param name="code" type="int" required="true"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="rel_table" type="text" doc=""/>
+                <External name="rel_field" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <Execute method="framework,generic,load">
+                        <Param name="table">fw_aggregation_type</Param>
+                        <Param name="code"><Var name="PARAMS" key="code"/></Param>
+                    </Execute>
+                </Return>
+            </Begin>
+        </Function>
+
+
+        <Function name="add" scope="protected" doc="Add an aggregation type">
+            <Params>
+                <Param name="name" type="text" required="true"/>
+                <Param name="code" type="text" required="true"/>
+                <Param name="table" type="text" required="true"/>
+                <Param name="field" type="text" required="true"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="rel_table" type="text" doc=""/>
+                <External name="rel_field" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Var name="newId" >
+                    <Execute method="framework,generic,insert">
+                        <Param name="table">fw_aggregation_type</Param>
+                        <Param name="name"><Var name="PARAMS" key="name"/></Param>
+                        <Param name="code"><Var name="PARAMS" key="code"/></Param>
+                        <Param name="rel_table"><Var name="PARAMS" key="table"/></Param>
+                        <Param name="rel_field"><Var name="PARAMS" key="field"/></Param>
+                        <Param name="_creation"><DateTimeLib method="now"/></Param>
+                        <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                    </Execute>
+                </Var>
+                <Return>
+                    <Call function="get">
+                        <Param name="id"><Var name="newId"/></Param>
+                    </Call>
+                </Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

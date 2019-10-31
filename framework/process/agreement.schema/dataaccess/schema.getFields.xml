@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Get the fields of all statements of an agreement
+  </Doc>
+  <Params>
+    <Param name="id_agreement_schema" />
+    <Param name="schema_code_list" />
+    <Param name="_lang" />
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+          <XField>
+            scst.id, 
+            sc.uuid,  
+            st.id as statement_id,             
+            st.code as statement_code, 
+						st.field as statement_field,
+						stl.statement as statement,
+            stl.name as statement_name, 
+            stl.description as statement_description,
+            stt.code as statement_type_code,
+            sttl.name as statement_type_name,
+            sttl.description as statement_type_description,
+            st.expire_date_expression
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_agreement_schema sc
+            INNER JOIN fw_agreement_schema_statement scst ON (scst.id_agreement_schema = sc.id)
+            INNER JOIN fw_agreement_statement st ON (st.id = scst.id_agreement_statement)
+            INNER JOIN fw_agreement_statement_lang stl ON (stl.id = st.id AND stl.lang="{param->_lang}")
+						INNER JOIN fw_agreement_statement_type stt ON (stt.id = st.id_agreement_statement_type)
+            INNER JOIN fw_agreement_statement_type_lang sttl ON (sttl.id = stt.id AND sttl.lang="{param->_lang}")            
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition optional="id_agreement_schema">  
+            sc.id = {param->id_agreement_schema}
+          </XCondition>
+          <XCondition optional="schema_code_list">  
+            sc.code in ({param->schema_code_list})
+          </XCondition>
+          <XCondition optional="start_date">
+            <![CDATA[
+              AND scst.start_date <= {param->start_date} AND (scst.end_date IS NULL OR scst.end_date > {param->start_date})
+            ]]>
+          </XCondition>
+        </XWhere>
+        <XOrderBy>
+        	<XOrder>stt.order, scst.order</XOrder>
+        </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template>
+  <Subject>
+    CSCM-lx | Tarefa terminada (inbox)
+  </Subject>
+  <Content>
+  <![CDATA[
+    $personTitle $personDisplayName,<br/>
+    uma tarefa iniciada por si foi concluída:</br>
+    <br/>
+    <strong>Tarefa:</strong> $task_name<br/>
+    <strong>Resultado:</strong> $result<br/>
+    <br/><br/>
+    <br/><br/>
+    Cumprimentos,<br/>
+    <a href="http://sti.cscm-lx.pt">Serviço Técnico de Informática</a><br/>
+    <a href="http://www.cscm-lx.pt">Colégio do Sagrado coração de Maria - Lisboa</a>
+   ]]>
+  </Content>
+</Template>

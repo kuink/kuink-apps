@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Returns a list of all students of a given classclasses
+    </Doc>
+    <Params>
+    	<Param name="id_lesson"/>
+    </Params>
+    <Body>
+        <Sql>
+			<!-- 
+            <![CDATA[
+				SELECT 1 as `id`, 1 as `number`, 1 as `photo`, 'Nome completo do aluno #1' as `name`, NULL as id_absence_type, 'Falta de Presença' as `absence_type`, 'Não trouxe outra vez material' as `comments_private`, '' as `comments_public` FROM DUAL WHERE 1={param->id_class} UNION
+				SELECT 2 as `id`, 2 as `number`, 2 as `photo`, 'Nome completo do aluno #2' as `name`, 1 as id_absence_type, 'Falta de Atraso' as `absence_type`, '' as `comments_private`, '' as `comments_public` FROM DUAL WHERE 1={param->id_class} UNION
+				SELECT 3 as `id`, 3 as `number`, 3 as `photo`, 'Nome completo do aluno #3' as `name`, 3 as id_absence_type, 'Falta Disciplinar' as `absence_type`, 'O aluno faltou ao respeito para com o professor e foi convidado a sair da sala de aula pelas 11h45.' as `comments_private`, 'Faltou ao respeito.' as `comments_public` FROM DUAL WHERE 1={param->id_class}
+            ]]>
+            -->
+             <![CDATA[
+ 				SELECT 
+ 					p.id as "id",
+ 					lpn.id as "id_lesson_person_note",
+ 					scs.class_order as "number",
+ 					p.id as "photo",
+ 					p.name as "name",
+ 					lpn.id_absence_type as "id_absence_type",
+ 					lpn.id_absence_type as "id_absence_type_last",
+ 					lpn.obs_private as "obs_private",
+ 					lpn.obs_public as "obs_public"
+ 				FROM lesson l
+ 				
+				INNER JOIN class_subject cs ON (l.id_class_subject = cs.id)
+				INNER JOIN class_sub_student scs ON (cs.id = scs.id_class_subject)
+				INNER JOIN person p ON (p.id=scs.id_person)
+				LEFT OUTER JOIN lesson_person_note lpn ON (l.id=lpn.id_lesson AND p.id=lpn.id_person)
+
+ 				WHERE l.id = {param->id_lesson}
+            
+            ]]>
+        </Sql>
+    </Body>
+</Method>
