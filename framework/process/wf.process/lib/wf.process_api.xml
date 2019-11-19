@@ -180,7 +180,7 @@
 			<Begin>
 			  			
         <!--Get all observations -->
-        <Var name="historyData" dump="true">
+        <Var name="historyData">
           <DataAccess method="this,this,processInstance.getHistoryData">
             <Param name="id_process_instance"><Var name="id_process_instance"/></Param>
           </DataAccess>
@@ -199,7 +199,7 @@
               <Var name="filteredHistory" key=""><Var name="newItem"></Var></Var>
             </Then>
           </If>
-          <If condition="$item->id_person == $PARAMS->id_person &amp;&amp; $item->obs_public != ''">
+          <If condition="$item->id_person == $PARAMS->id_person &amp;&amp; $item->obs_private != '' &amp;&amp; $item->obs_private !== null">
             <Then>
               <Var name="newItem"></Var>
               <Var name="newItem" key="public_key"><Var name="item" key="public_key"/></Var>
