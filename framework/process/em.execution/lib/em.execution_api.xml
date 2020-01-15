@@ -322,14 +322,14 @@
 					</Then>
 				</If>
 
-				<!-- Create person in financial service application STD,CLB,GRD,RSCM,CJG,CLB.AEC -->
-				<Var name="inPrimavera" dump="true">
+				<!-- Create person account in financial service application  -->
+				<Var name="inPrimaveraAccount" dump="true">
 					<SetLib method="ValueIn">
-					  <Param><Var name="tasks"/></Param>
-					  <Param>primavera</Param>
+					<Param><Var name="tasks"/></Param>
+					<Param>primaveraAccount</Param>
 					</SetLib>
 				</Var>
-				<If condition="$inPrimavera == 1 || $all == 1">
+				<If condition="$inPrimaveraAccount == 1 || $all == 1">
 					<Then>
 						<Try>
 							<Instructions>
@@ -347,6 +347,28 @@
 										<Else>ERROR</Else>
 									</If>
 								</Var>								
+								<Var name="log" key=""><Var name="logEntry"/></Var>								
+							</Instructions>
+							<Catch>
+							<Var name="EXCEPTION" dump="true"/>
+								<Var name="logEntry" key="action"><String.parse>Creating person account in primavera status:$EXCEPTION->message</String.parse></Var>						            
+								<Var name="logEntry" key="result">ERROR</Var>
+								<Var name="log" key=""><Var name="logEntry"/></Var>								
+							</Catch>
+						</Try>
+					</Then>
+				</If>				
+				<!-- Create person in financial service application STD,CLB,GRD,RSCM,CJG,CLB.AEC -->
+				<Var name="inPrimavera" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>primavera</Param>
+					</SetLib>
+				</Var>
+				<If condition="$inPrimavera == 1 || $all == 1">
+					<Then>
+						<Try>
+							<Instructions>
 								<Var name="test">
 									<Call library="gecol.core,primavera,api" function="saveClientByPerson">
 										<Param name="id_person"><Var name="object" key="id"/></Param>
@@ -625,23 +647,31 @@
 					</Then>
 				</If>
 
-				<Var name="inAccessControl" dump="true"><Int>
-					<SetLib method="ValueIn">
-					  <Param><Var name="tasks"/></Param>
-					  <Param>accessControl</Param>
-					</SetLib></Int>
+				<Var name="inAccessControl" dump="true">
+					<Int>
+						<SetLib method="ValueIn">
+							<Param>
+								<Var name="tasks" />
+							</Param>
+							<Param>accessControl</Param>
+						</SetLib>
+					</Int>
 				</Var>
 				<If condition="($inAccessControl == 1) || ($all == 1)">
 					<Then>
 						<Var name="accessControlUser">
 							<Call library="gecol.core,accessControl,api" function="getPersonAuthorization">
-								<Param name="id_person"><Var name="object" key="id"/></Param>
+								<Param name="id_person">
+									<Var name="object" key="id" />
+								</Param>
 							</Call>
 						</Var>
-						<Var name="entry"><Set/></Var>
-            <Var name="entry" key="datasource">accessControl</Var>
-            <Var name="entry" key="exists">
-            	<If condition="$accessControlUser->id == ''">
+						<Var name="entry">
+							<Set />
+						</Var>
+						<Var name="entry" key="datasource">accessControl</Var>
+						<Var name="entry" key="exists">
+							<If condition="$accessControlUser->id == ''">
 								<Then>
 									<Int>0</Int>
 								</Then>
@@ -649,65 +679,138 @@
 									<Int>1</Int>
 								</Else>
 							</If>
-            </Var>
-            <Var name="entry" key="uid"><Var name="accessControlUser" key="rfid"/></Var>
-            <Var name="entry" key="givenname"><Var name="accessControlUser" key="display_name"/></Var>
-            <Var name="entry" key="surname"><String/></Var>
-            <Var name="entry" key="email"><String/></Var>
+						</Var>
+						<Var name="entry" key="uid">
+							<Var name="accessControlUser" key="rfid" />
+						</Var>
+						<Var name="entry" key="givenname">
+							<Var name="accessControlUser" key="display_name" />
+						</Var>
+						<Var name="entry" key="surname">
+							<String />
+						</Var>
+						<Var name="entry" key="email">
+							<String />
+						</Var>
 						<Var name="entry" key="specificKey">timetable</Var>
-            <Var name="entry" key="specificValue"><String.parse>$accessControlUser->id_access_control_timetable_dow_2 $accessControlUser->id_access_control_timetable_dow_3 $accessControlUser->id_access_control_timetable_dow_4 $accessControlUser->id_access_control_timetable_dow_5 $accessControlUser->id_access_control_timetable_dow_6</String.parse></Var>
+						<Var name="entry" key="specificValue">
+							<String.parse>$accessControlUser->id_access_control_timetable_dow_2 $accessControlUser->id_access_control_timetable_dow_3 $accessControlUser->id_access_control_timetable_dow_4 $accessControlUser->id_access_control_timetable_dow_5 $accessControlUser->id_access_control_timetable_dow_6</String.parse>
+						</Var>
 						<Var name="entry" key="allData">
 							<FormatterLib method="format">
 								<Param>ArraySet</Param>
 								<Param>format</Param>
-								<Param><Var name="accessControlUser"/></Param>
+								<Param><Var name="accessControlUser" /></Param>
 							</FormatterLib>
-						</Var>						
-            <Var name="result" key=""><Var name="entry"/></Var>
+						</Var>
+						<Var name="result" key="">
+							<Var name="entry" />
+						</Var>
 					</Then>
 				</If>
 
-				<Var name="inPrimavera" dump="true"><Int>
-					<SetLib method="ValueIn">
-					  <Param><Var name="tasks"/></Param>
-					  <Param>primavera</Param>
-					</SetLib></Int>
+				<Var name="inPrimaveraAccount" dump="true">
+					<Int>
+						<SetLib method="ValueIn">
+							<Param><Var name="tasks" /></Param>
+							<Param>primaveraAccount</Param>
+						</SetLib>
+					</Int>
+				</Var>
+				<If condition="($inPrimaveraAccount == 1) || ($all == 1)">
+					<Then>
+						<Var name="personService" dump="true">
+							<Call library="gecol.core,person,api" function="getService">
+								<Param name="id"><Var name="object" key="id" /></Param>
+							</Call>
+						</Var>
+						<Var name="primaveraAccount" dump="true">
+							<Call library="gecol.core,primavera,api" function="getAccount">
+								<Param name="id_client"><Var name="personService" key="id_account" /></Param>
+								<Param name="_datasource">PRIServices</Param>
+							</Call>
+						</Var>
+						<Var name="entry"><Set /></Var>
+						<Var name="entry" key="datasource">primaveraAccount</Var>
+						<Var name="entry" key="exists">
+							<If condition="$primaveraAccount->length != 0">
+								<Then><Int>0</Int></Then>
+								<Else><Int>1</Int></Else>
+							</If>
+						</Var>
+
+						<Var name="entry" key="uid"><String /></Var>
+						<Var name="entry" key="givenname"><String /></Var>
+						<Var name="entry" key="surname"><String /></Var>
+						<Var name="entry" key="email"><String /></Var>
+						<Var name="entry" key="specificKey">id_account</Var>
+						<Var name="entry" key="specificValue"><Var name="primaveraAccount" key="id_account" /></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="primaveraAccount" /></Param>
+							</FormatterLib>
+						</Var>
+						<Var name="result" key=""><Var name="entry" /></Var>
+					</Then>
+				</If>
+
+				<Var name="inPrimavera" dump="true">
+					<Int>
+						<SetLib method="ValueIn">
+							<Param>
+								<Var name="tasks" />
+							</Param>
+							<Param>primavera</Param>
+						</SetLib>
+					</Int>
 				</Var>
 				<If condition="($inPrimavera == 1) || ($all == 1)">
 					<Then>
 						<Var name="personService" dump="true">
 							<Call library="gecol.core,person,api" function="getService">
-								<Param name="id"><Var name="object" key="id"/></Param>
+								<Param name="id">
+									<Var name="object" key="id" />
+								</Param>
 							</Call>
 						</Var>
 						<Var name="primaveraUser" dump="true">
-              <Call library="gecol.core,primavera,api" function="getClient">
-                <Param name="id_client"><Var name="personService" key="id_client"/></Param>
-                <Param name="_datasource">PRIServices</Param>
-              </Call>
+							<Call library="gecol.core,primavera,api" function="getClient">
+								<Param name="id_client">
+									<Var name="personService" key="id_client" />
+								</Param>
+								<Param name="_datasource">PRIServices</Param>
+							</Call>
 						</Var>
-						<Var name="entry"><Set/></Var>
-            <Var name="entry" key="datasource">primavera</Var>
-            <Var name="entry" key="exists">
-            	<If condition="$primaveraUser->id_client == ''">
-								<Then><Int>0</Int></Then>
-								<Else><Int>1</Int></Else>
+						<Var name="entry"><Set /></Var>
+						<Var name="entry" key="datasource">primavera</Var>
+						<Var name="entry" key="exists">
+							<If condition="$primaveraUser->id_client == ''">
+								<Then>
+									<Int>0</Int>
+								</Then>
+								<Else>
+									<Int>1</Int>
+								</Else>
 							</If>
-            </Var>
-            <Var name="entry" key="uid"><String/></Var>
-            <Var name="entry" key="givenname"><String/></Var>
-            <Var name="entry" key="surname"><String/></Var>
-            <Var name="entry" key="email"><String/></Var>
+						</Var>
+						<Var name="entry" key="uid"><String /></Var>
+						<Var name="entry" key="givenname"><String /></Var>
+						<Var name="entry" key="surname"><String /></Var>
+						<Var name="entry" key="email"><String /></Var>
 						<Var name="entry" key="specificKey">id_client</Var>
-            <Var name="entry" key="specificValue"><Var name="primaveraUser" key="id_client"/></Var>
+						<Var name="entry" key="specificValue">
+							<Var name="primaveraUser" key="id_client" />
+						</Var>
 						<Var name="entry" key="allData">
 							<FormatterLib method="format">
 								<Param>ArraySet</Param>
 								<Param>format</Param>
-								<Param><Var name="primaveraUser"/></Param>
+								<Param><Var name="primaveraUser" /></Param>
 							</FormatterLib>
-						</Var>						
-            <Var name="result" key=""><Var name="entry"/></Var>
+						</Var>
+						<Var name="result" key=""><Var name="entry" /></Var>
 					</Then>
 				</If>
 
