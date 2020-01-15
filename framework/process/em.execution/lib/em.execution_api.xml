@@ -333,6 +333,20 @@
 					<Then>
 						<Try>
 							<Instructions>
+								<!-- Create the account in invoicing system -->
+								<Var name="newAccount">
+									<Call library="gecol.core,service,api" function="addAccount">
+										<Param name="id_service"><Var name="object" key="id"/></Param>
+									</Call>
+								</Var>
+
+								<Var name="logEntry" key="action"><String.parse>Creating person account in primavera - Account:$newAccount->reference</String.parse></Var>
+								<Var name="logEntry" key="result">
+									<If condition="$newAccount->reference != ''">
+										<Then>OK</Then>
+										<Else>ERROR</Else>
+									</If>
+								</Var>								
 								<Var name="test">
 									<Call library="gecol.core,primavera,api" function="saveClientByPerson">
 										<Param name="id_person"><Var name="object" key="id"/></Param>
