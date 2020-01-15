@@ -726,7 +726,7 @@
 						</Var>
 						<Var name="primaveraAccount" dump="true">
 							<Call library="gecol.core,primavera,api" function="getAccount">
-								<Param name="id_client"><Var name="personService" key="id_account" /></Param>
+								<Param name="id_account"><Var name="personService" key="id_account" /></Param>
 								<Param name="_datasource">PRIServices</Param>
 							</Call>
 						</Var>
