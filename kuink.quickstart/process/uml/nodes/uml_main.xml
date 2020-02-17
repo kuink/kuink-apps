@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries />
+    <Configuration />
+    <Params />
+    <Screens >
+        <Screen id="screen" >
+            <Uml name="testPlantUml" title="umlSample"/>
+        </Screen>
+    </Screens>
+    <Actions >
+        <Action name="init" screen="screen">
+            <Control method="bind" object="testPlantUml">
+                <Param>
+                    <String>
+                        <![CDATA[
+                            @startuml firstDiagram
+
+                            Paulo -> Bob: Hello
+                            Bob -> Paulo: Hi!
+                            
+                            @enduml                        
+                        ]]>
+                    </String>
+                </Param>
+            </Control>
+        </Action>
+      
+    </Actions>
+    <Library />
+</Node>

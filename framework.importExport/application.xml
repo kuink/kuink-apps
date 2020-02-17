@@ -9,7 +9,8 @@
         <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
     </Databases>
     <Menus>
-        <Menu role='Teacher' startuc='api' startnode='' event='init' enduc='api' endnode='list' label="list" description="api" default="true"/>
-        <Menu role='Teacher' startuc='externalService' startnode='' event='init' enduc='externalService' endnode='list' label="list" description="externalService" default="false"/>
+        <Menu role="Teacher" startuc="ide" startnode="" event="manageEntity" label="entity" description="entity" default="false"/>
+        <Menu role="Teacher" startuc="ide" startnode="" event="generator" label="ide" description="generator" default="false"/>
+        <Menu role="Teacher" startuc="ide" startnode="" event="init" label="ide" description="ide" default="true"/>
     </Menus>
 </Application>

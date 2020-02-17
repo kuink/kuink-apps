@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->              
+              <Var name="context" key="message">TextFileConnector::Read::Fixed::ENES::With padl=" "</Var>
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              <Doc>
+                <![CDATA[
+                tabelas 
+                  Resumo/Cálculos da avaliação: __student_evaluation_subject_calc <- AliDisc.txt   (usar _student_evaluation_subject_calc para confrontar os dados)
+                  Classificações Exame: student_evaluation_subject_exam <- AluExam.txt
+                ]]>
+              </Doc>
+              
+              <DataSource name="resourceFileENES01" connector="TextFileConnector">
+                <Param name="fileName"><Resource.getPath object="framework.importExport,_unitTest,TextFileConnector.ENES.01.txt"></Resource.getPath></Param>
+                <Param name="isFixed">true</Param>
+                <Param name="firstLineWithColumnNames">false</Param>
+                <Param name="separatorList"><String/></Param>
+                <Param name="stringDelimiter"><String/></Param>
+                <Param name="configuration">
+                  <![CDATA[
+                  {
+                    "_id_iddoc_number": {"start":"0", "length":"9", "padl":" "},
+                    "_id_iddoc_type": {"start":"9", "length":"1"},
+                    "_id_exam": {"start":"10", "length":"3"},
+                    "_stage":  {"start":"13", "length":"1"},
+                    "_stage_call":  {"start":"14", "length":"1"},
+                    "_is_internal":  {"start":"15", "length":"1"},
+                    "_is_approval":  {"start":"16", "length":"1"},
+                    "_is_improvement":  {"start":"17", "length":"1"},
+                    "_id_subject_me":  {"start":"18", "length":"4"},
+                    "_evaluation_value_written":  {"start":"22", "length":"3", "padl":" "},
+                    "_evaluation_value_oral":  {"start":"25", "length":"3", "padl":" "},
+                    "_evaluation_value":  {"start":"28", "length":"3", "padl":" "}
+                  }
+                  ]]>
+                </Param>
+              </DataSource>
+              <Var name="result">
+                <DataAccess method="getAll" datasource="resourceFileENES01"/>
+              </Var>
+              <Trace><SetToJson><Var name="result"/></SetToJson></Trace>
+              <Var name="expectedResult"><String><![CDATA[[{"_id_iddoc_number":"13663460","_id_iddoc_type":"1","_id_exam":"635","_stage":"1","_stage_call":"1","_is_internal":"N","_is_approval":"N","_is_improvement":"N","_id_subject_me":"N162","_evaluation_value_written":"85","_evaluation_value_oral":"85","_evaluation_value":""},{"_id_iddoc_number":"13842359","_id_iddoc_type":"1","_id_exam":"702","_stage":"1","_stage_call":"1","_is_internal":"N","_is_approval":"N","_is_improvement":"N","_id_subject_me":"N014","_evaluation_value_written":"125","_evaluation_value_oral":"125","_evaluation_value":""},{"_id_iddoc_number":"13842359","_id_iddoc_type":"1","_id_exam":"702","_stage":"2","_stage_call":"2","_is_internal":"N","_is_approval":"N","_is_improvement":"N","_id_subject_me":"N014","_evaluation_value_written":"118","_evaluation_value_oral":"118","_evaluation_value":""},{"_id_iddoc_number":"14006675","_id_iddoc_type":"1","_id_exam":"635","_stage":"1","_stage_call":"1","_is_internal":"S","_is_approval":"S","_is_improvement":"N","_id_subject_me":"N162","_evaluation_value_written":"116","_evaluation_value_oral":"116","_evaluation_value":""},{"_id_iddoc_number":"14006675","_id_iddoc_type":"1","_id_exam":"635","_stage":"2","_stage_call":"2","_is_internal":"N","_is_approval":"S","_is_improvement":"S","_id_subject_me":"N162","_evaluation_value_written":"155","_evaluation_value_oral":"155","_evaluation_value":""},{"_id_iddoc_number":"14006675","_id_iddoc_type":"1","_id_exam":"639","_stage":"1","_stage_call":"1","_is_internal":"S","_is_approval":"S","_is_improvement":"N","_id_subject_me":"N186","_evaluation_value_written":"161","_evaluation_value_oral":"161","_evaluation_value":""},{"_id_iddoc_number":"14049927","_id_iddoc_type":"1","_id_exam":"635","_stage":"1","_stage_call":"1","_is_internal":"S","_is_approval":"S","_is_improvement":"N","_id_subject_me":"N162","_evaluation_value_written":"176","_evaluation_value_oral":"176","_evaluation_value":""},{"_id_iddoc_number":"14049927","_id_iddoc_type":"1","_id_exam":"639","_stage":"1","_stage_call":"1","_is_internal":"S","_is_approval":"S","_is_improvement":"N","_id_subject_me":"N186","_evaluation_value_written":"171","_evaluation_value_oral":"171","_evaluation_value":""},{"_id_iddoc_number":"14049927","_id_iddoc_type":"1","_id_exam":"715","_stage":"1","_stage_call":"1","_is_internal":"N","_is_approval":"N","_is_improvement":"S","_id_subject_me":"N100","_evaluation_value_written":"176","_evaluation_value_oral":"176","_evaluation_value":""},{"_id_iddoc_number":"14095150","_id_iddoc_type":"1","_id_exam":"367","_stage":"1","_stage_call":"1","_is_internal":"N","_is_approval":"N","_is_improvement":"S","_id_subject_me":"N304","_evaluation_value_written":"108","_evaluation_value_oral":"99","_evaluation_value":"130"}]]]></String></Var>
+              <Var name="test" value=""><SetToJson><Var name="result"/></SetToJson></Var>
+              
+
+              <If condition="$test == $expectedResult">
+                <Then><Var name="code">0</Var></Then>
+                <Else><Var name="code">-1</Var></Else>
+              </If>
+              
+              <Var name="result" key="code"><Var name="code"/></Var>
+              <Var name="result" key="data">
+                <StringLib method="concatenate">
+                  <Param><Var name="test"/></Param>
+                  <Param>::</Param>
+                  <Param><Var name="expectedResult"/></Param>
+                </StringLib>
+              </Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            </Begin>
+        </Function>
+    </Library>
+</Node>
+

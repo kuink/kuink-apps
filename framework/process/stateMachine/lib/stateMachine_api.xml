@@ -498,6 +498,53 @@
 					</Begin>
         </Function>				
 
+		<Function name="getPlantUMLState" doc="Get the PlantUml string">
+			<Params>
+			  <Param name="id_state_machine" type="text" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+			</Params>
+			<Return type="string" doc=""/>
+			<Begin>
+				<Var name="uml" dump="true">
+					<DataAccess method="this,this,plantUMLState">
+						<Param name="id_state_machine">
+						  <Var name="PARAMS" key="id_state_machine"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<Var name="plantUML"><String/></Var>
+				<ForEach var="uml" item="umlLine">
+					<Var name="plantUML" dump="true"><String.parse><![CDATA[$plantUML<br/> $umlLine->uml]]></String.parse></Var>
+				</ForEach>
+			  <Return>
+				  <Var name="plantUML"/>
+			  </Return>
+			</Begin>
+		  </Function>
+
+		  <Function name="getPlantUMLSequence" doc="Get the PlantUml string">
+			<Params>
+			  <Param name="id_state_machine" type="text" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+			</Params>
+			<Return type="string" doc=""/>
+			<Begin>
+				<Var name="uml" dump="true">
+					<DataAccess method="this,this,plantUMLSequence">
+						<Param name="id_state_machine">
+						  <Var name="PARAMS" key="id_state_machine"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<Var name="plantUML"><String/></Var>
+				<ForEach var="uml" item="umlLine">
+					<Var name="plantUML" dump="true"><String.parse><![CDATA[$plantUML<br/> $umlLine->uml]]></String.parse></Var>
+				</ForEach>
+			  <Return>
+				  <Var name="plantUML"/>
+			  </Return>
+			</Begin>
+		  </Function>
+
+
     </Library>
 </Node>
 

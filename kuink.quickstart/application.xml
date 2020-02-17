@@ -32,6 +32,7 @@
 			<Menu role="Teacher" label="Chart">
 				<Menu role="Teacher" label="Chart.simple@TODO" />
 			</Menu>
+			<Menu role="Teacher" label="Uml.simple" startuc="uml" startnode="" event="init" default="false"/>
 		</Menu>
 		<Menu role="Teacher" label="Connectors">
 			<Menu role="Teacher" label="SqlDatabaseConnector@TODO" />

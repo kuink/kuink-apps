@@ -9,8 +9,11 @@
     <String key="transitions" value="Transições"/>
     <String key="forms" value="Campos"/>
     <String key="states" value="Estados"/>
+    <String key="diagramState" value="Diagrama Estados"/>
+    <String key="diagramSequence" value="Diagrama Sequência"/>
     <String key="is_active" value="Ativo"/>
     <String key="code" value="Código"/>
+    <String key="diagram" value="Diagrama"/>
 
     <!-- State -->
     <String key="name_public" value="Nome Público"/>
