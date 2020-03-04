@@ -217,6 +217,7 @@
               <Var name="PARAMS" key="text"/>
             </Param>
             <Param name="isManager"><Var name="isManager"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
             <Param name="_pageNum">
               <Var name="PARAMS" key="pagenum"/>
             </Param>
@@ -352,7 +353,8 @@
     </Params>
     <Return type="multiple"/>
     <Begin>
-      <Var name="versions">
+      <Var name="PARAMS" dump="true"/>
+      <Var name="versions" dump="true">
         <DataAccess method="getAll">
           <Param name="_entity">fw_rm_controlled_document_version</Param>
           <Param name="id_controlled_document"><Var name="PARAMS" key="id_controlled_document"/></Param>
@@ -363,7 +365,7 @@
       <!-- Build the observations set -->
       <Var name="obs"><Set/></Var>
       <ForEach var="versions" item="version">
-        <Var name="comments">
+        <Var name="comments" dump="true">
           <Call library="framework,wf.process,api" function="getProcessInstanceHistoryData">
             <Param name="id_process_instance"><Var name="version" key="id_wf_instance"/></Param>
             <Param name="id_person"><Var name="USER" key="id"/></Param>
@@ -882,41 +884,41 @@
 			</Params>
 			<Return type="int"/>
 			<Begin>
-        <Var name="version" dump="true">
+        <Var name="version">
           <DataAccess method="load">
             <Param name="_entity">fw_rm_controlled_document_version</Param>
             <Param name="id"><Var name="id_version"/></Param>
           </DataAccess>
         </Var>
 
-        <Var name="cd" dump="true">
+        <Var name="cd">
           <Call function="getById">
             <Param name="id"><Var name="version" key="id_controlled_document"/></Param>
           </Call>
         </Var>
         <!-- get the workflow information. If not set, then cannot start this workflow -->
-        <Var name="workflowConfiguration" dump="true">
+        <Var name="workflowConfiguration">
           <Call library="framework,rm.class.workflow,api" function="getWorkflow">
             <Param name="id_class"><Var name="cd" key="id_class"/></Param>
             <Param name="type_code"><String>controlledDocument.approval</String></Param>
           </Call>          
         </Var>
         
-        <Var name="workflowTypeConfiguration" dump="true">
+        <Var name="workflowTypeConfiguration">
           <Call library="framework,rm.class.workflow,api" function="getWorkflowTypeConfigurationKey">
             <Param name="id_type"><Var name="workflowConfiguration" key="id_type"/></Param>
             <Param name="key"><String>controlledDocument</String></Param>
           </Call>          
         </Var>
 
-        <Var name="approvalFolder" dump="true">
+        <Var name="approvalFolder">
           <Call function="getFolder">
             <Param name="id_class"><Var name="cd" key="id_class"/></Param>
             <Param name="workflowTypeConfiguration"><Var name="workflowTypeConfiguration"/></Param>
             <Param name="folder"><String>approval</String></Param>
           </Call>
         </Var>
-        <Var name="currentFolder" dump="true">
+        <Var name="currentFolder">
           <Call function="getFolder">
             <Param name="id_class"><Var name="cd" key="id_class"/></Param>
             <Param name="workflowTypeConfiguration"><Var name="workflowTypeConfiguration"/></Param>
@@ -1128,7 +1130,6 @@
 			<Return type="int"/>
 			<Begin>
 			 <Trace><String.parse>WORKFLOW Callback result:$result instance:$id_process_instance object:$id_object</String.parse></Trace>
-       <Var name="PARAMS" dump="true"/>
         <Var name="version">
           <DataAccess method="load">
             <Param name="_entity">fw_rm_controlled_document_version</Param>
@@ -1192,27 +1193,41 @@
               <!-- Inject the approval date in the document property -->
               <If condition="$version->id_file != null">
                 <Then>
-                  <Var name="approvalDate">
-                    <FormatterLib method="format">
-                      <Param>DateTime</Param>
-                      <Param>shortDate</Param>
-                      <Param><Now/></Param>
-                    </FormatterLib>
+                  <!--Only if the file is in editable format. If pdf do nothing -->
+                  <Var name="file">
+                    <Call library="framework,file,api" function="get">
+                      <Param name="id"><Var name="version" key="id_file"/></Param> 
+                    </Call>
                   </Var>
-                  <DataSource name="office" connector="OfficeConnector">
-                    <Param name="idFile"><Var name="version" key="id_file"/></Param>
-                  </DataSource>           
-                  <DataAccess method="setProperty" datasource="office">
-                    <Param name="_approvalDate"><Var name="approvalDate"/></Param>
-                  </DataAccess>           
-                  <DataAccess method="save" datasource="office"/>
+                  <If condition="$file->ext != 'pdf'">
+                    <Then>
+                      <Trace><String.parse>Editable: Setting approval date</String.parse></Trace>
+                      <Var name="approvalDate">
+                        <FormatterLib method="format">
+                          <Param>DateTime</Param>
+                          <Param>shortDate</Param>
+                          <Param><Now/></Param>
+                        </FormatterLib>
+                      </Var>
+                      <DataSource name="office" connector="OfficeConnector">
+                        <Param name="idFile"><Var name="version" key="id_file"/></Param>
+                      </DataSource>           
+                      <DataAccess method="setProperty" datasource="office">
+                        <Param name="_approvalDate"><Var name="approvalDate"/></Param>
+                      </DataAccess>           
+                      <DataAccess method="save" datasource="office"/>                      
+                    </Then>
+                    <Else>
+                      <Trace><String.parse>The file is PDF - bypass setting approval date</String.parse></Trace>
+                    </Else>
+                  </If>
                 </Then>
               </If>
 
               <!-- Only move the obsolete version and increment the version number  -->
               <If condition="$controlledDocument->id_current_version != $id_object">
                 <Then>
-                  <Var name="obsoleteVersion" dump="true">
+                  <Var name="obsoleteVersion">
                     <DataAccess method="load">
                       <Param name="_entity">fw_rm_controlled_document_version</Param>
                       <Param name="id"><Var name="controlledDocument" key="id_current_version"/></Param>
@@ -1773,7 +1788,7 @@
         <If condition="$class->metadata_handler != ''">
           <Then>
             <!--Get the metadata from the handler-->
-            <Var name="metadata" dump="true">
+            <Var name="metadata">
               <Call library="$class->metadata_handler">
                 <Param name="codedName"><Var name="originalFileName"/></Param>
                 <Param name="descriptionTemplate"><String>Ata de Reunião $meeting->typeDescription da turma $gecolClass->name - N.º$meeting->number - $evaluationMoment->name - $schoolYear->code</String></Param>
@@ -1793,7 +1808,7 @@
 
         <!--Check if there's allready a document with this code -->
 
-        <Var name="controlledDocument" dump="true">
+        <Var name="controlledDocument">
           <Call library="framework,rm.controlledDocument,api" function="getByCode">
             <Param name="code"><Var name="metadata" key="guidObject"/></Param>
           </Call>        
@@ -1803,7 +1818,7 @@
         <If condition="$controlledDocument->__length == 0">
           <Then>
             <!-- Create the contolled document -->
-            <Var name="result" key="selectedId" dump="true">    
+            <Var name="result" key="selectedId">    
               <Call library="framework,rm.controlledDocument,api" function="add">
                 <Param name="id_controlled_document_type"><Int>0</Int></Param>
                 <Param name="id_class"><Var name="class" key="id"/></Param>

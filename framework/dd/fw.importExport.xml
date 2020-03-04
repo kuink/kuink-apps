@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+    <!-- Override domain inherited definitions or add local definitions here -->
+  </Domains>
+  <Templates>
+    <!-- Override template inherited definitions or add local definitions here -->
+  </Templates>
+  <Entities>
+    <Entity doc="Templates to automate import export" name="fw_import_export_template">
+      <Attributes>
+        <Attribute domain="id" name="id"/>
+        <Attribute domain="text" name="field_list" doc="Personalization fields to create a form"/>
+        <Attribute domain="bool" name="is_fixed" doc="Fixed size file or not"/>
+        <Attribute domain="bool" name="first_line_with_column_names" doc="Does the file has column names in the first line?"/>        
+        <Attribute domain="string" name="separator_list" doc="Csv separators"/>
+        <Attribute domain="string" name="string_delimiter" doc="String csv delimiter"/>
+        <Attribute domain="text" name="configuration"/>
+        <Template name="fw.identity"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  
+  </Entities>
+</Node>

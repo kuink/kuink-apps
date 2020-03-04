@@ -11,6 +11,7 @@
       <XSql>
         <XSelect>
           <XField>
+            p.id as id_person,
             p.public_key as public_key,
             p.display_name as display_name,
             wfpio.obs_public,

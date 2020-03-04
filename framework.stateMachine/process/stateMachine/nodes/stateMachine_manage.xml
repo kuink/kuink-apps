@@ -35,6 +35,8 @@
             <Action name="actions" actionvalue="id"/>
             <Action name="forms" actionvalue="id"/>
             <Action name="transitions" actionvalue="id"/>
+            <Action name="diagramState" actionvalue="id"/>
+            <Action name="diagramSequence" actionvalue="id"/>
           </Actions>
         </Template>
       </Grid>
@@ -65,6 +67,14 @@
           <Button id="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
+    </Screen>
+    <Screen id="scrUml" doc="Uml Screen">
+      <Form name="frmOptions">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Uml name="umlViewer" format="svg" title="diagram"/>
     </Screen>
   </Screens>
   <Actions>
@@ -195,6 +205,26 @@
       <RaiseEvent name="forms">
         <Param name="idStateMachine"><ActionValue/></Param>
       </RaiseEvent>
+    </Action>
+    <Action name="diagramState" screen="scrUml">
+      <Var name="plantUml" dump="true">
+        <Call library="framework,stateMachine,api" function="getPlantUMLState">
+          <Param name="id_state_machine"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="umlViewer">
+        <Param><Var name="plantUml"/></Param>
+      </Control>      
+    </Action>
+    <Action name="diagramSequence" screen="scrUml">
+      <Var name="plantUml" dump="true">
+        <Call library="framework,stateMachine,api" function="getPlantUMLSequence">
+          <Param name="id_state_machine"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="umlViewer">
+        <Param><Var name="plantUml"/></Param>
+    </Control>      
     </Action>
 
   </Actions>
