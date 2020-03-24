@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>    
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="application"/>
+      <Param name="process"/>
+      <Param name="node"/>
+      <Param name="type"/>
+  </Params>
+  <Screens>
+    <Screen id="scrDiagram" doc="Diagram">
+      <Uml name="umlViewer" format="svg" title="diagram"/>
+    </Screen>
+	</Screens>
+
+  <Actions>
+    <Action name="init" screen="scrDiagram">
+      <Var name="application"><Var name="PARAMS" key="application"/></Var>
+      <Var name="process"><Var name="PARAMS" key="process"/></Var>
+      <Var name="node"><Var name="PARAMS" key="node"/></Var>
+      <Var name="event"><Var name="PARAMS" key="event"/></Var>
+      <NativeCode>
+        <![CDATA[ 
+          $variables['uml'] = \Neon\Core\Reflection::getUml($variables['application'], $variables['process']);	
+        ]]>
+        </NativeCode>
+        <Print><Var name="uml"/></Print>
+        <Control method="bind" object="umlViewer">
+          <Param><Var name="uml"/></Param>
+        </Control>         
+    </Action>
+        
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

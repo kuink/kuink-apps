@@ -4,6 +4,7 @@
 		<!-- manage -->
 		<String key="application" value="Aplicações"/>
 		<String key="manage" value="Gerir"/>
+		<String key="prerequisites" value="Pré-Requisitos"/>
 		
 		<String key="base" value="Base"/>
 		<String key="version" value="Versão"/>

@@ -13,10 +13,12 @@
       <Param name="idForm" doc="The form to fill used if no response is set in these params"/>
       <Param name="idFormResponse" doc="The id of the response, it will override the form"/>
       <Param name="guidObject" doc="The identifier of the context object used when no person is registered in the system "/>
+      <Param name="subtitle" doc="A custom subtitle"/>
   </Params>
   <Screens>
     <Screen id="fillScreen" doc="Fill the form">
-			<HtmlContainer name="title"/>
+      <HtmlContainer name="title"/>
+      <HtmlContainer name="subtitle"/>
       <Form name="fillForm">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="back"/>
@@ -24,7 +26,7 @@
       </Form>
    	</Screen>
 		<Screen id="showScreen">
-			<HtmlContainer name="title"/>  		
+      <HtmlContainer name="title"/>
 			<Custom name="inquiryCtrl" control="framework.form,manage,show"/>
 		</Screen>
   </Screens>
@@ -88,7 +90,18 @@
          	</Lang>
          </Param>
       </Control>
-			
+      <If condition="$PARAMS->subtitle != ''">
+        <Then>
+          <Control method="bind" object="subtitle">
+            <Param>
+              <Lang key="subtitle">
+                <Param><Var name="PARAMS" key="subtitle"/></Param>
+              </Lang>
+            </Param>
+         </Control>
+        </Then>
+      </If>
+     
 			<!--Control method="setProperty" object="fillForm">
 				<Param>title</Param>
 				<Param>AA</Param>
@@ -110,25 +123,11 @@
     </Action>       
 
 		<Action name="showForm" screen="showScreen">
-			<!--Var name="form">
-				<Call library="framework,form,api" function="getById">
-					<Param name="id"><Var name="PARAMS" key="idForm"/></Param>
-					<Param name="id_form_response"><Var name="PARAMS" key="idFormResponse"/></Param>
-					<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-				</Call>
-			</Var-->
-      <!--Control method="bind" object="title">
-         <Param>
-         	<Lang key="title">
-         		<Param><Var name="form" key="description"/></Param>
-         	</Lang>
-         </Param>
-      </Control-->
-		
 			<Control method="bind" object="inquiryCtrl">
 				<Param name="id"><Var name="PARAMS" key="idForm"/></Param>
 				<Param name="idFormResponse"><Var name="PARAMS" key="idFormResponse"/></Param>
-				<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+        <Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+        <Param name="subtitle"><Var name="PARAMS" key="subtitle"/></Param>
 			</Control>
 		</Action>		
 
