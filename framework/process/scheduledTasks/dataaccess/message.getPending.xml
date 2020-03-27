@@ -10,8 +10,7 @@
           <XSelect>
             <XField>
               <![CDATA[
-                TOP 200 *
-                
+                *
               ]]> 
             </XField>
           </XSelect>
