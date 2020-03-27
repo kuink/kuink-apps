@@ -10,7 +10,7 @@
           <XSelect>
             <XField>
               <![CDATA[
-                *
+                TOP 200 *
                 
               ]]> 
             </XField>
@@ -24,6 +24,7 @@
               <XCondition>is_sent='0'</XCondition>
               <XCondition optional="now"><![CDATA[AND send_date<='{param->now}']]></XCondition>
             </XWhere>
+            <XOrdeBy>_creation ASC LIMIT 200</XOrdeBy>
          </XSql>
       </Sql>
     </Body>
