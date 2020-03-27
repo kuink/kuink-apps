@@ -24,7 +24,7 @@
               <XCondition optional="now"><![CDATA[AND send_date<='{param->now}']]></XCondition>
             </XWhere>
             <XOrderBy>
-              <XOrder>_creation ASC LIMIT 200</XOrder>
+              <XOrder>_creation ASC LIMIT 500</XOrder>
             </XOrderBy>
          </XSql>
       </Sql>
