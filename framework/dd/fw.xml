@@ -38,6 +38,7 @@
     <Domain name="timestamp" type="datetime" />
     <Domain name="ip" type="string" size="128" doc="Supports ipv4 and ipv6" />
     <Domain name="url" type="string" size="256" doc="url specification"/>
+    <Domain name="uri" type="string" size="256" doc="uri specification"/>
   </Domains>
   <Templates>
     <Template name="fw.base">

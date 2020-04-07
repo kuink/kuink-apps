@@ -30,6 +30,7 @@
         <String key="key" value="Chave"/>
         <String key="message" value="Mensagem"/>
         <String key="home" value="Home"/>
+        <String key="file" value="Ficheiro"/>
 
         <String key="_creation" value="Criação"/>
         <String key="_creation_ip" value="IP Criação"/>
