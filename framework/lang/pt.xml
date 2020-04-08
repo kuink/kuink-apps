@@ -144,6 +144,14 @@
         <String key="weekday_6" value="sábado" />
         <String key="weekday_7" value="domingo" />
 
+        <String key="weekDay_1" value="Segunda" />
+        <String key="weekDay_2" value="Terça" />
+        <String key="weekDay_3" value="Quarta" />
+        <String key="weekDay_4" value="Quinta" />
+        <String key="weekDay_5" value="Sexta" />
+        <String key="weekDay_6" value="Sábado" />
+        <String key="weekDay_7" value="Domingo" />        
+
         <String key="sundayShort" value="dom"/>
         <String key="mondayShort" value="seg"/>
         <String key="tuesdayShort" value="ter"/>
