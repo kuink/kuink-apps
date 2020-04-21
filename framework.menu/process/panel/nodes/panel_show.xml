@@ -12,7 +12,6 @@
   </Params>
   <Screens>
     <Screen id="scrMain" doc="Main screen">
-      <HtmlContainer name="htmlCallout"/>
       <Repeatable name="rptItems" template="menuBox" cols="4" type="type" icon="icon" label="name" url="url" tooltip="description"/>
     </Screen>
   </Screens>
@@ -29,23 +28,6 @@
           <Param><Var name="personData" key="person_type_code"/></Param>
         </IsNull>
       </Var>
-      <If condition="$code=='STD'">
-        <Then>
-          <Control method="bind" object="htmlCallout">
-              <Param><String>
-                <![CDATA[
-                  <div class="container">
-                    <div class="row">
-                      <div class="col-lg-12">
-                          <img src="http://localhost/moodle/mod/neon/stream.php?type=resource&kid=framework.menu,panel,STDCallout.png"/>
-                      </div>
-                    </div>                                
-                  </div>
-                ]]>
-              </String></Param>
-          </Control>
-        </Then>
-      </If>
       <Var name="menuItems">
         <Call library="framework,menu,api" function="getItemsByMenuCode">
           <Param name="code"><Var name="code"/></Param>
