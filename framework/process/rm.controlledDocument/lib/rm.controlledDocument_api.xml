@@ -1504,12 +1504,28 @@
                 <Exception><String parse="true">framework/rm.controlledDocument::notExist ($PARAMS-id $PARAMS->code)</String></Exception>
             </Then>
           </If>
-          <Var name="version">
-            <DataAccess method="load">
-              <Param name="_entity">fw_rm_controlled_document_version</Param>
-              <Param name="id"><Var name="cd" key="id_current_version"/></Param>
-            </DataAccess>
-          </Var>
+          
+          <!-- Check if the document has a current version and get it. If not get the latest version -->
+          <If condition="$cd->id_current_version != 0">
+            <Then>
+              <Var name="version">
+                <DataAccess method="load">
+                  <Param name="_entity">fw_rm_controlled_document_version</Param>
+                  <Param name="id"><Var name="cd" key="id_current_version"/></Param>
+                </DataAccess>
+              </Var>
+            </Then>
+            <Else>
+              <Var name="version">
+                <DataAccess method="load">
+                  <Param name="_entity">fw_rm_controlled_document_version</Param>
+                  <Param name="id_controlled_document"><Var name="cd" key="id"/></Param>
+                  <Param name="_sort"><String>id desc</String>></Param>
+                </DataAccess>
+              </Var>
+            </Else>
+          </If>
+
           <If condition="$version->id_file == ''">
             <Then>
                 <Exception><String parse="true">framework/rm.controlledDocument::fileNotExist ($PARAMS-id $PARAMS->code)</String></Exception>

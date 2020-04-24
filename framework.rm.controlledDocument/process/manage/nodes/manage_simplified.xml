@@ -198,7 +198,7 @@
         </Call>
       </Var>
       <Var name="selectedId" process="true"><Var name="result" key="selectedId"/></Var>
-      <Var name="idVersion" process="true"><Var name="resuklt" key="idVersion"/></Var>
+      <Var name="idVersion" process="true"><Var name="result" key="idVersion"/></Var>
 
       <UserMessage type="success"><Lang key="newVersionSuccess"/></UserMessage>
       <!--Action name="startWorkflow"/-->
