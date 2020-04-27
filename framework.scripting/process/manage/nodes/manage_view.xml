@@ -52,10 +52,12 @@
         </StringLib>
       </Var>
       
-      <Call function="saveScript">
-        <Param name="id"><Var name="PARAMS" key="id"/></Param>
-        <Param name="data"><Var name="POSTDATA"/></Param>
-      </Call>   
+      <Var name="id">
+        <Call function="saveScript">
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          <Param name="data"><Var name="POSTDATA"/></Param>
+        </Call>
+      </Var>
       
       <RaiseEvent name="execute">
         <Param name="id"><Var name="id"/></Param>
@@ -104,7 +106,7 @@
                 </Call>      
               </Else>
             </If>
-            <Return/>
+            <Return><Var name="id"/></Return>
           </Begin>
       </Function>
   </Library>
