@@ -170,19 +170,16 @@
         <!--Text id="template" required="false"/-->
         <File id="file" required="false"/>
         <CodeEditor id="template_src"/>
+        <CodeEditor id="template_config"/>
         <CodeEditor id="test_data"/>        
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="manage"/>
           <Button id="save" type="update" label="save" action="saveVersion"/>
+          <Button id="download" type="download" label="download" action="downloadVersionTPL"/>          
         </ButtonGroup>
       </Form>
       <DocViewer name="dcPreview" title="previewDoc" position="left"/>
       <HtmlContainer name="htmlPreview" title="previewTpl" position="right"/>
-      <Form name="tplOptions" position="right">
-        <ButtonGroup>
-          <Button id="download" type="download" label="download" action="downloadVersionTPL"/>
-        </ButtonGroup>      
-      </Form>
     </Screen>
   </Screens>
   <Actions>
@@ -213,11 +210,16 @@
       <Permissions>
         <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
       </Permissions>    
+      <Permissions>
+        <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
+      </Permissions>
+
       <Call library="framework,rm.controlledDocument,api" function="getVersionAutoContentPdf">
         <Param name="id_version"><Var name="idVersion" process="true"/></Param>
         <Param name="use_test_data"><Int>1</Int></Param>
+        <Param name="download"><Int>1</Int></Param>
       </Call>
-      <Action name="init"/>
+      <Action name="editVersion"/>
     </Action>
 
     <Action name="search" screen="scrSearch">
@@ -388,15 +390,6 @@
         </Else>
       </If>
       
-      <!-- Handle the class template id_class. Remove all and add -->
-      <!--Call library="framework,rm.controlledDocument,api" function="removeFromClasses">
-        <Param name="id"><Var name="selectedId" process="true"/></Param>
-      </Call>
-      <Call library="framework,rm.controlledDocument,api" function="addToClass">
-        <Param name="id"><Var name="selectedId" process="true"/></Param>
-        <Param name="id_class"><Var name="id_class"/></Param>
-      </Call-->      
-      
       <Action name="search"/>
     </Action>
     
@@ -488,9 +481,15 @@
           </Param>
         </Call>
       </Var>
-      <Var name="docClassData" dump="true">
+      <!--Var name="docClassData" dump="true">
         <Call library="framework,rm.controlledDocument,api" function="getClassData">
           <Param name="code"><Var name="cntDoc" key="code"/></Param>
+        </Call>
+      </Var-->
+      <!-- Get the class where this document is a template -->
+      <Var name="docClassData" dump="true">
+        <Call library="framework,rm.controlledDocument,api" function="getTemplateClassData">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
         </Call>
       </Var>
       
@@ -533,7 +532,7 @@
     </Action>
 
     <Action name="editVersionSet">
-      <Var name="idVersion" process="true"><ActionValue/></Var>
+      <Var name="idVersion" process="true"><ActionValue/></Var>    
       <Action name="editVersion"/>
     </Action>
 
@@ -630,7 +629,8 @@
 	             <Param name="id_controlled_document"><Var name="selectedId" process="true"/></Param>
 	             <Param name="reason"><Var name="POSTDATA" key="reason"/></Param>
 	             <Param name="id_file"><Var name="idFile"/></Param>
-	              <Param name="template_src"><Var name="POSTDATA" key="template_src"/></Param>
+                <Param name="template_src"><Var name="POSTDATA" key="template_src"/></Param>
+                <Param name="template_config"><Var name="POSTDATA" key="template_config"/></Param>
 	              <Param name="test_data"><Var name="POSTDATA" key="test_data"/></Param>
 	           </Call>
            </Var>           
@@ -643,6 +643,7 @@
              <Param name="reason"><Var name="POSTDATA" key="reason"/></Param>
              <Param name="id_file"><Var name="idFile"/></Param>
              <Param name="template_src"><Var name="POSTDATA" key="template_src"/></Param>
+             <Param name="template_config"><Var name="POSTDATA" key="template_config"/></Param>             
              <Param name="test_data"><Var name="POSTDATA" key="test_data"/></Param>
            </Call>           
 				</Else>

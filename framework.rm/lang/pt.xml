@@ -24,6 +24,8 @@
     <String key="aggDesc" value="Descrição"/>
     <String key="recName" value="Registo"/>
     <String key="recDesc" value="Descrição"/>
+    <String key="security" value="Segurança"/>
+    <String key="id_access_level_classification" value="Nível de classificação"/>
 
     <String key="records" value="Documentos/Registos"/>
      <String key="text" value="Texto"/>

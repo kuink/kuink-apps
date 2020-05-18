@@ -38,6 +38,8 @@
     <String key="classification" value="Classificação"/>
     <String key="disposal_info" value="Destino Final"/>
     <String key="location" value="Localização"/>
+    <String key="id_class" value="Código Classificação"/>
+    <String key="id_class_template" value="Modelo para Código de Classificação"/>
     <String key="class" value="Código Classificação"/>
     <String key="class_code" value="Código Classificação"/>
     <String key="class_full_name" value="Código Classificação"/>
@@ -55,6 +57,7 @@
     <String key="previewDoc" value="Pré-visualizar Documento"/>
     <String key="previewTpl" value="Pré-visualizar Tpl"/>
     <String key="template_src" value="Fonte Tpl"/>
+    <String key="template_config" value="Configuração Tpl"/>
     <String key="test_data" value="Dados de Teste"/>
     <String key="file" value="Documento"/>
 

@@ -51,6 +51,9 @@
         <TextArea id="interval_justification"/>
         <Select id="id_action_code" datasource="actions" bindid="id" bindvalue="name"/>
         <TextArea id="action_justification"/>
+        
+        <Header id="security"/>        
+        <Select id="id_access_level_classification" datasource="call:framework,rm.accessLevelClassification,api,getAll" bindid="id" bindvalue="name" />        
 
         <Header id="componentsData"/>        
         <Select id="id_component_type" label="id_component_type" datasource="call:framework,rm.component.type,api,getAll" bindid="id" bindvalue="name" />        

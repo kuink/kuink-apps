@@ -100,7 +100,7 @@
 	            </Call>             
             </Var>					 
             <!-- Allow multiple documents in class -->
-					  <!--If condition="$templates->__length == 0">
+					  <If condition="$templates->__length == 0">
 							<Then>
 		            <Call library="framework,rm.controlledDocument,api" function="addToClass">
 		              <Param name="id"><Var name="id"/></Param>
@@ -110,7 +110,7 @@
 							<Else>
 							 <Exception>framework/rm.controlleddocument::classAllreadyHasTemplate</Exception>
 							</Else>
-						</If-->
+						</If>
 					</Then>
 				</If>
         <Return>
@@ -478,7 +478,8 @@
         <Param name="id_controlled_document" type="int" required="true" doc="The controlled document to inser the version"/>
         <Param name="reason" type="string" required="true" doc="The reason for this version"/>
         <Param name="id_file" type="int" required="false" doc="The file must exist and created first in the fw_file entity"/>
-        <Param name="template_src" type="text" required="false" doc="If the template src is in not in a file, then this will old the source"/>
+        <Param name="template_src" type="text" required="false" doc="If the template src is in not in a file, then this will hold the source"/>
+        <Param name="template_config" type="text" required="false" doc="If the template src is in not in a file, then this will hold the template configuration"/>
         <Param name="test_data" type="text" required="false" doc="If the src is present then this is a data to test the template and to preview it"/>
       </Params>
       <Exceptions>
@@ -508,6 +509,7 @@
               <Param name="reason"><Var name="reason"/></Param>
               <Param name="id_file"><Var name="id_file"/></Param>
               <Param name="template_src"><Var name="template_src"/></Param>
+              <Param name="template_config"><Var name="template_config"/></Param>
               <Param name="test_data"><Var name="test_data"/></Param>
               <Param name="is_finished"><Int>0</Int></Param>
               <Param name="is_active">0</Param>
@@ -658,7 +660,8 @@
         <!-- Create a tmp file to put the content -->
         <Var name="fileName"><Guid/></Var>
         <Var name="id_file">
-	        <DoPDF_v2 register="$registerFile" filename="$fileName" download="false" override="true" marginleft="$templateConfig->marginleft" margintop="$templateConfig->margintop" marginbottom="$templateConfig->marginbottom" marginright="$templateConfig->marginright" header="$templateConfig->header" footer="$templateConfig->footer" orientation="$templateConfig->orientation" background="$templateConfig->background">
+          <!--DoPDF_v2 register="$registerFile" filename="$fileName" download="false" override="true" marginleft="10" margintop="10" marginbottom="10" marginright="10" orientation="portrait"-->
+          <DoPDF_v2 register="$registerFile" filename="$fileName" download="false" override="true" marginleft="$templateConfig->marginleft" margintop="$templateConfig->margintop" marginbottom="$templateConfig->marginbottom" marginright="$templateConfig->marginright" header="$templateConfig->header" footer="$templateConfig->footer" orientation="$templateConfig->orientation" background="$templateConfig->background">
 	          <Param name="content"><Var name="content" /></Param>
 	          <Meta name="creator">controlledDocument</Meta>
 	          <Meta name="author">controlledDocument</Meta>
@@ -671,7 +674,7 @@
         <If condition="$download == 1">
 					<Then>
 		        <!-- Stream the file -->
-		        <Var name="fileNameComplete"><String.parse>$fileName.pdf</String.parse></Var>        
+		        <Var name="fileNameComplete" dump="true"><String.parse>$fileName.pdf</String.parse></Var>        
 		        <FileLib method="downloadTmp">
 		            <Param><Var name="fileNameComplete"/></Param>
 		        </FileLib>
@@ -760,6 +763,7 @@
         <Param name="reason" type="string" required="true" doc="The reason for this version"/>
         <Param name="id_file" type="int" required="false" doc="The file must exist and created first in the fw_file entity"/>
         <Param name="template_src" type="text" required="false" doc="If the template src is in not in a file, then this will old the source"/>
+        <Param name="template_config" type="text" required="false" doc="If the template src is in not in a file, then this will hold the template configuration"/>
         <Param name="test_data" type="text" required="false" doc="If the src is present then this is a data to test the template and to preview it"/>
       </Params>
       <Exceptions>
@@ -778,7 +782,8 @@
 	              <Param name="id"><Var name="id_version"/></Param>
 	              <Param name="reason"><Var name="reason"/></Param>
 	              <Param name="id_file"><Var name="id_file"/></Param>
-	              <Param name="template_src"><Var name="template_src"/></Param>
+                <Param name="template_src"><Var name="template_src"/></Param>
+                <Param name="template_config"><Var name="template_config"/></Param>
 	              <Param name="test_data"><Var name="test_data"/></Param>
 	              <Param name="is_active">0</Param>
 	              <Param name="_base">true</Param>
@@ -792,6 +797,7 @@
                 <Param name="id"><Var name="id_version"/></Param>
                 <Param name="reason"><Var name="reason"/></Param>
                 <Param name="template_src"><Var name="template_src"/></Param>
+                <Param name="template_config"><Var name="template_config"/></Param>
                 <Param name="test_data"><Var name="test_data"/></Param>
                 <Param name="is_active">0</Param>
                 <Param name="_base">true</Param>
@@ -1672,6 +1678,40 @@
       </Begin>
     </Function>
 
+    <Function name="getTemplateClassData" doc="Get the controlled document template class data. The class where this document is a template!">
+      <Params>
+        <Param name="id" type="int" doc="The controlled document id"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.controlledDocument::classNotExist" doc="The rm class does not exist"/>
+      </Exceptions>
+      <Return type="single" doc="Class data"/>
+      <Begin>
+        <!-- Check if the controlled Document exists -->
+        <Var name="cd">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document</Param>
+            <Param name="id"><Var name="id"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$cd->__length == 0">
+          <Then>
+              <Exception><String parse="true">framework/rm.controlledDocument::notExist ($PARAMS->id)</String></Exception>
+          </Then>
+        </If>
+
+        <!-- Check if it is a template in a class -->
+        <Var name="templateClass">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document_class_template</Param>
+            <Param name="id_controlled_document"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return><Var name="templateClass"/></Return>
+      </Begin>
+    </Function>
+
 		<Function scope="protected" name="getNewVersionsSummary" doc="Get the new version summary to notify">
 			<Params>
 			</Params>
@@ -1855,6 +1895,7 @@
             <Param name="reason"><String/></Param>
             <Param name="id_file"><Var name="idFile"/></Param>
             <Param name="template_src"><Null/></Param>
+            <Param name="template_config"><Null/></Param>            
             <Param name="test_data"><Null/></Param>
           </Call>
         </Var>

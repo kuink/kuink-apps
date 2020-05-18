@@ -16,6 +16,7 @@
   </Actions>
   <Library forceinterface="true">
 
+
     <Function name="getAll" doc="Get all templates">
       <Params>
         <Param name="id_class" type="int"/>
