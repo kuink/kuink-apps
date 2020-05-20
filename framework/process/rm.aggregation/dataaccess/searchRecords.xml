@@ -9,7 +9,7 @@
     <Param name="classes" required="false"/>
   </Params>
   <Body>
-    <Sql>
+    <SqlPaginated>
       <XSql>
         <XSelect>
         	<XField>
@@ -46,6 +46,6 @@
 	        <XOrder><![CDATA[ agg.tree_path ASC, r.name DESC ]]></XOrder>
 	    </XOrderBy>
       </XSql>
-    </Sql>
+    </SqlPaginated>
   </Body>
 </Method>

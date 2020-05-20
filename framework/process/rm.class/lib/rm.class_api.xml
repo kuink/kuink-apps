@@ -113,6 +113,22 @@
     </Function>
 
 
+    <Function scope="public" name="getByCodeList" doc="Get class ibfo from code list">
+    <Params>
+      <Param name="codeList" type="string" doc="The code list to get"/>
+    </Params>
+    <Return type="multiple"/>
+    <Begin>
+      <Var name="codeSet"><ListToSet><Var name="PARAMS" key="codeList"/></ListToSet></Var>
+      <Var name="result">
+        <DataAccess method="this,this,class.getFromCodeList">
+          <Param name="codeList"><Var name="codeSet"/></Param>
+        </DataAccess>
+      </Var>
+      <Return><Var name="result"/></Return>
+    </Begin>
+    </Function>
+
     <Function name="addMetadataTemplate" doc="Adds a metadata template to a class">
       <Params>
         <Param name="id_class" type="int" doc="The class id"/>

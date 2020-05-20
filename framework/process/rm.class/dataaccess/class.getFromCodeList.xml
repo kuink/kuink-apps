@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search all class
+  </Doc>
+  <Params>
+	  <Param name="codeList" required="true"/>
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+        	<XField>
+	            c.id as id,
+	            c.code as code,
+              	c.name as name,
+	            c.uuid as uuid,
+	            CONCAT(c.code,'-',c.name) as codename
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_rm_class c
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              c.code IN ({param->codeList})
+            </XCondition>
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[c.name asc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>
