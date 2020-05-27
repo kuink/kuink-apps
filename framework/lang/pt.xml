@@ -116,6 +116,19 @@
                 <String key="month_11" value="novembro"/>
                 <String key="month_12" value="dezembro"/>
 
+                <String key="Month_01" value="Janeiro"/>
+                <String key="Month_02" value="Fevereiro"/>
+                <String key="Month_03" value="Março"/>
+                <String key="Month_04" value="Abril"/>
+                <String key="Month_05" value="Maio"/>
+                <String key="Month_06" value="Junho"/>
+                <String key="Month_07" value="Julho"/>
+                <String key="Month_08" value="Agosto"/>
+                <String key="Month_09" value="Setembro"/>
+                <String key="Month_10" value="Outubro"/>
+                <String key="Month_11" value="Novembro"/>
+                <String key="Month_12" value="Dezembro"/>
+
                 <String key="month_01_short" value="jan"/>
                 <String key="month_02_short" value="fev"/>
                 <String key="month_03_short" value="mar"/>
