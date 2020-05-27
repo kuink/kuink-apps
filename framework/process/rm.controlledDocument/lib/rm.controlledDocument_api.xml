@@ -42,6 +42,7 @@
         <Param name="code_name" type="text" required="false"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="true"/>
+        <Param name="id_class_template" type="text" required="true"/>
       </Params>
       <Exceptions>
         <Exception name="framework/rm.controlleddocument::duplicate" doc="There is already a document with that code"/>
@@ -74,21 +75,6 @@
               <Var name="PARAMS" key="description"/>
             </Param>
             <Param name="_base">true</Param>            
-            <!--Param name="id_company">
-              <Var name="USER" key="idCompany"/>
-            </Param>
-            <Param name="_creation">
-              <DateTimeLib method="Now"/>
-            </Param>
-            <Param name="_creation_ip">
-              <Var name="USER" key="ip"/>
-            </Param>
-            <Param name="_modification">
-              <DateTimeLib method="Now"/>
-            </Param>
-            <Param name="_modification_ip">
-              <Var name="USER" key="ip"/>
-            </Param-->
           </DataAccess>
         </Var>
         <If condition="$PARAMS->id_class_template != ''">
@@ -104,7 +90,7 @@
 							<Then>
 		            <Call library="framework,rm.controlledDocument,api" function="addToClass">
 		              <Param name="id"><Var name="id"/></Param>
-		              <Param name="id_class"><Var name="PARAMS" key="id_class"/></Param>
+		              <Param name="id_class"><Var name="PARAMS" key="id_class_template"/></Param>
 		            </Call>             
 							</Then>
 							<Else>
