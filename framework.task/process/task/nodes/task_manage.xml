@@ -20,7 +20,6 @@
 			<Form name="frmTasks">
 			 <ButtonGroup>
 			   <Button type="submit" id="executeAll" label="executeAll" action="executeAll" icon="play"/>
-			   <!--Button type="submit" decoration="success" id="add" label="add" action="add" icon="plus-sign"/-->
 			   <Button type="add" id="add" label="add" action="add"/>
 			 </ButtonGroup>
 			</Form>

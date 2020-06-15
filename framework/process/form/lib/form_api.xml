@@ -69,6 +69,56 @@
         </Return>
       </Begin>
 	</Function>
+
+    <Function name="copy" doc="Copy a form to a new one">
+	<Params>
+		<Param name="id_form" type="int" required="true" doc="The original form"/>
+		<Param name="newCode" type="text" required="true" doc="Code for the copy"/>
+		<Param name="newName" type="text" required="true" doc="Name for the copy"/>
+		<Param name="newDescription" type="text" required="true" doc="Description for the copy"/>
+	</Params>
+	<Return type="int" doc="The inserted record id"/>
+	<Begin>
+		<!-- Copy the form -->
+		<Var name="form">
+			<DataAccess method="load">
+				<Param name="_entity">fw_form</Param>
+				<Param name="id"><Var name="PARAMS" key="id_form"/></Param>
+			</DataAccess>
+		</Var>
+		<Exception name="framework/form::invalidForm" condition="$form->__length == 0"/>
+		
+		<Var name="form" key="id" clear="true"/>
+		<Var name="form" key="code"><Var name="PARAMS" key="newCode"/></Var>
+		<Var name="form" key="name"><Var name="PARAMS" key="newName"/></Var>
+		<Var name="form" key="description"><Var name="PARAMS" key="newDescription"/></Var>
+		<Var name="form" key="uuid"><Uuid/></Var>
+		<Var name="newIdForm">
+			<DataAccess method="insert" params="form">
+				<Param name="_entity">fw_form</Param>
+				<Param name="_base">true</Param>
+			</DataAccess>
+		</Var>
+
+		<!-- Copy the fields -->
+		<Var name="fields">
+			<DataAccess method="getAll">
+				<Param name="_entity">fw_form_field</Param>
+				<Param name="id_form"><Var name="PARAMS" key="id_form"/></Param>
+			</DataAccess>
+		</Var>
+		<ForEach var="fields" item="field">				
+			<Var name="field" key="id" clear="true"/>
+			<Var name="field" key="id_form"><Var name="newIdForm"/></Var>
+			<Var name="field" key="uuid"><Uuid/></Var>
+			<DataAccess method="insert" params="field">
+				<Param name="_entity">fw_form_field</Param>
+				<Param name="_base">true</Param>
+			</DataAccess>
+		</ForEach>
+		<Return><Var name="newIdForm"/></Return>
+	</Begin>
+	</Function>	
 	
     <Function name="delete" doc="Delete a record by id from table fw_form">
       <Params>

@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>    
+  </Libraries>
+  <Configuration/>
+  <Params>
+      <Param name="result"/>
+  </Params>
+  <Screens>
+
+    <Screen id="scrIcons" doc="All icons used" template="1x2x1col">
+      <Grid name="objects" pageable="false" collapsible="false" title="objects" position="top">
+        <Template>
+          <Columns>
+            <Column name="name">
+              <Formatter name="Style" method="bold" />
+            </Column>
+            <Column name="icon">
+              <Formatter name="Icon" method="simpleIcon" size="16">
+                <Param name="">$icon</Param>
+              </Formatter>
+           </Column>
+          </Columns>
+        </Template>
+      </Grid>
+
+      <Grid name="actions" pageable="false" collapsible="false" title="actions" position="top">
+        <Template>
+          <Columns>
+            <Column name="name">
+              <Formatter name="Style" method="bold" />
+            </Column>
+            <Column name="icon">
+              <Formatter name="Icon" method="simpleIcon" size="16">
+                <Param name="">$icon</Param>
+              </Formatter>
+           </Column>
+          </Columns>
+        </Template>
+      </Grid>
+
+      <Grid name="states" pageable="false" collapsible="false" title="states" position="top">
+        <Template>
+          <Columns>
+            <Column name="name">
+              <Formatter name="Style" method="bold" />
+            </Column>
+            <Column name="icon">
+              <Formatter name="Icon" method="simpleIcon" size="16">
+                <Param name="">$icon</Param>
+              </Formatter>
+           </Column>
+          </Columns>
+        </Template>
+      </Grid>
+
+
+      <Grid name="grdIconsL" pageable="false" collapsible="false" title="icons" position="left">
+        <Template>
+          <Columns>
+            <Column name="name" label="extension">
+              <Formatter name="Style" method="bold" />
+            </Column>
+            <Column name="icon">
+              <Formatter name="Icon" method="simpleIcon" size="16">
+                <Param name="">$icon</Param>
+              </Formatter>
+           </Column>
+          </Columns>
+        </Template>
+      </Grid>
+      <Grid name="grdIconsR" pageable="false" collapsible="false" title="icons" position="right">
+        <Template>
+          <Columns>
+            <Column name="name" label="extension">
+              <Formatter name="Style" method="bold" />
+            </Column>
+            <Column name="icon">
+              <Formatter name="Icon" method="simpleIcon" size="16">
+                <Param name="">$icon</Param>
+              </Formatter>
+           </Column>
+          </Columns>
+        </Template>
+      </Grid>
+
+    </Screen> 
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scrIcons">
+
+      <!-- Actions -->
+      <Var name="icons"><Set/></Var>      
+      <Var name="icons" key=""><Set><Element name="name">new,add,insert</Element><Element name="icon">plus</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">remove,delete</Element><Element name="icon">times</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">save</Element><Element name="icon">save</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">search</Element><Element name="icon">search</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">list</Element><Element name="icon">list</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">tasks</Element><Element name="icon">tasks</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">edit</Element><Element name="icon">edit</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">next,right,continue</Element><Element name="icon">chevron-right</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">previous,left,back</Element><Element name="icon">chevron-left</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">cancel</Element><Element name="icon">caret-left</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">up</Element><Element name="icon">chevron-up</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">down</Element><Element name="icon">chevron-down</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">exchange,swap</Element><Element name="icon">exchange-alt</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">refresh</Element><Element name="icon">sync</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">print</Element><Element name="icon">print</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">lock</Element><Element name="icon">lock</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">unlock</Element><Element name="icon">unlock</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">download</Element><Element name="icon">download</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">upload</Element><Element name="icon">upload</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">attach</Element><Element name="icon">paperclip</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">show</Element><Element name="icon">eye</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">hide</Element><Element name="icon">eye-slash</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">activate,check,toggle-on</Element><Element name="icon">toggle-on</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">deactivate,uncheck,toggle-off</Element><Element name="icon">toggle-off</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">undo</Element><Element name="icon">undo</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">redo</Element><Element name="icon">redo</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">play</Element><Element name="icon">play</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">stop</Element><Element name="icon">square</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">forward</Element><Element name="icon">forward</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">backward</Element><Element name="icon">backward</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">process</Element><Element name="icon">cog</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">multi-process</Element><Element name="icon">cogs</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">operate</Element><Element name="icon">wrench</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">comment</Element><Element name="icon">comment</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">comments</Element><Element name="icon">comments</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">history</Element><Element name="icon">history</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">magic</Element><Element name="icon">magic</Element></Set></Var>
+      <Control object="actions" method="bind">
+        <Param><Var name="icons"/></Param>
+      </Control>      
+
+      <!-- States -->
+      <Var name="icons"><Set/></Var>
+      <Var name="icons" key=""><Set><Element name="name">active</Element><Element name="icon">check-square</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">inactive</Element><Element name="icon">square</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">opened,locked</Element><Element name="icon">lock-open</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">closed,unlocked</Element><Element name="icon">lock</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">envelope-opened</Element><Element name="icon">envelope-open</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">envelope-closed</Element><Element name="icon">envelope</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">file-empty</Element><Element name="icon">file</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">file-full,file-filled</Element><Element name="icon">file-alt</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">visible,shown</Element><Element name="icon">eye</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">invisible,hidden</Element><Element name="icon">eye-slash</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">toggled-on,enabled</Element><Element name="icon">toggle-on</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">toggled-off,disabled</Element><Element name="icon">toggle-off</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">danger,alert,warning</Element><Element name="icon">exclamation-triangle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">info</Element><Element name="icon">info-circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">error</Element><Element name="icon">times-circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">success</Element><Element name="icon">check-circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">question,unknown</Element><Element name="icon">question-circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">commented</Element><Element name="icon">comments</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">tagged</Element><Element name="icon">tags</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">maintenance</Element><Element name="icon">wrench</Element></Set></Var>
+      <Control object="states" method="bind">
+        <Param><Var name="icons"/></Param>
+      </Control>
+
+      <!-- Objects -->
+      <Var name="icons"><Set/></Var>
+      <Var name="icons" key=""><Set><Element name="name">grid,table</Element><Element name="icon">table</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">form</Element><Element name="icon">th-large</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">calendar</Element><Element name="icon">calendar</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">chart-pie</Element><Element name="icon">chart-pie</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">chart-bar</Element><Element name="icon">chart-bar</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">chart-line</Element><Element name="icon">chart-line</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">chart-area</Element><Element name="icon">chart-area</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">bars</Element><Element name="icon">bars</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">user</Element><Element name="icon">user</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">users</Element><Element name="icon">users</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">company</Element><Element name="icon">building</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">cube</Element><Element name="icon">cube</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">minus</Element><Element name="icon">minus</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">plus</Element><Element name="icon">plus</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">times</Element><Element name="icon">times</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">tools</Element><Element name="icon">tools</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">briefcase</Element><Element name="icon">briefcase</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">circle</Element><Element name="icon">circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">square</Element><Element name="icon">square</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">shapes</Element><Element name="icon">shapes</Element></Set></Var>      
+      <Var name="icons" key=""><Set><Element name="name">key</Element><Element name="icon">key</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">star</Element><Element name="icon">star</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">car</Element><Element name="icon">car</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">bolt</Element><Element name="icon">bolt</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">video</Element><Element name="icon">video</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">camera</Element><Element name="icon">camera</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">potrait</Element><Element name="icon">portrait</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">image</Element><Element name="icon">image</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">images</Element><Element name="icon">images</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">server</Element><Element name="icon">server</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">phone</Element><Element name="icon">phone</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">flask</Element><Element name="icon">flask</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">graduation-cap</Element><Element name="icon">graduation-cap</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">diagram</Element><Element name="icon">sitemap</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">right-circle</Element><Element name="icon">arrow-circle-right</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">left-circle</Element><Element name="icon">arrow-circle-left</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">up-circle</Element><Element name="icon">arrow-circle-up</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">down-circle</Element><Element name="icon">arrow-circle-down</Element></Set></Var>
+
+      <Control object="objects" method="bind">
+        <Param><Var name="icons"/></Param>
+      </Control>      
+
+
+      <!-- legacy -->
+      <Var name="icons"><Set/></Var>
+      <Var name="icons" key=""><Set><Element name="name">file</Element><Element name="icon">file</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">minus</Element><Element name="icon">minus</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">plus</Element><Element name="icon">plus</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">building</Element><Element name="icon">building</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">caret-right</Element><Element name="icon">caret-right</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">cube</Element><Element name="icon">cube</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">bars</Element><Element name="icon">bars</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">sync</Element><Element name="icon">sync</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">sitemap</Element><Element name="icon">sitemap</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">file</Element><Element name="icon">file</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">info-circle</Element><Element name="icon">info-circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">th-large</Element><Element name="icon">th-large</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">bars</Element><Element name="icon">bars</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">table</Element><Element name="icon">table</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">sort</Element><Element name="icon">sort</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">sort-down</Element><Element name="icon">sort-down</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">sort-up</Element><Element name="icon">sort-up</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">warning</Element><Element name="icon">warning</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">check-circle icon-black</Element><Element name="icon">check-circle icon-black</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">arrow-circle-up icon-white</Element><Element name="icon">arrow-circle-up icon-white</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">picture-o</Element><Element name="icon">picture-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">calendar</Element><Element name="icon">calendar</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">clock-o</Element><Element name="icon">clock-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">arrow-circle-right</Element><Element name="icon">arrow-circle-right</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">----</Element><Element name="icon">----</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">times</Element><Element name="icon">times</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">download</Element><Element name="icon">download</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">eye</Element><Element name="icon">eye</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">eye-slash</Element><Element name="icon">eye-slash</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">wrench</Element><Element name="icon">wrench</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">lock</Element><Element name="icon">lock</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">envelope</Element><Element name="icon">envelope</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">commenting</Element><Element name="icon">commenting</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">comments</Element><Element name="icon">comments</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">play</Element><Element name="icon">play</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">pencil</Element><Element name="icon">pencil</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">trash-o</Element><Element name="icon">trash-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">circle</Element><Element name="icon">circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">circle-o</Element><Element name="icon">circle-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">chevron-right</Element><Element name="icon">chevron-right</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">chevron-left</Element><Element name="icon">chevron-left</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">car</Element><Element name="icon">car</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">lock</Element><Element name="icon">lock</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">user</Element><Element name="icon">user</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">users</Element><Element name="icon">users</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">graduation-cap</Element><Element name="icon">graduation-cap</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">check-square</Element><Element name="icon">check-square</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">print</Element><Element name="icon">print</Element></Set></Var>
+      <Control object="grdIconsL" method="bind">
+        <Param><Var name="icons"/></Param>
+      </Control> 
+
+      <Var name="icons"><Set/></Var>
+      <Var name="icons" key=""><Set><Element name="name">photo</Element><Element name="icon">photo</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">sliders</Element><Element name="icon">sliders</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">save</Element><Element name="icon">save</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">edit</Element><Element name="icon">edit</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">list</Element><Element name="icon">list</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">list-alt</Element><Element name="icon">list-alt</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">search</Element><Element name="icon">search</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">file-pdf-o</Element><Element name="icon">file-pdf-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">history</Element><Element name="icon">history</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">bolt</Element><Element name="icon">bolt</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">gears</Element><Element name="icon">gears</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">cog</Element><Element name="icon">cog</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">cogs</Element><Element name="icon">cogs</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">tags</Element><Element name="icon">tags</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">bolt</Element><Element name="icon">bolt</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">plus</Element><Element name="icon">plus</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">list-ul</Element><Element name="icon">list-ul</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">magic</Element><Element name="icon">magic</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">file-o </Element><Element name="icon">file-o </Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">files-o</Element><Element name="icon">files-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">exchange</Element><Element name="icon">exchange</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">wrench</Element><Element name="icon">wrench</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">refresh</Element><Element name="icon">refresh</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">sort-numeric-asc</Element><Element name="icon">sort-numeric-asc</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">print</Element><Element name="icon">print</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">remove</Element><Element name="icon">remove</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">check</Element><Element name="icon">check</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">floppy-o</Element><Element name="icon">floppy-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">retweet</Element><Element name="icon">retweet</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">phone</Element><Element name="icon">phone</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">server</Element><Element name="icon">server</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">backward</Element><Element name="icon">backward</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">bar-chart</Element><Element name="icon">bar-chart</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">group</Element><Element name="icon">group</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">unlock</Element><Element name="icon">unlock</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">briefcase</Element><Element name="icon">briefcase</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">tasks</Element><Element name="icon">tasks</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">flask</Element><Element name="icon">flask</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">check-circle</Element><Element name="icon">check-circle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">envelope-o</Element><Element name="icon">envelope-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">times-circle-o</Element><Element name="icon">times-circle-o</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">star</Element><Element name="icon">star</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">key</Element><Element name="icon">key</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">exclamation-triangle</Element><Element name="icon">exclamation-triangle</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">file-alt</Element><Element name="icon">file-alt</Element></Set></Var>
+      <Var name="icons" key=""><Set><Element name="name">video</Element><Element name="icon">video</Element></Set></Var>
+      <Control object="grdIconsR" method="bind">
+        <Param><Var name="icons"/></Param>
+      </Control>      
+
+    </Action>
+
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>
