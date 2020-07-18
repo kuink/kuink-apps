@@ -28,9 +28,9 @@
         <XFrom>
           <XTable>
             fw_agreement_statement st
-            INNER JOIN fw_agreement_statement_lang stl ON (stl.id = st.id AND stl.lang="{param->_lang}")
+            INNER JOIN fw_agreement_statement_lang stl ON (stl.id = st.id AND stl.lang='{param->_lang}')
 						INNER JOIN fw_agreement_statement_type stt ON (stt.id = st.id_agreement_statement_type)
-            INNER JOIN fw_agreement_statement_type_lang sttl ON (sttl.id = stt.id AND sttl.lang="{param->_lang}")            
+            INNER JOIN fw_agreement_statement_type_lang sttl ON (sttl.id = stt.id AND sttl.lang='{param->_lang}')            
           </XTable>
         </XFrom>
         <XWhere>

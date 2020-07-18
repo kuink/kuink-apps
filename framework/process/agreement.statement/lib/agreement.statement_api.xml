@@ -49,7 +49,7 @@
 
         <!--Var name="idList" dump="true"/-->
 
-        <Var name="fields">
+        <Var name="fields" dump="true">
           <DataAccess method="this,this,statement.getFields">
             <Param name="idList"><Var name="idList"/></Param>
             <Param name="_lang"><Var name="USER" key="lang"/></Param>

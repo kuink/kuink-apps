@@ -163,27 +163,31 @@
 
       	<!-- Check if theres a temporary response and bind the form with that response -->
       	<If condition="$PARAMS->useTemporary">
+			<Then>
+				<Var name="currentResponse" dump="true">
+					<Call library="framework,agreement.response,api" function="getCurrentResponse">
+						<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+						<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+						<Param name="contextFormat"><Var name="guidObjectContext" key="_contextFormat"/></Param>
+					</Call>
+				</Var>
+				<Control method="bind" object="statementsForm">
+					<Param><Var name="currentResponse"/></Param>
+				</Control>
+			</Then>
+		</If>
+		<If condition="$PARAMS->data != null">
+			<Then>
+				<Var name="dataSet"><JsonToSet><Var name="PARAMS" key="data"/></JsonToSet></Var>
+				<If condition="$dataSet->__length !== 0">
 					<Then>
-						<Var name="currentResponse" dump="true">
-							<Call library="framework,agreement.response,api" function="getCurrentResponse">
-								<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
-								<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
-								<Param name="contextFormat"><Var name="guidObjectContext" key="_contextFormat"/></Param>
-							</Call>
-						</Var>
 						<Control method="bind" object="statementsForm">
-							<Param><Var name="currentResponse"/></Param>
+							<Param><Var name="dataSet"/></Param>
 						</Control>
 					</Then>
 				</If>
-				<If condition="$PARAMS->data != null">
-					<Then>
-						<Control method="bind" object="statementsForm">
-							<Param><JsonToSet><Var name="PARAMS" key="data"/></JsonToSet></Param>
-						</Control>
-					</Then>
-				</If>
-      
+			</Then>
+		</If>
       </Action>
 
 			<!-- Abstract Action, must be implemented in the node that uses this control -->

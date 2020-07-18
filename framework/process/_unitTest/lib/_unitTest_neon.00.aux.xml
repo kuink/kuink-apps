@@ -83,11 +83,11 @@
 				    <Param name="_sql">
 				    <Xml><Sql>
 				      <![CDATA[
-								CREATE TEMPORARY TABLE `{param->tableName}` (
+								CREATE TEMPORARY TABLE `{@param->tableName}` (
 								  `id` bigint(10) NOT NULL AUTO_INCREMENT,
 								  PRIMARY KEY(id)
 								) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-								CREATE TEMPORARY TABLE `{param->tableNameML}` (
+								CREATE TEMPORARY TABLE `{@param->tableNameML}` (
 								  `id` bigint(10) NOT NULL,
 								  `lang` varchar(64) DEFAULT NULL,
 								  `name` varchar(64) DEFAULT NULL
@@ -119,8 +119,8 @@
 						  	<Param name="tableNameML"><Var name="tableNameML"/></Param>
 						    <Param name="_sql"><Xml><Sql>
 						      <![CDATA[
-										DROP TEMPORARY TABLE `{param->tableName}`;
-										DROP TEMPORARY TABLE `{param->tableNameML}`;
+										DROP TEMPORARY TABLE `{@param->tableName}`;
+										DROP TEMPORARY TABLE `{@param->tableNameML}`;
 						      ]]>
 						    </Sql></Xml></Param>
 						  </DataAccess>					

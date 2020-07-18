@@ -28,7 +28,7 @@
               <XTable>
                 <![CDATA[
                   {param->entity} e 
-                  INNER JOIN fw_agreement ag ON (ag.guid_object = e.{param->entityGuidObjectKey} AND ag.is_active = 1)
+                  INNER JOIN fw_agreement ag ON (ag.guid_object = e.{@param->entityGuidObjectKey} AND ag.is_active = 1)
                   INNER JOIN fw_agreement_response agr ON (agr.id_agreement = ag.id)   
                   INNER JOIN fw_agreement_statement ags ON (ags.id = agr.id_agreement_statement)
                   INNER JOIN fw_agreement_statement_lang agsl ON (agsl.id = ags.id)
