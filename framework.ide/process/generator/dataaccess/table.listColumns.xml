@@ -4,7 +4,7 @@
     returns the list of all columns of a given table
     </Doc>
     <Params>
-    	<Param name="table"/>
+    	<Param name="entity"/>
     	<Param name="schema"/>
     </Params>
     <Body>
@@ -36,7 +36,7 @@
  					INFORMATION_SCHEMA.COLUMNS c
  					LEFT JOIN information_schema.KEY_COLUMN_USAGE k ON (c.column_name = k.column_name AND c.table_name = k.table_name AND k.constraint_schema = c.table_schema) 
   				WHERE 
-  					c.table_name = '{param->_entity}' 
+  					c.table_name = '{param->entity}' 
   					AND c.table_schema = '{param->schema}'
             ]]>
         </Sql>

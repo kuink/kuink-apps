@@ -196,13 +196,13 @@
     </Action>
 
     <Action name="step02" screen="sc02">
-      <Var name="POSTDATA" />
+      <Var name="POSTDATA" dump="true"/>
       <Var name="general" process="true">
         <Var name="POSTDATA"/>
       </Var>
-      <Var name="columns">
+      <Var name="columns" dump="true">
         <DataAccess method="this,this,table.listColumns">
-          <Param name="table">
+          <Param name="entity">
             <Var name="POSTDATA" key="entity"/>
           </Param>
           <Param name="schema"><DataAccess method="getSchemaName"/></Param>
