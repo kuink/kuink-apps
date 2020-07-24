@@ -21,7 +21,7 @@
               	<Try>
 	              	<Instructions>
 										<Var name="test" key="resultAdd">
-											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.aux" function="addTestData"/>
+											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.{$unitNode}.aux" function="addTestData"/>
 										</Var>
 									</Instructions>
 									<Catch>
@@ -50,12 +50,12 @@
 					      {/foreach}
 								
 								<Var name="test" key="resultUpdate">
-									<Call library="{$apiApplication},{$apiProcess},api" function="update" params="newData"/>
+									<Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="update" params="newData"/>
 								</Var>
 																
 								<!-- Check if the updated data is the same as the one being updated -->
 								<Var name="record">
-									<Call library="{$apiApplication},{$apiProcess},api" function="getById">
+									<Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
 										<Param name="id"><Var name="test" key="resultAdd"/></Param>
 									</Call>
 								</Var>

@@ -20,8 +20,8 @@
               	<Var name="test" key="result"><String/></Var>
               	<Try>
 	              	<Instructions>
-										<Var name="test" key="resultAdd">
-											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.aux" function="addTestData"/>
+										<Var name="test" key="result">
+											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.{$unitNode}.aux" function="addTestData"/>
 										</Var>
 									</Instructions>
 									<Catch>
@@ -29,30 +29,14 @@
 									
 									</Catch>
 								</Try>	
-								<!-- The test record has been inserted, now try to delete it -->
-								<Var name="result" key="data"><String.parse>Inserted id: $test->resultAdd</String.parse></Var>
-								
-								<Var name="test" key="resultDelete">
-									<Call library="{$apiApplication},{$apiProcess},api" function="delete">
-										<Param name="id"><Var name="test" key="resultAdd"/></Param>
-									</Call>
-								</Var>
-								
-								<!-- Check if the record exists -->
-								<Var name="record">
-									<Call library="{$apiApplication},{$apiProcess},api" function="getById">
-										<Param name="id"><Var name="test" key="resultAdd"/></Param>
-									</Call>
-								</Var>
-								<Var name="result" key="data"><String.parse>$result->data Tested id: $record->id</String.parse></Var>
-								
 										
-	              <If condition="$record->__length == 0">
+	              <If condition="$test->result != ''">
 	                <Then><Var name="code">0</Var></Then>
 	                <Else><Var name="code">-1</Var></Else>
 	              </If>
 	              
 	              <Var name="result" key="code"><Var name="code"/></Var>
+	              <Var name="result" key="data"><String.parse>Inserted id: $test->result</String.parse></Var>
 	              <RollBack/>
               </Transaction>
               <Return>
@@ -60,4 +44,4 @@
               </Return>
             </Begin>
         </Function>
-				{/nocache}
+        {/nocache}

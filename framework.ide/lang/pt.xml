@@ -4,7 +4,6 @@
 		<!-- IDE -->
 		<String key="ide" value="IDE"/>
     
-    
 		<!-- Generator -->
 		<String key="generator" value="Gerador"/>
 		<String key="generate" value="Gerar"/>
@@ -19,12 +18,14 @@
 		<String key="apiBase" value="Base"/>
 		<String key="apiApplication" value="Aplicação"/>
 		<String key="apiProcess" value="Processo"/>
+		<String key="apiNode" value="Nó"/>
 		<String key="nodeBase" value="Base"/>
 		<String key="nodeApplication" value="Aplicação"/>
 		<String key="nodeProcess" value="Processo"/>
 		<String key="unitBase" value="Base"/>
 		<String key="unitApplication" value="Aplicação"/>
-		<String key="unitProcess" value="Processo"/>		
+		<String key="unitProcess" value="Processo"/>
+		<String key="unitNode" value="Nó"/>
    </Strings>
    <HelpStrings>              
    </HelpStrings>

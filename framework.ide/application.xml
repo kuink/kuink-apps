@@ -10,7 +10,7 @@
     </Databases>
     <Menus>
         <Menu role="Teacher" startuc="ide" startnode="" event="manageEntity" label="entity" description="entity" default="false"/>
-        <Menu role="Teacher" startuc="ide" startnode="" event="generator" label="ide" description="generator" default="false"/>
+        <Menu role="Teacher" startuc="ide" startnode="" event="generator" label="generator" description="generator" default="false"/>
         <Menu role="Teacher" startuc="ide" startnode="" event="init" label="ide" description="ide" default="true"/>
     </Menus>
 </Application>

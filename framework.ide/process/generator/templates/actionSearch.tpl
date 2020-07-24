@@ -14,7 +14,7 @@
   
   <Control method="bind" object="grdSearchResult">
     <Param>
-      <Call library="{$apiApplication},{$apiProcess},api" function="search">
+      <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="search">
         {foreach $attributes as $field}
         {if $field['search'] == 1}
         <Param name="{$field['name']}"><Var name="currentData" key="{$field['name']}"/></Param>

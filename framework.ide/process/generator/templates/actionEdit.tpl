@@ -8,7 +8,7 @@
   </Var>
   <Control method="bind" object="frmEdit">
     <Param>
-      <Call library="{$apiApplication},{$apiProcess},api" function="getById">
+      <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
         <Param name="id">
           <Var name="selectedId" process="true"/>
         </Param>

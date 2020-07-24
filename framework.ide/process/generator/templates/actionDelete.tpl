@@ -6,7 +6,7 @@
              <Param><Var name="selectedId" process="true"/></Param>
           </IsNull>
       </Var>
-      <Call library="{$apiApplication},{$apiProcess},api" function="delete">
+      <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="delete">
         <Param name="id"><Var name="selectedId" process="true"/></Param>
       </Call>
       <Action name="search"/>

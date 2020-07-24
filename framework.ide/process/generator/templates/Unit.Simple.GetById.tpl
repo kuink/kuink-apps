@@ -21,7 +21,7 @@
               	<Try>
 	              	<Instructions>
 										<Var name="test" key="resultAdd">
-											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.aux" function="addTestData"/>
+											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.{$unitNode}.aux" function="addTestData"/>
 										</Var>
 									</Instructions>
 									<Catch>
@@ -34,8 +34,8 @@
 								
 								<!-- Check if the record exists -->
 								<Var name="record">
-									<Call library="{$apiApplication},{$apiProcess},api" function="getIdByCode">
-										<Param name="code"><String>A</String></Param>
+									<Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
+										<Param name="id"><Var name="test" key="resultAdd"/></Param>
 									</Call>
 								</Var>
 								<Var name="result" key="data"><String.parse>$result->data Tested id: $record->id</String.parse></Var>

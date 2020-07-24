@@ -91,7 +91,7 @@
       </Var>        
       <Control method="bind" object="grdSearchResult">
         <Param>
-          <Call library="{$apiApplication},{$apiProcess},api" function="search">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="search">
             {foreach $attributes as $field}
             {if $field['search'] == 1}
             <Param name="{$field['name']}"><Var name="currentData" key="{$field['name']}"/></Param>
@@ -114,7 +114,7 @@
       </Var>
       <Control method="bind" object="frmView">
         <Param>
-          <Call library="{$apiApplication},{$apiProcess},api" function="getById">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
             <Param name="id"><ActionValue/></Param>
           </Call>
         </Param>
@@ -134,7 +134,7 @@
       </If>
       <Control method="bind" object="frmEdit">
         <Param>
-          <Call library="{$apiApplication},{$apiProcess},api" function="getById">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
             <Param name="id"><Var name="selectedId" process="true"/></Param>
           </Call>
         </Param>
@@ -144,10 +144,10 @@
     <Action name="save">
       <If condition="@selectedId == ''">
         <Then>
-          <Call library="{$apiApplication},{$apiProcess},api" function="add" params="POSTDATA"/>
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="add" params="POSTDATA"/>
         </Then>
         <Else>
-          <Call library="{$apiApplication},{$apiProcess},api" function="update" params="POSTDATA">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="update" params="POSTDATA">
             <Param name="id"><Var name="selectedId" process="true"/></Param>
           </Call>    
         </Else>
@@ -156,7 +156,7 @@
     </Action>
     
     <Action name="delete">
-      <Call library="{$apiApplication},{$apiProcess},api" function="delete">
+      <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="delete">
         <Param name="id"><ActionValue/></Param>
       </Call>
       <Action name="search"/>

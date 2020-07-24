@@ -17,10 +17,11 @@
                 </Allow>
               </Permissions-->
               <Transaction>								
+              	<Var name="test" key="result"><String/></Var>
               	<Try>
 	              	<Instructions>
 										<Var name="test" key="resultAdd">
-											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.aux" function="addTestData"/>
+											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.{$unitNode}.aux" function="addTestData"/>
 										</Var>
 									</Instructions>
 									<Catch>
@@ -28,15 +29,18 @@
 									
 									</Catch>
 								</Try>	
-								<!-- The test record has been inserted, now try to update it -->
-																
-								<Var name="searchResult">
-									<Call library="{$apiApplication},{$apiProcess},api" function="getAll"/>
+								<!-- The test record has been inserted, now try to delete it -->
+								<Var name="result" key="data"><String.parse>Inserted id: $test->resultAdd</String.parse></Var>
+								
+								<!-- Check if the record exists -->
+								<Var name="record">
+									<Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getIdByCode">
+										<Param name="code"><String>A</String></Param>
+									</Call>
 								</Var>
-																
-								<Var name="result" key="data"><String.parse>GetAll count: $searchResult->__length</String.parse></Var>
+								<Var name="result" key="data"><String.parse>$result->data Tested id: $record->id</String.parse></Var>
 										
-	              <If condition="$searchResult->__length &gt;= 1">
+	              <If condition="$record->__length != 0">
 	                <Then><Var name="code">0</Var></Then>
 	                <Else><Var name="code">-1</Var></Else>
 	              </If>
@@ -49,4 +53,4 @@
               </Return>
             </Begin>
         </Function>
-        {/nocache}
+				{/nocache}

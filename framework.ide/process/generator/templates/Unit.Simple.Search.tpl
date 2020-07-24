@@ -20,7 +20,7 @@
               	<Try>
 	              	<Instructions>
 										<Var name="test" key="resultAdd">
-											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.aux" function="addTestData"/>
+											<Call library="{$unitApplication},{$unitProcess},{$unitPrefix}.{$unitNode}.aux" function="addTestData"/>
 										</Var>
 									</Instructions>
 									<Catch>
@@ -31,7 +31,7 @@
 								<!-- The test record has been inserted, now try to update it -->
 																
 								<Var name="searchResult">
-									<Call library="{$apiApplication},{$apiProcess},api" function="search"/>
+									<Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="search"/>
 								</Var>
 																
 								<Var name="result" key="data"><String.parse>Search count: $searchResult->__length</String.parse></Var>

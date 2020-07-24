@@ -5,7 +5,7 @@
   </Var>
   <Control method="bind" object="frmView">
     <Param>
-      <Call library="{$apiApplication},{$apiProcess},api" function="getById">
+      <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
         <Param name="id"><ActionValue/></Param>
       </Call>
     </Param>
