@@ -284,6 +284,7 @@
         <Permissions>
           <Allow>
             <Capability name="framework/authentication.password::change.all"/>
+            <Capability name="framework/authentication.password::change.std"/>            
           </Allow>
         </Permissions>
         <Var name="PARAMS"/>
@@ -922,4 +923,3 @@
     </Function>
   </Library>
 </Node>
-
