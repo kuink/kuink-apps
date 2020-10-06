@@ -246,6 +246,9 @@
         <String key="invalid_pt_tax_number">
         	O nº de identificação fiscal (NIF) é inválido
         </String>
+        <String key="invalid_pt_ss_number">
+        	O nº de Segurança Social (NISS) é inválido
+        </String>
         <String key="invalid_health_number">
         	O nº de saúde é inválido
         </String>
