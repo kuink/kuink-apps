@@ -250,7 +250,7 @@
         	O nº de Segurança Social (NISS) é inválido
         </String>
         <String key="invalid_health_number">
-        	O nº de saúde é inválido
+        	O nº de utente é inválido
         </String>
         <String key="invalid_social_sec_number">
         	O nº de Seg. Social é inválido
