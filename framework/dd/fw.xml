@@ -109,6 +109,17 @@
     <Entity name="fw_user"/-->
     
     <!-- Permissions -->
+		<Entity name="fw_company" doc="The framework company base data">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Template name="fw.identity.long" />         
+        <Attribute name="timezone" domain="code" doc="The timezone of this company" />
+        <Template name="fw.active" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>    
+
+    <!-- Permissions -->
 		<Entity name="fw_permission" doc="The role or capability base data">
       <Attributes>
         <Attribute name="id" domain="id" />
@@ -155,11 +166,11 @@
     <Entity name="fw_widget" doc="An element to display on a page">
       <Attributes>
         <Attribute name="id" domain="id" />
-				<Template name="fw.identity.long" />
+        <Template name="fw.identity.long" />
 				<Attribute name="init_flow" domain="xml" required="false" doc="The application init_flow" />
 				<Attribute name="configuration" domain="xml" required="false" doc="Application configuration" />
 				<Attribute name="is_active" domain="bool" default="1" doc="Is this page active?" />
-				<Attribute name="is_configurable" domain="bool" default="1" doc="Is this page active?" />
+				<Attribute name="is_configurable" domain="bool" default="1" doc="Can the user configure this widget?" />
 				<Attribute name="modal" domain="string" required="false" doc="Modal template to load the widget." />
         <Template name="fw.base" />
       </Attributes>
@@ -199,6 +210,14 @@
         <Template name="fw.base" />
       </Attributes>
     </Entity>    
+
+    <Entity name="fw_timezone" doc="The list of timezones">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" />        
+      </Attributes>
+    </Entity>    
+
     
     <!-- Legacy roles -->
     

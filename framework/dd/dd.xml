@@ -55,6 +55,7 @@
         <Attribute name="id" domain="id" foreign="id_company" required="true" autonumber="true" pk="true"/>
         <Attribute name="name" domain="name"/>
         <Attribute name="code" domain="code"/>
+        <Attribute name="timezone" domain="string"/>
         <Attribute name="is_active" domain="bool"/>
         <Attribute name="_creation" domain="timestamp"/>
         <Attribute name="_creation_ip" domain="ip"/>
