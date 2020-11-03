@@ -55,7 +55,10 @@
               <Var name="PARAMS" key="notify_role_list"/>
             </Param>
             <Param name="id_form">
-              <Var name="PARAMS" key="id_form"/>
+              <If condition="$PARAMS->id_form != ''">
+                <Then><Var name="PARAMS" key="id_form"/></Then>
+                <Else><Null/></Else>
+              </If>
             </Param>
             <Param name="id_action">
               <Var name="PARAMS" key="id_action"/>
