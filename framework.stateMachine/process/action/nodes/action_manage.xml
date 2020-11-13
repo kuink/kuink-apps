@@ -63,7 +63,7 @@
     <Screen id="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Static id="id" label="id" required="true"/>
-        <Int id="id_state_machine" label="id_state_machine" required="true" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <Select id="id_state_machine" label="id_state_machine" required="true" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
         <CodeEditor id="action_list" label="action_list" required="true"/>
         <Text id="code" label="code" required="true"/>
         <Text id="name" label="name" required="true"/>
