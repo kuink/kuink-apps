@@ -925,7 +925,7 @@
 					</Begin>
 				</Function>
 
-			<Function scope="public" name="eventPreview" doc="Hook preview function for action type event">
+				<Function scope="public" name="eventPreview" doc="Hook preview function for action type event">
 					<Params>
 	          <Param name="id" doc="The state machine instance id"/>
 	          <Param name="event" type="string" doc="The event to get the list"/>
@@ -1175,9 +1175,9 @@
 					</Params>
 					<Return type="single"/>
 					<Begin>
+						<Var name="createVideoCall"><Int>0</Int></Var>
 						<If condition="$PARAMS->is_bulk == 1">
 							<Then>
-								<Var name="bulk"/>
 								<!-- Get the fisrt event data to create the event -->
 								<Var name="first"><Var name="bulk" key="__first"/></Var>
 								<Var name="bulk" key="__first" clear="true"/>
@@ -1189,10 +1189,17 @@
 								<Var name="eventParams"><Set/></Var>
 								<Var name="actionParams"><Var name="action" key="params"/></Var>
 								<ForEach var="actionParams" item="actionParam" key="actionParamKey">
-									<Var name="eventParams" key="$actionParamKey"><String.parse><Var name="actionParam"/></String.parse></Var>
+									<If condition="($actionParamKey != 'video_call') &amp;&amp; ($actionParamKey != 'id_person_organizer') &amp;&amp; ($actionParamKey != 'uid_person_organizer')">
+										<Then>
+											<Var name="eventParams" key="$actionParamKey"><String.parse><Var name="actionParam"/></String.parse></Var>											
+										</Then>
+									</If>
 								</ForEach>
 								<Var name="eventParams" key="context"><Var name="PARAMS" key="context"/></Var>
 								<Var name="eventParams" key="id_school_year"><Var name="preEnroll" key="id_school_year"/></Var>
+								<Var name="eventParams" key="status"><String>confirmed</String></Var>
+								<Var name="eventParams" key="id_place"><Null/></Var>
+								<Var name="eventParams" dump="true"/>
 								<Var name="id_event">
 									<Call library="gecol.core,event,api" function="add" params="eventParams"/>
 								</Var>
@@ -1200,7 +1207,7 @@
 								<!-- Handle the participants -->
 								<ForEach var="bulk" item="bulkItem">
 									<Var name="guidObject"><Var name="bulkItem" key="guidObject"/></Var>
-									<Call function="eventAddParticipant">
+									<Call library="gecol.core,preEnroll,api" function="eventAddParticipant">
 										<Param name="idEvent"><Var name="id_event" key="id"/></Param>
 										<Param name="action"><Var name="action"/></Param>
 										<Param name="data"><Var name="bulkItem" key="data"/></Param>
@@ -1216,7 +1223,11 @@
 								<Var name="eventParams"><Set/></Var>
 								<Var name="actionParams"><Var name="action" key="params"/></Var>
 								<ForEach var="actionParams" item="actionParam" key="actionParamKey">
-									<Var name="eventParams" key="$actionParamKey"><String.parse><Var name="actionParam"/></String.parse></Var>
+									<If condition="($actionParamKey != 'video_call') &amp;&amp; ($actionParamKey != 'id_person_organizer') &amp;&amp; ($actionParamKey != 'uid_person_organizer')">
+										<Then>
+											<Var name="eventParams" key="$actionParamKey"><String.parse><Var name="actionParam"/></String.parse></Var>											
+										</Then>
+									</If>
 								</ForEach>
 								<Var name="eventParams" key="context"><Var name="PARAMS" key="context"/></Var>
 								<Var name="eventParams" key="id_school_year"><Var name="preEnroll" key="id_school_year"/></Var>
@@ -1224,13 +1235,75 @@
 								<Var name="id_event">
 									<Call library="gecol.core,event,api" function="add" params="eventParams"/>
 								</Var>
-								<Call function="eventAddParticipant">
+								<Call library="gecol.core,preEnroll,api" function="eventAddParticipant">
 									<Param name="idEvent"><Var name="id_event" key="id"/></Param>
 									<Param name="action"><Var name="action"/></Param>
 									<Param name="data"><Var name="data"/></Param>
 									<Param name="guidObject"><Var name="guidObject"/></Param>
 								</Call>
 							</Else>
+						</If>
+						<Var name="createVideoCall" dump="true"><String.parse><String.parse>$actionParams->video_call</String.parse></String.parse></Var>
+						<!-- create the video call if we have to -->
+						<If condition="$createVideoCall == 1">
+							<Then>
+								<!-- Get the organizer data -->
+								<Var name="id_person_organizer" dump="true"><String.parse><String.parse>$actionParams->id_person_organizer</String.parse></String.parse></Var>
+								<Var name="uid_person_organizer" dump="true"><String.parse><String.parse>$actionParams->uid_person_organizer</String.parse></String.parse></Var>
+								<If condition="($id_person_organizer != '') &amp;&amp; ($id_person_organizer != 'null')">
+									<Then>
+										<Var name="organizer" dump="true">
+											<Call library="gecol.core,person,api" function="get">
+												<Param name="id"><String.parse><String.parse>$actionParams->id_person_organizer</String.parse></String.parse></Param>
+											</Call>
+										</Var>
+										<Exception name="framework/eventResource::invalidOrganizer" condition="$organizer->__length == 0"/>
+										<Var name="uid_person_organizer" dump="true"><Var name="organizer" key="uid"/></Var>
+									</Then>
+								</If>
+								
+								<!-- Attendees-->
+								<Var name="eventPersons" dump="true">
+									<Call library="gecol.core,event,api" function="getAllPersonsDetailed">
+										<Param name="id_event"><Var name="id_event" key="id"/></Param>
+									</Call>
+								</Var>
+								<Var name="attendees"><Set/></Var>
+								<ForEach var="eventPersons" item="eventPerson">
+									<If condition="$eventPerson->uid != ''">
+										<Then>
+											<Var name="attendees" key=""><Var name="eventPerson" key="uid"/></Var>
+										</Then>
+									</If>
+								</ForEach>
+
+								<!-- Collect context data to send to the resource manager-->
+								<Var name="_context" key="summary"><String.parse><String.parse>$actionParams->subject</String.parse></String.parse></Var>
+								<Var name="_context" key="summary"><String.parse>$_context->summary | Videoconferência</String.parse></Var>
+								<Var name="_context" key="description"><String.parse><String.parse>$actionParams->description</String.parse></String.parse></Var>
+								<Var name="_context" key="description"><String.parse>$_context->description | Videoconferência</String.parse></Var>
+								<Var name="_context" key="start"><String.parse><String.parse>$actionParams->start_date</String.parse></String.parse></Var>
+								<Var name="_context" key="end"><String.parse><String.parse>$actionParams->end_date</String.parse></String.parse></Var>
+								<Var name="_context" key="organizer"><Var name="uid_person_organizer"/></Var>
+								<Var name="_context" key="attendees"><Var name="attendees"/></Var>
+								<Var name="videoCallData" key="_context"><Var name="_context"/></Var>
+								<Var name="videoCallData" dump="true"/>
+
+								<!-- Add the resource -->
+								<Var name="id_resource" dump="true">
+									<Call library="gecol.core,resource,api" function="add">
+										<Param name="resource_type_code">meet</Param>
+										<Param name="data"><Var name="videoCallData"/></Param>
+									</Call>
+								</Var>								
+								<!-- Add the resource to the event -->
+								<DataAccess method="insert">
+									<Param name="_entity">event_resource</Param>
+									<Param name="id_event"><Var name="id_event" key="id"/></Param>
+									<Param name="id_resource"><Var name="id_resource"/></Param>
+									<Param name="_base">true</Param>
+								</DataAccess>
+							</Then>
 						</If>
 
 						<Var name="result" key="data"><Var name="id_event" key="id"/></Var>
