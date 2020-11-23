@@ -31,6 +31,7 @@
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
+        <Var name="PARAMS" dump="true"/>
         <Return>
           <DataAccess method="insert">
             <Param name="_entity">fw_state_machine_state</Param>
@@ -260,4 +261,3 @@
     </Function>
   </Library>
 </Node>
-

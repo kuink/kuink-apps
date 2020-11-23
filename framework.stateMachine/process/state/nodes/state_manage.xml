@@ -145,13 +145,14 @@
     <Action name="save">
       <If condition="@selectedId == ''">
         <Then>
-          <Call library="framework,stateMachine.state,api" function="add" params="POSTDATA"/>
+          <Var name="PARAMS" dump="true"/>
+          <Call library="framework,stateMachine.state,api" function="add" params="POSTDATA">
+            <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
+          </Call>
         </Then>
         <Else>
           <Call library="framework,stateMachine.state,api" function="update" params="POSTDATA">
-            <Param name="id">
-              <Var name="selectedId" process="true"/>
-            </Param>
+            <Param name="id"><Var name="selectedId" process="true"/></Param>
           </Call>
         </Else>
       </If>
