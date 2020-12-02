@@ -73,5 +73,7 @@
 
    </Strings>
    <HelpStrings>
+    <Help key="id_controlled_document_type">Tipo de documento a pesquisar</Help>
+    <Help key="text">Pesquisa por texto no nome do documento</Help>
    </HelpStrings>
 </Lang>

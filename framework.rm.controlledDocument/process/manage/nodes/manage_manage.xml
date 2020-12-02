@@ -21,8 +21,8 @@
   <Screens>
     <Screen id="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true">
-        <Select id="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="text" label="text"/>
+        <Select id="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name" help="true"/>
+        <Text id="text" label="text" help="true"/>
         <ButtonGroup>
           <Button id="search" type="search" label="search" action="search"/>
           <Button id="insert" type="add" label="insert" action="insert"/>
