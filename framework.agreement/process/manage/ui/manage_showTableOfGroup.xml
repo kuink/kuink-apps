@@ -75,6 +75,14 @@
 						<Param><Var name="PARAMS" key="entityAttributeList"/></Param>
 					</String.replace>
 				</Var>
+				<Var name="entityAttributeListClean">
+					<String.replace>
+						<Param><String>g.</String></Param>
+						<Param><String/></Param>
+						<Param><Var name="entityAttributeListClean"/></Param>
+					</String.replace>
+				</Var>
+
 				<Var name="splitedAttributeList" dump="true">
 					<String.explode>
 						<Param>,</Param>

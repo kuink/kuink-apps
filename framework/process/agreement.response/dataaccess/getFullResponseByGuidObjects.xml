@@ -33,6 +33,8 @@
                   INNER JOIN fw_agreement_statement ags ON (ags.id = agr.id_agreement_statement)
                   INNER JOIN fw_agreement_statement_lang agsl ON (agsl.id = ags.id)
                   INNER JOIN fw_agreement_statement_type agst ON (agst.id = ags.id_agreement_statement_type)
+                  LEFT OUTER JOIN person_rel_person prp ON (prp.id_person = e.id AND prp.is_guardian=1)
+                  LEFT OUTER JOIN person g ON (g.id = prp.id_person_rel)                  
                 ]]>
               </XTable>
             </XFrom>
