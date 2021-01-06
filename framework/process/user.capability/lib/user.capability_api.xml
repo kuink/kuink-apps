@@ -201,39 +201,7 @@
         </Return>
       </Begin>
     </Function>
-    <Function name="add" doc="Updates a record in table ">
-      <Params>
-        <Param name="name" type="text" required="true"/>
-        <Param name="code" type="text" required="true"/>
-        <Param name="is_global" type="checkbox" required="false"/>
-      </Params>
-      <Begin>
-        <Execute method="framework,generic,insert">
-          <Param name="table">fw_capability</Param>
-          <Param name="name">
-            <Var name="PARAMS" key="name"/>
-          </Param>
-          <Param name="code">
-            <Var name="PARAMS" key="code"/>
-          </Param>
-          <Param name="is_global">
-            <Var name="PARAMS" key="is_global"/>
-          </Param>
-          <Param name="_creation">
-            <DateTimeLib method="Now"/>
-          </Param>
-          <Param name="_creation_ip">
-            <Var name="USER" key="ip"/>
-          </Param>
-          <Param name="_modification">
-            <DateTimeLib method="Now"/>
-          </Param>
-          <Param name="_modification_ip">
-            <Var name="USER" key="ip"/>
-          </Param>
-        </Execute>
-      </Begin>
-    </Function>
+
     <Function name="delete" doc="Delete a record by id from table fw_capability">
       <Params>
         <Param name="id" type="int" required="true"/>

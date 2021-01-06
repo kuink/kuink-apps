@@ -13,7 +13,7 @@
     <Body>
         <Execute>
             <![CDATA[   
-                INSERT INTO `gecol`.`fw_allocation` (`id_company`,`id_user`,`id_role`,_creation, _creation_ip,_modification, _modification_ip) 
+                INSERT INTO `fw_allocation` (`id_company`,`id_user`,`id_role`,_creation, _creation_ip,_modification, _modification_ip) 
                 SELECT c.id as id_company, u.id as id_user, r.id as id_role, {param->_creation} as _creation, '{param->_creation_ip}' as _creation_ip, {param->_creation} as _modification, '{param->_creation_ip}' as _modification_ip
                 FROM
                     fw_company c, fw_role r, fw_user u, person p, fw_user_company uc

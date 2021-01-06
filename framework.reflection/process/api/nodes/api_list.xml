@@ -14,6 +14,7 @@
     <Config key="application" value="framework"/>
     <Config key="process" value="user"/>
   </Configuration>
+
   <Screens>
     <Screen id="listApiScreen">
       <Form name="search" persist="true">
@@ -52,7 +53,7 @@
             <Column name="errorsSignature" inline="true">
               <Formatter name="Separator" method="newline" affix="prefix"/>
             </Column>
-            <Column name="permissions"/>
+            <!-- Column name="permissions"/ -->
             <Column name="callFw"/>
             <Column name="library" action="test" actionvalue="fullQualifiedName"/>
           </Columns>
@@ -219,7 +220,7 @@
     </Action>
 
     <Action name="test" screen="callFunctionScreen">
-
+      <Var name="outParam"><Set/></Var>
       <Var name="postWslibrary">
         <Var name="POSTDATA" key="wslibrary"/>
       </Var>
@@ -261,6 +262,16 @@
         <If condition="$param->type == 'bool'">
           <Then>
             <Var name="fieldType">Checkbox</Var>
+          </Then>
+        </If>
+        <If condition="$param->type == 'datetime'">
+          <Then>
+            <Var name="fieldType">DateTime</Var>
+          </Then>
+        </If>
+        <If condition="$param->type == 'date'">
+          <Then>
+            <Var name="fieldType">Date</Var>
           </Then>
         </If>
         
