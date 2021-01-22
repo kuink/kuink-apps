@@ -220,7 +220,6 @@
     </Action>
 
     <Action name="test" screen="callFunctionScreen">
-      <Var name="outParam"><Set/></Var>
       <Var name="postWslibrary">
         <Var name="POSTDATA" key="wslibrary"/>
       </Var>
@@ -321,6 +320,9 @@
             <Var name="name">
               <Var name="param" key="name"/>
             </Var>
+            <Var name="output">
+              <Var name="param" key="output"/>
+            </Var>
             <Var name="callParams" key="$name">
               <If condition="$type == 'array'">
                 <Then>
@@ -337,7 +339,7 @@
           <Var name="callParams" key="_debug_" clear="true"/>
           <Try>
             <Instructions>
-		          <Var name="result">
+		          <Var name="result" dump="true">
 		            <Call library="$wslibrary" params="callParams"/>
 		          </Var>
             </Instructions>

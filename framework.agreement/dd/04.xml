@@ -3,7 +3,6 @@
   <Domains/>
   <Templates/>
   <Entities>
- 
     <Entity name="fw_agreement_statement_type" multilang="true" doc="Defines the statements for the agreements">
     	<Attributes>
 	    	<Attribute name="id" domain="id" />
@@ -78,21 +77,5 @@
         <Template name="fw.base"/>
       </Attributes>
     </Entity>
-    
-
-		<!-- Operations -->
-		<!-- Schemas will be referenced in level table -->
-		
-		<!-- schema.getByCode(schema_code) -->
-		<!-- Form.getBySchema(schema_code) -->
-		<!-- agreement.add(schema form POSTDATA) -->
-		<!-- agreement.add(guid_object, schema form POSTDATA) -->
-		<!-- agreement.commit(guid_object, callback) -->
-			<!-- Create Record -->			
-			<!-- Callback(id_agreement, id_record) to the object that called the commit -->			
-			
-		<!-- Person.API -->
-			<!-- SendAgreement(id_agreement, id_record) -->
-
   </Entities>
 </Node>

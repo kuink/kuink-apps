@@ -13,7 +13,7 @@
   <Configuration>
     <Config key="maxUploadFileSize" value="4000000"/>
     <Config key="allowedExtensions" value="ott,odt,ots,ods,otp,odp,pdf,odg"/>
-    <Config key="tmpFolder" value="neon/files/controlled_docs/tmp"/>
+    <Config key="tmpFolder" value="controlled_docs/tmp"/>
   </Configuration>
   <Params>
       <Param name="type_code" type="string"/>
@@ -62,7 +62,7 @@
     <Screen id="scrView" template="2x1col">
       <DocViewer name="dcPreview" title="preview" position="left"/>
       <HtmlContainer name="htmlPreview" title="previewTpl" position="left"/> 
-      <HtmlContainer name="testDataPreview" position="left"/>           
+      <HtmlContainer name="testDataPreview" position="left"/>
       <Form name="frmView" title="controlledDocument" position="right">
         <Header id="baseData" label="baseData"/>
         <Static id="id"/>
@@ -72,7 +72,14 @@
         <Static id="description"/>
         <Static id="is_active">
           <Formatter name="YesNo"/>
-        </Static>      
+        </Static>
+        <Static id="is_public">
+          <Formatter name="YesNo"/>
+        </Static>        
+        <Static id="uri_external">
+          <Formatter name="Url"/>
+        </Static>
+        <Static id="deployment_file_format"/>
         <Header id="currentVersion" label="currentVersion"/>
         <Static id="version_code">
           <Formatter name="Style" method="bold"/>
@@ -121,7 +128,10 @@
             <Column name="id_file">
               <Formatter name="FileDownload"/>
             </Column>
-            <!--Column name="is_finished"/-->
+            <Column name="id_deployment_file">
+              <Formatter name="FileDownload"/>
+            </Column>
+             <!--Column name="is_finished"/-->
           </Columns>
           <Actions separator="true">
             <Action name="history" label="workflow" actionvalue="id" conditionalfield="has_workflow" conditionalvalue="1"/>
@@ -129,6 +139,7 @@
             <Action name="startWorkflow" label="startWorkflow" actionvalue="id" condition="$can_start_workflow == 1"/>
             <Action name="deleteVersion" label="delete" actionvalue="id" condition="$is_finished == 0" confirm="true"/>
             <Action name="finalize" label="finalize" actionvalue="id" condition="$is_finished == 0"/>
+            <Action name="deployment" actionvalue="id" condition="$is_active == 1"/>
           </Actions>
         </Template>
       </Grid>
@@ -152,8 +163,11 @@
         <Text id="code_name" label="code_name" required="false"/>
         <Text id="name" label="name" required="true"/>
         <Text id="description" label="description" required="false"/>
+        <Text id="uri_external" label="uri_external"/>
+        <Text id="deployment_file_format" />
         <Select id="id_class" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
         <Checkbox id="is_active" label="active" required="true"/>
+        <Checkbox id="is_public" required="true"/>
         <Header id="classTemplate"/>
         <Select id="id_class_template" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>        
         <ButtonGroup>
@@ -180,6 +194,19 @@
       </Form>
       <DocViewer name="dcPreview" title="previewDoc" position="left"/>
       <HtmlContainer name="htmlPreview" title="previewTpl" position="right"/>
+    </Screen>
+    <Screen id="scrDeployment">
+      <Form name="frmDeployment" title="version">
+        <Hidden id="id_version" label="id"/>
+        <Static id="code" label="code"/>
+        <!--Text id="template" required="false"/-->
+        <File id="file" required="false"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="manage"/>
+          <Button id="upload" type="update" action="uploadDeployment"/>
+        </ButtonGroup>
+      </Form>
+
     </Screen>
   </Screens>
   <Actions>
@@ -279,7 +306,6 @@
         <Param name="code"><Var name="controlledDocument" key="code"/></Param>
       </RaiseEvent>
     </Action>
-
     
     <Action name="manage" screen="scrView">
   		<Permissions>
@@ -604,6 +630,7 @@
       <Trace><String.parse>Document @selectedId</String.parse></Trace>
       <!-- Validate file or template, one of them must be present -->
       <Var name="filename"><Guid/></Var>
+      
       <Var name="idFile" dump="true">
         <FileLib method="Upload">
           <Param name="UploadFolder"><Config key="tmpFolder"/></Param>
@@ -666,7 +693,8 @@
       <RaiseEvent name="history">
         <Param name="id_process_instance"><Var name="id_process_instance"/></Param>
       </RaiseEvent>
-    </Action>
+		</Action>
+		
 	  <Action name="startWorkflow">
 		  <Permissions>
 		    <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
@@ -678,8 +706,48 @@
 		  </Var>
 		  <Action name="search"/>
     </Action>    
+
+    <Action name="deployment" screen="scrDeployment">
+      <Permissions>
+        <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
+			</Permissions>    
+      <Var name="version" dump="true">
+        <Call library="framework,rm.controlledDocument.version,api" function="getById">
+          <Param name="id"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="frmDeployment">
+        <Param><Var name="version"/></Param>
+      </Control>
+
+		</Action>
+		
+		<Action name="uploadDeployment">
+			<!--Call library="framework,rm.controlledDocument.version" function="generateDeploymentFile">
+				<Param name="id"><ActionValue/></Param>
+			</Call-->
+			<Var name="filename"><Guid/></Var>
+			<Var name="idDeploymentFile">
+				<FileLib method="Upload">
+					<Param name="UploadFolder"><Config key="tmpFolder"/></Param>
+					<Param name="Filename"><Var name="filename"/></Param>
+					<Param name="MaxUploadFileSize"><Config key="maxUploadFileSize"/></Param>
+					<Param name="AllowedExtensions"><Config key="allowedExtensions"/></Param>
+					<Param name="id_user"><Var name="USER" key="id"/></Param>
+				</FileLib>
+			</Var>
+
+			<Var name="POSTDATA" dump="true"/>
+
+			<Call library="framework,rm.controlledDocument,api" function="uploadDeploymentFile">
+				<Param name="id_version"><Var name="POSTDATA" key="id_version"/></Param>
+				<Param name="id_deployment_file"><Var name="idDeploymentFile"/></Param>
+			</Call>
+			<Action name="manage"/>
+	
+		</Action>		
   </Actions>
-  
+
   <Library forceinterface="true">
   </Library>
 </Node>

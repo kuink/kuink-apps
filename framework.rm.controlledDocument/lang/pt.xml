@@ -15,7 +15,8 @@
     <String key="id_controlled_document_type" value="Tipo"/>
     <String key="type_name" value="Tipo"/>
     <String key="code" value="Código"/>
-    <String key="code_name" value="Código"/>
+    <String key="code_name" value="Nome codificado"/>
+    <String key="uri_external" value="URI externo de acesso ao documento público"/>
     <String key="version_code" value="Código"/>
     <String key="version_approval_date" value="Aprovação"/>
     <String key="approved" value="Aprovado"/>
@@ -24,15 +25,21 @@
     <String key="newVersion" value="Nova versão"/>
     <String key="copyVersion" value="Copiar versão"/>
     <String key="is_active" value="Ativo"/>
+    <String key="is_public" value="Público"/>
     <String key="is_notified" value="Mail"/>
     <String key="type" value="Tipo"/>
     <String key="preview" value="Pré-visualizar"/>
     <String key="download" value="Descarregar"/>
+    <String key="deployment_file_format" value="Distribuição: Formato de ficheiro"/>
     <String key="text" value="Texto"/>
     <String key="startWorkflow" value="Iniciar workflow"/>
+    <String key="workflow" value="Workflow"/>
     <String key="submitToApproval" value="Submeter para aprovação"/>
     <String key="obs" value="Observações"/>
     <String key="public_key" value="Foto"/>
+    <String key="id_deployment_file" value="Ficheiro - Distribuição"/>
+    <String key="deployment" value="Distribuição"/>
+    
     
     <String key="formatWarning" value="A previsualização do documento pode aparecer desformatada, no entanto, ao descarregar o documento este está com as formatações corretas."/>
     <String key="classification" value="Classificação"/>

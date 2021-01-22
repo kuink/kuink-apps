@@ -13,14 +13,16 @@
 			<XSql>
 				<XSelect>
 					<XField>
-						agr.id as id_agreement_response,
-						agstl.name,
-					  agsl.statement as statement,
-						ags.code,
-						ags.expire_date_expression,
-						agr.agreement_statement_response,
-						agr.expire_date,
-						agr.agreement_statement_context
+						<![CDATA[
+							agr.id as id_agreement_response,
+							agstl.name,
+							CONCAT(agsl.statement, IF(cd.uri_external IS NOT NULL, CONCAT('<a href="',cd.uri_external,'">',cd.name,' | ',COALESCE(cdv.code,''),'</a>'), '')) as statement,
+							ags.code,
+							ags.expire_date_expression,
+							agr.agreement_statement_response,
+							agr.expire_date,
+							agr.agreement_statement_context
+						]]>
 					</XField>
 				</XSelect>
 				<XFrom>
@@ -28,9 +30,11 @@
 						fw_agreement ag
 						INNER JOIN fw_agreement_response agr ON (agr.id_agreement = ag.id)
 						INNER JOIN fw_agreement_statement ags ON (ags.id = agr.id_agreement_statement)
-					  INNER JOIN fw_agreement_statement_lang agsl ON (agsl.id = ags.id AND agsl.lang='{param->_lang}')
-					  INNER JOIN fw_agreement_statement_type agst ON (agst.id = ags.id_agreement_statement_type)
+					 	INNER JOIN fw_agreement_statement_lang agsl ON (agsl.id = ags.id AND agsl.lang='{param->_lang}')
+					  	INNER JOIN fw_agreement_statement_type agst ON (agst.id = ags.id_agreement_statement_type)
 						INNER JOIN fw_agreement_statement_type_lang agstl ON (agstl.id = agst.id AND agstl.lang='{param->_lang}')
+						LEFT OUTER JOIN fw_rm_controlled_document cd ON (cd.id = ags.id_controlled_document)
+						LEFT OUTER JOIN fw_rm_controlled_document_version cdv ON (cdv.id = cd.id_current_version)
 					</XTable>
 				</XFrom>
 				<XWhere>
@@ -40,10 +44,9 @@
 					</XCondition>					
 				</XWhere>
 				<XOrderBy>
-					<XOrder>agst.order, agr.agreement_statement_context, ags.code</XOrder>
+					<XOrder>agst.order, agr.agreement_statement_context</XOrder>
 				</XOrderBy>
 			</XSql>
 		</Sql>
 	</Body>
 </Method>
-

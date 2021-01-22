@@ -1,20 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Node inherits="framework,fw.rm">
-  <Domains/>
-  <Templates/>
+  <Domains>
+  </Domains>
+  <Templates>
+  </Templates>
   <Entities>
-    <!-- Controlled documents RM Module -->
-    <Entity name="fw_rm_controlled_document_type" doc="Controlled document type">
-      <Attributes>
-        <Attribute name="id" domain="id" />
-        <Attribute name="code" domain="code" required="true" doc="The document code"/>
-        <Attribute name="name" domain="name" required="true" doc="The name of the document"/>
-        <Attribute name="description" domain="description" required="true" doc="The document description"/>
-        <Attribute name="wf_code" domain="string" required="false" doc="Code of the approval workflow process"/>
-        <Attribute name="wf_params" domain="text" required="false" doc="Parameters of the approval workflow process"/>
-        <Template name="fw.base"/>
-      </Attributes>
-    </Entity>
+
     <Entity name="fw_rm_controlled_document" doc="Controlled documents">
       <Attributes>
         <Attribute name="id" domain="id" />
@@ -34,6 +25,7 @@
         <Template name="fw.base"/>
       </Attributes>
     </Entity>
+
     <Entity name="fw_rm_controlled_document_version" doc="Controlled document versions">
       <Attributes>
         <Attribute name="id" domain="id" />
@@ -59,15 +51,5 @@
         <Rule name="validateContent" condition="((($id_file != '') &amp;&amp; ($template == '')) || (($id_file == '') &amp;&amp; ($template != '')))" doc="Exactly only one can be filled template or id_file "/>
       </Rules>
     </Entity>
-    <Entity name="fw_rm_controlled_document_class_template" doc="Template to create records of a given class">
-      <Attributes>
-        <Attribute name="id" domain="id" />
-        <Attribute name="id_controlled_document" domain="foreign" required="true" refentity="fw_rm_controlled_document" refattr="id" doc="id of the document template"/>
-        <Attribute name="id_class" domain="foreign"  refentity="fw_rm_class" refattr="id" doc="The class with this disposal hold. Each class can only have one document template"/>
-        <Attribute name="code" domain="codeNotUnique" required="true" doc="Code to distinguish different templates for the same class"/>
-        <Template name="fw.base"/>
-      </Attributes>
-    </Entity>
-
   </Entities>
 </Node>

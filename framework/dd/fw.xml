@@ -79,20 +79,18 @@
 	    <Attribute name="name" domain="longName" required="false" doc="The object name"/>
 	    <Attribute name="description" domain="longDescription" required="false" doc="The object description"/>
 	  </Template>	  
-	  	  
 	  <Template name="fw.identity.multilang">
-	    <Attribute name="uuid" domain="guid" required="true" doc="The guid to identify the object"/>
+	    <Attribute name="uuid" domain="uuid" required="true" doc="The guid to identify the object"/>
 	    <Attribute name="code" domain="code" required="true" doc="The object code, not multilang"/>
 	    <Attribute name="name" domain="name" required="true" multilang="true" doc="The object name"/>
 	    <Attribute name="description" domain="longDescription" required="false" multilang="true" doc="The object description"/>
 	  </Template>
 	  <Template name="fw.identity.multilang.long">
-	    <Attribute name="uuid" domain="guid" required="true" doc="The guid to identify the object"/>
+	    <Attribute name="uuid" domain="uuid" required="true" doc="The guid to identify the object"/>
 	    <Attribute name="code" domain="code" required="true" doc="The object code, not multilang"/>
 	    <Attribute name="name" domain="longName" required="true" multilang="true" doc="The object name"/>
 	    <Attribute name="description" domain="longDescription" required="false" multilang="true" doc="The object description"/>
 	  </Template>
-
 	  <Template name="fw.dateRestriction">
       <Attribute name="date_from" domain="timestamp" doc="The from date and time" />
       <Attribute name="date_to" domain="timestamp" doc="The to date and time" />
@@ -100,7 +98,6 @@
 	  <Template name="fw.active">
       <Attribute name="is_active" domain="bool" doc="The record is active or not" />
     </Template>
-
   </Templates>
 
   <Entities>

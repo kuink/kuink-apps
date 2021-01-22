@@ -908,17 +908,30 @@
 
 				<Function scope="public" name="callPreview" doc="Hook preview function for action type call">
 					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="action" type="array" doc="The action data"/>
-	          <Param name="data" type="array" doc="Data to expand to the templates"/>
-	          <Param name="guidObject" type="string" doc="The object guid"/>
+						<Param name="id" doc="The state machine instance id"/>
+						<Param name="event" type="string" doc="The event to get the list"/>
+						<Param name="role" type="string" doc="The role of the user to process the event"/>
+						<Param name="action" type="array" doc="The action data"/>
+						<Param name="data" type="array" doc="Data to expand to the templates"/>
+						<Param name="guidObject" type="string" doc="The object guid"/>
 					</Params>
 					<Return type="string"/>
 					<Begin>
-       			<Var name="actionPreview" key="name"><Var name="action" key="name"/></Var>
-       			<Var name="actionPreview" key="message"><String.parse>Call library:$action->library function:$action->function</String.parse></Var>
+						<Var name="actionParams"><Var name="action" key="params"/></Var>
+						<Var name="actionParams"><Var name="action" key="params"/></Var>
+						<Var name="fxParams"><String/></Var>
+						<Var name="actionParams"><Var name="action" key="params"/></Var>
+						<ForEach var="data" item="dataItem" key="dataKey">
+							<Var name="$dataKey"><Var name="dataItem"/></Var>
+						</ForEach>
+						<Var name="callParams"><Set/></Var>
+						<ForEach var="actionParams" item="item" key="key">
+							<Var name="parsedItem"><String.parse><Var name="item"/></String.parse></Var>
+							<Var name="fxParams"><String.parse>$fxParams $key=$parsedItem |</String.parse></Var>
+						</ForEach>
+
+						<Var name="actionPreview" key="name"><Var name="action" key="name"/></Var>
+						<Var name="actionPreview" key="message"><String.parse>Call library:$action->library function:$action->function ($fxParams)</String.parse></Var>
 						<Return>
 							<Var name="actionPreview"/>
 						</Return>

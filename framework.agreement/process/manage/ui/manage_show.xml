@@ -6,34 +6,34 @@
     <Configuration>
     </Configuration>
 	  <Params>
-      <Param name="schemaCode" doc="The schema code to get the statements. If empty, then last agreement will be returned"/>
-      <Param name="guidObject" doc="The guid object of the response"/>
-      <Param name="guidObjectContext" doc="The guid object context "/>
-      <Param name="data" doc="The postdata that the user submited"/>
-      <Param name="useTemporary" doc="If there's a temporary response, fill the form with that response, otherwise the form will be empty"/>
-			<Param name="statementList" type="string" doc="json: If the schemaCode is not provided, then this list will be uses it must contain [id_agreement_statement, context]. The context is a set with variables to expand in the statement text."/>
-			<Param name="startDate" type="int" doc="Only show statements active at this date"/>
-			<Param name="preMessage" type="string" doc="A emessage to include in the top of the agreement form"/>
-			<Param name="postMessage" type="string" doc="A emessage to include in the bottom of the agreement form"/>
-	  </Params>
+		<Param name="schemaCode" doc="The schema code to get the statements. If empty, then last agreement will be returned"/>
+		<Param name="guidObject" doc="The guid object of the response"/>
+		<Param name="guidObjectContext" doc="The guid object context "/>
+		<Param name="data" doc="The postdata that the user submited"/>
+		<Param name="useTemporary" doc="If there's a temporary response, fill the form with that response, otherwise the form will be empty"/>
+		<Param name="statementList" type="string" doc="json: If the schemaCode is not provided, then this list will be uses it must contain [id_agreement_statement, context]. The context is a set with variables to expand in the statement text."/>
+		<Param name="startDate" type="int" doc="Only show statements active at this date"/>
+		<Param name="preMessage" type="string" doc="A emessage to include in the top of the agreement form"/>
+		<Param name="postMessage" type="string" doc="A emessage to include in the bottom of the agreement form"/>
+	</Params>
     <Screens>
     	<Screen id="showScreen">
-				<Form name="statementsForm" title="statements">
-					<Container id="preMessageContainer"/>
-					<Container id="content"/>
-					<Container id="postMessageContainer"/>
-					<ButtonGroup>
-						<Button type="back" id="back" label="back" action="backAgreement" />
-						<Button type="save" id="save" label="save" action="saveAgreement" />
-					</ButtonGroup>
-				</Form>
+			<Form name="statementsForm" title="statements">
+				<Container id="preMessageContainer"/>
+				<Container id="content"/>
+				<Container id="postMessageContainer"/>
+				<ButtonGroup>
+					<Button type="back" id="back" label="back" action="backAgreement" />
+					<Button type="save" id="save" label="save" action="saveAgreement" />
+				</ButtonGroup>
+			</Form>
     	</Screen>
     </Screens>
     <Actions>
       <Action name="init" screen="showScreen">
       	<Var name="PARAMS"/>
 				<Var name="guidObjectContext"><JsonToSet><Var name="PARAMS" key="guidObjectContext"/></JsonToSet></Var>      	
-	      <If condition="$PARAMS->schemaCode != ''">
+				<If condition="$PARAMS->schemaCode != ''">
 					<Then>
 						<Var name="agreementStatements">      
 							<Call library="framework,agreement.schema,api" function="getFields">
@@ -48,7 +48,7 @@
 
 						<Exception name="framework/agreement::emptySchemaCodeAndStatementList" condition="$statementList->__length == 0"/>
 						<!-- Get the statements from the statement list -->
-						<Var name="agreementStatements" dump="true">      
+						<Var name="agreementStatements">      
 							<Call library="framework,agreement.statement,api" function="getFieldsFromStatementList">
 								<Param name="statementList"><Var name="statementList"/></Param>
 								<Param name="contextFormat"><Var name="guidObjectContext" key="_contextFormat"/></Param>
@@ -59,12 +59,12 @@
 					</Else>
 				</If>
 				<Var name="currentTypeCode"><String/></Var>
-      	<ForEach var="agreementStatements" item="agreementStatement">
-      		<Var name="expireDate"><String/></Var>
-      		<Var name="validUntil"><Lang key="validUntil"/></Var>
+				<ForEach var="agreementStatements" item="agreementStatement">
+					<Var name="expireDate"><String/></Var>
+					<Var name="validUntil"><Lang key="validUntil"/></Var>
 
 					<!--Dont add the expire date to the statement description -->
-      		<!--If condition="$agreementStatement->expire_date_expression !== null">
+		      		<!--If condition="$agreementStatement->expire_date_expression !== null">
 						<Then>
 							<Var name="expireDate"><String.parse><String.parse>$agreementStatement->expire_date_expression</String.parse></String.parse></Var>						
 							<Var name="expireDateFormated">
@@ -79,8 +79,8 @@
 						</Then>
 					</If-->
       	
-      		<!-- Add all the statements to the form -->
-      		<If condition="$agreementStatement->statement_type_code != $currentTypeCode">
+					<!-- Add all the statements to the form -->
+					<If condition="$agreementStatement->statement_type_code != $currentTypeCode">
 						<Then>
 							<!-- Add an header -->
 							<Control method="addField" object="statementsForm">
@@ -109,18 +109,20 @@
 								<Element name="bindid"><Var name="field" key="bindid"/></Element>
 								<Element name="bindvalue"><Var name="field" key="bindvalue"/></Element>
 								<Element name="required"><Var name="field" key="required"/></Element>
-								<Element name="labelsize">
+								<Element name="label-size">
 									<If condition="$field->labelsize != ''">
 										<Then><Var name="field" key="labelsize"/></Then>
 										<Else><String>small</String></Else>
 									</If>
 								</Element>
-								<Element name="labelposition">
+								<Element name="label-position">
 									<If condition="$field->labelposition != ''">
 										<Then><Var name="field" key="labelposition"/></Then>
 										<Else><String>left</String></Else>
 									</If>
 								</Element>
+								<Element name="label-url"><Var name="agreementStatement" key="controlled_document_uri_external"/></Element>
+								<Element name="label-url-description"><String.parse>$agreementStatement->controlled_document_name ($agreementStatement->controlled_document_version_current_code)</String.parse><Var name="agreementStatement" key="controlled_document_name"/></Element>
 							</Set>
 						</Param> <!-- Field Properties -->
 					</Control>

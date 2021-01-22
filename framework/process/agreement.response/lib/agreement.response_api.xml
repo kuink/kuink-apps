@@ -170,12 +170,16 @@
 					<!-- Save the response -->
 					<!-- Update the current temporary agreement response -->
 					<!-- Collect the statements data -->
-					<Var name="allStatements">
+					<!--Var name="allStatements">
 						<DataAccess method="getAll">
 							<Param name="_entity">fw_agreement_statement</Param>
 							<Param name="_lang"><Var name="USER" key="lang"/></Param>
 						</DataAccess>
-					</Var>							
+					</Var-->
+					<Var name="allStatements" dump="true">
+						<Call library="framework,agreement.statement,api" function="getAll"/>
+					</Var>
+
 					<Var name="statements"><Set/></Var>
 					<ForEach var="allStatements" item="statement">
 						<Var name="statements" key="$statement->code"><Var name="statement"/></Var>
@@ -189,7 +193,7 @@
 						<If condition="$response->context === null || ($response->context !== null &amp;&amp; $forceAdd == 0)">
 							<Then>
 								<!-- There's no text so it's safe to update-->
-								<Var name="loadedResponse" dump="true">
+								<Var name="loadedResponse">
 									<DataAccess method="load">
 										<Param name="_entity">fw_agreement_response</Param>
 										<Param name="id_agreement"><Var name="idAgreement"/></Param>
@@ -270,6 +274,12 @@
 											<Else><Var name="response" key="context"/></Else>
 										</If>
 									</Param>
+									<Param name="controlled_document_version_code">
+										<If condition="$statement->id_controlled_document_version == ''">
+											<Then><Null/></Then>
+											<Else><Var name="statement" key="id_controlled_document_version"/></Else>
+										</If>
+									</Param>
 									<Param name="_base">true</Param>
 								</DataAccess>
 							</Else>
@@ -278,136 +288,136 @@
 				</Transaction>
 				<Return></Return>
 			</Begin>
-		</Function>
-		
-		<Function scope="public" name="validateResponse" doc="Validate the response">
-			<Params>
-				<Param name="responseData" type="array" doc="The data to save the response"/>			
-			</Params>
-			<Return type="single"/>
-			<Begin>
-				<Var name="validation" key="isValid"><Int>1</Int></Var>
-				<Var name="validation" key="message"><String/></Var>
-				<Var name="statements">
-					<DataAccess method="getAll">
-						<Param name="_entity">fw_agreement_statement</Param>
-						<Param name="_lang"><Var name="USER" key="lang"/></Param>
-					</DataAccess>
-				</Var>
-				<!-- Prepare the statements array -->
-				<Var name="statementsMandatory"><Set/></Var>
-				<ForEach var="statements" item="statement">
-					<Var name="aux"><Set/></Var>
-					<Var name="aux" key="mandatory_response_value"><Var name="statement" key="mandatory_response_value"/></Var>
-					<Var name="aux" key="statement"><Var name="statement" key="statement"/></Var>
-					<Var name="statementsMandatory" key="$statement->code"><Var name="aux"/></Var>
-				</ForEach>
-				
-				<ForEach var="responseData" item="response" key="statementId">
-					<Var name="testValue"><Var name="statementsMandatory" key="$statementId"/></Var>
-					<If condition="$response != $testValue->mandatory_response_value &amp;&amp; $testValue->mandatory_response_value !== null &amp;&amp; $testValue->mandatory_response_value !== ''">
-						<Then>
-							<Var name="validation" key="isValid"><Int>0</Int></Var>
-							<Var name="validation" key="message"><String.parse><![CDATA[$validation->message <br/> $testValue->statement]]></String.parse></Var>
-							<Trace><String.parse>ERROR: $validation->message [$response :: $testValue->mandatory_response_value]</String.parse></Trace>
-						</Then>
-					</If>	
-				</ForEach>
-				<Return>
-					<Var name="validation"/>
-				</Return>
-			</Begin>
-		</Function>
-		
-		<Function scope="public" name="getCurrentResponse" doc="Gets the current response saved to this guid_object temporary or commited (is_active)">
-			<Params>
-				<Param name="guidObject" type="string" doc="The object linked to this response"/>
-				<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>
-				<Param name="contextFormat" type="string" doc="If there'a context, then the statement code will keep this format. Can be empty."/>
-			</Params>
-			<Return type="multiple"/>
-			<Begin>
-				<Var name="agreement">
-					<DataAccess method="load">
-						<Param name="_entity">fw_agreement</Param>
-						<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-						<Param name="is_temporary">1</Param>
-						<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
-					</DataAccess>
-				</Var>
-				<If condition="$agreement->__length == 0">
+	</Function>
+	
+	<Function scope="public" name="validateResponse" doc="Validate the response">
+		<Params>
+			<Param name="responseData" type="array" doc="The data to save the response"/>			
+		</Params>
+		<Return type="single"/>
+		<Begin>
+			<Var name="validation" key="isValid"><Int>1</Int></Var>
+			<Var name="validation" key="message"><String/></Var>
+			<Var name="statements">
+				<DataAccess method="getAll">
+					<Param name="_entity">fw_agreement_statement</Param>
+					<Param name="_lang"><Var name="USER" key="lang"/></Param>
+				</DataAccess>
+			</Var>
+			<!-- Prepare the statements array -->
+			<Var name="statementsMandatory"><Set/></Var>
+			<ForEach var="statements" item="statement">
+				<Var name="aux"><Set/></Var>
+				<Var name="aux" key="mandatory_response_value"><Var name="statement" key="mandatory_response_value"/></Var>
+				<Var name="aux" key="statement"><Var name="statement" key="statement"/></Var>
+				<Var name="statementsMandatory" key="$statement->code"><Var name="aux"/></Var>
+			</ForEach>
+			
+			<ForEach var="responseData" item="response" key="statementId">
+				<Var name="testValue"><Var name="statementsMandatory" key="$statementId"/></Var>
+				<If condition="$response != $testValue->mandatory_response_value &amp;&amp; $testValue->mandatory_response_value !== null &amp;&amp; $testValue->mandatory_response_value !== ''">
 					<Then>
-						<!-- Get the last commited agreement - the one that is_valid -->
-						<Var name="agreement">
-							<DataAccess method="load">
-								<Param name="_entity">fw_agreement</Param>
-								<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-								<Param name="is_active">1</Param>
-								<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>								
-							</DataAccess>
-						</Var>						
+						<Var name="validation" key="isValid"><Int>0</Int></Var>
+						<Var name="validation" key="message"><String.parse><![CDATA[$validation->message <br/> $testValue->statement]]></String.parse></Var>
+						<Trace><String.parse>ERROR: $validation->message [$response :: $testValue->mandatory_response_value]</String.parse></Trace>
 					</Then>
-				</If>
+				</If>	
+			</ForEach>
+			<Return>
+				<Var name="validation"/>
+			</Return>
+		</Begin>
+	</Function>
+	
+	<Function scope="public" name="getCurrentResponse" doc="Gets the current response saved to this guid_object temporary or commited (is_active)">
+		<Params>
+			<Param name="guidObject" type="string" doc="The object linked to this response"/>
+			<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>
+			<Param name="contextFormat" type="string" doc="If there'a context, then the statement code will keep this format. Can be empty."/>
+		</Params>
+		<Return type="multiple"/>
+		<Begin>
+			<Var name="agreement">
+				<DataAccess method="load">
+					<Param name="_entity">fw_agreement</Param>
+					<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+					<Param name="is_temporary">1</Param>
+					<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
+				</DataAccess>
+			</Var>
+			<If condition="$agreement->__length == 0">
+				<Then>
+					<!-- Get the last commited agreement - the one that is_valid -->
+					<Var name="agreement">
+						<DataAccess method="load">
+							<Param name="_entity">fw_agreement</Param>
+							<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+							<Param name="is_active">1</Param>
+							<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>								
+						</DataAccess>
+					</Var>						
+				</Then>
+			</If>
 
-				<!-- Get the responses -->
-				<Var name="parsedResponse"><Set/></Var>						
-				<If condition="$agreement->__length != 0">
-					<Then>
-						<Var name="responses">
-							<DataAccess method="this,this,getResponse">
-								<Param name="id_agreement"><Var name="agreement" key="id"/></Param>
-								<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
-							</DataAccess>
-						</Var>
-						<ForEach var="responses" item="response">
-							<Var name="responseCode"><Var name="response" key="code"/></Var>
-							<If condition="$response->agreement_statement_context != '' &amp;&amp; $PARAMS->contextFormat != ''">
-								<Then>
-									<!-- The statement code will be concatenated with the contextFormat -->
-									<Var name="context"><JsonToSet><Var name="response" key="agreement_statement_context"/></JsonToSet></Var>
-									<Var name="responseCode"><String.parse><Var name="PARAMS" key="contextFormat"/></String.parse></Var>
-									<Var name="responseCode" dump="true"><String.parse>$response['code']_$responseCode</String.parse></Var>
-								</Then>
-							</If>
-							<Var name="parsedResponse" key="$responseCode"><Var name="response" key="agreement_statement_response"/></Var>	
-						</ForEach>					
-					</Then>
-				</If>				
-				<Return>
-					<Var name="parsedResponse"/>
-				</Return>
-			</Begin>
-		</Function>		
+			<!-- Get the responses -->
+			<Var name="parsedResponse"><Set/></Var>						
+			<If condition="$agreement->__length != 0">
+				<Then>
+					<Var name="responses">
+						<DataAccess method="this,this,getResponse">
+							<Param name="id_agreement"><Var name="agreement" key="id"/></Param>
+							<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+						</DataAccess>
+					</Var>
+					<ForEach var="responses" item="response">
+						<Var name="responseCode"><Var name="response" key="code"/></Var>
+						<If condition="$response->agreement_statement_context != '' &amp;&amp; $PARAMS->contextFormat != ''">
+							<Then>
+								<!-- The statement code will be concatenated with the contextFormat -->
+								<Var name="context"><JsonToSet><Var name="response" key="agreement_statement_context"/></JsonToSet></Var>
+								<Var name="responseCode"><String.parse><Var name="PARAMS" key="contextFormat"/></String.parse></Var>
+								<Var name="responseCode" dump="true"><String.parse>$response['code']_$responseCode</String.parse></Var>
+							</Then>
+						</If>
+						<Var name="parsedResponse" key="$responseCode"><Var name="response" key="agreement_statement_response"/></Var>	
+					</ForEach>					
+				</Then>
+			</If>				
+			<Return>
+				<Var name="parsedResponse"/>
+			</Return>
+		</Begin>
+	</Function>		
 
-		<Function scope="public" name="getCurrentResponseForGroup" doc="Gets the current response saved to this guidObject list">
-			<Params>
-				<Param name="guidObjectList" type="string" doc="The guid object array to get the responses"/>
-				<Param name="entity" type="string" required="true" doc="Entity to retrieve the context data. The guidobject belongs to this entity"/>
-				<Param name="entityGuidObjectKey" required="true" type="string" doc="Entity guid object key name"/>
-				<Param name="entityAttributeList" required="true" type="string" doc="Entity attributes to retrieve"/>
-				<Param name="entitySort" required="true" type="string" doc="Entity attributes to sort"/>
-				<Param name="idAgreementStatementType" required="true" type="int" doc="Agreement statement type to filter"/>
-				<Param name="startDate" required="true" type="int" doc="Agreement start date"/>
-			</Params>
-			<Return type="multiple"/>
-			<Begin>
-				<Var name="response">
-					<DataAccess method="this,this,getFullResponseByGuidObjects">
-						<Param name="_lang"><Var name="USER" key="lang"/></Param>
-						<Param name="entity"><Var name="PARAMS" key="entity"/></Param>
-						<Param name="entityGuidObjectKey"><Var name="PARAMS" key="entityGuidObjectKey"/></Param>
-						<Param name="entityAttributeList"><Var name="PARAMS" key="entityAttributeList"/></Param>
-						<Param name="entitySort"><Var name="PARAMS" key="entitySort"/></Param>
-						<Param name="guidObjectList"><Var name="PARAMS" key="guidObjectList"/></Param>
-						<Param name="idAgreementStatementType"><Var name="PARAMS" key="idAgreementStatementType"/></Param>
-						<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
-					</DataAccess>
-				</Var>
-				<Return>
-					<Var name="response"/>
-				</Return>
-			</Begin>
-		</Function>				
+	<Function scope="public" name="getCurrentResponseForGroup" doc="Gets the current response saved to this guidObject list">
+		<Params>
+			<Param name="guidObjectList" type="string" doc="The guid object array to get the responses"/>
+			<Param name="entity" type="string" required="true" doc="Entity to retrieve the context data. The guidobject belongs to this entity"/>
+			<Param name="entityGuidObjectKey" required="true" type="string" doc="Entity guid object key name"/>
+			<Param name="entityAttributeList" required="true" type="string" doc="Entity attributes to retrieve"/>
+			<Param name="entitySort" required="true" type="string" doc="Entity attributes to sort"/>
+			<Param name="idAgreementStatementType" required="true" type="int" doc="Agreement statement type to filter"/>
+			<Param name="startDate" required="true" type="int" doc="Agreement start date"/>
+		</Params>
+		<Return type="multiple"/>
+		<Begin>
+			<Var name="response">
+				<DataAccess method="this,this,getFullResponseByGuidObjects">
+					<Param name="_lang"><Var name="USER" key="lang"/></Param>
+					<Param name="entity"><Var name="PARAMS" key="entity"/></Param>
+					<Param name="entityGuidObjectKey"><Var name="PARAMS" key="entityGuidObjectKey"/></Param>
+					<Param name="entityAttributeList"><Var name="PARAMS" key="entityAttributeList"/></Param>
+					<Param name="entitySort"><Var name="PARAMS" key="entitySort"/></Param>
+					<Param name="guidObjectList"><Var name="PARAMS" key="guidObjectList"/></Param>
+					<Param name="idAgreementStatementType"><Var name="PARAMS" key="idAgreementStatementType"/></Param>
+					<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+				</DataAccess>
+			</Var>
+			<Return>
+				<Var name="response"/>
+			</Return>
+		</Begin>
+	</Function>				
 
     <Function scope="public" name="commit" doc="Commits the current temporary response">
 			<Params>
@@ -492,6 +502,14 @@
 								<!--Use the local variable context to expand the statement -->
 								<Var name="context"><JsonToSet><Var name="responseItem" key="agreement_statement_context"/></JsonToSet></Var>
 								<Var name="responseItem" key="statement"><String.parse><String.parse>$responseItem->statement</String.parse></String.parse></Var>
+								<Var name="responseItem" dump="true"/>
+								<!--Var name="responseItem" key="statement">
+									<String.replace>
+										<Param>\"</Param>
+										<Param>"</Param>
+										<Param><Var name="responseItem" key="statement"/></Param>
+									</String.replace>
+								</Var-->
 								<Var name="context"><Set/></Var>
 							</Then>
 						</If>
@@ -601,227 +619,227 @@
 					<Var name="agreement" key="id"/>
 				</Return>
 			</Begin>
-		</Function>
-		
-		<Function scope="public" name="downloadAgreementRecordPdf" doc="">
-			<Params>
-				<Param name="guidObject" type="string" doc=""/>
-				<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
-			</Params>
-			<Return type=""/>
-			<Begin>
-				<Var name="currentAgreement">
-					<DataAccess method="load">
-						<Param name="_entity">fw_agreement</Param>
-						<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-						<Param name="is_active"><Int>1</Int></Param>
-						<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>						
-					</DataAccess>
-				</Var>
-				<If condition="$currentAgreement->id_record !== null">
-					<Then>
-			      <Call library="framework,rm.record,api" function="getContent">
-							<Param name="id_record"><Var name="currentAgreement" key="id_record"/></Param>
-						</Call>						
-					</Then>
-				</If>
-			</Begin>
-		</Function>
-
-		<Function scope="public" name="reopen" doc="This action will create a new temporary agreement with the copy of the current responses">
-			<Params>
-				<Param name="guidObject" type="string" doc=""/>
-				<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
-				<Param name="endDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
-			</Params>
-			<Return type=""/>
-			<Begin>
-				<Transaction>
-					<Var name="currentTmpAgreement">
-						<DataAccess method="load">
-							<Param name="_entity">fw_agreement</Param>
-							<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-							<Param name="is_temporary"><Int>1</Int></Param>
-							<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>							
-							<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>							
-						</DataAccess>
-					</Var>
-					<If condition="$currentTmpAgreement->__length == 0">
-						<Then>
-							<!-- There's no temporary response... create one -->
-							<Var name="currentAgreement">
-								<DataAccess method="load">
-									<Param name="_entity">fw_agreement</Param>
-									<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-									<Param name="is_active"><Int>1</Int></Param>
-									<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
-									<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>									
-								</DataAccess>
-							</Var>
-							<If condition="$currentAgreement->__length &gt; 0">
-								<Then>
-									<Var name="idAgreementTmp">
-										<DataAccess method="insert">
-											<Param name="_entity">fw_agreement</Param>
-											<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-											<Param name="uuid"><Uuid/></Param>
-											<Param name="is_temporary"><Int>1</Int></Param>
-											<Param name="is_active"><Int>0</Int></Param>
-											<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>											
-											<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>																						
-											<Param name="_base">true</Param>
-										</DataAccess>
-									</Var>
-									<Var name="currentTmpAgreement">
-										<DataAccess method="load">
-											<Param name="_entity">fw_agreement</Param>
-											<Param name="id"><Var name="idAgreementTmp"/></Param>
-										</DataAccess>
-									</Var>
-									<!-- Copy all the responses -->
-									<Var name="responses">
-										<DataAccess method="getAll">
-											<Param name="_entity">fw_agreement_response</Param>
-											<Param name="id_agreement"><Var name="currentAgreement" key="id"/></Param>
-										</DataAccess>
-									</Var>
-									<ForEach var="responses" item="response">
-										<DataAccess method="insert">
-											<Param name="_entity">fw_agreement_response</Param>
-											<Param name="id_agreement"><Var name="idAgreementTmp"/></Param>
-											<Param name="id_agreement_statement"><Var name="response" key="id_agreement_statement"/></Param>
-											<Param name="agreement_statement_response"><Var name="response" key="agreement_statement_response"/></Param>
-											<Param name="agreement_statement_context">
-												<If condition="$response->agreement_statement_context !== null &amp;&amp; $response->agreement_statement_context !== ''">
-													<Then><Var name="response" key="agreement_statement_context"/></Then>
-													<Else><Null/></Else>
-												</If>
-											</Param>
-											<Param name="expire_date"><Var name="response" key="expire_date"/></Param>
-											<Param name="_base">true</Param>
-										</DataAccess>							
-									</ForEach>
-								</Then>
-							</If>
-						</Then>
-					</If>
-				</Transaction>
-			</Begin>
-		</Function>
-
-		<Function scope="public" name="getGuidObject" doc="gets a guid object from an agreement response">
-			<Params>
-				<Param name="id" type="int" doc="The response id"/>
-			</Params>
-			<Return type="string"/>
-			<Begin>
-				<Var name="response">
-					<DataAccess method="load">
-						<Param name="_entity">fw_agreement_response</Param>
-						<Param name="id"><Var name="PARAMS" key="id"/></Param>
-					</DataAccess>
-				</Var>
-				<Var name="agreement">
-					<DataAccess method="load">
-						<Param name="_entity">fw_agreement_response</Param>
-						<Param name="id"><Var name="response" key="id_agreement"/></Param>
-					</DataAccess>
-				</Var>
-				<Return><Var name="agreement" key="guid_object"/></Return>
-			</Begin>
-		</Function>
-
-
-		<Function scope="public" name="autosetResponseSchemaStatements" doc="Add to the response the statements of the schema_code and expand to it the values of the context">
+	</Function>
+	
+	<Function scope="public" name="downloadAgreementRecordPdf" doc="">
 		<Params>
-			<Param name="guidObject" type="string" doc="The response guid object"/>
-			<Param name="schemaCode" type="string" doc="The schema code to get the statements"/>
+			<Param name="guidObject" type="string" doc=""/>
 			<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
-			<Param name="endDate" type="int" doc="Defines the start date of the agreement to get the current response"/>		
-			<Param name="context" type="set" doc="Context data to expand to the statement"/>		
 		</Params>
-		<Return type="int"/>
+		<Return type=""/>
 		<Begin>
-			<!-- Get the response -->
-			<Var name="currentResponse" dump="true">
-				<Call library="framework,agreement.response,api" function="getCurrentResponse">
-					<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
-					<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
-				</Call>
-			</Var>
-
-			<!-- Get the schema statements -->
-			<Var name="schemaStatements" dump="true">      
-				<Call library="framework,agreement.schema,api" function="getFields">
-					<Param name="code"><Var name="PARAMS" key="schemaCode"/></Param>
-					<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
-				</Call>      
-			</Var>
-
-			<!-- Expand the values of context into each statement -->
-			<ForEach var="schemaStatements" item="statement">
-				<!-- If this item is allready in the response, then update the agreement_statement_context else create it-->	
-				<Var name="responseItem"><Set/></Var>
-				<Var name="responseItem" key="code"><Var name="statement" key="statement_code"/></Var>
-				<Var name="responseItem" key="value"><Int>1</Int></Var>
-				<Var name="responseItem" key="context"><SetToJson><Var name="PARAMS" key="context"/></SetToJson></Var>
-				<Var name="responsePost" key=""><Var name="responseItem"/></Var>
-			</ForEach>
-
-			<!-- Save/Update the response -->
-			<Call library="framework,agreement.response,api" function="save">
-				<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
-				<Param name="responseData"><Var name="responsePost" dump="true"/></Param>
-				<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
-				<Param name="endDate"><Var name="PARAMS" key="endDate"/></Param>						
-			</Call>
-
-			<Return>
-			</Return>
-		</Begin>
-		</Function>
-
-		<Function scope="public" name="deleteResponseSchemaStatements" doc="Delete from the response the statements of the schema_code. Caution: this function will actually delete those statements">
-		<Params>
-			<Param name="guidObject" type="string" doc="The response guid object"/>
-			<Param name="schemaCode" type="string" doc="The schema code to get the statements"/>
-			<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
-			<Param name="endDate" type="int" doc="Defines the start date of the agreement to get the current response"/>			
-		</Params>
-		<Return type="int"/>
-		<Begin>
-			<!-- Get the agreement -->
-			<Var name="agreement">
+			<Var name="currentAgreement">
 				<DataAccess method="load">
 					<Param name="_entity">fw_agreement</Param>
 					<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
-					<Param name="is_temporary"><Int>1</Int></Param>
-					<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
-					<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>
+					<Param name="is_active"><Int>1</Int></Param>
+					<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>						
 				</DataAccess>
-			</Var>		
-			
-			<!-- Get the schema statements -->
-			<Var name="schemaStatements">      
-				<Call library="framework,agreement.schema,api" function="getFields">
-					<Param name="code"><Var name="PARAMS" key="schemaCode"/></Param>
-					<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
-				</Call>      
 			</Var>
-
-			<!-- Delete them from the current response -->
-			<ForEach var="schemaStatements" item="statement">
-				<DataAccess method="delete">
-					<Param name="_entity">fw_agreement_response</Param>
-					<Param name="id_agreement"><Var name="agreement" key="id"/></Param>
-					<Param name="id_agreement_statement"><Var name="statement" key="statement_id"/></Param>
-				</DataAccess>
-			</ForEach>
-
-			<Return>
-			</Return>
+			<If condition="$currentAgreement->id_record !== null">
+				<Then>
+				<Call library="framework,rm.record,api" function="getContent">
+						<Param name="id_record"><Var name="currentAgreement" key="id_record"/></Param>
+					</Call>						
+				</Then>
+			</If>
 		</Begin>
-		</Function>
+	</Function>
+
+	<Function scope="public" name="reopen" doc="This action will create a new temporary agreement with the copy of the current responses">
+		<Params>
+			<Param name="guidObject" type="string" doc=""/>
+			<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
+			<Param name="endDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
+		</Params>
+		<Return type=""/>
+		<Begin>
+			<Transaction>
+				<Var name="currentTmpAgreement">
+					<DataAccess method="load">
+						<Param name="_entity">fw_agreement</Param>
+						<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+						<Param name="is_temporary"><Int>1</Int></Param>
+						<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>							
+						<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>							
+					</DataAccess>
+				</Var>
+				<If condition="$currentTmpAgreement->__length == 0">
+					<Then>
+						<!-- There's no temporary response... create one -->
+						<Var name="currentAgreement">
+							<DataAccess method="load">
+								<Param name="_entity">fw_agreement</Param>
+								<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+								<Param name="is_active"><Int>1</Int></Param>
+								<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
+								<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>									
+							</DataAccess>
+						</Var>
+						<If condition="$currentAgreement->__length &gt; 0">
+							<Then>
+								<Var name="idAgreementTmp">
+									<DataAccess method="insert">
+										<Param name="_entity">fw_agreement</Param>
+										<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+										<Param name="uuid"><Uuid/></Param>
+										<Param name="is_temporary"><Int>1</Int></Param>
+										<Param name="is_active"><Int>0</Int></Param>
+										<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>											
+										<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>																						
+										<Param name="_base">true</Param>
+									</DataAccess>
+								</Var>
+								<Var name="currentTmpAgreement">
+									<DataAccess method="load">
+										<Param name="_entity">fw_agreement</Param>
+										<Param name="id"><Var name="idAgreementTmp"/></Param>
+									</DataAccess>
+								</Var>
+								<!-- Copy all the responses -->
+								<Var name="responses">
+									<DataAccess method="getAll">
+										<Param name="_entity">fw_agreement_response</Param>
+										<Param name="id_agreement"><Var name="currentAgreement" key="id"/></Param>
+									</DataAccess>
+								</Var>
+								<ForEach var="responses" item="response">
+									<DataAccess method="insert">
+										<Param name="_entity">fw_agreement_response</Param>
+										<Param name="id_agreement"><Var name="idAgreementTmp"/></Param>
+										<Param name="id_agreement_statement"><Var name="response" key="id_agreement_statement"/></Param>
+										<Param name="agreement_statement_response"><Var name="response" key="agreement_statement_response"/></Param>
+										<Param name="agreement_statement_context">
+											<If condition="$response->agreement_statement_context !== null &amp;&amp; $response->agreement_statement_context !== ''">
+												<Then><Var name="response" key="agreement_statement_context"/></Then>
+												<Else><Null/></Else>
+											</If>
+										</Param>
+										<Param name="expire_date"><Var name="response" key="expire_date"/></Param>
+										<Param name="_base">true</Param>
+									</DataAccess>							
+								</ForEach>
+							</Then>
+						</If>
+					</Then>
+				</If>
+			</Transaction>
+		</Begin>
+	</Function>
+
+	<Function scope="public" name="getGuidObject" doc="gets a guid object from an agreement response">
+		<Params>
+			<Param name="id" type="int" doc="The response id"/>
+		</Params>
+		<Return type="string"/>
+		<Begin>
+			<Var name="response">
+				<DataAccess method="load">
+					<Param name="_entity">fw_agreement_response</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+				</DataAccess>
+			</Var>
+			<Var name="agreement">
+				<DataAccess method="load">
+					<Param name="_entity">fw_agreement_response</Param>
+					<Param name="id"><Var name="response" key="id_agreement"/></Param>
+				</DataAccess>
+			</Var>
+			<Return><Var name="agreement" key="guid_object"/></Return>
+		</Begin>
+	</Function>
+
+
+	<Function scope="public" name="autosetResponseSchemaStatements" doc="Add to the response the statements of the schema_code and expand to it the values of the context">
+	<Params>
+		<Param name="guidObject" type="string" doc="The response guid object"/>
+		<Param name="schemaCode" type="string" doc="The schema code to get the statements"/>
+		<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
+		<Param name="endDate" type="int" doc="Defines the start date of the agreement to get the current response"/>		
+		<Param name="context" type="set" doc="Context data to expand to the statement"/>		
+	</Params>
+	<Return type="int"/>
+	<Begin>
+		<!-- Get the response -->
+		<Var name="currentResponse" dump="true">
+			<Call library="framework,agreement.response,api" function="getCurrentResponse">
+				<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+				<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+			</Call>
+		</Var>
+
+		<!-- Get the schema statements -->
+		<Var name="schemaStatements" dump="true">      
+			<Call library="framework,agreement.schema,api" function="getFields">
+				<Param name="code"><Var name="PARAMS" key="schemaCode"/></Param>
+				<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+			</Call>      
+		</Var>
+
+		<!-- Expand the values of context into each statement -->
+		<ForEach var="schemaStatements" item="statement">
+			<!-- If this item is allready in the response, then update the agreement_statement_context else create it-->	
+			<Var name="responseItem"><Set/></Var>
+			<Var name="responseItem" key="code"><Var name="statement" key="statement_code"/></Var>
+			<Var name="responseItem" key="value"><Int>1</Int></Var>
+			<Var name="responseItem" key="context"><SetToJson><Var name="PARAMS" key="context"/></SetToJson></Var>
+			<Var name="responsePost" key=""><Var name="responseItem"/></Var>
+		</ForEach>
+
+		<!-- Save/Update the response -->
+		<Call library="framework,agreement.response,api" function="save">
+			<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+			<Param name="responseData"><Var name="responsePost" dump="true"/></Param>
+			<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+			<Param name="endDate"><Var name="PARAMS" key="endDate"/></Param>						
+		</Call>
+
+		<Return>
+		</Return>
+	</Begin>
+	</Function>
+
+	<Function scope="public" name="deleteResponseSchemaStatements" doc="Delete from the response the statements of the schema_code. Caution: this function will actually delete those statements">
+	<Params>
+		<Param name="guidObject" type="string" doc="The response guid object"/>
+		<Param name="schemaCode" type="string" doc="The schema code to get the statements"/>
+		<Param name="startDate" type="int" doc="Defines the start date of the agreement to get the current response"/>				
+		<Param name="endDate" type="int" doc="Defines the start date of the agreement to get the current response"/>			
+	</Params>
+	<Return type="int"/>
+	<Begin>
+		<!-- Get the agreement -->
+		<Var name="agreement">
+			<DataAccess method="load">
+				<Param name="_entity">fw_agreement</Param>
+				<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+				<Param name="is_temporary"><Int>1</Int></Param>
+				<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
+				<Param name="end_date"><Var name="PARAMS" key="endDate"/></Param>
+			</DataAccess>
+		</Var>		
+		
+		<!-- Get the schema statements -->
+		<Var name="schemaStatements">      
+			<Call library="framework,agreement.schema,api" function="getFields">
+				<Param name="code"><Var name="PARAMS" key="schemaCode"/></Param>
+				<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
+			</Call>      
+		</Var>
+
+		<!-- Delete them from the current response -->
+		<ForEach var="schemaStatements" item="statement">
+			<DataAccess method="delete">
+				<Param name="_entity">fw_agreement_response</Param>
+				<Param name="id_agreement"><Var name="agreement" key="id"/></Param>
+				<Param name="id_agreement_statement"><Var name="statement" key="statement_id"/></Param>
+			</DataAccess>
+		</ForEach>
+
+		<Return>
+		</Return>
+	</Begin>
+	</Function>
 
   </Library>
 </Node>

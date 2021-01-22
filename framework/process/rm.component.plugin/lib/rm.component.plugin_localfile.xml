@@ -105,11 +105,10 @@
         <!-- update file's path -->
         <If condition="$updated">
           <Then>
-            <DataAccess method="update">
-    	        <Param name="_entity">fw_file</Param>
+            <Call library="framework,file,api" function="update">
     	        <Param name="id"><Var name="file" key="id" /></Param>
     	        <Param name="path"><Var name="destinationPathForFile" /></Param>
-    	      </DataAccess>
+            </Call>            
           </Then>
           <Else>
             <Exception><String parse="true">framework/rm.component.plugin_localfile::cannotMoveFile $file->id</String></Exception>
