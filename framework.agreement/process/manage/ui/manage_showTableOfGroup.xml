@@ -51,6 +51,7 @@
     </Screens>
     <Actions>
       <Action name="init" screen="showScreen">
+				<Var name="PARAMS" dump="	true"/>
 				<If condition="$PARAMS->guidObjectList == ''">
 					<Then>
 						<!-- Do nothing... -->

@@ -176,7 +176,7 @@
 							<Param name="_lang"><Var name="USER" key="lang"/></Param>
 						</DataAccess>
 					</Var-->
-					<Var name="allStatements" dump="true">
+					<Var name="allStatements">
 						<Call library="framework,agreement.statement,api" function="getAll"/>
 					</Var>
 
@@ -401,6 +401,7 @@
 		</Params>
 		<Return type="multiple"/>
 		<Begin>
+			<Var name="PARAMS" dump="true"/>
 			<Var name="response">
 				<DataAccess method="this,this,getFullResponseByGuidObjects">
 					<Param name="_lang"><Var name="USER" key="lang"/></Param>
