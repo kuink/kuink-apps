@@ -274,7 +274,7 @@
 											<Else><Var name="response" key="context"/></Else>
 										</If>
 									</Param>
-									<Param name="controlled_document_version_code">
+									<Param name="id_controlled_document_version">
 										<If condition="$statement->id_controlled_document_version == ''">
 											<Then><Null/></Then>
 											<Else><Var name="statement" key="id_controlled_document_version"/></Else>
