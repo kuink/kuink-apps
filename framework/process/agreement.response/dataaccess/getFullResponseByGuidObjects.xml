@@ -17,7 +17,7 @@
               <XField>
                 <![CDATA[
                   ag.id as id_agreement,
-                  {param->entityAttributeList},
+                  {@param->entityAttributeList},
                   agsl.name as statement_name,
                   agr.agreement_statement_response as statement_response,
                   agr.agreement_statement_response as statement_response_dup
@@ -27,7 +27,7 @@
             <XFrom>
               <XTable>
                 <![CDATA[
-                  {param->entity} e 
+                  {@param->entity} e 
                   INNER JOIN fw_agreement ag ON (ag.guid_object = e.{@param->entityGuidObjectKey} AND ag.is_active = 1)
                   INNER JOIN fw_agreement_response agr ON (agr.id_agreement = ag.id)   
                   INNER JOIN fw_agreement_statement ags ON (ags.id = agr.id_agreement_statement)
@@ -41,7 +41,7 @@
             <XWhere> 
               <XCondition>
                   agsl.lang = '{param->_lang}'
-                  AND ag.guid_object IN ({param->guidObjectList})
+                  AND ag.guid_object IN ({@param->guidObjectList})
               </XCondition>
               <XCondition optional="idAgreementStatementType">
                   AND ags.id_agreement_statement_type = {param->idAgreementStatementType}
