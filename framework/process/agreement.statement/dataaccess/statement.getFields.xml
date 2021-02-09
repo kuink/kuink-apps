@@ -22,7 +22,7 @@
             stt.code as statement_type_code,
             sttl.name as statement_type_name,
             sttl.description as statement_type_description,
-            st.expire_date_expression
+            st.expire_date_expression,
             cd.code as controlled_document_code,
             cd.name as controlled_document_name,
             cd.uri_external as controlled_document_uri_external,
