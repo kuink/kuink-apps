@@ -21,7 +21,7 @@
                   <Capability name="framework/unitTest:run"/>
                 </Allow>
               </Permissions-->              
-              <Var name="context" key="message">Instruction List::Add one numeric element</Var>
+              <Var name="context" key="message">Instruction List::Add unique element element</Var>
               <Return>
                   <Var name="context"/>
               </Return>
@@ -46,20 +46,32 @@
                 </Allow>
               </Permissions-->
               
-              <Var name="expectedResult"><String>1,2</String></Var>
+              <Var name="expectedResult"><String>A,B</String></Var>
               <Var name="test"><List/></Var>
               <Var name="test">
-                <List.add>
-                  <Param><Int>1</Int></Param>
+                <List.add unique="true">
+                  <Param><String>A</String></Param>
                   <Param><Var name="test"/></Param>
                 </List.add>
               </Var>
               <Var name="test">
-                <List.add>
-                  <Param><Int>2</Int></Param>
+                <List.add unique="true">
+                  <Param><String>B</String></Param>
                   <Param><Var name="test"/></Param>
                 </List.add>
               </Var>
+              <Var name="test">
+                <List.add unique="true">
+                  <Param><String>A</String></Param>
+                  <Param><Var name="test"/></Param>
+                </List.add>
+              </Var>
+              <Var name="test">
+                <List.add unique="true">
+                  <Param><String>B,A</String></Param>
+                  <Param><Var name="test"/></Param>
+                </List.add>
+              </Var>              
               
 
               <If condition="$test == $expectedResult">

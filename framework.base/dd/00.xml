@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains/>
+  <Templates/>
+  <Entities>
+    <!-- Hooks -->
+    <Entity name="fw_context_hook" doc="A hook based on the context. A hook is just an API that will be called within this context.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="context" domain="code" doc="The context of this api."/>
+        <Attribute name="code" domain="code" doc="The code that the client will use to get the api based on the context."/>
+        <Attribute name="api" domain="apiFunction" doc="The complete function api that will be called ijn this context"/>
+        <Template name="fw.base" />    
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>
