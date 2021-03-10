@@ -23,7 +23,18 @@
 						WHEN 'int' then 'Int'
 						WHEN 'bigint' then 'Int'
 						WHEN 'tinyint' then 'Int'
+						WHEN 'double' then 'Text'
 					END as 'type',
+					CASE c.data_type 
+						WHEN 'varchar' then 'string'
+						WHEN 'text' then 'text'
+						WHEN 'longtext' then 'text'
+						WHEN 'mediumtext' then 'text'
+						WHEN 'int' then 'int'
+						WHEN 'bigint' then 'int'
+						WHEN 'tinyint' then 'bool'
+						WHEN 'double' then 'double'
+					END as 'attr_type',
  					c.data_type as 'type_o', 
  					IF(c.character_maximum_length IS NULL, c.numeric_precision, c.character_maximum_length) as length, 
  					c.column_key as 'key', 
@@ -31,6 +42,7 @@
  					# k.referenced_column_name as 'bindid',
  					NULL as datasource,
  					NULL as bindid,
+					c.column_comment as comment,
  					c.extra 
  				FROM 
  					INFORMATION_SCHEMA.COLUMNS c

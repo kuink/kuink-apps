@@ -8,6 +8,7 @@
 		<String key="generator" value="Gerador"/>
 		<String key="generate" value="Gerar"/>
 		<String key="entity" value="Entidade"/>
+		<String key="entityReverseEngineer" value="Entidade - Reverse"/>
 		<String key="api" value="API"/>
 		<String key="nodes" value="Aplicação CRUD"/>
 		<String key="unitTests" value="Testes Unitários"/>

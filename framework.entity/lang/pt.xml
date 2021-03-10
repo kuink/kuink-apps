@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <Lang>
    <Strings>
-   
-    <String key="apply">Aplicar</String>
+      <String key="entity" value="Entidade"/>
+      <String key="definition" value="Definição Kml"/>
    </Strings>
    <HelpStrings/>
 </Lang>

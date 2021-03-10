@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions> </Permissions>
+  <Doc lang="pt-PT"> </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="TemplateLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+
+  <Screens>
+    <Screen id="sc01">
+      <Form name="frmTables">
+        <Select id="entity" required="true" searchable="true" datasource="dsTables" bindid="table" bindvalue="table"/>
+        <Static id="definition">
+          <Formatter name="Xml"/>
+        </Static>
+        <ButtonGroup>
+          <Button type="submit" id="next" action="step01"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+ </Screens>
+  <Actions>
+    <Action name="init">
+      <Action name="step01"/>
+    </Action>
+
+    <Action name="step01" screen="sc01">
+      <Var name="tablesRaw">
+        <DataAccess method="framework.ide,generator,table.list"/>
+      </Var>
+      <Var name="tablesParsed"><Set/></Var>
+      <ForEach var="tablesRaw" item="item">
+        <Var name="first"><Var name="item" key="__first"/></Var>
+        <Var name="table"><Set/></Var>
+        <Var name="table" key="table"><Var name="first"/></Var>
+        <Var name="tablesParsed" key=""><Var name="table"/></Var>
+      </ForEach>
+      <Control method="addDataSource" object="frmTables">
+        <Param>dsTables</Param>
+        <Param>
+          <Var name="tablesParsed"/>
+        </Param>
+      </Control>   
+      <Var name="data"><Var name="POSTDATA"/></Var>   
+      <If condition="$POSTDATA->entity != ''">
+        <Then>
+          <Var name="columns">
+            <DataAccess method="framework.ide,generator,table.listColumns">
+              <Param name="entity">
+                <Var name="POSTDATA" key="entity"/>
+              </Param>
+              <Param name="schema"><DataAccess method="getSchemaName"/></Param>
+            </DataAccess>
+          </Var>
+          <Var name="definition"><String.parse><![CDATA[<Entity name="$POSTDATA->entity" doc=""><Attributes>]]></String.parse></Var>
+          <ForEach var="columns" item="column">
+            <Var name="default">
+              <If condition="($column->default != 'NULL') &amp;&amp; ($column->default != 'null')">
+                <Then><String.parse><![CDATA[default="$column->default"]]></String.parse></Then>
+                <Else><String/></Else>
+              </If>
+            </Var>
+            <Var name="definition"><String.parse><![CDATA[$definition<Attribute name="$column->name" type="$column->attr_type" size="$column->length" required="$column->required" $default doc="$column->comment"/>]]></String.parse></Var>  
+          </ForEach>
+          <Var name="definition"><String.parse><![CDATA[$definition</Attributes></Entity>]]></String.parse></Var>
+          <Var name="data" key="definition"><Var name="definition"/></Var>
+          <Var name="data" dump="true"/>
+          <Control method="bind" object="frmTables">
+            <Param><Var name="data"/></Param>
+          </Control>
+        </Then>
+      </If>      
+    </Action>
+
+  </Actions>
+
+  <Library>
+  </Library>
+</Node>
