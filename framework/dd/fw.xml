@@ -169,6 +169,7 @@
 				<Attribute name="is_active" domain="bool" default="1" doc="Is this page active?" />
 				<Attribute name="is_configurable" domain="bool" default="1" doc="Can the user configure this widget?" />
 				<Attribute name="modal" domain="string" required="false" doc="Modal template to load the widget." />
+        <Attribute name="guid" domain="guid" required="false" doc="Global unique identifier." />
         <Template name="fw.base" />
       </Attributes>
     </Entity>
