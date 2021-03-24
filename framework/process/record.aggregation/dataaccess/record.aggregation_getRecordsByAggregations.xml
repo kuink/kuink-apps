@@ -33,12 +33,12 @@
                 <XWhere>
                     <XCondition>
                         <![CDATA[
-                                agg {param->comparison} {param->amountOfRelations}
+                                agg {@param->comparison} {@param->amountOfRelations}
                         ]]>
                     </XCondition>
                     <XCondition optional="classificationItems">
                         <![CDATA[
-                            and frici in ({param->classificationItems})
+                            and frici in ({@param->classificationItems})
                         ]]>
                     </XCondition>
                 </XWhere>

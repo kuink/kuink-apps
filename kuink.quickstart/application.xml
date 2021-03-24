@@ -14,21 +14,19 @@
 			<Menu role="Teacher" label="Screen.template@TODO" />
 		</Menu>
 		<Menu role="Teacher" label="Control">
-			<Menu role="Teacher" label="Form">
-				<Menu role="Teacher" label="Form.field@TODO" startuc="form.field" startnode="" event="init" default="false"/>
-				<Menu role="Teacher" startuc="form.select" startnode="" event="init" label="Form.select" default="false" />
-				<Menu role="Teacher" startuc="form.multilang" startnode="" event="init" label="Form.multilang" default="false" />
-				<Menu role="Teacher" label="Form.field.add@TODO" />
-				<Menu role="Teacher" startuc="form.field.addRule" startnode="" event="init" label="Form.field.rule" default="false" />
-				<Menu role="Teacher" label="Form.field.formatter@TODO" />
-				<Menu role="Teacher" startuc="form.field.inline" startnode="" event="init" label="Form.field.inline" default="false" />
-				
-			</Menu>
-			<Menu role="Teacher" label="Grid">
-				<Menu role="Teacher" label="Grid.simple@TODO" />
-				<Menu role="Teacher" label="Grid.pageable@TODO" />
-				<Menu role="Teacher" label="Grid.editable@TODO" />
-			</Menu>
+			<Menu role="Teacher" label="Form.field@TODO" startuc="form.field" startnode="" event="init" default="false"/>
+			<Menu role="Teacher" startuc="form.select" startnode="" event="init" label="Form.select" default="false" />
+			<Menu role="Teacher" startuc="form.multilang" startnode="" event="init" label="Form.multilang" default="false" />
+			<Menu role="Teacher" label="Form.field.add@TODO" />
+			<Menu role="Teacher" startuc="form.field.addRule" startnode="" event="init" label="Form.field.rule" default="false" />
+			<Menu role="Teacher" label="Form.field.formatter@TODO" />
+			<Menu role="Teacher" startuc="form.field.inline" startnode="" event="init" label="Form.field.inline" default="false" />
+			<Menu role="Teacher" startuc="form.dateTime" startnode="" event="init" label="Form.dateTime" default="false" />
+
+			<Menu role="Teacher" label="Grid.simple@TODO" />
+			<Menu role="Teacher" label="Grid.pageable@TODO" />
+			<Menu role="Teacher" label="Grid.editable@TODO" />
+
 			<Menu role="Teacher" label="Chart">
 				<Menu role="Teacher" label="Chart.simple@TODO" />
 			</Menu>

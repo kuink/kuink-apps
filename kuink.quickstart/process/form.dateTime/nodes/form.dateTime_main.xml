@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node showsource="true">
+  <Libraries />
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen id="scr01">
+      <Form name="form01">
+        <Header id="h1" label="DateTimeFields"/>
+        <Date id="dateFrom"/>
+        <Date id="dateTo"/>
+        <ButtonGroup>
+          <Button type="submit" label="submit" id="submit"
+            action="process" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scr01">
+    </Action>
+
+    <Action name="process">
+      <Var name="POSTDATA" dump="true" />
+      <Action name="init"/>
+    </Action>
+  </Actions>
+  <Library />
+</Node>

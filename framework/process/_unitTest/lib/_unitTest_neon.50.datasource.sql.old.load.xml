@@ -46,7 +46,7 @@
                 </Allow>
               </Permissions-->
               
-              <Var name="expectedResult">8</Var>
+              <Var name="expectedResult">14</Var>
               <Var name="record">
                 <Execute method="framework,generic,load">
                     <Param name="table">fw_company</Param>
@@ -75,4 +75,3 @@
         </Function>
     </Library>
 </Node>
-

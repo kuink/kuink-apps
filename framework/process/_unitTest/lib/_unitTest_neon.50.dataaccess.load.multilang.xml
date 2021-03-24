@@ -21,7 +21,7 @@
                   <Capability name="framework/unitTest:run"/>
                 </Allow>
               </Permissions-->
-              <Var name="context" key="message">DataAccess insert::multilang</Var>
+              <Var name="context" key="message">DataAccess load::multilang</Var>
 							<Var name="context" key="tableName">
 								<Call library="framework,_unitTest,neon.00.aux" function="createAuxMultilangTable"/>
 							</Var>                    
@@ -104,4 +104,3 @@
         
     </Library>
 </Node>
-

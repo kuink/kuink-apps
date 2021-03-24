@@ -59,73 +59,73 @@
             </Begin>
     </Function>
     
-			<Function scope="public" name="createAuxMultilangTable" doc="Creates an auxiliary table used throughout the unit tests">
-				<Params>
-				</Params>
-				<Return type=""/>
-				<Begin>
-					<Var name="time"><MicroTime/></Var>
-					<Var name="time"><String.replace>
-						<Param>.</Param>
-						<Param>_</Param>
-						<Param><Var name="time"/></Param>
-					</String.replace></Var>
-					<Var name="tableName"><String.parse>fw_ml_tmp_aux_$time</String.parse></Var>
-					<Var name="tableNameML">
-						<String.concatenate>
-							<Param><Var name="tableName"/></Param>
-							<Param><String>_lang</String></Param>
-						</String.concatenate>
-					</Var>
-				  <DataAccess method="execute">
-				  	<Param name="tableName"><Var name="tableName"/></Param>
-				  	<Param name="tableNameML"><Var name="tableNameML"/></Param>
-				    <Param name="_sql">
-				    <Xml><Sql>
-				      <![CDATA[
-								CREATE TEMPORARY TABLE `{@param->tableName}` (
-								  `id` bigint(10) NOT NULL AUTO_INCREMENT,
-								  PRIMARY KEY(id)
-								) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-								CREATE TEMPORARY TABLE `{@param->tableNameML}` (
-								  `id` bigint(10) NOT NULL,
-								  `lang` varchar(64) DEFAULT NULL,
-								  `name` varchar(64) DEFAULT NULL
-								) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-				      ]]>
-				    </Sql></Xml></Param>
-				  </DataAccess>					
-					<Return>
-						<Var name="tableName"/>
-					</Return>			
-				</Begin>
-			</Function>
-	
-			<Function scope="public" name="dropAuxMultilangTable" doc="Drops an auxiliary table used throughout the unit tests">
-				<Params>
-					<Param name="tableName" type="string" doc="The table name to drop"/>
-				</Params>
-				<Return type="int"/>
-				<Begin>
-					<Var name="tableNameML">
-						<String.concatenate>
-							<Param><Var name="tableName"/></Param>
-							<Param><String>_lang</String></Param>
-						</String.concatenate>
-					</Var>
-					<Return>
-						  <DataAccess method="execute">
-						  	<Param name="tableName"><Var name="PARAMS" key="tableName"/></Param>
-						  	<Param name="tableNameML"><Var name="tableNameML"/></Param>
-						    <Param name="_sql"><Xml><Sql>
-						      <![CDATA[
-										DROP TEMPORARY TABLE `{@param->tableName}`;
-										DROP TEMPORARY TABLE `{@param->tableNameML}`;
-						      ]]>
-						    </Sql></Xml></Param>
-						  </DataAccess>					
-					</Return>			
-				</Begin>
-			</Function>    
+		<Function scope="public" name="createAuxMultilangTable" doc="Creates an auxiliary table used throughout the unit tests">
+			<Params>
+			</Params>
+			<Return type=""/>
+			<Begin>
+				<Var name="time"><MicroTime/></Var>
+				<Var name="time"><String.replace>
+					<Param>.</Param>
+					<Param>_</Param>
+					<Param><Var name="time"/></Param>
+				</String.replace></Var>
+				<Var name="tableName"><String.parse>fw_ml_tmp_aux_$time</String.parse></Var>
+				<Var name="tableNameML">
+					<String.concatenate>
+						<Param><Var name="tableName"/></Param>
+						<Param><String>_lang</String></Param>
+					</String.concatenate>
+				</Var>
+				<DataAccess method="execute">
+					<Param name="tableName"><Var name="tableName"/></Param>
+					<Param name="tableNameML"><Var name="tableNameML"/></Param>
+					<Param name="_sql">
+					<Xml><Sql>
+						<![CDATA[
+							CREATE TEMPORARY TABLE `{@param->tableName}` (
+								`id` bigint(10) NOT NULL AUTO_INCREMENT,
+								PRIMARY KEY(id)
+							) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+							CREATE TEMPORARY TABLE `{@param->tableNameML}` (
+								`id` bigint(10) NOT NULL,
+								`lang` varchar(64) DEFAULT NULL,
+								`name` varchar(64) DEFAULT NULL
+							) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+						]]>
+					</Sql></Xml></Param>
+				</DataAccess>					
+				<Return>
+					<Var name="tableName"/>
+				</Return>			
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="dropAuxMultilangTable" doc="Drops an auxiliary table used throughout the unit tests">
+			<Params>
+				<Param name="tableName" type="string" doc="The table name to drop"/>
+			</Params>
+			<Return type="int"/>
+			<Begin>
+				<Var name="tableNameML">
+					<String.concatenate>
+						<Param><Var name="tableName"/></Param>
+						<Param><String>_lang</String></Param>
+					</String.concatenate>
+				</Var>
+				<Return>
+						<DataAccess method="execute">
+							<Param name="tableName"><Var name="PARAMS" key="tableName"/></Param>
+							<Param name="tableNameML"><Var name="tableNameML"/></Param>
+							<Param name="_sql"><Xml><Sql>
+								<![CDATA[
+									DROP TEMPORARY TABLE `{@param->tableName}`;
+									DROP TEMPORARY TABLE `{@param->tableNameML}`;
+								]]>
+							</Sql></Xml></Param>
+						</DataAccess>					
+				</Return>			
+			</Begin>
+		</Function>    
   </Library>
 </Node>

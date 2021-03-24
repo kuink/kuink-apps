@@ -23,7 +23,8 @@
       </Exceptions>
       <Return type="multiple" doc="The update state"/>
       <Begin>
-        <Var name="application">
+		  <Var name="PARAMS" dump="true"/>
+        <Var name="application" dump="true">
           <DataAccess method="load">
 						<Param name="_entity">fw_application</Param>
 						<Param name="id"><Var name="id"/></Param>

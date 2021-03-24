@@ -21,7 +21,7 @@
                   <Capability name="framework/unitTest:run"/>
                 </Allow>
               </Permissions-->              
-              <Var name="context" key="message">Return exits the function</Var>
+              <Var name="context" key="message">Testing an output param in a function</Var>
               <Return>
                   <Var name="context"/>
               </Return>
@@ -46,21 +46,18 @@
                 </Allow>
               </Permissions-->
               
-              <Var name="num">5</Var>
-
-              <Var name="fact">
-                <Call function="factorial">
-                  <Param name="num"><Var name="num"/></Param>
-                </Call>
-              </Var>
+              <Var name="num"><Int>5</Int></Var>
+              <Call function="testOutput">
+                <Param name="test" var="num"/>
+              </Call>
 
               <Var name="result" key="code">
-                <If condition="$fact == 120">
+                <If condition="$num == 10">
                   <Then>0</Then>
                   <Else>-1</Else>
                 </If>
               </Var>
-              <Var name="result" key="data"><String parse="true">Factorial of $num = $fact</String></Var>
+              <Var name="result" key="data"><String parse="true">$num == 10</String></Var>
               <Return>
                   <Var name="result"/>
               </Return>
@@ -76,30 +73,14 @@
             </Begin>
         </Function>
         
-        <Function scope="private" name="factorial" doc="Returns before end">
+        <Function scope="private" name="testOutput" doc="Aux function for the test">
             <Params>
-              <Param name="num"/>
+              <Param name="test" output="true"/>
             </Params>
-            <Return type="int" doc="factorial recursive"/>
+            <Return type="int" doc=""/>
             <Begin>
-              <Var name="num" dump="true"/>
-              <If condition="$num==0">
-                <Then>
-                  <Return>1</Return>
-                </Then>
-              </If>
-              <Var name="auxNum" value="$num - 1"/>
-              <Var name="factAuxNum">
-                <Int>
-                  <Call function="factorial">
-                    <Param name="num"><Var name="auxNum"/></Param>
-                  </Call>
-                </Int>
-              </Var>
-              
-              <Var name="result" value="$num * $factAuxNum"/>
+              <Var name="test"><Int.parse>$test*2</Int.parse></Var>
               <Return>
-                <Var name="result"/>
               </Return>
             </Begin>
         </Function>
