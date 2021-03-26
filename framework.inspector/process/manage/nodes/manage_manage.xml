@@ -30,7 +30,7 @@
       <Var name="event"><Var name="PARAMS" key="event"/></Var>
       <NativeCode>
         <![CDATA[ 
-          $variables['uml'] = \Neon\Core\Reflection::getUml($variables['application'], $variables['process']);	
+          $variables['uml'] = \Kuink\Core\Reflection::getUml($variables['application'], $variables['process']);	
         ]]>
         </NativeCode>
         <Print><Var name="uml"/></Print>

@@ -3,6 +3,13 @@
    <Strings>
       <String key="entity" value="Entidade"/>
       <String key="definition" value="Definição Kml"/>
+      <String key="diagram" value="Diagrama ER Uml"/>
+      <String key="analyse" value="Analisar"/>
+
+      <String key="createForeignIndexes" value="Criar índices nas FK"/>
+      <String key="createForeignKeys" value="Criar FK"/>
+      <String key="dropTablesBeforeCreate" value="Eliminar tabelas antes de criar"/>
+      
    </Strings>
    <HelpStrings/>
 </Lang>

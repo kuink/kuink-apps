@@ -19,10 +19,23 @@
         <Checkbox id="createForeignKeys"/>
         <Checkbox id="dropTablesBeforeCreate"/>
         <ButtonGroup>
-          <Button id="search" type="search" action="process" />
+          <Button id="analyse" type="search" action="process" />
+          <Button id="diagram" type="submit" action="showDiagram" />
         </ButtonGroup>
       </Form>
     </Screen>
+    <Screen id="scrDiagram" doc="Diagram">
+      <Form name="frmOptions" persist="true">
+        <Text id="application" required="true" />
+        <Text id="node" required="true" inline="true"/>
+        <Select id="template" datasource="templateOptions" bindid="id" bindvalue="value"/>
+        <ButtonGroup>
+          <Button id="back" type="back" action="init" />
+          <Button id="diagram" type="submit" action="showDiagram" />
+        </ButtonGroup>
+      </Form>      
+      <Uml name="umlViewer" format="svg" title="diagram"/>
+    </Screen>    
   </Screens>
   <Actions>
 
@@ -54,6 +67,49 @@
       </RaiseEvent>
     </Action>
 
+    <Action name="showDiagram" screen="scrDiagram">
+      <Var name="templateOptions" dump="true">
+        <Set>
+          <Element><Set><Element name="id">compact</Element><Element name="value"><Lang key="compact"/></Element></Set></Element>
+          <Element><Set><Element name="id">medium</Element><Element name="value"><Lang key="medium"/></Element></Set></Element>
+          <Element><Set><Element name="id">complete</Element><Element name="value"><Lang key="complete"/></Element></Set></Element>
+        </Set>
+      </Var>
+      <Control method="setDefaultData" object="frmOptions">
+        <Param>
+          <Set>
+            <Element name="template">medium</Element>
+            <Element name="application"><Var name="POSTDATA" key="application"/></Element>
+            <Element name="node"><Var name="POSTDATA" key="node"/></Element>
+          </Set>
+        </Param>
+      </Control>      
+      <Control method="addDataSource" object="frmOptions">
+        <Param>templateOptions</Param>
+        <Param><Var name="templateOptions"/></Param>
+      </Control>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmOptions"/>        
+      </Var>
+      <Var name="uml">
+        <DataAccess method="getLogicalEntitiesUml">
+          <Param name="application"><Var name="currentData" key="application"/></Param>
+          <Param name="node"><Var name="currentData" key="node"/></Param>
+          <Param name="template"><Var name="currentData" key="template"/></Param>
+        </DataAccess>
+      </Var>
+      <Print><Var name="uml"/></Print>
+      <Control method="bind" object="umlViewer">
+        <Param><Var name="uml"/></Param>
+      </Control>        
+      <Var name="logicalEntities" dump="true">
+        <DataAccess method="getLogicalEntities">
+          <Param name="application"><Var name="POSTDATA" key="application"/></Param>
+          <Param name="node"><Var name="POSTDATA" key="node"/></Param>
+          <Param name="template"><Var name="POSTDATA" key="template"/></Param>
+        </DataAccess>
+      </Var>
+    </Action>
+
   </Actions>
 </Node>
-
