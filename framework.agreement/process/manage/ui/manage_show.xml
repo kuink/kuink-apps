@@ -31,11 +31,11 @@
     </Screens>
     <Actions>
       <Action name="init" screen="showScreen">
-      	<Var name="PARAMS"/>
+      	<Var name="PARAMS" dump="true"/>
 				<Var name="guidObjectContext"><JsonToSet><Var name="PARAMS" key="guidObjectContext"/></JsonToSet></Var>      	
 				<If condition="$PARAMS->schemaCode != ''">
 					<Then>
-						<Var name="agreementStatements">      
+						<Var name="agreementStatements" dump="true">      
 							<Call library="framework,agreement.schema,api" function="getFields">
 								<Param name="code"><Var name="PARAMS" key="schemaCode"/></Param>
 								<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
