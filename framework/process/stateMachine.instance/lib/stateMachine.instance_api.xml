@@ -36,6 +36,7 @@
           		<Var name="startState">
           			<DataAccess method="load">
 									<Param name="_entity">fw_state_machine_state</Param>
+									<Param name="id_state_machine"><Var name="stateMachine" key="id"/></Param>
 									<Param name="is_start_state"><Int>1</Int></Param>
 								</DataAccess>
           		</Var>
@@ -684,8 +685,8 @@
 					<Begin>
 						<Var name="PARAMS"/>
 						<!-- Assuming that all bulk share the same actions -->
-						<Var name="first"><Var name="bulk" key="__first"/></Var>
-         		<Var name="actions">
+						<Var name="first" dump="true"><Var name="bulk" key="__first"/></Var>
+         		<Var name="actions" dump="true">
          			<Call function="getTransitionActions">
 			          <Param name="id"><Var name="first" key="id"/></Param>
 			          <Param name="event"><Var name="PARAMS" key="event"/></Param>

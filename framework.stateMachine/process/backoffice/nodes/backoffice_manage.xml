@@ -1,0 +1,664 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions></Permissions>
+	<Doc lang="en"></Doc>
+	<Libraries>
+		<Use name="FileLib" type="lib"/>
+		<Use name="ValidationLib" type="lib"/>
+		<Use name="DateTimeLib" type="lib"/>
+		<Use name="FormatterLib" type="lib"/>
+		<Use name="UtilsLib" type="lib"/>
+		<Use name="TemplateLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Params>
+		<Param name="stateMachineCode"/>
+		<Param name="managementGroup"/>
+		<Param name="apiGetPrimaryGroup"/>
+		<Param name="apiGetDetails"/>
+		<Param name="uiSearchResults"/>
+		<Param name="uiDetails"/>
+	</Params>
+	<Screens>
+		<Screen id="manageScreen">
+			<Form name="searchForm" title="search" persist="true">
+				<Column id="col1"/>
+				<Header id="statesHead" collapsible="true" collapsed="true"/>
+				<CheckBoxList id="states" datasource="states" bindid="id" bindvalue="name" help="false"/>
+				<Column id="col2"/>
+				<Select id="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
+				<Text id="id"/>
+				<ButtonGroup>
+					<Button type="search" id="search" label="search" action="search"/>
+					<Button type="submit" icon="bar-chart" id="stats" label="stats" action="stats"/>
+					<!--Button type="add" id="add" label="add" action="add"/-->
+				</ButtonGroup>
+			</Form>
+			<!-- Add the custom searchResults -->
+		</Screen>
+		<Screen id="detailScreen" template="1x2col">
+			<Form name="optionsFormTop" position="left">
+				<ButtonGroup>
+					<Button type="back" id="back" label="back" action="search"/>
+				</ButtonGroup>
+			</Form>
+			<!-- Placeholder for the custom details control -->
+			<Form name="eventsForm" title="actions" position="right">
+				<Static id="state_name">
+					<Formatter name="Badge" min="0" max="0" field="$state_code" showvalue="true" pallete="success"/>
+				</Static>				
+				<Select id="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
+				<Container id="container"/>
+				<ButtonGroup>
+					<Button type="continue" id="execute" label="execute" action="doActionSingle"/>
+				</ButtonGroup>
+			</Form>
+			<Grid name="historyGrid" title="history" position="right">
+				<Template>
+					<Columns>
+						<Column name="_creation">
+							<Formatter name="DateTime" method="shortDateTime"/>
+						</Column>
+						<Column name="_modification">
+							<Formatter name="DateTime" method="shortDateTime"/>
+						</Column>
+						<Column name="photo">
+							<Formatter name="Image" ext="jpg" path="photo"/>
+						</Column>
+						<Column name="event_description">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="obs_private">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="obs_public">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="id_file">
+							<Formatter name="FileDownload" method="small"/>
+						</Column>
+						<Column name="file_delete_history" inline="true">
+							<Formatter name="Separator" method="newLine"/>
+						</Column>
+						<Column name="file_delete_authorizer" inline="true">
+							<Formatter name="Separator" method="pipe"/>
+						</Column>
+						<Column name="display_name" inline="true"/>
+
+						<Column name="id_file_observation">
+							<Formatter name="Style" method="nl2br"/>
+							<Formatter name="FileDownload" method="small"/>
+						</Column>
+						<Column name="more_info">
+							<Formatter name="YesNo"/>
+						</Column>
+					</Columns>
+				</Template>
+			</Grid>
+			<Grid name="emailsSentGrid" title="emailsSent" position="right">
+				<Template>
+					<Columns>
+						<!--Column name="guid"/-->
+						<Column name="from"/>
+						<Column name="to"/>
+						<Column name="subject">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="content">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="message_status"/>
+					</Columns>
+				</Template>
+			</Grid>
+		</Screen>
+		<Screen id="executeActionScreen">
+			<Form name="actionsForm" title="actions">
+				<ButtonGroup>
+					<Button type="back" id="execute" label="back" action="search"/>
+				</ButtonGroup>
+			</Form>
+		</Screen>
+		<Screen id="chooseBulkScreen">
+			<Form name="eventsForm" title="actions">
+				<Select id="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
+				<Container id="container"/>
+				<ButtonGroup>
+					<Button type="back" id="back" label="back" action="search"/>
+					<Button type="continue" id="execute" label="execute" action="doAction"/>
+				</ButtonGroup>
+			</Form>
+		</Screen>
+		<Screen id="statsScreen" template="1x2col">
+			<Form name="optionsForm" title="">
+				<Static id="id_school_year" label="school_year" datasource="call:gecol.core,schoolYear,api,getAllCurrentFirst" bindid="id" bindvalue="name" help="false"/>
+				<Static id="id_level" label="level" datasource="call:gecol.core,level,api,getAll" bindid="id" bindvalue="name" help="false"/>
+				<Static id="id_group" label="id_group" help="false"/>
+				<ButtonGroup>
+					<Button type="back" id="back" label="back" action="init"/>
+				</ButtonGroup>
+			</Form>
+			<Grid name="preEnrollStatsGrid" title="preEnrollStats" position="left">
+				<Template>
+					<Columns>
+						<Column id="id_school_year" name="id_school_year" label="schoolYear"/>
+						<Column id="id_level" name="id_level" label="level"/>
+						<Column id="active_with_brothers" name="active_with_brothers"/>
+						<Column id="active_without_brothers" name="active_without_brothers"/>
+						<Column id="validated_with_brothers" name="validated_with_brothers"/>
+						<Column id="validated_without_brothers" name="validated_without_brothers"/>
+						<Column id="terminated_with_brothers" name="terminated_with_brothers"/>
+						<Column id="terminated_without_brothers" name="terminated_without_brothers"/>
+						<Column id="total" name="total"/>
+					</Columns>
+				</Template>
+			</Grid>
+			<Grid name="intentStatsGrid" title="intentStats" position="right">
+				<Template>
+					<Columns>
+						<Column id="id_school_year" name="id_school_year" label="schoolYear"/>
+						<Column id="id_previous_school_year" name="id_previous_school_year" label="previousSchoolYear"/>
+						<Column id="id_previous_level" name="id_previous_level" label="previousLevel"/>
+						<Column id="enroll_intent_yes" name="enroll_intent_yes"/>
+						<Column id="enroll_intent_no" name="enroll_intent_no"/>
+						<Column id="enroll_intent_na" name="enroll_intent_na"/>
+						<Column id="enroll_intent_new" name="enroll_intent_new"/>
+					</Columns>
+				</Template>
+			</Grid>
+			<Grid name="statsGrid" view="column" title="stats" position="left">
+					<View>
+						<Param name="bgColor">#ffffff</Param>
+						<Param name="hAxis">
+							<Param name="slantedText">true</Param>
+							<Param name="slantedTextAngle">45</Param>
+							<Param name="textStyle">
+								<Param name="fontSize">10</Param>
+							</Param>
+						</Param>
+						<Param name="vAxis">
+							<Param name="title">Pedidos</Param>
+						</Param>
+						<Param name="legend">
+							<Param name="position">top</Param>
+							<Param name="textStyle">
+								<Param name="fontSize">10</Param>
+							</Param>
+						</Param>
+						<Param name="isStacked">false</Param>
+					</View>
+					<Template>
+							<Columns>
+									<Column id="name" name="name" type="string" />
+									<Column id="count" label="preEnroll" name="count" type="number"/>
+							</Columns>
+					</Template>
+			</Grid>
+			<Grid name="dataGrid" title="data" position="right">
+				<Template>
+					<Columns>
+						<Column id="name" name="name"/>
+						<Column id="code" name="code"/>
+						<Column id="count" label="preEnroll" name="count" type="number"/>
+					</Columns>
+				</Template>
+			</Grid>
+		</Screen>
+	</Screens>
+
+	<Actions>
+		<Action name="init">
+			<Var name="useStateMachineTransitions" process="true"><Int>1</Int></Var>
+			<Var name="primaryGroup"><Call library="$PARAMS->apiGetPrimaryGroup"/></Var>
+			<Var name="group" process="true">
+				<Var name="primaryGroup" key="group"/>
+			</Var>
+			<Var name="isMaster" process="true">
+				<Var name="primaryGroup" key="isMaster"/>
+			</Var>
+			<If condition="@idRecord != ''">
+				<Then>
+					<Action name="details"/>
+					<Exit/>
+				</Then>
+			</If>
+			<!-- getting the state machine and cache in process -->
+			<Var name="idStateMachine" process="true">
+				<Call library="framework,stateMachine,api" function="getIdByCode">
+					<Param name="code"><Var name="PARAMS" key="stateMachineCode"/></Param>
+				</Call>
+			</Var>
+			<Action name="search"/>
+		</Action>
+
+		<Action name="search" screen="manageScreen">
+			<Exception name="framework/access:noPermission" condition="@group == 'GRD'"/>
+			<!-- Setting default search data -->
+			<Var name="defaultData" key="states">
+				<Call library="framework,stateMachine,api" function="getAllStatesDefault">
+					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>
+			<Control method="setDefaultData" object="searchForm">
+				<Param><Var name="defaultData"/></Param>
+			</Control>
+			<Var name="currentData">
+				<Control method="getCurrentData" object="searchForm"/>
+			</Var>
+			<Var name="states">
+				<Call library="framework,stateMachine,api" function="getAllStatesWithDefault">
+					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>			
+			<Control method="addDataSource" object="searchForm">
+				<Param><String>states</String></Param>
+				<Param><Var name="states"/></Param>
+			</Control>	
+			<!-- Custom search results control -->
+			<AddControl control-type="Custom" name="searchResultsControl" control="$PARAMS->uiSearchResults"/>
+			<Control method="bind" object="searchResultsControl">
+				<Param name="stateMachineCode"><Var name="PARAMS" key="stateMachineCode"/></Param>
+				<Param name="group"><Var name="group" process="true"/></Param>
+				<Param name="post"><Var name="currentData"/></Param>
+			</Control>
+		</Action>
+
+		<Action name="details" screen="detailScreen">
+			<If condition="@idRecord == ''">
+				<Then>
+					<Var name="idRecord" process="true">
+						<IsNull>
+							<Param><ActionValue/></Param>
+							<Param><Var name="idRecord" process="true"/></Param>
+						</IsNull>
+					</Var>
+				</Then>
+			</If>
+
+			<Var name="record">
+				<Call library="$PARAMS->apiGetDetails">
+					<Param name="id"><Var name="idRecord" process="true"/></Param>
+				</Call>
+			</Var>
+			<Var name="bulkRecord" process="true" clear="true"/>			
+			<Var name="recordHistory">
+				<Call library="framework,stateMachine.instance,api" function="getHistory">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+					<Param name="useStateMachineTransitions"><Var name="useStateMachineTransitions" process="true"/></Param>
+				</Call>
+			</Var>
+			<Control method="bind" object="historyGrid">
+				<Param><Var name="recordHistory"/></Param>
+			</Control>
+			<!-- Set actions/events -->
+			<Var name="preEnrollData" key="bulkIds"><Var name="idPreEnroll" process="true"/></Var>
+
+			<Var name="events">
+				<Call library="framework,stateMachine.instance,api" function="getNextEvents">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>
+			<Var name="processed"><Set/></Var>
+			<ForEach var="events" item="event">
+				<Var name="event" key="field_list"><String.parse><Var name="event" key="field_list"/></String.parse></Var>
+				<Var name="processed" key=""><Var name="event"/></Var>
+			</ForEach>			
+			<Control method="addDatasource" object="eventsForm">
+				<Param>events</Param>
+				<Param><Var name="processed"/></Param>
+			</Control>
+			<!-- Get the current state name to show in form -->
+			<Var name="currentState">
+				<Call library="framework,stateMachine.instance,api" function="getCurrentState">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+				</Call>
+			</Var>
+			<Var name="defaultData"><Set/></Var>
+			<Var name="defaultData" key="event"><Null/></Var>
+			<Var name="defaultData" key="state_name"><Var name="currentState" key="name"/></Var>
+			<Control method="bind" object="eventsForm">
+				<Param><Var name="defaultData"/></Param>
+			</Control>
+			<!-- Check if there is a control to show the process details and add it -->
+			<If condition="$PARAMS->uiDetails != ''">
+				<Then>
+					<AddControl control-type="Custom" name="detailsControl" control="$PARAMS->uiDetails" position="left"/>
+					<Control method="bind" object="detailsControl">
+						<Param name="id"><Var name="idRecord" process="true"/></Param>
+					</Control>					
+				</Then>
+			</If>
+		</Action>
+
+		<Action name="doActionSingle">
+			<!-- Build the bulk request based on a sigle record-->
+			<Var name="record">
+				<Call library="$PARAMS->apiGetDetails">
+					<Param name="id"><Var name="idRecord" process="true"/></Param>
+				</Call>
+			</Var>			
+			<Var name="stateMachineInstanceIds"><String><Var name="record" key="id_state_machine_instance"/></String></Var>
+			<Var name="eventsInCommon">
+				<Call library="framework,stateMachine.instance,api" function="getNextEventsInCommon">
+					<Param name="ids"><Var name="stateMachineInstanceIds"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>
+			<Var name="events"><Set/></Var>
+			<ForEach var="eventsInCommon" item="event">
+				<Var name="event" key="field_list"><String.parse><Var name="event" key="field_list"/></String.parse></Var>
+				<Var name="events" key=""><Var name="event"/></Var>
+			</ForEach>
+			<RaiseEvent name="actions">
+				<Param name="bulkRecords"><Var name="idRecord" process="true"/></Param>
+				<Param name="event"><Var name="POSTDATA" key="event"/></Param>
+				<Param name="eventDataSet"><Var name="eventDataSet"/></Param>
+				<Param name="role"><Var name="group" process="true"/></Param>
+				<Param name="apiGetDetails"><Var name="PARAMS" key="apiGetDetails"/></Param>
+			</RaiseEvent>
+		</Action>
+
+		<Action name="doActionBulk">
+			<!-- Build the bulk request based on a set of record-->
+		</Action>
+
+		<Action name="doAction">
+			<!-- Now we have to see if this is a bulk or single -->
+			<!-- @idRecord : The single idPreEnroll-->
+			<!-- @bulkRecord : The array with bulk idPreEnroll-->
+			<Var name="isBulk"><Int>0</Int></Var>
+			<If condition="@bulkRecord->__length &gt; 0">
+				<Then>
+					<Var name="isBulk"><Int>1</Int></Var>
+					<Var name="bulkRecordIds"><SetToList><Var name="bulkRecord" process="true"/></SetToList></Var>
+					<Var name="bulkRecords"><Var name="bulkRecord" process="true"/></Var>
+				</Then>
+				<Else>
+					<Var name="bulkRecordIds"><Var name="idPreEnroll" process="true"/></Var>
+					<Var name="bulkRecords" key=""><Var name="idPreEnroll" process="true"/></Var>
+				</Else>
+			</If>
+			<Var name="recordData" key="bulkIds"><Var name="bulkRecordIds"/></Var>
+
+			<Var name="eventsInCommon">
+				<Call library="framework,stateMachine.instance,api" function="getNextEventsInCommon">
+					<Param name="ids"><Var name="stateMachineInstanceIds"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>
+			<Var name="events"><Set/></Var>
+			<ForEach var="eventsInCommon" item="event">
+				<Var name="event" key="field_list"><String.parse><Var name="event" key="field_list"/></String.parse></Var>
+				<Var name="events" key=""><Var name="event"/></Var>
+			</ForEach>
+
+
+			<!--Var name="post">
+				<Call function="getPostData">
+					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
+					<Param name="events"><Var name="events"/></Param>
+					<Param name="bulkRecords"><Var name="bulkRecords"/></Param>
+				</Call>
+			</Var-->
+			<Var name="eventDataSet"><Set/></Var>
+			<RaiseEvent name="actions">
+				<Param name="bulkRecords"><Var name="bulkRecords"/></Param>
+				<Param name="event"><Var name="POSTDATA" key="event"/></Param>
+				<Param name="eventDataSet"><Var name="eventDataSet"/></Param>
+				<Param name="role"><Var name="group" process="true"/></Param>
+			</RaiseEvent>
+			<Action name="details"/>
+		</Action>
+
+		<Action name="chooseBulk" screen="chooseBulkScreen">
+			<Var name="postPreEnrolls">
+				<UtilsLib method="filterSelected">
+					<Param><Var name="POSTDATA"/></Param>
+				</UtilsLib>
+			</Var>
+			<If condition="$postPreEnrolls->__length == 0">
+				<Then>
+					<Action name="search"/>
+					<Exit/>
+				</Then>
+			</If>
+			<Var name="idPreEnroll" process="true" clear="true"/>
+			<Var name="preEnrollsToBulk"><Set/></Var>
+			<ForEach var="postPreEnrolls" item="preEnrollToBulk">
+				<Var name="preEnrollsToBulk" key=""><Var name="preEnrollToBulk" key="id"/></Var>
+			</ForEach>
+			<Var name="bulkRecord" process="true"><Var name="preEnrollsToBulk"/></Var>
+			<Var name="preEnroll"><Var name="preEnrollsToBulk" /></Var>
+			<Var name="idPreEnroll">
+				<Var name="preEnroll" key="__first"/>
+			</Var>
+			<Var name="preEnrollData" key="bulkIds"><SetToList><Var name="preEnrollsToBulk" /></SetToList></Var>
+			<Var name="events">
+				<Call library="gecol.core,preEnroll,api" function="getEventsInCommon">
+					<Param name="preEnrolls"><Var name="preEnrollsToBulk"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+					<Param name="preEnroll"><Var name="preEnrollData"/></Param>
+				</Call>
+			</Var>
+			<Control method="addDatasource" object="eventsForm">
+				<Param>events</Param>
+				<Param><Var name="events"/></Param>
+			</Control>
+			<Call function="visibleFieldsRules">
+				<Param name="frmEdit" var="eventsForm"><Var name="eventsForm"/></Param>
+				<Param name="events"><Var name="events"/></Param>
+			</Call>
+		</Action>
+
+		<Action name="stats" screen="statsScreen">
+			<Control method="bind" object="optionsForm">
+				<Param><Var name="POSTDATA"/></Param>
+			</Control>
+			<Var name="statsData">
+				<Call library="gecol.core,preEnroll,api" function="getStats">
+					<Param name="id_school_year"><Var name="POSTDATA" key="id_school_year"/></Param>
+					<Param name="id_level"><Var name="POSTDATA" key="id_level"/></Param>
+					<Param name="id_group"><Var name="POSTDATA" key="id_group"/></Param>
+				</Call>
+			</Var>
+			<!-- get data for preEnrollStatsGrid -->
+			<Var name="preEnrollStatsData">
+				<Call library="gecol.core,preEnroll,api" function="getGlobalStats">
+					<Param name="id_school_year"><Var name="POSTDATA" key="id_school_year"/></Param>
+					<Param name="id_level"><Var name="POSTDATA" key="id_level"/></Param>
+					<Param name="id_group"><Var name="POSTDATA" key="id_group"/></Param>
+				</Call>
+			</Var>
+			<!-- get data for intentStatsGrid -->
+			<Var name="intentStatsData">
+				<Call library="gecol.core,enroll.intent,api" function="getGlobalStats">
+					<Param name="id_school_year"><Var name="POSTDATA" key="id_school_year"/></Param>
+					<Param name="id_level"><Var name="POSTDATA" key="id_level"/></Param>
+					<!--Param name="id_group"><Var name="POSTDATA" key="id_group"/></Param-->
+				</Call>
+			</Var>
+			<Control method="bind" object="statsGrid">
+				<Param><Var name="statsData"/></Param>
+			</Control>
+			<Control method="bind" object="dataGrid">
+				<Param><Var name="statsData"/></Param>
+			</Control>
+			<Control method="bind" object="preEnrollStatsGrid">
+				<Param><Var name="preEnrollStatsData"/></Param>
+			</Control>
+			<Control method="bind" object="intentStatsGrid">
+				<Param><Var name="intentStatsData"/></Param>
+			</Control>
+		</Action>
+
+	</Actions>
+	
+	<Library>
+		<Function scope="public" name="visibleFieldsRules">
+			<Doc><![CDATA[
+			 This function will add the visibility rules based on hidden field list
+			]]></Doc>
+			<Params>
+			 <Param name="frmEdit" output="true"/>
+			 <Param name="events"/>
+			</Params>
+			<Return type=""/>
+			<Begin>
+				 <ForEach var="events" item="event">
+					<Var name="eventVisibleFields">
+						<JsonToSet><Var name="event" key="field_list"/></JsonToSet>
+					</Var>
+					<Var name="event" />
+					<ForEach var="eventVisibleFields" item="eventVisibleField">
+						<Var name="fieldId">
+							<String.concatenate>
+								<Param><Var name="event" key="event"/></Param>
+								<Param><String></String></Param>
+								<Param><Var name="eventVisibleField" key="id"/></Param>
+							</String.concatenate>
+						</Var>
+					 <Control method="addField" object="frmEdit">
+						<Param>
+							<Set>
+								<Element name="container">container</Element>
+								<Element name="id"><Var name="fieldId"/></Element>
+								<Element name="type"><Var name="eventVisibleField" key="type"/></Element>
+								<Element name="label"><Var name="eventVisibleField" key="label"/></Element>
+								<Element name="required"><Var name="eventVisibleField" key="required"/></Element>
+								<Element name="maxlength"><Var name="eventVisibleField" key="maxlength"/></Element>
+								<Element name="datasource"><Var name="eventVisibleField" key="datasource"/></Element>
+								<Element name="bindid"><Var name="eventVisibleField" key="bindid"/></Element>
+								<Element name="bindvalue"><Var name="eventVisibleField" key="bindvalue"/></Element>
+								<Element name="bindimage"><Var name="eventVisibleField" key="bindimage"/></Element>
+								<Element name="bindresults"><Var name="eventVisibleField" key="bindresults"/></Element>
+								<Element name="searchable"><Var name="eventVisibleField" key="searchable"/></Element>
+								<Element name="datasource-params"><Var name="eventVisibleField" key="datasource-params"/></Element>
+								<Element name="datasource-initial"><Var name="eventVisibleField" key="datasource-initial"/></Element>
+							</Set>
+						</Param> <!-- Field Properties -->
+					 </Control>
+					 <Var name="condition" >
+							<String.concatenate>
+								<Param><String>$event</String></Param>
+								<Param><String.parse> == '$event->event'</String.parse></Param>
+							</String.concatenate>
+					 </Var>
+					 <Control method="addRule" object="frmEdit">
+						 <Param><Var name="fieldId"/></Param> <!-- field -->
+						 <Param>visible</Param>	<!-- attribute -->
+						 <Param><Var name="condition"/></Param> <!-- condition -->
+						 <Param>client</Param> <!-- runat -->
+						 <Param>true</Param> <!-- value if condition is true -->
+						 <Param>false</Param> <!-- value if condition is false -->
+					 </Control>
+					</ForEach>
+				 </ForEach>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="getPostData" doc="Get POSTDATA and set the event Data based on the event field_list">
+			<Params>
+				<Param name="eventName" type="string" doc="The event to execute"/>
+				<Param name="events" type="array" doc="List of events"/>
+				<Param name="bulkRecords" type="array" doc="preEnrolls ids"/>
+				<!--Param name="preEnroll" type="array" doc="preEnroll data"/-->
+			</Params>
+			<Return type="array"/>
+			<Begin>
+				 <Var name="POSTDATA"/>
+				 <Var name="PARAMS"/>
+				 <Var name="events"/>
+				 <Var name="eventData"><Set/></Var>
+				 <Var name="selectedEvent"><Set/></Var>
+				 <ForEach var="events" item="event">
+						<If condition="$event->event == $eventName">
+							<Then>
+								<Var name="selectedEvent"><Var name="event"/></Var>
+							</Then>
+						</If>
+				 </ForEach>
+				 <Var name="eventVisibleFields">
+					 <JsonToSet><Var name="selectedEvent" key="field_list"/></JsonToSet>
+				 </Var>
+				 <Var name="files"><Set/></Var>
+				 <Var name="count"><Int>0</Int></Var>
+				 <Var name="eventDataSet"><Set/></Var>
+				 <ForEach var="bulkRecords" item="bulkRecord">
+					 <Var name="preEnroll">
+						<Call library="gecol.core,preEnroll,api" function="getByField">
+							<Param name="field"><String>id</String></Param>
+							<Param name="value"><Var name="bulkRecord" /></Param>
+						</Call>
+					 </Var>
+					 <ForEach var="eventVisibleFields" item="eventVisibleField">
+						<Var name="fieldId">
+							<String.concatenate>
+								<Param><Var name="eventName"/></Param>
+								<Param><String></String></Param>
+								<Param><Var name="eventVisibleField" key="id"/></Param>
+							</String.concatenate>
+						</Var>
+						<Var name="fieldValue"><Var name="POSTDATA" key="$fieldId"/></Var>
+						<If condition="$eventVisibleField->type == 'File'">
+							<Then>
+								<If condition="$count == 0">
+									<Then>
+										<!-- First upload -->
+										<Var name="fieldValue">
+											<FileLib method="Upload">
+													<Param name="UploadFolder"><String.parse>preEnroll/$preEnroll->guid</String.parse></Param>
+													<Param name="Filename"><Guid/></Param>
+													<Param name="id_user"><Var name="USER" key="id"/></Param>
+											</FileLib>
+										</Var>
+										<Var name="files" key="$fieldId"><Var name="fieldValue"/></Var>
+									</Then>
+									<Else>
+										<!-- The file allready been uploaded - so copy it-->
+										<Var name="fileValue"><Var name="files" key="$fieldId"/></Var>
+										<If condition="$fileValue !== null &amp;&amp; $fileValue !== ''">
+											<Then>
+												<Var name="fieldValue">
+														<FileLib method="copyFile">
+																<Param name="id"><Var name="files" key="$fieldId"/></Param>
+																<Param name="path"><String.parse>preEnroll/$preEnroll->guid/</String.parse></Param>
+														</FileLib>
+												</Var>
+											</Then>
+										</If>
+									</Else>
+								</If>
+							</Then>
+						</If>
+						<If condition="$eventVisibleField->formatter != ''">
+							<Then>
+								<Var name="formattedFieldId">
+									<String.concatenate>
+										<Param><Var name="eventVisibleField" key="id"/></Param>
+										<Param><String>_formatted</String></Param>
+									</String.concatenate>
+								</Var>
+								<Var name="eventData" key="$formattedFieldId">
+									<FormatterLib method="format">
+										<Param><Var name="eventVisibleField" key="formatter"/></Param>
+										<Param><Var name="eventVisibleField" key="formatterMethod"/></Param>
+										<Param><Var name="fieldValue"/></Param>
+										<Param><Var name="eventVisibleField" key="formatterParams"/></Param>
+									</FormatterLib>
+								</Var>
+							</Then>
+						</If>
+						<Var name="eventData" key="$eventVisibleField->id"><Var name="fieldValue"/></Var>
+					 </ForEach>
+					 <Var name="eventDataSet" key="$bulkRecord"><Var name="eventData"/></Var>
+					 <Var name="count" sum="1"/>
+					</ForEach>
+					<Var name="eventDataSet"/>
+				 <Return><Var name="eventDataSet"/></Return>
+			</Begin>
+		</Function>
+	</Library>
+</Node>

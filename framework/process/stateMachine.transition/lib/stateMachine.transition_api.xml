@@ -16,6 +16,7 @@
   <Library forceinterface="true">
     <Function name="add" doc="Adds a record in table ">
       <Params>
+        <Param name="id_state_machine" type="int" required="false"/>
         <Param name="id_start_state" type="int" required="false"/>
         <Param name="id_end_state" type="int" required="false"/>
         <Param name="event" type="text" required="true"/>
@@ -28,10 +29,14 @@
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
+        <Var name="PARAMS" dump="true"/>
         <Return>
           <DataAccess method="insert">
             <Param name="_entity">fw_state_machine_transition</Param>
             <Param name="_base">true</Param>
+            <Param name="id_state_machine">
+              <Var name="PARAMS" key="id_state_machine"/>
+            </Param>            
             <Param name="id_start_state">
               <Var name="PARAMS" key="id_start_state"/>
             </Param>
@@ -112,6 +117,7 @@
     </Function>
     <Function name="search" doc="Search records from table fw_state_machine_transition">
       <Params>
+        <Param name="id_state_machine" type="int"/>
         <Param name="id_start_state" type="int"/>
         <Param name="id_end_state" type="int"/>
         <Param name="event" type="text"/>
@@ -143,6 +149,9 @@
       <Begin>
         <Return>
           <DataAccess method="this,this,search">
+            <Param name="id_state_machine">
+              <Var name="PARAMS" key="id_state_machine"/>
+            </Param>            
             <Param name="id_start_state">
               <Var name="PARAMS" key="id_start_state"/>
             </Param>

@@ -128,9 +128,13 @@
       </Control>
     </Action>
     <Action name="save">
+      <Var name="actionParams"><Var name="POSTDATA"/></Var>
+      <Var name="actionParams" key="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Var>
+      <Var name="actionParams" dump="true"/>
+
       <If condition="@selectedId == ''">
         <Then>
-          <Call library="framework,stateMachine.action,api" function="add" params="POSTDATA"/>
+          <Call library="framework,stateMachine.action,api" function="add" params="actionParams"/>
         </Then>
         <Else>
           <Call library="framework,stateMachine.action,api" function="update" params="POSTDATA">

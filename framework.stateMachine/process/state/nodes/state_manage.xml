@@ -145,7 +145,8 @@
     <Action name="save">
       <If condition="@selectedId == ''">
         <Then>
-          <Var name="PARAMS" dump="true"/>
+          <Var name="addParams"><Var name="POSTDATA"/></Var>
+          <Var name="addParams" key="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Var>
           <Call library="framework,stateMachine.state,api" function="add" params="POSTDATA">
             <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
           </Call>
@@ -162,6 +163,12 @@
       <Var name="selectedId" process="true">
         <Null/>
       </Var>
+      <Var name="defaultData"><Set/></Var>
+      <Var name="defaultData" key="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Var>
+      <Control method="bind" object="frmEdit">
+        <Param><Var name="defaultData"/></Param>
+      </Control>
+
     </Action>
     <Action name="delete">
       <Var name="selectedId" process="true">

@@ -4,6 +4,9 @@
   </Permissions>
   <Doc lang="pt-PT">
   </Doc>
+  <Params>
+    <Param name="idStateMachine" type="int"/>
+  </Params>   
   <Libraries>
     <Use name="DateTimeLib" type="lib"/>
     <Use name="UtilsLib" type="lib"/>
@@ -12,8 +15,8 @@
   <Screens>
     <Screen id="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Select id="id_start_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
-        <Select id="id_end_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Select id="id_start_state" datasource="states" bindid="id" bindvalue="code"/>
+        <Select id="id_end_state" datasource="states" bindid="id" bindvalue="code"/>
         <Text id="event"/>
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="back"/>
@@ -25,8 +28,8 @@
         <Template>
           <Columns>
             <Column name="id" label="id"/>
-            <Column name="id_start_state" label="id_start_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
-            <Column name="id_end_state" label="id_end_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="id_start_state" label="id_start_state" datasource="states" bindid="id" bindvalue="code"/>
+            <Column name="id_end_state" label="id_end_state" datasource="states" bindid="id" bindvalue="code"/>
             <Column name="event" label="event"/>
             <Column name="event_description" label="event_description"/>
             <Column name="role_list" label="role_list"/>
@@ -65,8 +68,8 @@
     <Screen id="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Static id="id" label="id" required="true"/>
-        <Select id="id_start_state" label="id_start_state" required="false" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
-        <Select id="id_end_state" label="id_end_state" required="false" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Select id="id_start_state" label="id_start_state" required="false" datasource="states" bindid="id" bindvalue="code"/>
+        <Select id="id_end_state" label="id_end_state" required="false" datasource="states" bindid="id" bindvalue="code"/>
         <Text id="event" label="event" required="true"/>
         <Text id="event_description" label="event_description" required="true"/>
         <Text id="role_list" label="role_list" required="true"/>
@@ -95,12 +98,29 @@
           </Control>
         </Then>
       </If>
+      <Var name="states" dump="true">
+        <Call library="framework,stateMachine.state,api" function="getAll">
+          <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
+        </Call>
+      </Var>
+      <Control method="addDataSource" object="frmSearch">
+        <Param>states</Param>
+        <Param><Var name="states"/></Param>
+      </Control>
+      <Control method="addDataSource" object="grdSearchResult">
+        <Param>states</Param>
+        <Param><Var name="states"/></Param>
+      </Control>      
+
       <Var name="currentData">
         <Control method="getCurrentData" object="frmSearch"/>
       </Var>
       <Control method="bind" object="grdSearchResult">
         <Param>
           <Call library="framework,stateMachine.transition,api" function="search">
+            <Param name="id_state_machine">
+              <Var name="PARAMS" key="idStateMachine"/>
+            </Param>
             <Param name="id_start_state">
               <Var name="currentData" key="id_start_state"/>
             </Param>
@@ -137,7 +157,9 @@
     <Action name="save">
       <If condition="@selectedId == ''">
         <Then>
-          <Call library="framework,stateMachine.transition,api" function="add" params="POSTDATA"/>
+          <Call library="framework,stateMachine.transition,api" function="add" params="POSTDATA">
+            <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
+          </Call>
         </Then>
         <Else>
           <Call library="framework,stateMachine.transition,api" function="update" params="POSTDATA">
@@ -153,6 +175,15 @@
       <Var name="selectedId" process="true">
         <Null/>
       </Var>
+      <Var name="states">
+        <Call library="framework,stateMachine.state,api" function="getAll">
+          <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
+        </Call>
+      </Var>
+      <Control method="addDataSource" object="frmEdit">
+        <Param>states</Param>
+        <Param><Var name="states"/></Param>
+      </Control>
     </Action>
     <Action name="delete">
       <Var name="selectedId" process="true">
@@ -183,6 +214,15 @@
           </Param>
         </IsNull>
       </Var>
+      <Var name="states" dump="true">
+        <Call library="framework,stateMachine.state,api" function="getAll">
+          <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
+        </Call>
+      </Var>
+      <Control method="addDataSource" object="frmEdit">
+        <Param>states</Param>
+        <Param><Var name="states"/></Param>
+      </Control>      
       <Control method="bind" object="frmEdit">
         <Param>
           <Call library="framework,stateMachine.transition,api" function="getById">

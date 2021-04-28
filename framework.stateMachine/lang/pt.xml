@@ -23,6 +23,8 @@
     <String key="is_end_state" value="Estado Final"/>
     <String key="default_to_roles" value="Omissão para"/>
     <String key="visible_to_roles" value="Visível para"/>
+    <String key="statesHead" value="Estados"/>    
+    <String key="state_name" value="Estado"/>   
     
     <!-- Transitions -->
     <String key="id_start_state" value="Estado Inicial"/>
@@ -34,6 +36,12 @@
     <String key="id_action" value="Ação"/>
     <String key="notify_role_list" value="Notificar"/>
     <String key="duplicate" value="Duplicar"/>
+    
+    <!-- Management -->
+    <String key="nextAction" value="Próxima ação"/>   
+    <String key="execute" value="Executar"/>   
+    <String key="emailsSent" value="Emails enviados"/>   
+    <String key="id_person" value="Utente"/>   
 
   </Strings>
   <HelpStrings>              

@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions></Permissions>
+	<Doc lang="en"></Doc>
+	<Libraries>
+		<Use name="FileLib" type="lib"/>
+		<Use name="ValidationLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Params>
+		<Param name="bulkRecords" type="array" doc="The records to handle"/>
+		<Param name="event" type="string" doc="The event"/>
+		<Param name="eventDataSet" type="array" doc="The event data set for each bulkPreEnroll"/>
+		<Param name="role" type="string" doc="The role"/>
+		<Param name="apiGetDetails"/>		
+	</Params>
+	<Screens>
+		<Screen id="previewScreen">
+			<Form name="actionsForm" >
+				<Container id="messages"/>
+				<ButtonGroup>
+					<Button type="back" id="backToPreEnroll" label="backToPreEnroll" action="back"/>
+					<Button type="continue" id="continue" label="confirm" action="confirm" confirm="true"/>
+				</ButtonGroup>
+			</Form>
+		</Screen>
+	</Screens>
+
+	<Actions>
+		<Action name="init">
+			<Var name="postdata" process="true" clear="true"/>
+			<Action name="actions"/>
+		</Action>
+		
+		<Action name="actions" screen="previewScreen">
+			<!-- Build the data -->
+			<Var name="PARAMS" dump="true"/>
+			<Var name="bulkRecords"><ListToSet><Var name="PARAMS" key="bulkRecords"/></ListToSet></Var>
+			<Var name="previewsSet"><Set/></Var>
+
+			<ForEach var="bulkRecords" item="idRecord">
+				<!--Var name="data">
+					<Call function="getDataObject">
+						<Param name="idRecord"><Var name="idRecord"/></Param>
+						<Param name="bulkRecords"><Var name="PARAMS" key="bulkRecords"/></Param>
+						<Param name="eventDataSet"><Var name="PARAMS" key="eventDataSet"/></Param>
+					</Call>
+				</Var-->
+				<Var name="data"><Set/></Var>
+				<Var name="record" dump="true">
+					<Call library="$PARAMS->apiGetDetails">
+						<Param name="id"><Var name="idRecord"/></Param>
+					</Call>
+				</Var>							
+				<Var name="data" key="record"><Var name="record"/></Var>
+				<Var name="previews">
+					<Call library="framework,stateMachine.instance,api" function="getTransitionActionsPreview">
+						<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+						<Param name="event"><Var name="PARAMS" key="event"/></Param>
+						<Param name="role"><Var name="PARAMS" key="role"/></Param>
+						<Param name="data"><Var name="data"/></Param>
+						<Param name="messageData"><Null/></Param>
+						<Param name="expandTemplate"><Int>1</Int></Param>
+					</Call>						
+				</Var>		
+				<ForEach var="previews" item="preview">
+					<Var name="previewsSet" key=""><Var name="preview"/></Var>
+				</ForEach>
+			</ForEach>
+			<Var name="previewsSet"/>
+			<If condition="$previewsSet->__length == 0">
+				<Then>
+					<Action name="confirm"/>
+					<Exit/>
+				</Then>
+			</If>
+			
+			<!-- Build the previews screen -->
+			<Var name="count"><Int>1</Int></Var>
+			<Var name="bind"><Set/></Var>
+			<ForEach var="previewsSet" item="preview">
+				<Var name="preview"/>
+				<Var name="key"><String.parse>title_$count</String.parse></Var>
+				<Var name="bind" key="$key"><Var name="preview" key="Subject"/></Var>
+				<Var name="key"><String.parse>msg_$count</String.parse></Var>
+				<Var name="bind" key="$key"><Var name="preview" key="Content"/></Var>
+        <Control method="addField" object="actionsForm">
+          <Param>
+            <Set>
+              <Element name="container"><String>messages</String></Element>
+              <Element name="id"><String.parse>header_$count</String.parse></Element>
+              <Element name="type">Header</Element>
+              <Element name="label"><Var name="preview" key="name"/></Element>
+              <Element name="help">false</Element>
+            </Set>
+          </Param> <!-- Field Properties -->        
+        </Control>        
+        <Control method="addField" object="actionsForm">
+          <Param>
+            <Set>
+              <Element name="container"><String>messages</String></Element>
+              <Element name="id"><String.parse>msg_$count</String.parse></Element>
+              <Element name="type">Static</Element>
+              <Element name="label"><Lang key="message"/></Element>
+              <Element name="value"><Var name="preview" key="message"/></Element>
+              <Element name="help">false</Element>
+            </Set>
+          </Param> <!-- Field Properties -->        
+        </Control>
+        <Var name="count" sum="1"/>								
+			</ForEach>
+			<Var name="bind"/>
+			<Control method="bind" object="actionsForm">
+				<Param><Var name="bind"/></Param>
+			</Control>
+		</Action>
+		
+		<Action name="back">
+			<RaiseEvent name="back"/>
+		</Action>
+		
+			
+		<Action name="confirm">
+			<!-- Process the event -->
+			<Trace label="actionsConfirm"/>
+			<If condition="$PARAMS->event != ''">
+				<Then>
+					<Var name="bulkRecords"><ListToSet><Var name="PARAMS" key="bulkRecords"/></ListToSet></Var>
+
+					<Var name="bulk"><Set/></Var>
+					<ForEach var="bulkRecords" item="idRecord">
+						<!--Var name="data">
+							<Call function="getDataObject">
+								<Param name="idRecord"><Var name="idRecord"/></Param>
+								<Param name="bulkRecords"><Var name="PARAMS" key="bulkRecords"/></Param>
+								<Param name="eventDataSet"><Var name="PARAMS" key="eventDataSet"/></Param>
+							</Call>
+						</Var-->
+						<Var name="data"><Set/></Var>
+						<Var name="record">
+							<Call library="$PARAMS->apiGetDetails">
+								<Param name="id"><Var name="idRecord"/></Param>
+							</Call>
+						</Var>
+						<Var name="data" key="record"><Var name="record"/></Var>
+		
+						<Var name="bulkItem"><Set/></Var>
+						<!--Var name="bulkItem" key="id"><Var name="idRecord"/></Var-->
+						<Var name="bulkItem" key="id"><Var name="record" key="id_state_machine_instance"/></Var>
+						<Var name="bulkItem" key="data"><Var name="data"/></Var>						
+						<Var name="bulkItem" key="guidObject"><Var name="record" key="id"/></Var>
+						<Var name="bulk" key="$idRecord"><Var name="bulkItem"/></Var>
+					</ForEach>					
+					<Var name="log">
+						<Call library="framework,stateMachine.instance,api" function="executeTransitionActions">
+							<Param name="bulk"><Var name="bulk"/></Param>
+							<Param name="event"><Var name="PARAMS" key="event"/></Param>
+							<Param name="role"><Var name="PARAMS" key="role"/></Param>
+							<Param name="messageData"><Null/></Param>
+							<Param name="context">STR</Param>
+						</Call>						
+					</Var>
+					<!-- Process the event -->
+					<ForEach var="bulkRecords" item="idRecord">
+						<Var name="data"><Set/></Var>
+						<Var name="record">
+							<Call library="$PARAMS->apiGetDetails">
+								<Param name="id"><Var name="idRecord"/></Param>
+							</Call>
+						</Var>
+						<Var name="data" key="record"><Var name="record"/></Var>
+						<Var name="result">
+							<Call library="framework,stateMachine.instance,api" function="processEvent">
+								<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+								<Param name="event"><Var name="PARAMS" key="event"/></Param>
+								<Param name="role"><Var name="PARAMS" key="role"/></Param>
+								<Param name="personData"><Var name="PARAMS" key="personData"/></Param>
+								<Param name="eventData"><Var name="PARAMS" key="eventData"/></Param>
+							</Call>
+						</Var>
+					</ForEach>
+				</Then>
+				<Else>
+					<UserMessage type="error"><Lang key="noEventSelected"/></UserMessage>
+				</Else>
+			</If>			
+			<Var name="postdata" process="true" clear="true"/>
+			<RaiseEvent name="success"/>
+		</Action>		
+	</Actions>
+	<Library>
+
+		<!-- TODO: This is duplicated from preEnroll,api update all calls to the preEnroll,api Dont change it... refactor it-->
+		<Function scope="public" name="getDataObject" doc="builds a data object and return it">
+			<Params>
+				<Param name="idRecord" type="int" doc="The id preEnroll"/>
+				<Param name="bulkRecords" type="array" doc="The bulk preEnrolls"/>
+				<Param name="eventDataSet" type="array" doc="The event DataSet"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="preEnrollUrl">
+					<Call library="gecol.core,system.config,api" function="getSysConfig">
+						<Param name="code"><String>preEnroll.urlToProceed</String></Param>
+					</Call>
+				</Var>
+				<Var name="bulkRecords"><Var name="PARAMS" key="bulkRecords"/></Var>
+				<Var name="eventDataSet"><Var name="PARAMS" key="eventDataSet"/></Var>
+			
+				<Var name="preEnroll">
+					<Call library="gecol.core,preEnroll,api" function="getByField">
+						<Param name="field"><String>id</String></Param>
+						<Param name="value"><Var name="idRecord"/></Param>
+					</Call>
+				</Var>
+				<Var name="preEnroll" key="url"><String parse="true"><![CDATA[$preEnrollUrl&guid=$preEnroll->guid]]></String></Var>
+				<Var name="guardianData">
+					<Call library="gecol.core,preEnroll,api" function="getGuardianData">
+						<Param name="guid"><Var name="preEnroll" key="guid"/></Param>
+					</Call>
+				</Var>
+				<!-- build personData -->
+				<Var name="person" key="role"><String>GRD</String></Var>
+				<Var name="person" key="email"><Var name="guardianData" key="email"/></Var>
+				<!-- Force the guardian id_person to be 0 to every gardian so events and emails can be treated as the same -->
+				<Var name="person" key="id_person"><Int>0</Int></Var>
+				<Var name="person" key="name"><Var name="guardianData" key="name"/></Var>
+				<Var name="personData" key="GRD"><Var name="person"/></Var>
+	
+				<Var name="person"><Set/></Var>
+				<Var name="person" key="role"><String>SYSTEM</String></Var>
+				<Var name="person" key="id_person">
+					<Call library="gecol.core,system.config,api" function="getSysConfig">
+						<Param name="code">preEnroll.idFrom</Param>
+					</Call>
+				</Var>
+				<Var name="personData" key="SYSTEM"><Var name="person"/></Var>
+	
+				<Var name="person"><Set/></Var>
+				<Var name="person" key="role"><String>PERSON</String></Var>
+				<Var name="person" key="id_person"><Var name="USER" key="id"></Var></Var>
+				<Var name="personData" key="PERSON"><Var name="person"/></Var>
+	
+				<Var name="studentData">
+					<Call library="gecol.core,preEnroll,api" function="getStudentData">
+						<Param name="guid"><Var name="preEnroll" key="guid"/></Param>
+					</Call>
+				</Var>
+				<Var name="studentData" key="role"><String>STD</String></Var>
+				<Var name="personData" key="STD"><Var name="studentData"/></Var>
+				<!-- Add tecnicians to person data -->
+				<Var name="technicians">
+					<Call library="gecol.core,preEnroll,api" function="getTechnicians">
+						<Param name="id_pre_enroll"><Var name="preEnroll" key="id"/></Param>
+					</Call>					
+				</Var>
+				<Var name="techPerson"><Set/></Var>
+				<ForEach var="technicians" item="tech">
+					<Var name="person"><Set/></Var>
+					<Var name="person" key="role"><Var name="tech" key="person_group_code"/></Var>
+					<Var name="person" key="id_person"><Var name="tech" key="id_person"/></Var>
+					<Var name="techPersons" key=""><Var name="person"/></Var>
+				</ForEach>
+				<Var name="personData" key="TECHNICIANS"><Var name="techPersons"/></Var>
+				<Var name="data" key="preEnroll"><Var name="preEnroll"/></Var>
+				<Var name="data" key="eventData"><Var name="eventDataSet" key="$idRecord"/></Var>
+				<Var name="data" key="personData"><Var name="personData"/></Var>
+				<Var name="data" key="guardianData"><Var name="guardianData"/></Var>
+				<Var name="data" key="studentData"><Var name="studentData"/></Var>
+				<Return><Var name="data"/></Return>				
+			</Begin>
+		</Function>
+	</Library>
+	
+</Node>
