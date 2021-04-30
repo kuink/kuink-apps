@@ -786,6 +786,119 @@
 					</Begin>
 				</Function>
 
+				<Function scope="protected" name="executeTransitionActionsAndProcessEvent" doc="Execute all actions and updates the state">
+					<Params>
+						<Param name="bulk" type="array" doc="The bulk data"/>
+	          <Param name="event" type="string" doc="The event to get the list"/>
+	          <Param name="role" type="string" doc="The role of the user to process the event"/>
+	          <Param name="context" type="string" doc="The message context"/>
+					</Params>
+					<Return type="multiple" doc="log of the actions executed"/>
+					<Begin>
+						<Var name="PARAMS"/>
+						<!-- Assuming that all bulk share the same actions -->
+						<Var name="first"><Var name="bulk" key="__first"/></Var>
+         		<Var name="actions">
+         			<Call function="getTransitionActions">
+			          <Param name="id"><Var name="first" key="id"/></Param>
+			          <Param name="event"><Var name="PARAMS" key="event"/></Param>
+			          <Param name="role"><Var name="PARAMS" key="role"/></Param>
+			          <Param name="data"><Var name="first" key="data"/></Param>
+         			</Call>
+         		</Var>
+         		<Var name="bulk" key="__first" clear="true"/>
+         		<Var name="data"><Var name="first" key="data"/></Var>
+         		<Var name="logs"><Set/></Var>
+         		<Var name="executionData"><Set/></Var><!-- Stores the execution data in this set and pass it to the next actions -->
+         		<Var name="count">1</Var>
+         		<ForEach var="actions" item="action">
+							<Var name="data" key="executionData"><Var name="executionData"/></Var>
+							<Var name="doFunctionName">
+								<String.concatenate>
+									<Param><Var name="action" key="type"/></Param>
+									<Param>Do</Param>
+								</String.concatenate>
+							</Var>
+							<Var name="previewFunctionName">
+								<String.concatenate>
+									<Param><Var name="action" key="type"/></Param>
+									<Param>Preview</Param>
+								</String.concatenate>
+							</Var>
+
+							<If condition="$action->is_bulk == 1">
+								<Then>
+									<!-- Handle the bulk action execution -->
+		         			<Var name="actionResult">
+		         				<Call function="$doFunctionName">
+						          <Param name="id"><Var name="bulkData" key="id"/></Param>
+						          <Param name="event"><Var name="event"/></Param>
+						          <Param name="role"><Var name="role"/></Param>
+						          <Param name="data"><Var name="data"/></Param>
+		         					<Param name="action"><Var name="action"/></Param>
+		         					<Param name="guidObject"><Var name="idGuidObject"/></Param>
+		         					<Param name="context"><Var name="context"/></Param>
+		         					<Param name="preview"><Var name="preview"/></Param>
+		         					<Param name="is_bulk"><Int>1</Int></Param>
+		         					<Param name="bulk"><Var name="bulk"/></Param>
+		         				</Call>
+		         			</Var>
+								</Then>
+								<Else>
+									<ForEach var="bulk" item="bulkData">
+										<Var name="idData"><Var name="bulkData" key="data"/></Var>
+										<Var name="idGuidObject"><Var name="bulkData" key="guidObject"/></Var>
+										<Var name="idData" key="executionData"><Var name="executionData"/></Var>
+										<Var name="preview">
+				       				<Call function="$previewFunctionName">
+							          <Param name="id"><Var name="bulkData" key="id"/></Param>
+							          <Param name="event"><Var name="event"/></Param>
+							          <Param name="role"><Var name="role"/></Param>
+							          <Param name="data"><Var name="idData"/></Param>
+				        				<Param name="action"><Var name="action"/></Param>
+				        				<Param name="expandTemplate"><Int>1</Int></Param>
+				        				<Param name="is_bulk"><Int>0</Int></Param>
+				        				<Param name="bulk"><Null/></Param>
+				       				</Call>
+										</Var>
+			         			<Var name="actionResult">
+			         				<Call function="$doFunctionName">
+							          <Param name="id"><Var name="bulkData" key="id"/></Param>
+							          <Param name="event"><Var name="event"/></Param>
+							          <Param name="role"><Var name="role"/></Param>
+							          <Param name="data"><Var name="idData"/></Param>
+			         					<Param name="action"><Var name="action"/></Param>
+			         					<Param name="guidObject"><Var name="idGuidObject"/></Param>
+			         					<Param name="context"><Var name="context"/></Param>
+			         					<Param name="preview"><Var name="preview"/></Param>
+			         					<Param name="is_bulk"><Int>0</Int></Param>
+			         					<Param name="bulk"><Null/></Param>
+			         				</Call>
+			         			</Var>
+										 <!-- Process the event -->
+			         			<Var name="logs" key=""><Var name="actionLog"/></Var>
+									</ForEach>
+								</Else>
+							</If>
+							<!-- Update the executionData to pass to the new action data -->
+							<Var name="resultVarName">
+								<If condition="$action->result != ''">
+									<Then>
+										<Var name="action" key="result"/>
+									</Then>
+									<Else>
+										<String.parse>action_$count</String.parse>
+									</Else>
+								</If>
+							</Var>
+							<Var name="executionData" key="$resultVarName"><Var name="actionResult" key="data"/></Var>
+							<Var name="count" sum="1"/>
+						</ForEach>
+
+            <Return><Var name="logs"/></Return>
+					</Begin>
+				</Function>
+
 				<!-- Hooks for action previews -->
 				<Function scope="public" name="emailPreview" doc="Hook preview function for action type email">
 					<Params>

@@ -12,12 +12,12 @@
 	</Libraries>
 	<Configuration />
 	<Params>
-		<Param name="stateMachineCode"/>
-		<Param name="managementGroup"/>
-		<Param name="apiGetPrimaryGroup"/>
-		<Param name="apiGetDetails"/>
-		<Param name="uiSearchResults"/>
-		<Param name="uiDetails"/>
+		<Param name="stateMachineCode" type="string" doc="The state machine code to manage"/>
+		<Param name="managementGroup" type="string" doc="The group code of the persons who will manage the state machine"/>
+		<Param name="apiGetPrimaryGroup" type="string" doc="The api call that will return this object details. We need id_state_machine_instance to be there!"/>
+		<Param name="apiGetObjectData" type="string" doc="The api call to get the data to execute the actions and process the event"/>
+		<Param name="uiSearchResults" type="string" doc="The kid for the custom control that is able to show the object search result"/>
+		<Param name="uiDetails" type="string" doc="The kid for the custom control that is able to show the object details"/>
 	</Params>
 	<Screens>
 		<Screen id="manageScreen">
@@ -31,7 +31,6 @@
 				<ButtonGroup>
 					<Button type="search" id="search" label="search" action="search"/>
 					<Button type="submit" icon="bar-chart" id="stats" label="stats" action="stats"/>
-					<!--Button type="add" id="add" label="add" action="add"/-->
 				</ButtonGroup>
 			</Form>
 			<!-- Add the custom searchResults -->
@@ -125,7 +124,7 @@
 				<Container id="container"/>
 				<ButtonGroup>
 					<Button type="back" id="back" label="back" action="search"/>
-					<Button type="continue" id="execute" label="execute" action="doAction"/>
+					<Button type="continue" id="execute" label="execute" action="doActionBulk"/>
 				</ButtonGroup>
 			</Form>
 		</Screen>
@@ -266,22 +265,20 @@
 		</Action>
 
 		<Action name="details" screen="detailScreen">
-			<If condition="@idRecord == ''">
-				<Then>
-					<Var name="idRecord" process="true">
-						<IsNull>
-							<Param><ActionValue/></Param>
-							<Param><Var name="idRecord" process="true"/></Param>
-						</IsNull>
-					</Var>
-				</Then>
-			</If>
+			<Var name="idRecord" process="true">
+				<IsNull>
+					<Param><ActionValue/></Param>
+					<Param><Var name="idRecord" process="true"/></Param>
+				</IsNull>
+			</Var>
 
-			<Var name="record">
-				<Call library="$PARAMS->apiGetDetails">
+			<Var name="data">
+				<Call library="$PARAMS->apiGetObjectData">
 					<Param name="id"><Var name="idRecord" process="true"/></Param>
 				</Call>
 			</Var>
+			<Var name="record"><Var name="data" key="record"/></Var>
+
 			<Var name="bulkRecord" process="true" clear="true"/>			
 			<Var name="recordHistory">
 				<Call library="framework,stateMachine.instance,api" function="getHistory">
@@ -334,83 +331,71 @@
 		</Action>
 
 		<Action name="doActionSingle">
-			<!-- Build the bulk request based on a sigle record-->
-			<Var name="record">
-				<Call library="$PARAMS->apiGetDetails">
-					<Param name="id"><Var name="idRecord" process="true"/></Param>
-				</Call>
-			</Var>			
-			<Var name="stateMachineInstanceIds"><String><Var name="record" key="id_state_machine_instance"/></String></Var>
-			<Var name="eventsInCommon">
-				<Call library="framework,stateMachine.instance,api" function="getNextEventsInCommon">
-					<Param name="ids"><Var name="stateMachineInstanceIds"/></Param>
-					<Param name="role"><Var name="group" process="true"/></Param>
-				</Call>
-			</Var>
-			<Var name="events"><Set/></Var>
-			<ForEach var="eventsInCommon" item="event">
-				<Var name="event" key="field_list"><String.parse><Var name="event" key="field_list"/></String.parse></Var>
-				<Var name="events" key=""><Var name="event"/></Var>
-			</ForEach>
+			<!-- Build the bulk request based on a sigle record -->
+			<Var name="eventDataSet"><Set/></Var> <!-- TODO -->
 			<RaiseEvent name="actions">
 				<Param name="bulkRecords"><Var name="idRecord" process="true"/></Param>
 				<Param name="event"><Var name="POSTDATA" key="event"/></Param>
 				<Param name="eventDataSet"><Var name="eventDataSet"/></Param>
 				<Param name="role"><Var name="group" process="true"/></Param>
-				<Param name="apiGetDetails"><Var name="PARAMS" key="apiGetDetails"/></Param>
+				<Param name="apiGetObjectData"><Var name="PARAMS" key="apiGetObjectData"/></Param>
 			</RaiseEvent>
 		</Action>
 
-		<Action name="doActionBulk">
+		<Action name="chooseEventBulk" screen="chooseBulkScreen">
 			<!-- Build the bulk request based on a set of record-->
-		</Action>
-
-		<Action name="doAction">
-			<!-- Now we have to see if this is a bulk or single -->
-			<!-- @idRecord : The single idPreEnroll-->
-			<!-- @bulkRecord : The array with bulk idPreEnroll-->
-			<Var name="isBulk"><Int>0</Int></Var>
-			<If condition="@bulkRecord->__length &gt; 0">
+			<Var name="selectedIds">
+				<UtilsLib method="filterSelected">
+					<Param><Var name="POSTDATA"/></Param>
+				</UtilsLib>
+			</Var>
+			<If condition="$selectedIds->__length == 0">
 				<Then>
-					<Var name="isBulk"><Int>1</Int></Var>
-					<Var name="bulkRecordIds"><SetToList><Var name="bulkRecord" process="true"/></SetToList></Var>
-					<Var name="bulkRecords"><Var name="bulkRecord" process="true"/></Var>
+					<Action name="search"/>
+					<Exit/>
 				</Then>
-				<Else>
-					<Var name="bulkRecordIds"><Var name="idPreEnroll" process="true"/></Var>
-					<Var name="bulkRecords" key=""><Var name="idPreEnroll" process="true"/></Var>
-				</Else>
 			</If>
-			<Var name="recordData" key="bulkIds"><Var name="bulkRecordIds"/></Var>
-
-			<Var name="eventsInCommon">
+			<!-- Build a list of id_state_machine_instance of the selected records -->
+			<Var name="bulkSMIIds"><Set/></Var>
+			<Var name="bulkIds"><Set/></Var>
+			<ForEach var="selectedIds" item="selectedId">
+				<Var name="data">
+					<Call library="$PARAMS->apiGetObjectData">
+						<Param name="id"><Var name="selectedId" key="id"/></Param>
+					</Call>
+				</Var>
+				<Var name="record"><Var name="data" key="record"/></Var>				
+				<Var name="bulkSMIIds" key=""><String.parse>'$record->id_state_machine_instance'</String.parse></Var>
+				<Var name="bulkIds" key=""><Var name="selectedId" key="id"/></Var>
+			</ForEach>
+			<Var name="bulkSMIIdsList"><SetToList><Var name="bulkSMIIds"/></SetToList></Var>
+			<Var name="events" dump="true">
 				<Call library="framework,stateMachine.instance,api" function="getNextEventsInCommon">
-					<Param name="ids"><Var name="stateMachineInstanceIds"/></Param>
+					<Param name="ids"><Var name="bulkSMIIdsList"/></Param>
 					<Param name="role"><Var name="group" process="true"/></Param>
 				</Call>
 			</Var>
-			<Var name="events"><Set/></Var>
-			<ForEach var="eventsInCommon" item="event">
-				<Var name="event" key="field_list"><String.parse><Var name="event" key="field_list"/></String.parse></Var>
-				<Var name="events" key=""><Var name="event"/></Var>
-			</ForEach>
+			<Control method="addDatasource" object="eventsForm">
+				<Param>events</Param>
+				<Param><Var name="events"/></Param>
+			</Control>
+			<Call function="visibleFieldsRules">
+				<Param name="frmEdit" var="eventsForm"><Var name="eventsForm"/></Param>
+				<Param name="events"><Var name="events"/></Param>
+			</Call>
 
+			<Var name="bulkIds" process="true"><Var name="bulkIds"/></Var>
+		</Action>
 
-			<!--Var name="post">
-				<Call function="getPostData">
-					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
-					<Param name="events"><Var name="events"/></Param>
-					<Param name="bulkRecords"><Var name="bulkRecords"/></Param>
-				</Call>
-			</Var-->
-			<Var name="eventDataSet"><Set/></Var>
+		<Action name="doActionBulk">
+			<Var name="eventDataSet"><Set/></Var> <!-- TODO -->
 			<RaiseEvent name="actions">
-				<Param name="bulkRecords"><Var name="bulkRecords"/></Param>
+				<Param name="bulkRecords"><SetToList><Var name="bulkIds" process="true"/></SetToList></Param>
 				<Param name="event"><Var name="POSTDATA" key="event"/></Param>
 				<Param name="eventDataSet"><Var name="eventDataSet"/></Param>
 				<Param name="role"><Var name="group" process="true"/></Param>
+				<Param name="apiGetObjectData"><Var name="PARAMS" key="apiGetObjectData"/></Param>				
 			</RaiseEvent>
-			<Action name="details"/>
 		</Action>
 
 		<Action name="chooseBulk" screen="chooseBulkScreen">
@@ -556,108 +541,6 @@
 					 </Control>
 					</ForEach>
 				 </ForEach>
-			</Begin>
-		</Function>
-
-		<Function scope="public" name="getPostData" doc="Get POSTDATA and set the event Data based on the event field_list">
-			<Params>
-				<Param name="eventName" type="string" doc="The event to execute"/>
-				<Param name="events" type="array" doc="List of events"/>
-				<Param name="bulkRecords" type="array" doc="preEnrolls ids"/>
-				<!--Param name="preEnroll" type="array" doc="preEnroll data"/-->
-			</Params>
-			<Return type="array"/>
-			<Begin>
-				 <Var name="POSTDATA"/>
-				 <Var name="PARAMS"/>
-				 <Var name="events"/>
-				 <Var name="eventData"><Set/></Var>
-				 <Var name="selectedEvent"><Set/></Var>
-				 <ForEach var="events" item="event">
-						<If condition="$event->event == $eventName">
-							<Then>
-								<Var name="selectedEvent"><Var name="event"/></Var>
-							</Then>
-						</If>
-				 </ForEach>
-				 <Var name="eventVisibleFields">
-					 <JsonToSet><Var name="selectedEvent" key="field_list"/></JsonToSet>
-				 </Var>
-				 <Var name="files"><Set/></Var>
-				 <Var name="count"><Int>0</Int></Var>
-				 <Var name="eventDataSet"><Set/></Var>
-				 <ForEach var="bulkRecords" item="bulkRecord">
-					 <Var name="preEnroll">
-						<Call library="gecol.core,preEnroll,api" function="getByField">
-							<Param name="field"><String>id</String></Param>
-							<Param name="value"><Var name="bulkRecord" /></Param>
-						</Call>
-					 </Var>
-					 <ForEach var="eventVisibleFields" item="eventVisibleField">
-						<Var name="fieldId">
-							<String.concatenate>
-								<Param><Var name="eventName"/></Param>
-								<Param><String></String></Param>
-								<Param><Var name="eventVisibleField" key="id"/></Param>
-							</String.concatenate>
-						</Var>
-						<Var name="fieldValue"><Var name="POSTDATA" key="$fieldId"/></Var>
-						<If condition="$eventVisibleField->type == 'File'">
-							<Then>
-								<If condition="$count == 0">
-									<Then>
-										<!-- First upload -->
-										<Var name="fieldValue">
-											<FileLib method="Upload">
-													<Param name="UploadFolder"><String.parse>preEnroll/$preEnroll->guid</String.parse></Param>
-													<Param name="Filename"><Guid/></Param>
-													<Param name="id_user"><Var name="USER" key="id"/></Param>
-											</FileLib>
-										</Var>
-										<Var name="files" key="$fieldId"><Var name="fieldValue"/></Var>
-									</Then>
-									<Else>
-										<!-- The file allready been uploaded - so copy it-->
-										<Var name="fileValue"><Var name="files" key="$fieldId"/></Var>
-										<If condition="$fileValue !== null &amp;&amp; $fileValue !== ''">
-											<Then>
-												<Var name="fieldValue">
-														<FileLib method="copyFile">
-																<Param name="id"><Var name="files" key="$fieldId"/></Param>
-																<Param name="path"><String.parse>preEnroll/$preEnroll->guid/</String.parse></Param>
-														</FileLib>
-												</Var>
-											</Then>
-										</If>
-									</Else>
-								</If>
-							</Then>
-						</If>
-						<If condition="$eventVisibleField->formatter != ''">
-							<Then>
-								<Var name="formattedFieldId">
-									<String.concatenate>
-										<Param><Var name="eventVisibleField" key="id"/></Param>
-										<Param><String>_formatted</String></Param>
-									</String.concatenate>
-								</Var>
-								<Var name="eventData" key="$formattedFieldId">
-									<FormatterLib method="format">
-										<Param><Var name="eventVisibleField" key="formatter"/></Param>
-										<Param><Var name="eventVisibleField" key="formatterMethod"/></Param>
-										<Param><Var name="fieldValue"/></Param>
-										<Param><Var name="eventVisibleField" key="formatterParams"/></Param>
-									</FormatterLib>
-								</Var>
-							</Then>
-						</If>
-						<Var name="eventData" key="$eventVisibleField->id"><Var name="fieldValue"/></Var>
-					 </ForEach>
-					 <Var name="eventDataSet" key="$bulkRecord"><Var name="eventData"/></Var>
-					 <Var name="count" sum="1"/>
-					</ForEach>
-					<Var name="eventDataSet"/>
-				 <Return><Var name="eventDataSet"/></Return>
 			</Begin>
 		</Function>
 	</Library>
