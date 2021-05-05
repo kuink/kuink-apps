@@ -209,7 +209,6 @@
 					</Begin>
 				</Function>
 
-
         <Function scope="protected" name="getNextEventsInCommon" doc="get the events that the user can use that are in common of a list">
 					<Params>
 	          <Param name="ids" doc="The state machine instance id list comma separated"/>
@@ -232,8 +231,6 @@
 						</Return>
 					</Begin>
 				</Function>
-
-
 
         <Function scope="protected" name="getBulkEvents" doc="get the events that the user can use and can be used in bulk mode">
 					<Params>
@@ -276,7 +273,6 @@
 						</Return>
 					</Begin>
 				</Function>
-
 
         <Function scope="protected" name="getHistory" doc="Get all history of this instance">
 					<Params>
@@ -398,7 +394,6 @@
 						</Return>
 					</Begin>
 				</Function>
-
 
         <Function scope="protected" name="getFieldList" doc="Get all the fields for an event">
 					<Params>
@@ -588,7 +583,7 @@
 						</ForEach>
          		<Var name="validActions"><Set/></Var>
          		<ForEach var="actions" item="action">
-							<Var name="action" key="condition"/>
+							<Var name="action" key="condition"><String.stripSlashes><Var name="action" key="condition"/></String.stripSlashes></Var>
          			<Var name="evalCondition"><Int>1</Int></Var>
          			<If condition="$action->condition != ''">
 								<Then>
@@ -685,8 +680,8 @@
 					<Begin>
 						<Var name="PARAMS"/>
 						<!-- Assuming that all bulk share the same actions -->
-						<Var name="first" dump="true"><Var name="bulk" key="__first"/></Var>
-         		<Var name="actions" dump="true">
+						<Var name="first"><Var name="bulk" key="__first"/></Var>
+         		<Var name="actions">
          			<Call function="getTransitionActions">
 			          <Param name="id"><Var name="first" key="id"/></Param>
 			          <Param name="event"><Var name="PARAMS" key="event"/></Param>
@@ -786,7 +781,7 @@
 					</Begin>
 				</Function>
 
-				<Function scope="protected" name="executeTransitionActionsAndProcessEvent" doc="Execute all actions and updates the state">
+				<Function scope="protected" name="executeTransitionActionsAndProcessEvent" doc="Execute all actions and updates the state. This should replace the single function executeTransitionActions">
 					<Params>
 						<Param name="bulk" type="array" doc="The bulk data"/>
 	          <Param name="event" type="string" doc="The event to get the list"/>
@@ -795,7 +790,6 @@
 					</Params>
 					<Return type="multiple" doc="log of the actions executed"/>
 					<Begin>
-						<Var name="PARAMS"/>
 						<!-- Assuming that all bulk share the same actions -->
 						<Var name="first"><Var name="bulk" key="__first"/></Var>
          		<Var name="actions">
@@ -806,93 +800,69 @@
 			          <Param name="data"><Var name="first" key="data"/></Param>
          			</Call>
          		</Var>
-         		<Var name="bulk" key="__first" clear="true"/>
-         		<Var name="data"><Var name="first" key="data"/></Var>
          		<Var name="logs"><Set/></Var>
-         		<Var name="executionData"><Set/></Var><!-- Stores the execution data in this set and pass it to the next actions -->
-         		<Var name="count">1</Var>
-         		<ForEach var="actions" item="action">
-							<Var name="data" key="executionData"><Var name="executionData"/></Var>
-							<Var name="doFunctionName">
-								<String.concatenate>
-									<Param><Var name="action" key="type"/></Param>
-									<Param>Do</Param>
-								</String.concatenate>
-							</Var>
-							<Var name="previewFunctionName">
-								<String.concatenate>
-									<Param><Var name="action" key="type"/></Param>
-									<Param>Preview</Param>
-								</String.concatenate>
-							</Var>
+						<ForEach var="bulk" item="bulkData">
+							<Var name="idData"><Var name="bulkData" key="data"/></Var>
+							<Var name="executionData"><Set/></Var><!-- Clears the execution data in this set and pass it to the next actions -->							
+							<Var name="idGuidObject"><Var name="bulkData" key="guidObject"/></Var>
+							<Var name="count"><Int>1</Int></Var>
+							<ForEach var="actions" item="action">
+								<Var name="idData" key="executionData"><Var name="executionData"/></Var>								
+								<Var name="doFunctionName"><String.parse>$action['type']Do</String.parse></Var>
+								<Var name="previewFunctionName"><String.parse>$action['type']Preview</String.parse></Var>
 
-							<If condition="$action->is_bulk == 1">
-								<Then>
-									<!-- Handle the bulk action execution -->
-		         			<Var name="actionResult">
-		         				<Call function="$doFunctionName">
-						          <Param name="id"><Var name="bulkData" key="id"/></Param>
-						          <Param name="event"><Var name="event"/></Param>
-						          <Param name="role"><Var name="role"/></Param>
-						          <Param name="data"><Var name="data"/></Param>
-		         					<Param name="action"><Var name="action"/></Param>
-		         					<Param name="guidObject"><Var name="idGuidObject"/></Param>
-		         					<Param name="context"><Var name="context"/></Param>
-		         					<Param name="preview"><Var name="preview"/></Param>
-		         					<Param name="is_bulk"><Int>1</Int></Param>
-		         					<Param name="bulk"><Var name="bulk"/></Param>
-		         				</Call>
-		         			</Var>
-								</Then>
-								<Else>
-									<ForEach var="bulk" item="bulkData">
-										<Var name="idData"><Var name="bulkData" key="data"/></Var>
-										<Var name="idGuidObject"><Var name="bulkData" key="guidObject"/></Var>
-										<Var name="idData" key="executionData"><Var name="executionData"/></Var>
-										<Var name="preview">
-				       				<Call function="$previewFunctionName">
-							          <Param name="id"><Var name="bulkData" key="id"/></Param>
-							          <Param name="event"><Var name="event"/></Param>
-							          <Param name="role"><Var name="role"/></Param>
-							          <Param name="data"><Var name="idData"/></Param>
-				        				<Param name="action"><Var name="action"/></Param>
-				        				<Param name="expandTemplate"><Int>1</Int></Param>
-				        				<Param name="is_bulk"><Int>0</Int></Param>
-				        				<Param name="bulk"><Null/></Param>
-				       				</Call>
-										</Var>
-			         			<Var name="actionResult">
-			         				<Call function="$doFunctionName">
-							          <Param name="id"><Var name="bulkData" key="id"/></Param>
-							          <Param name="event"><Var name="event"/></Param>
-							          <Param name="role"><Var name="role"/></Param>
-							          <Param name="data"><Var name="idData"/></Param>
-			         					<Param name="action"><Var name="action"/></Param>
-			         					<Param name="guidObject"><Var name="idGuidObject"/></Param>
-			         					<Param name="context"><Var name="context"/></Param>
-			         					<Param name="preview"><Var name="preview"/></Param>
-			         					<Param name="is_bulk"><Int>0</Int></Param>
-			         					<Param name="bulk"><Null/></Param>
-			         				</Call>
-			         			</Var>
-										 <!-- Process the event -->
-			         			<Var name="logs" key=""><Var name="actionLog"/></Var>
-									</ForEach>
-								</Else>
-							</If>
-							<!-- Update the executionData to pass to the new action data -->
-							<Var name="resultVarName">
-								<If condition="$action->result != ''">
-									<Then>
-										<Var name="action" key="result"/>
-									</Then>
-									<Else>
-										<String.parse>action_$count</String.parse>
-									</Else>
-								</If>
+								<Var name="preview">
+									 <Call function="$previewFunctionName">
+										<Param name="id"><Var name="bulkData" key="id"/></Param>
+										<Param name="event"><Var name="event"/></Param>
+										<Param name="role"><Var name="role"/></Param>
+										<Param name="data"><Var name="idData"/></Param>
+										<Param name="action"><Var name="action"/></Param>
+										<Param name="expandTemplate"><Int>1</Int></Param>
+										<Param name="is_bulk"><Int>0</Int></Param>
+										<Param name="bulk"><Null/></Param>
+									 </Call>
+								</Var>
+								 <Var name="actionResult">
+									 <Call function="$doFunctionName">
+										<Param name="id"><Var name="bulkData" key="id"/></Param>
+										<Param name="event"><Var name="event"/></Param>
+										<Param name="role"><Var name="role"/></Param>
+										<Param name="data"><Var name="idData"/></Param>
+										 <Param name="action"><Var name="action"/></Param>
+										 <Param name="guidObject"><Var name="idGuidObject"/></Param>
+										 <Param name="context"><Var name="context"/></Param>
+										 <Param name="preview"><Var name="preview"/></Param>
+										 <Param name="is_bulk"><Int>0</Int></Param>
+										 <Param name="bulk"><Null/></Param>
+									 </Call>
+								 </Var>
+								 <!-- Update execution data -->
+								 <Var name="resultVarName">
+									<If condition="$action->result != ''">
+										<Then>
+											<Var name="action" key="result"/>
+										</Then>
+										<Else>
+											<String.parse>action_$count</String.parse>
+										</Else>
+									</If>
+								</Var>
+								<Var name="executionData" key="$resultVarName"><Var name="actionResult" key="data"/></Var>
+								<Var name="count" sum="1"/>
+							</ForEach>
+							<!-- After the actions execution -->
+							<!-- Process the event -->
+							<Var name="record"><Var name="idData" key="record"/></Var>
+							<Var name="result">
+								<Call library="framework,stateMachine.instance,api" function="processEvent">
+									<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+									<Param name="event"><Var name="PARAMS" key="event"/></Param>
+									<Param name="role"><Var name="PARAMS" key="role"/></Param>
+									<Param name="personData"><Var name="idData" key="personData"/></Param>
+									<Param name="eventData"><Var name="idData" key="eventData"/></Param>
+								</Call>
 							</Var>
-							<Var name="executionData" key="$resultVarName"><Var name="actionResult" key="data"/></Var>
-							<Var name="count" sum="1"/>
 						</ForEach>
 
             <Return><Var name="logs"/></Return>
@@ -925,7 +895,6 @@
 							<Var name="sysConfig" key="$sysConfigItem->code"><Var name="sysConfigItem" key="value"/></Var>
 						</ForEach>
 						<Var name="data" key="sysConfig"><Var name="sysConfig"/></Var>
-						<Var name="sysConfig" dump="true"/>
 
        			<Var name="actionPreview">
        				<TemplateLib method="ExecuteStandardTemplate">
@@ -1158,6 +1127,7 @@
 					</Params>
 					<Return type="string"/>
 					<Begin>
+
 						<Var name="personData"><Var name="data" key="personData"/></Var>
 						<Var name="action"/>
 
@@ -1225,7 +1195,7 @@
 								</If>
 							</Then>
 						</If>
-
+						
 						<If condition="$action->bcc != ''">
 							<Then>
 								<Var name="bccRole"><Var name="action" key="bcc"/></Var>
@@ -1242,7 +1212,7 @@
 								</If>
 							</Then>
 						</If>
-						<Var name="msgParams"/>
+						<Var name="msgParams" dump="true"/>						
 						<Call library="gecol.core,message,api" function="create" params="msgParams"/>
 
 						<Return>
@@ -1326,7 +1296,6 @@
 								<Var name="eventParams" key="id_school_year"><Var name="preEnroll" key="id_school_year"/></Var>
 								<Var name="eventParams" key="status"><String>confirmed</String></Var>
 								<Var name="eventParams" key="id_place"><Null/></Var>
-								<Var name="eventParams" dump="true"/>
 								<Var name="id_event">
 									<Call library="gecol.core,event,api" function="add" params="eventParams"/>
 								</Var>
@@ -1370,27 +1339,27 @@
 								</Call>
 							</Else>
 						</If>
-						<Var name="createVideoCall" dump="true"><String.parse><String.parse>$actionParams->video_call</String.parse></String.parse></Var>
+						<Var name="createVideoCall"><String.parse><String.parse>$actionParams->video_call</String.parse></String.parse></Var>
 						<!-- create the video call if we have to -->
 						<If condition="$createVideoCall == 1">
 							<Then>
 								<!-- Get the organizer data -->
-								<Var name="id_person_organizer" dump="true"><String.parse><String.parse>$actionParams->id_person_organizer</String.parse></String.parse></Var>
-								<Var name="uid_person_organizer" dump="true"><String.parse><String.parse>$actionParams->uid_person_organizer</String.parse></String.parse></Var>
+								<Var name="id_person_organizer"><String.parse><String.parse>$actionParams->id_person_organizer</String.parse></String.parse></Var>
+								<Var name="uid_person_organizer"><String.parse><String.parse>$actionParams->uid_person_organizer</String.parse></String.parse></Var>
 								<If condition="($id_person_organizer != '') &amp;&amp; ($id_person_organizer != 'null')">
 									<Then>
-										<Var name="organizer" dump="true">
+										<Var name="organizer">
 											<Call library="gecol.core,person,api" function="get">
 												<Param name="id"><String.parse><String.parse>$actionParams->id_person_organizer</String.parse></String.parse></Param>
 											</Call>
 										</Var>
 										<Exception name="framework/eventResource::invalidOrganizer" condition="$organizer->__length == 0"/>
-										<Var name="uid_person_organizer" dump="true"><Var name="organizer" key="uid"/></Var>
+										<Var name="uid_person_organizer"><Var name="organizer" key="uid"/></Var>
 									</Then>
 								</If>
 								
 								<!-- Attendees-->
-								<Var name="eventPersons" dump="true">
+								<Var name="eventPersons">
 									<Call library="gecol.core,event,api" function="getAllPersonsDetailed">
 										<Param name="id_event"><Var name="id_event" key="id"/></Param>
 									</Call>
@@ -1414,10 +1383,9 @@
 								<Var name="_context" key="organizer"><Var name="uid_person_organizer"/></Var>
 								<Var name="_context" key="attendees"><Var name="attendees"/></Var>
 								<Var name="videoCallData" key="_context"><Var name="_context"/></Var>
-								<Var name="videoCallData" dump="true"/>
 
 								<!-- Add the resource -->
-								<Var name="id_resource" dump="true">
+								<Var name="id_resource">
 									<Call library="gecol.core,resource,api" function="add">
 										<Param name="resource_type_code">meet</Param>
 										<Param name="data"><Var name="videoCallData"/></Param>

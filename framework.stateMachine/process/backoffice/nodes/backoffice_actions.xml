@@ -13,13 +13,14 @@
 		<Param name="eventDataSet" type="array" doc="The event data set for each bulkPreEnroll"/>
 		<Param name="role" type="string" doc="The role"/>
 		<Param name="apiGetObjectData" type="array" doc="The api call to get the data to execute the actions and process the event"/>
+		<Param name="context" type="string" doc="The record context"/>
 	</Params>
 	<Screens>
 		<Screen id="previewScreen">
 			<Form name="actionsForm" >
 				<Container id="messages"/>
 				<ButtonGroup>
-					<Button type="back" id="backToPreEnroll" label="backToPreEnroll" action="back"/>
+					<Button type="back" id="back" label="back" action="back"/>
 					<Button type="continue" id="continue" label="confirm" action="confirm" confirm="true"/>
 				</ButtonGroup>
 			</Form>
@@ -43,9 +44,8 @@
 						<Param name="id"><Var name="idRecord"/></Param>
 					</Call>
 				</Var>
-				<Var name="data" key="bulkRecords"><Var name="PARAMS" key="bulkRecords"/></Var>
-				<Var name="data" key="eventDataSet"><Var name="PARAMS" key="eventDataSet"/></Var>
 				<Var name="record"><Var name="data" key="record"/></Var>
+				<Var name="data" key="eventData"><Var name="PARAMS" key="eventDataSet"/></Var>
 				<Var name="previews">
 					<Call library="framework,stateMachine.instance,api" function="getTransitionActionsPreview">
 						<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
@@ -119,13 +119,13 @@
 
 					<Var name="bulk"><Set/></Var>
 					<ForEach var="bulkRecords" item="idRecord">
-						<Var name="data" dump="true">
+						<Var name="data">
 							<Call library="$PARAMS->apiGetObjectData">
 								<Param name="id"><Var name="idRecord"/></Param>
 							</Call>
 						</Var>
 						<Var name="data" key="bulkRecords"><Var name="PARAMS" key="bulkRecords"/></Var>
-						<Var name="data" key="eventDataSet"><Var name="PARAMS" key="eventDataSet"/></Var>						
+						<Var name="data" key="eventData"><Var name="PARAMS" key="eventDataSet"/></Var>						
 						<Var name="record"><Var name="data" key="record"/></Var>
 		
 						<Var name="bulkItem"><Set/></Var>
@@ -136,32 +136,13 @@
 						<Var name="bulk" key="$idRecord"><Var name="bulkItem"/></Var>
 					</ForEach>		
 					<Var name="log">
-						<Call library="framework,stateMachine.instance,api" function="executeTransitionActions">
+						<Call library="framework,stateMachine.instance,api" function="executeTransitionActionsAndProcessEvent">
 							<Param name="bulk"><Var name="bulk"/></Param>
 							<Param name="event"><Var name="PARAMS" key="event"/></Param>
 							<Param name="role"><Var name="PARAMS" key="role"/></Param>
-							<Param name="messageData"><Null/></Param>
-							<Param name="context">STR</Param>
+							<Param name="context"><Var name="PARAMS" key="context"/></Param>
 						</Call>						
 					</Var>
-					<!-- Process the event -->
-					<ForEach var="bulkRecords" item="idRecord">
-						<Var name="data">
-							<Call library="$PARAMS->apiGetObjectData">
-								<Param name="id"><Var name="idRecord"/></Param>
-							</Call>
-						</Var>
-						<Var name="record"><Var name="data" key="record"/></Var>
-						<Var name="result">
-							<Call library="framework,stateMachine.instance,api" function="processEvent">
-								<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
-								<Param name="event"><Var name="PARAMS" key="event"/></Param>
-								<Param name="role"><Var name="PARAMS" key="role"/></Param>
-								<Param name="personData"><Var name="data" key="personData"/></Param>
-								<Param name="eventData"><Var name="PARAMS" key="eventDataSet"/></Param>
-							</Call>
-						</Var>
-					</ForEach>
 				</Then>
 				<Else>
 					<UserMessage type="error"><Lang key="noEventSelected"/></UserMessage>

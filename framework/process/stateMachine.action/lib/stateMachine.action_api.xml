@@ -76,7 +76,7 @@
         <Param name="description" type="text" required="false"/>
       </Params>
       <Begin>
-        <Var name="paramData">
+        <Var name="paramData" dump="true">
           <UtilsLib method="filterNotNull">
             <Param>
               <Var name="PARAMS"/>
