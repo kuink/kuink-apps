@@ -214,7 +214,7 @@
           </Param>
         </IsNull>
       </Var>
-      <Var name="states" dump="true">
+      <Var name="states">
         <Call library="framework,stateMachine.state,api" function="getAll">
           <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
         </Call>
@@ -222,7 +222,7 @@
       <Control method="addDataSource" object="frmEdit">
         <Param>states</Param>
         <Param><Var name="states"/></Param>
-      </Control>      
+      </Control>
       <Control method="bind" object="frmEdit">
         <Param>
           <Call library="framework,stateMachine.transition,api" function="getById">
@@ -243,6 +243,15 @@
         </Call>      
       </Var>
       <Var name="record" key="id" clear="true"/>
+      <Var name="states">
+        <Call library="framework,stateMachine.state,api" function="getAll">
+          <Param name="id_state_machine"><Var name="PARAMS" key="idStateMachine"/></Param>
+        </Call>
+      </Var>
+      <Control method="addDataSource" object="frmEdit">
+        <Param>states</Param>
+        <Param><Var name="states"/></Param>
+      </Control>			
       <Control method="bind" object="frmEdit">
         <Param><Var name="record"/></Param>
       </Control>
