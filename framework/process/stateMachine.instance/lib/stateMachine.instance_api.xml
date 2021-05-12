@@ -1127,6 +1127,7 @@
 					</Params>
 					<Return type="string"/>
 					<Begin>
+						<Var name="data" dump="true"/>
 
 						<Var name="personData"><Var name="data" key="personData"/></Var>
 						<Var name="action"/>
