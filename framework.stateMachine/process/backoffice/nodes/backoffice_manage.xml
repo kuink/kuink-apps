@@ -17,12 +17,13 @@
 		<Param name="managementGroup" type="string" doc="The group code of the persons who will manage the state machine"/>
 		<Param name="apiGetPrimaryGroup" type="string" doc="The api call that will return this object details. We need id_state_machine_instance to be there!"/>
 		<Param name="apiGetObjectData" type="string" doc="The api call to get the data to execute the actions and process the event"/>
+		<Param name="uiSearch" type="string" doc="The kid for the custom control that is able to show the object search form"/>
 		<Param name="uiSearchResults" type="string" doc="The kid for the custom control that is able to show the object search result"/>
 		<Param name="uiDetails" type="string" doc="The kid for the custom control that is able to show the object details"/>
 	</Params>
 	<Screens>
 		<Screen id="manageScreen">
-			<Form name="searchForm" title="search" persist="true">
+			<Form name="searchForm" title="search" persist="true" visible="false" doc="Only show this form if the user doesn't supply one">
 				<Column id="col1"/>
 				<Header id="statesHead" collapsible="true" collapsed="true"/>
 				<CheckBoxList id="states" datasource="states" bindid="id" bindvalue="name" help="false"/>
@@ -90,6 +91,9 @@
 						</Column>
 						<Column name="content">
 							<Formatter name="Style" method="nl2br"/>
+							<Formatter name="Style" method="collapsible">
+								<Param name="collapsed">true</Param>
+							</Formatter>							
 						</Column>
 						<Column name="message_status"/>
 					</Columns>
@@ -136,11 +140,30 @@
 
 		<Action name="search" screen="manageScreen">
 			<Exception name="framework/access:noPermission" condition="@group == 'GRD'"/>
-			<!-- Setting default search data -->
+
+			<If condition="$PARAMS->uiSearch != ''">
+				<Then>
+					<!-- Use the custom search control -->
+					<AddControl control-type="Custom" name="searchControl" control="$PARAMS->uiSearch"/>
+					<Control method="bind" object="searchControl">
+						<Param name="stateMachineCode"><Var name="PARAMS" key="stateMachineCode"/></Param>
+						<Param name="role"><Var name="group" process="true"/></Param>
+					</Control>					
+				</Then>
+				<Else>
+					<!-- Use the standard search control-->
+					<Control method="setProperty" object="searchForm">
+						<Param>visible</Param>
+						<Param>true</Param>
+					</Control>
+				</Else>
+			</If>
+
+			<!-- Add the default data -->
 			<Var name="defaultData" key="states">
 				<Call library="framework,stateMachine,api" function="getAllStatesDefault">
 					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
-					<Param name="role"><Var name="group" process="true"/></Param>
+					<Param name="role"><Var name="role" process="true"/></Param>
 				</Call>
 			</Var>
 			<Control method="setDefaultData" object="searchForm">
@@ -152,13 +175,15 @@
 			<Var name="states">
 				<Call library="framework,stateMachine,api" function="getAllStatesWithDefault">
 					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
-					<Param name="role"><Var name="group" process="true"/></Param>
+					<Param name="role"><Var name="role" process="true"/></Param>
 				</Call>
 			</Var>			
 			<Control method="addDataSource" object="searchForm">
 				<Param><String>states</String></Param>
 				<Param><Var name="states"/></Param>
 			</Control>	
+
+			
 			<!-- Custom search results control -->
 			<AddControl control-type="Custom" name="searchResultsControl" control="$PARAMS->uiSearchResults"/>
 			<Control method="bind" object="searchResultsControl">
@@ -194,7 +219,6 @@
 				<Param><Var name="recordHistory"/></Param>
 			</Control>
 			<!-- Set actions/events -->
-			<Var name="preEnrollData" key="bulkIds"><Var name="idPreEnroll" process="true"/></Var>
 
 			<Var name="events">
 				<Call library="framework,stateMachine.instance,api" function="getNextEvents">
@@ -214,6 +238,7 @@
 			<Call function="visibleFieldsRules">
 				<Param name="frmEdit" var="eventsForm"><Var name="eventsForm"/></Param>
 				<Param name="events"><Var name="events"/></Param>
+				<Param name="record"><Var name="record"/></Param>
 			</Call>
 
 			<!-- Get the current state name to show in form -->
@@ -240,7 +265,7 @@
 
 			<!-- Emails sent -->			
 			<Var name="messagesSent">
-				<Call library="gecol.core,preEnroll,api" function="getEmailsSentByGuid">
+				<Call library="gecol.core,message,api" function="getEmailsSentByGuid">
 					<Param name="guid"><Var name="record" key="id"/></Param>
 					<Param name="id_to"><Var name="record" key="id_person"/></Param>
 				</Call>
@@ -372,6 +397,7 @@
 			<Params>
 			 <Param name="frmEdit" output="true"/>
 			 <Param name="events"/>
+			 <Param name="record"/>
 			</Params>
 			<Return type=""/>
 			<Begin>
@@ -397,7 +423,7 @@
 								<Element name="label"><Var name="eventVisibleField" key="label"/></Element>
 								<Element name="required"><Var name="eventVisibleField" key="required"/></Element>
 								<Element name="maxlength"><Var name="eventVisibleField" key="maxlength"/></Element>
-								<Element name="datasource"><Var name="eventVisibleField" key="datasource"/></Element>
+								<Element name="datasource"><String.parse><Var name="eventVisibleField" key="datasource"/></String.parse></Element>
 								<Element name="bindid"><Var name="eventVisibleField" key="bindid"/></Element>
 								<Element name="bindvalue"><Var name="eventVisibleField" key="bindvalue"/></Element>
 								<Element name="bindimage"><Var name="eventVisibleField" key="bindimage"/></Element>

@@ -43,6 +43,18 @@
     <String key="emailsSent" value="Emails enviados"/>   
     <String key="id_person" value="Utente"/>   
 
+		<!-- Mail messages -->
+    <String key="from" value="Remetende"/>   		
+		<String key="to" value="Destinatário"/>   		
+		<String key="subject" value="Assunto"/>   		
+		<String key="content" value="Conteúdo"/>  
+		<String key="message_status" value="Estado"/>  
+
+		<!-- History -->
+		<String key="obs_private" value="Obs Privadas"/>  
+		<String key="obs_public" value="Obs Públicas"/>  
+		 		
+
   </Strings>
   <HelpStrings>              
     <!--Help key="example">Isto é um exemplo para o campo example</Help-->
