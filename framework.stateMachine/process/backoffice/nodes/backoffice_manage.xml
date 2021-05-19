@@ -17,6 +17,7 @@
 		<Param name="managementGroup" type="string" doc="The group code of the persons who will manage the state machine"/>
 		<Param name="apiGetPrimaryGroup" type="string" doc="The api call that will return this object details. We need id_state_machine_instance to be there!"/>
 		<Param name="apiGetObjectData" type="string" doc="The api call to get the data to execute the actions and process the event"/>
+		<Param name="apiGenerateReport" type="string" doc="The api call to generate a report based on search result"/>
 		<Param name="uiSearch" type="string" doc="The kid for the custom control that is able to show the object search form"/>
 		<Param name="uiSearchResults" type="string" doc="The kid for the custom control that is able to show the object search result"/>
 		<Param name="uiDetails" type="string" doc="The kid for the custom control that is able to show the object details"/>
@@ -84,8 +85,20 @@
 				<Template>
 					<Columns>
 						<!--Column name="guid"/-->
-						<Column name="from"/>
-						<Column name="to"/>
+						<Column name="from_email" label="from">
+							<Formatter name="Separator" method="newLine"/>
+						</Column>
+						<Column name="from_name" inline="true">
+							<Formatter name="Separator" method="newLine"/>							
+						</Column>
+						<Column name="from" inline="true"/>
+						<Column name="to_email" label="to">
+							<Formatter name="Separator" method="newLine"/>														
+						</Column>
+						<Column name="to_name" inline="true">
+							<Formatter name="Separator" method="newLine"/>							
+						</Column>
+						<Column name="to" inline="true"/>
 						<Column name="subject">
 							<Formatter name="Style" method="nl2br"/>
 						</Column>
@@ -163,7 +176,7 @@
 			<Var name="defaultData" key="states">
 				<Call library="framework,stateMachine,api" function="getAllStatesDefault">
 					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
-					<Param name="role"><Var name="role" process="true"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
 				</Call>
 			</Var>
 			<Control method="setDefaultData" object="searchForm">
@@ -175,7 +188,7 @@
 			<Var name="states">
 				<Call library="framework,stateMachine,api" function="getAllStatesWithDefault">
 					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
-					<Param name="role"><Var name="role" process="true"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
 				</Call>
 			</Var>			
 			<Control method="addDataSource" object="searchForm">
@@ -259,15 +272,22 @@
 					<AddControl control-type="Custom" name="detailsControl" control="$PARAMS->uiDetails" position="left"/>
 					<Control method="bind" object="detailsControl">
 						<Param name="id"><Var name="idRecord" process="true"/></Param>
-					</Control>					
+					</Control>
 				</Then>
 			</If>
 
-			<!-- Emails sent -->			
+			<!-- Emails sent -->
+			<Var name="guidObject">
+				<IsNull>
+					<Param><Var name="record" key="uuid"/></Param>
+					<Param><Var name="record" key="guid"/></Param>
+					<Param><Var name="record" key="id"/></Param>
+				</IsNull>
+			</Var>
 			<Var name="messagesSent">
 				<Call library="gecol.core,message,api" function="getEmailsSentByGuid">
-					<Param name="guid"><Var name="record" key="id"/></Param>
-					<Param name="id_to"><Var name="record" key="id_person"/></Param>
+					<Param name="guid"><Var name="guidObject"/></Param>
+					<!--Param name="id_to"><Var name="record" key="id_person"/></Param-->
 				</Call>
 			</Var>
 
@@ -386,6 +406,20 @@
 				<Param name="role"><Var name="group" process="true"/></Param>
 				<Param name="apiGetObjectData"><Var name="PARAMS" key="apiGetObjectData"/></Param>				
 			</RaiseEvent>
+		</Action>
+
+		<Action name="generateReport">
+			<If condition="$PARAMS->apiGenerateReport != ''">
+				<Then>
+					<Call library="$PARAMS->apiGenerateReport">
+						<Param name="post"><Var name="POSTDATA"/></Param>
+					</Call>
+				</Then>
+				<Else>
+					<UserMessage type="warning"><Lang key="noReportFound"/></UserMessage>
+				</Else>
+			</If>
+			<Action name="search"/>
 		</Action>
 	</Actions>
 	
