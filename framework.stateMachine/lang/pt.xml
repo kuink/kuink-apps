@@ -38,10 +38,17 @@
     <String key="duplicate" value="Duplicar"/>
     
     <!-- Management -->
+		<String key="back" value="Voltar"/>
+		<String key="actions" value="Ações"/>
     <String key="nextAction" value="Próxima ação"/>   
-    <String key="execute" value="Executar"/>   
-    <String key="emailsSent" value="Emails enviados"/>   
-    <String key="id_person" value="Utente"/>   
+    <String key="execute" value="Executar"/>
+		<String key="id_person" value="Utente"/>  
+    <String key="emailsSent" value="Emails enviados"/>    
+		<String key="from" value="De"/>
+		<String key="to" value="Para"/>
+		<String key="subject" value="Assunto"/>
+		<String key="content" value="Conteúdo"/>
+		<String key="message_status" value="Estado do Email"/>
 
   </Strings>
   <HelpStrings>              
