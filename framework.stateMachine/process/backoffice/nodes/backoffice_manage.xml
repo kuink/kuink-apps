@@ -14,15 +14,18 @@
 	<Params>
 		<Param name="stateMachineCode" type="string" doc="The state machine code to manage"/>
 		<Param name="context" type="string" doc="The record context"/>
+		<Param name="uploadRoot" type="string" doc="The folder where to upload event files"/>
 		<Param name="managementGroup" type="string" doc="The group code of the persons who will manage the state machine"/>
 		<Param name="apiGetPrimaryGroup" type="string" doc="The api call that will return this object details. We need id_state_machine_instance to be there!"/>
 		<Param name="apiGetObjectData" type="string" doc="The api call to get the data to execute the actions and process the event"/>
+		<Param name="apiGenerateReport" type="string" doc="The api call to generate a report based on search result"/>
+		<Param name="uiSearch" type="string" doc="The kid for the custom control that is able to show the object search form"/>
 		<Param name="uiSearchResults" type="string" doc="The kid for the custom control that is able to show the object search result"/>
 		<Param name="uiDetails" type="string" doc="The kid for the custom control that is able to show the object details"/>
 	</Params>
 	<Screens>
 		<Screen id="manageScreen">
-			<Form name="searchForm" title="search" persist="true">
+			<Form name="searchForm" title="search" persist="true" visible="false" doc="Only show this form if the user doesn't supply one">
 				<Column id="col1"/>
 				<Header id="statesHead" collapsible="true" collapsed="true"/>
 				<CheckBoxList id="states" datasource="states" bindid="id" bindvalue="name" help="false"/>
@@ -83,13 +86,28 @@
 				<Template>
 					<Columns>
 						<!--Column name="guid"/-->
-						<Column name="from"/>
-						<Column name="to"/>
+						<Column name="from_email" label="from">
+							<Formatter name="Separator" method="newLine"/>
+						</Column>
+						<Column name="from_name" inline="true">
+							<Formatter name="Separator" method="newLine"/>							
+						</Column>
+						<Column name="from" inline="true"/>
+						<Column name="to_email" label="to">
+							<Formatter name="Separator" method="newLine"/>														
+						</Column>
+						<Column name="to_name" inline="true">
+							<Formatter name="Separator" method="newLine"/>							
+						</Column>
+						<Column name="to" inline="true"/>
 						<Column name="subject">
 							<Formatter name="Style" method="nl2br"/>
 						</Column>
 						<Column name="content">
 							<Formatter name="Style" method="nl2br"/>
+							<Formatter name="Style" method="collapsible">
+								<Param name="collapsed">true</Param>
+							</Formatter>							
 						</Column>
 						<Column name="message_status"/>
 					</Columns>
@@ -136,7 +154,26 @@
 
 		<Action name="search" screen="manageScreen">
 			<Exception name="framework/access:noPermission" condition="@group == 'GRD'"/>
-			<!-- Setting default search data -->
+
+			<If condition="$PARAMS->uiSearch != ''">
+				<Then>
+					<!-- Use the custom search control -->
+					<AddControl control-type="Custom" name="searchControl" control="$PARAMS->uiSearch"/>
+					<Control method="bind" object="searchControl">
+						<Param name="stateMachineCode"><Var name="PARAMS" key="stateMachineCode"/></Param>
+						<Param name="role"><Var name="group" process="true"/></Param>
+					</Control>					
+				</Then>
+				<Else>
+					<!-- Use the standard search control-->
+					<Control method="setProperty" object="searchForm">
+						<Param>visible</Param>
+						<Param>true</Param>
+					</Control>
+				</Else>
+			</If>
+
+			<!-- Add the default data -->
 			<Var name="defaultData" key="states">
 				<Call library="framework,stateMachine,api" function="getAllStatesDefault">
 					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
@@ -159,6 +196,8 @@
 				<Param><String>states</String></Param>
 				<Param><Var name="states"/></Param>
 			</Control>	
+
+			
 			<!-- Custom search results control -->
 			<AddControl control-type="Custom" name="searchResultsControl" control="$PARAMS->uiSearchResults"/>
 			<Control method="bind" object="searchResultsControl">
@@ -194,7 +233,6 @@
 				<Param><Var name="recordHistory"/></Param>
 			</Control>
 			<!-- Set actions/events -->
-			<Var name="preEnrollData" key="bulkIds"><Var name="idPreEnroll" process="true"/></Var>
 
 			<Var name="events">
 				<Call library="framework,stateMachine.instance,api" function="getNextEvents">
@@ -214,6 +252,7 @@
 			<Call function="visibleFieldsRules">
 				<Param name="frmEdit" var="eventsForm"><Var name="eventsForm"/></Param>
 				<Param name="events"><Var name="events"/></Param>
+				<Param name="record"><Var name="record"/></Param>
 			</Call>
 
 			<!-- Get the current state name to show in form -->
@@ -234,15 +273,22 @@
 					<AddControl control-type="Custom" name="detailsControl" control="$PARAMS->uiDetails" position="left"/>
 					<Control method="bind" object="detailsControl">
 						<Param name="id"><Var name="idRecord" process="true"/></Param>
-					</Control>					
+					</Control>
 				</Then>
 			</If>
 
-			<!-- Emails sent -->			
+			<!-- Emails sent -->
+			<Var name="guidObject">
+				<IsNull>
+					<Param><Var name="record" key="uuid"/></Param>
+					<Param><Var name="record" key="guid"/></Param>
+					<Param><Var name="record" key="id"/></Param>
+				</IsNull>
+			</Var>
 			<Var name="messagesSent">
-				<Call library="gecol.core,preEnroll,api" function="getEmailsSentByGuid">
-					<Param name="guid"><Var name="record" key="id"/></Param>
-					<Param name="id_to"><Var name="record" key="id_person"/></Param>
+				<Call library="gecol.core,message,api" function="getEmailsSentByGuid">
+					<Param name="guid"><Var name="guidObject"/></Param>
+					<!--Param name="id_to"><Var name="record" key="id_person"/></Param-->
 				</Call>
 			</Var>
 
@@ -271,6 +317,8 @@
 					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
 					<Param name="events"><Var name="events"/></Param>
 					<Param name="bulkPreEnrolls"><Var name="bulkPreEnrolls"/></Param>
+					<Param name="uploadRoot"><Var name="PARAMS" key="uploadRoot"/></Param>		
+					<Param name="record"><Var name="record"/></Param>			
 				</Call>
 			</Var>
 
@@ -351,6 +399,8 @@
 					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
 					<Param name="events"><Var name="events"/></Param>
 					<Param name="bulkPreEnrolls"><Var name="bulkPreEnrolls"/></Param>
+					<Param name="uploadRoot"><Var name="PARAMS" key="uploadRoot"/></Param>
+					<Param name="record"><Var name="record"/></Param>
 				</Call>
 			</Var>
 
@@ -362,6 +412,20 @@
 				<Param name="apiGetObjectData"><Var name="PARAMS" key="apiGetObjectData"/></Param>				
 			</RaiseEvent>
 		</Action>
+
+		<Action name="generateReport">
+			<If condition="$PARAMS->apiGenerateReport != ''">
+				<Then>
+					<Call library="$PARAMS->apiGenerateReport">
+						<Param name="post"><Var name="POSTDATA"/></Param>
+					</Call>
+				</Then>
+				<Else>
+					<UserMessage type="warning"><Lang key="noReportFound"/></UserMessage>
+				</Else>
+			</If>
+			<Action name="search"/>
+		</Action>
 	</Actions>
 	
 	<Library>
@@ -372,6 +436,7 @@
 			<Params>
 			 <Param name="frmEdit" output="true"/>
 			 <Param name="events"/>
+			 <Param name="record"/>
 			</Params>
 			<Return type=""/>
 			<Begin>
@@ -397,7 +462,7 @@
 								<Element name="label"><Var name="eventVisibleField" key="label"/></Element>
 								<Element name="required"><Var name="eventVisibleField" key="required"/></Element>
 								<Element name="maxlength"><Var name="eventVisibleField" key="maxlength"/></Element>
-								<Element name="datasource"><Var name="eventVisibleField" key="datasource"/></Element>
+								<Element name="datasource"><String.parse><Var name="eventVisibleField" key="datasource"/></String.parse></Element>
 								<Element name="bindid"><Var name="eventVisibleField" key="bindid"/></Element>
 								<Element name="bindvalue"><Var name="eventVisibleField" key="bindvalue"/></Element>
 								<Element name="bindimage"><Var name="eventVisibleField" key="bindimage"/></Element>
@@ -431,9 +496,12 @@
 			<Params>
 				<Param name="eventName" type="string" doc="The event to execute"/>
 				<Param name="events" type="array" doc="List of events"/>
+				<Param name="uploadRoot" type="string" doc="Where to upload the files"/>
+				<Param name="record" type="array" doc="The record data"/>
 			</Params>
 			<Return type="array"/>
 			<Begin>
+				<!-- Get the object data-->
 				 <Var name="eventData"><Set/></Var>
 				 <Var name="selectedEvent"><Set/></Var>
 				 <ForEach var="events" item="event">
@@ -455,6 +523,39 @@
 							</String.concatenate>
 						</Var>
 						<Var name="fieldValue"><Var name="POSTDATA" key="$fieldId"/></Var>
+						<If condition="$eventVisibleField->type == 'File'">
+							<Then>
+								<If condition="$count == 0">
+									<Then>
+										<Exception name="framework/stateMachine::uploadRootParamNotDefined" condition="$PARAMS->uploadRoot == ''"/>
+										<!-- First upload -->
+										<Var name="fieldValue">
+											<FileLib method="Upload">
+													<Param name="UploadFolder"><String.parse><String.parse>$PARAMS->uploadRoot</String.parse></String.parse></Param>
+													<Param name="Filename"><Guid/></Param>
+													<Param name="id_user"><Var name="USER" key="id"/></Param>
+											</FileLib>
+										</Var>
+										<Var name="files" key="$fieldId"><Var name="fieldValue"/></Var>
+									</Then>
+									<Else>
+										<!-- The file allready been uploaded - so copy it-->
+										<Var name="fileValue"><Var name="files" key="$fieldId"/></Var>
+										<If condition="$fileValue !== null &amp;&amp; $fileValue !== ''">
+											<Then>
+												<Var name="fieldValue">
+														<FileLib method="copyFile">
+																<Param name="id"><Var name="files" key="$fieldId"/></Param>
+																<Param name="path"><String.parse><String.parse>$PARAMS->uploadRoot</String.parse></String.parse></Param>
+														</FileLib>
+												</Var>
+											</Then>
+										</If>
+									</Else>
+								</If>
+							</Then>
+						</If>
+
 						<If condition="$eventVisibleField->formatter != ''">
 							<Then>
 								<Var name="formattedFieldId">

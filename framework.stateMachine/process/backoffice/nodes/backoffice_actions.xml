@@ -127,12 +127,21 @@
 						<Var name="data" key="bulkRecords"><Var name="PARAMS" key="bulkRecords"/></Var>
 						<Var name="data" key="eventData"><Var name="PARAMS" key="eventDataSet"/></Var>						
 						<Var name="record"><Var name="data" key="record"/></Var>
-		
+
+						<!-- Determine the best cancidate to guidObject with the following order: uuid, guid, id-->
+						<Var name="guidObject">
+							<IsNull>
+								<Param><Var name="record" key="uuid"/></Param>
+								<Param><Var name="record" key="guid"/></Param>
+								<Param><Var name="record" key="id"/></Param>
+							</IsNull>
+						</Var>
+						
 						<Var name="bulkItem"><Set/></Var>
 						<!--Var name="bulkItem" key="id"><Var name="idRecord"/></Var-->
 						<Var name="bulkItem" key="id"><Var name="record" key="id_state_machine_instance"/></Var>
 						<Var name="bulkItem" key="data"><Var name="data"/></Var>						
-						<Var name="bulkItem" key="guidObject"><Var name="record" key="id"/></Var>
+						<Var name="bulkItem" key="guidObject"><Var name="guidObject"/></Var>
 						<Var name="bulk" key="$idRecord"><Var name="bulkItem"/></Var>
 					</ForEach>		
 					<Var name="log">

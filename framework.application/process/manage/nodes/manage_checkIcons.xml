@@ -136,6 +136,11 @@
       <Var name="icons" key=""><Set><Element name="name">comments</Element><Element name="icon">comments</Element></Set></Var>
       <Var name="icons" key=""><Set><Element name="name">history</Element><Element name="icon">history</Element></Set></Var>
       <Var name="icons" key=""><Set><Element name="name">magic</Element><Element name="icon">magic</Element></Set></Var>
+			<Var name="icons" key=""><Set><Element name="name">plus-circle</Element><Element name="icon">plus-circle</Element></Set></Var>
+			<Var name="icons" key=""><Set><Element name="name">minus-circle</Element><Element name="icon">minus-circle</Element></Set></Var>
+			<Var name="icons" key=""><Set><Element name="name">cart-plus</Element><Element name="icon">cart-plus</Element></Set></Var>
+			<Var name="icons" key=""><Set><Element name="name">shopping-cart</Element><Element name="icon">shopping-cart</Element></Set></Var>
+			<Var name="icons" key=""><Set><Element name="name">receipt</Element><Element name="icon">receipt</Element></Set></Var>
       <Control object="actions" method="bind">
         <Param><Var name="icons"/></Param>
       </Control>      
