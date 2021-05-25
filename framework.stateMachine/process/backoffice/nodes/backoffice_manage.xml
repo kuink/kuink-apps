@@ -14,6 +14,7 @@
 	<Params>
 		<Param name="stateMachineCode" type="string" doc="The state machine code to manage"/>
 		<Param name="context" type="string" doc="The record context"/>
+		<Param name="uploadRoot" type="string" doc="The folder where to upload event files"/>
 		<Param name="managementGroup" type="string" doc="The group code of the persons who will manage the state machine"/>
 		<Param name="apiGetPrimaryGroup" type="string" doc="The api call that will return this object details. We need id_state_machine_instance to be there!"/>
 		<Param name="apiGetObjectData" type="string" doc="The api call to get the data to execute the actions and process the event"/>
@@ -316,6 +317,8 @@
 					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
 					<Param name="events"><Var name="events"/></Param>
 					<Param name="bulkPreEnrolls"><Var name="bulkPreEnrolls"/></Param>
+					<Param name="uploadRoot"><Var name="PARAMS" key="uploadRoot"/></Param>		
+					<Param name="record"><Var name="record"/></Param>			
 				</Call>
 			</Var>
 
@@ -396,6 +399,8 @@
 					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
 					<Param name="events"><Var name="events"/></Param>
 					<Param name="bulkPreEnrolls"><Var name="bulkPreEnrolls"/></Param>
+					<Param name="uploadRoot"><Var name="PARAMS" key="uploadRoot"/></Param>
+					<Param name="record"><Var name="record"/></Param>
 				</Call>
 			</Var>
 
@@ -491,9 +496,12 @@
 			<Params>
 				<Param name="eventName" type="string" doc="The event to execute"/>
 				<Param name="events" type="array" doc="List of events"/>
+				<Param name="uploadRoot" type="string" doc="Where to upload the files"/>
+				<Param name="record" type="array" doc="The record data"/>
 			</Params>
 			<Return type="array"/>
 			<Begin>
+				<!-- Get the object data-->
 				 <Var name="eventData"><Set/></Var>
 				 <Var name="selectedEvent"><Set/></Var>
 				 <ForEach var="events" item="event">
@@ -515,6 +523,39 @@
 							</String.concatenate>
 						</Var>
 						<Var name="fieldValue"><Var name="POSTDATA" key="$fieldId"/></Var>
+						<If condition="$eventVisibleField->type == 'File'">
+							<Then>
+								<If condition="$count == 0">
+									<Then>
+										<Exception name="framework/stateMachine::uploadRootParamNotDefined" condition="$PARAMS->uploadRoot == ''"/>
+										<!-- First upload -->
+										<Var name="fieldValue">
+											<FileLib method="Upload">
+													<Param name="UploadFolder"><String.parse><String.parse>$PARAMS->uploadRoot</String.parse></String.parse></Param>
+													<Param name="Filename"><Guid/></Param>
+													<Param name="id_user"><Var name="USER" key="id"/></Param>
+											</FileLib>
+										</Var>
+										<Var name="files" key="$fieldId"><Var name="fieldValue"/></Var>
+									</Then>
+									<Else>
+										<!-- The file allready been uploaded - so copy it-->
+										<Var name="fileValue"><Var name="files" key="$fieldId"/></Var>
+										<If condition="$fileValue !== null &amp;&amp; $fileValue !== ''">
+											<Then>
+												<Var name="fieldValue">
+														<FileLib method="copyFile">
+																<Param name="id"><Var name="files" key="$fieldId"/></Param>
+																<Param name="path"><String.parse><String.parse>$PARAMS->uploadRoot</String.parse></String.parse></Param>
+														</FileLib>
+												</Var>
+											</Then>
+										</If>
+									</Else>
+								</If>
+							</Then>
+						</If>
+
 						<If condition="$eventVisibleField->formatter != ''">
 							<Then>
 								<Var name="formattedFieldId">
