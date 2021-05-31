@@ -583,7 +583,7 @@
 						</ForEach>
          		<Var name="validActions"><Set/></Var>
          		<ForEach var="actions" item="action">
-							<Var name="action" key="condition"><String.stripSlashes><Var name="action" key="condition"/></String.stripSlashes></Var>
+							<Var name="action" key="condition"><String.stripslashes><Var name="action" key="condition"/></String.stripslashes></Var>
          			<Var name="evalCondition"><Int>1</Int></Var>
          			<If condition="$action->condition != ''">
 								<Then>
