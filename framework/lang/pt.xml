@@ -76,6 +76,7 @@
         <String key="realField" value="Este campo apenas aceita valores numéricos reais"/>
         <String key="requiredFiledsNotFilled" value="Tem de preencher todos os campos obrigatórios"/>
         <String key="invalidEmail" value="O e-Mail é inválido"/>
+        <String key="remainingChars" value="Caracteres disponíveis"/>
 
         <!-- Date names -->
 				<String key="january" value="janeiro"/>
