@@ -13,7 +13,7 @@
     <Use name="FileLib" type="lib"/>
   </Libraries>
   <Configuration>
-    <Config key="maxUploadFileSize" value="4000000"/>
+    <Config key="maxUploadFileSize" value="15000000"/>
     <Config key="allowedExtensions" value="pdf"/>
     <Config key="uploadFolder" value="tmp"/>
   </Configuration>

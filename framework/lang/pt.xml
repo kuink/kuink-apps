@@ -38,6 +38,7 @@
         <String key="_creation_ip" value="IP Criação"/>
         <String key="_modification" value="Modificação"/>
         <String key="_modification_ip" value="IP Modificação"/>
+        <String key="_submission" value="Submissão"/>
 
         <String key="first" value="Primeiro"/>
         <String key="last" value="Último"/>

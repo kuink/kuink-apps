@@ -18,7 +18,7 @@
     <Config key="currentFolder" value="controlled_docs/current"/>
     <Config key="rejectedFolder" value="controlled_docs/rejected"/>
 
-    <Config key="maxUploadFileSize" value="4000000"/>
+    <Config key="maxUploadFileSize" value="15000000"/>
     <Config key="allowedExtensions" value="ott,odt,ots,ods,otp,odp,pdf,odg"/>
     <Config key="tmpFolder" value="controlled_docs/tmp"/>
 

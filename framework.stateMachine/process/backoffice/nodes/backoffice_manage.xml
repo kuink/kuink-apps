@@ -424,7 +424,14 @@
 					<UserMessage type="warning"><Lang key="noReportFound"/></UserMessage>
 				</Else>
 			</If>
-			<Action name="search"/>
+			<If condition="@idRecord != ''">
+				<Then>
+					<Action name="details"/>					
+				</Then>
+				<Else>
+					<Action name="search"/>					
+				</Else>
+			</If>
 		</Action>
 	</Actions>
 	

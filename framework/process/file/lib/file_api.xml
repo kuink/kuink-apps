@@ -141,7 +141,7 @@
 			</Params>
 			<Return type="int"/>
 			<Begin>
-        <Var name="file">
+        <Var name="file" dump="true">
           <DataAccess method="load">
 						<Param name="_entity">fw_file</Param>
 						<Param name="id"><Var name="id_file"/></Param>
@@ -171,23 +171,30 @@
           </String.replace>
         </Var>
 
-        <Var name="original" dump="true"><String.parse>$filePath/$file->name</String.parse></Var>
-        <Var name="destination" dump="true"><String.parse>$destPath/$dest_filename</String.parse></Var>
+        <Var name="original"><String.parse>$filePath/$file->name</String.parse></Var>
+        <Var name="destination"><String.parse>$destPath/$dest_filename</String.parse></Var>
         <FileLib method="moveFiles">
           <Param name="originalPath"><Var name="original"/></Param>
           <Param name="destinationPath"><Var name="destination"/></Param>
         </FileLib>
         <Var name="baseUploadDir"><Var name="SYSTEM" key="baseUploadDir"/></Var>
+        <Var name="baseUploadDirVirtualPrefix"><Var name="SYSTEM" key="baseUploadDirVirtualPrefix"/></Var>
         <!-- Compatibility -->
         <Var name="baseUploadDir">
           <String.replace>
-            <Param><Var name="SYSTEM" key="baseUploadDirVirtualPrefix"/></Param>
+            <Param><Var name="baseUploadDirVirtualPrefix"/></Param>
             <Param><String/></Param>
             <Param><Var name="baseUploadDir"/></Param>
           </String.replace>
         </Var>
         <Var name="fullDestPath" dump="true"><String.parse>$baseUploadDir/$dest_path</String.parse></Var>
-        <Var name="registerPath" dump="true"><String.parse>$dest_path</String.parse></Var>
+        <Var name="registerPath" dump="true">
+          <If condition="$baseUploadDirVirtualPrefix == ''">
+            <Then><String.parse>$baseUploadDir/$dest_path</String.parse></Then>
+            <Else><String.parse>$baseUploadDirVirtualPrefix/$dest_path</String.parse></Else>
+          </If>
+        </Var>
+       
         <Call function="update">
 					<Param name="id"><Var name="id_file"/></Param>
 					<Param name="path"><Var name="registerPath"/></Param>
@@ -198,6 +205,27 @@
         <Return><Var name="id_file"/></Return>
 			</Begin>
 		</Function>
+
+    <Function scope="public" name="stream" doc="Stream a file to the client">
+    <Params>
+      <Param name="id" type="int" doc="The id file"/>
+    </Params>
+    <Return type="null"/>
+    <Begin>
+      <Var name="file">
+        <DataAccess method="load">
+          <Param name="_entity">fw_file</Param>
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </DataAccess>
+      </Var>
+
+      <FileLib method="download">
+          <Param><Var name="file" key="path"/></Param>
+          <Param><Var name="file" key="name"/></Param>
+      </FileLib>
+      <Return></Return>
+    </Begin>
+    </Function>
 
   </Library>
 </Node>
