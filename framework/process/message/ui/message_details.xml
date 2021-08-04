@@ -16,12 +16,12 @@
     </Screens>
     <Actions>
         <Action name="init" screen="headerScreen" >
-            <Var name="message">
+            <Var name="message" dump="true">
                 <Call library="framework,message,api" function="getMessageByGuid">
                     <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
                 </Call>
             </Var>
-            <Var name="html">
+            <Var name="html" dump="true">
                 <TemplateLib method="GetTemplateHtml" >
                     <Param>custom/messageHtmlBlock</Param>
                     <Param><Var name="message"/></Param>

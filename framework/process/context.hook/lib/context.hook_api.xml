@@ -56,7 +56,7 @@
     </Begin>
     </Function>
 
-    <Function scope="public" name="isRegisterd" doc="Check if this hook exists">
+    <Function scope="public" name="isRegistered" doc="Check if this hook exists">
     <Params>
       <Param name="context" type="string" doc="The context of the api hook"/>
       <Param name="code" type="string" doc="The code to be assiciated with of the api hook"/>
@@ -99,7 +99,7 @@
       </Exception>
       <Trace><String.parse>Hook ID:$hook->id | CONTEXT:$hook->context | CODE:$hook->code | API:$hook->api</String.parse></Trace>
       <Var name="result">
-        <Call function="$hook->api" params="hookParams"/>
+        <Call library="$hook->api" params="hookParams"/>
       </Var>
       <Return><Var name="result"/></Return>
     </Begin>
