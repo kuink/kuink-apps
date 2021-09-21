@@ -42,6 +42,7 @@
         <Param name="code_name" type="text" required="false"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="true"/>
+        <Param name="keywords" type="text" required="false"/>        
         <Param name="uri_external" type="text" required="false"/>
         <Param name="is_public" type="int" required="false"/>
         <Param name="deployment_file_format" type="text" required="false"/>
@@ -74,6 +75,9 @@
             <Param name="name">
               <Var name="PARAMS" key="name"/>
             </Param>
+            <Param name="keywords">
+              <Var name="PARAMS" key="keywords"/>
+            </Param>            
             <Param name="uri_external">
               <Var name="PARAMS" key="uri_external"/>
             </Param>
@@ -142,6 +146,7 @@
         <Param name="code_name" type="text" required="false"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="true"/>
+        <Param name="keywords" type="text" required="false"/>
         <Param name="uri_external" type="text" required="false"/>
         <Param name="deployment_file_format" type="text" required="false"/>
         <Param name="is_active" type="int" required="true"/>        
@@ -160,7 +165,8 @@
 						</Then>
 					</If>
         </ForEach>
-        <Var name="PARAMS"/>
+        <Var name="PARAMS" dump="true"/>
+        <Var name="paramData" dump="true"/>
         <DataAccess method="update" params="paramData">
           <Param name="_entity">fw_rm_controlled_document</Param>
           <Param name="_modification">
@@ -193,6 +199,7 @@
       <Params>
         <Param name="id_controlled_document_type" type="int"/>
         <Param name="text" type="string"/>
+        <Param name="is_active" type="string"/>
         <Param name="isManager" type="int" doc="Can view doctype 0"/>
         <Param name="pagenum" type="int"/>
         <Param name="pagesize" type="int"/>
@@ -217,6 +224,7 @@
             <Param name="text" wildcard="fullSplit">
               <Var name="PARAMS" key="text"/>
             </Param>
+            <Param name="is_active"><Var name="is_active"/></Param>
             <Param name="isManager"><Var name="isManager"/></Param>
             <Param name="id_person"><Var name="USER" key="id"/></Param>
             <Param name="_pageNum">

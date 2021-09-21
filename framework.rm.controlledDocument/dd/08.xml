@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw.rm">
+  <Domains>
+  </Domains>
+  <Templates>
+  </Templates>
+  <Entities>
+    <Entity name="fw_rm_controlled_document" doc="Controlled documents">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="id_current_version" domain="foreign" required="true" refentity="fw_rm_controlled_document_version" refattr="id" doc="id of the current version of the controlled document"/>
+        <Attribute name="id_controlled_document_type" domain="foreign" required="true" refentity="fw_rm_controlled_document_type" refattr="id" doc="id of the controlled document type"/>
+        <Attribute name="id_class" domain="foreign"  refentity="fw_rm_class" refattr="id" doc="The class with this disposal hold. Each class can only have one document template"/>        
+        <Attribute name="guid_object" domain="string" doc="Reference to an external object"/>
+        <Attribute name="current_version_number" domain="order" required="true" doc="The current version order number"/>
+        <Attribute name="code" domain="code" required="true" doc="The document code"/>
+        <Attribute name="code_name" domain="name"  doc="The coded name like with _ instead os space, etc..."/>
+        <Attribute name="name" domain="description" required="true" doc="The name of the document"/>
+        <Attribute name="description" domain="description" required="false" doc="The document description"/>
+        <Attribute name="keywords" domain="longDescription" required="false" doc="The document keywords to search for"/>
+        <Attribute name="is_active" domain="bool" default="1" doc="Is this document active?"/>
+        <Attribute name="is_public" domain="bool" default="0" doc="Is this document public? Can be accessed from general public?"/>
+        <Attribute name="uri_external" domain="uri" required="false" doc="The external/public uri of this document, if it is not internaly exposed to external entities"/>
+        <Attribute name="deployment_file_format" domain="code" required="false" doc="If the file is to be deployed in a different format, specify it here version.id_deployment_file. If null, then the source file version.id_file will be used."/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>

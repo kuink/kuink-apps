@@ -20,6 +20,7 @@
             cd.id_class,
             cd.name,
             cd.description,
+            cd.keywords,
             cd.is_active,  
             cd.id_current_version,          
             cd.id_controlled_document_type,

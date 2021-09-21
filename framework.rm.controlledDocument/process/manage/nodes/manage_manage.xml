@@ -23,6 +23,7 @@
       <Form name="frmSearch" persist="true">
         <Select id="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name" help="true"/>
         <Text id="text" label="text" help="true"/>
+        <Checkbox id="is_active"/>
         <ButtonGroup>
           <Button id="search" type="search" label="search" action="search"/>
           <Button id="insert" type="add" label="insert" action="insert"/>
@@ -70,6 +71,7 @@
           <Formatter name="Style" method="bold"/>
         </Static>
         <Static id="description"/>
+        <Static id="keywords"/>
         <Static id="is_active">
           <Formatter name="YesNo"/>
         </Static>
@@ -163,6 +165,7 @@
         <Text id="code_name" label="code_name" required="false"/>
         <Text id="name" label="name" required="true"/>
         <Text id="description" label="description" required="false"/>
+        <Text id="keywords" label="keywords" required="false"/>
         <Text id="uri_external" label="uri_external"/>
         <Text id="deployment_file_format" />
         <Select id="id_class" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
@@ -220,6 +223,7 @@
           </Var>
         </Then>
       </If>
+      <Var name="defaultData" key="is_active" process="true"><Int>1</Int></Var>
       <Action name="search"/>
     </Action>
     
@@ -274,6 +278,9 @@
               <Param name="text">
                 <Var name="currentData" key="text"/>
               </Param>
+              <Param name="is_active">
+                <Var name="currentData" key="is_active"/>
+              </Param>              
               <Param name="pagesize">
                 <Control method="getPageSize" object="grdSearchResult"/>
               </Param>

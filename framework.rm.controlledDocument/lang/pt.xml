@@ -39,6 +39,7 @@
     <String key="public_key" value="Foto"/>
     <String key="id_deployment_file" value="Ficheiro - Distribuição"/>
     <String key="deployment" value="Distribuição"/>
+    <String key="keywords" value="Palavras-Chave (pesquisa)"/>
     
     
     <String key="formatWarning" value="A previsualização do documento pode aparecer desformatada, no entanto, ao descarregar o documento este está com as formatações corretas."/>

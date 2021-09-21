@@ -27,6 +27,7 @@
         <Attribute name="code_name" domain="name"  doc="The coded name like with _ instead os space, etc..."/>
         <Attribute name="name" domain="description" required="true" doc="The name of the document"/>
         <Attribute name="description" domain="description" required="false" doc="The document description"/>
+        <Attribute name="keywords" domain="longDescription" required="false" doc="The document keywords to search for"/>
         <Attribute name="is_active" domain="bool" default="1" doc="Is this document active?"/>
         <Attribute name="is_public" domain="bool" default="0" doc="Is this document public? Can be accessed from general public?"/>
         <Attribute name="uri_external" domain="uri" required="false" doc="The external/public uri of this document, if it is not internaly exposed to external entities"/>
