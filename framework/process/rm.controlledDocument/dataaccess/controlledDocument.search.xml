@@ -76,7 +76,7 @@
                     <XCondition>1 = 1</XCondition>
                     <XCondition optional="id_controlled_document_type">AND id_controlled_document_type = {param->id_controlled_document_type}</XCondition>
                     <XCondition optional="text">
-                      AND ( cd.name like '{param->text}' OR cd.description like '{param->text}' OR cdv.reason like '{param->text}' OR cdt.name like '{param->text}' OR cd.code like '{param->text}' OR cd.guid_object like '{param->text}' OR cd.keywords like '{param->text}') 
+                      AND ( cd.name like '{param->text}' OR cd.description like '{param->text}' OR cdt.name like '{param->text}' OR cd.code like '{param->text}' OR cd.guid_object like '{param->text}' OR cd.keywords like '{param->text}') 
                     </XCondition>
                     <XCondition condition="$isManager == 0">
                         AND cd.id_controlled_document_type != 0
