@@ -41,7 +41,7 @@
         </XFrom>
         <XWhere>
           <XCondition optional="idList">  
-            st.id in ({param->idList})
+            st.id in ({@param->idList})
           </XCondition>
         </XWhere>
         <XOrderBy>
