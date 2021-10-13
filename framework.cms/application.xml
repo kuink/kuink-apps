@@ -8,10 +8,11 @@
         <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
     </Databases>
     <Menus>
-        <Menu role="Teacher" startuc="content" startnode="" event="init" label="manageContent" default="true"/>
-        <Menu role="Teacher" startuc="channel" startnode="" event="init" label="manageChannels" default="false"/>
-        <Menu role="Teacher" startuc="device" startnode="" event="init" label="manageDevices" default="false"/>
-        <Menu role="Teacher" startuc="template" startnode="" event="init" label="manageTemplates" default="false"/>        
-        <Menu role="Teacher" startuc="contentType" startnode="" event="init" label="manageContentTypes" default="false"/>
+        <Menu role="Teacher,Student" startuc="content" startnode="" event="init" label="manageContent" default="true"/>
+        <Menu role="Teacher,Student" startuc="channel" startnode="" event="init" label="manageChannels" default="false"/>
+        <Menu role="Teacher,Student" startuc="device" startnode="" event="init" label="manageDevices" default="false"/>
+        <Menu role="Teacher,Student" startuc="template" startnode="" event="init" label="manageTemplates" default="false"/>        
+        <Menu role="Teacher,Student" startuc="contentType" startnode="" event="init" label="manageContentTypes" default="false"/>
+        <Menu role="Guest,Teacher,Student" startuc="digitalSignage" startnode="" event="init" label="digitalSignage" default="false"/>
     </Menus>
 </Application>
