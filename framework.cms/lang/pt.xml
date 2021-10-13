@@ -3,6 +3,8 @@
     <Strings>
 		<!-- cms -->
 		<String key="cms" value="CMS"/>
+
+    <String key="id_content_before" value="Inserir depois de"/>
    </Strings>
    <HelpStrings>
    </HelpStrings>

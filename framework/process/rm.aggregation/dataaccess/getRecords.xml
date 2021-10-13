@@ -38,7 +38,7 @@
             </XCondition>
             <XCondition optional="classes">
               <![CDATA[
-                AND c.code IN ({param->classes})
+                AND c.code IN ({@param->classes})
               ]]>
             </XCondition>
 	    </XWhere>

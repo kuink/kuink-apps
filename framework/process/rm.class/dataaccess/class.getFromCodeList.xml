@@ -25,7 +25,7 @@
 	    </XFrom>
 	    <XWhere>
             <XCondition>
-              c.code IN ({param->codeList})
+              c.code IN ({@param->codeList})
             </XCondition>
 	    </XWhere>
 	    <XOrderBy>

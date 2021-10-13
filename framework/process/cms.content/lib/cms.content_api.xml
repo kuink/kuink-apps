@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FormatterLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="id_template_override" type="int" required="false"/>
+        <Param name="id_content_type" type="int" required="false"/>
+        <Param name="data" type="text" required="false"/>
+        <Param name="id_file" type="int" required="false"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_cms_content</Param>
+            <Param name="_base">true</Param>
+            <Param name="id_template_override">
+              <Var name="PARAMS" key="id_template_override"/>
+            </Param>
+            <Param name="id_content_type">
+              <Var name="PARAMS" key="id_content_type"/>
+            </Param>
+            <Param name="data">
+              <Var name="PARAMS" key="data"/>
+            </Param>
+            <Param name="id_file">
+              <Var name="PARAMS" key="id_file"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="delete" doc="Delete a record by id from table fw_cms_content">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_cms_content</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="update" doc="Updates a record in table fw_cms_content">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="id_template_override" type="int" required="false"/>
+        <Param name="data" type="text" required="false"/>
+        <Param name="id_file" type="int" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotEmpty">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_cms_content</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+
+    <Function name="search" doc="Search records from table fw_cms_content">
+      <Params>
+        <Param name="data" type="text"/>
+        <Param name="id_content_type" type="int"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_template_override" type="int" doc=""/>
+        <External name="data" type="text" doc=""/>
+        <External name="id_file" type="int" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,search">
+            <Param name="data" wildcard="full">
+              <Var name="PARAMS" key="data"/>
+            </Param>
+            <Param name="id_content_type">
+              <Var name="PARAMS" key="id_content_type"/>
+            </Param>            
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAll" doc="Get all records from table fw_cms_content">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_template_override" type="int" doc=""/>
+        <External name="data" type="text" doc=""/>
+        <External name="id_file" type="int" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_cms_content</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getById" doc="Get a record by id from table fw_cms_content">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_template_override" type="int" doc=""/>
+        <External name="data" type="text" doc=""/>
+        <External name="id_file" type="int" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_cms_content</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_cms_content">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+      </Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_cms_content</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="formatter" doc="Custom formatter. It reads the meta_formatter property of fields">
+    <Params>
+      <Param name="value" type="int" doc="The id content to get tyhe value"/>
+    </Params>
+    <Return type="string"/>
+    <Begin>
+      <Var name="formattedValue"><String.parse><![CDATA[$PARAMS->value ]]></String.parse>></Var>
+      <Var name="content">
+        <Call library="framework,cms.content,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="value"/></Param>
+        </Call>
+      </Var>
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="content" key="id_content_type"/></Param>
+        </Call>
+      </Var>
+      <Var name="dataSet">
+        <XmlToSet><Var name="content" key="data"/></XmlToSet>
+      </Var>
+      <Var name="fieldsSet">
+        <JsonToSet><Var name="contentType" key="fields"/></JsonToSet>
+      </Var>
+      <ForEach var="fieldsSet" item="field">
+        <If condition="$field->meta_formatter == 'true'">
+          <Then>
+            <Var name="value"><Var name="dataSet" key="$field->id"></Var></Var>
+            <!-- Check if this field has a formatter itself -->
+            <If condition="$field->formatter != ''">
+              <Then>
+                <Var name="value">
+                  <FormatterLib method="format">
+                    <Param><Var name="field" key="formatter"/></Param>
+                    <Param><Var name="field" key="formatterMethod"/></Param>
+                    <Param><Var name="value"/></Param>
+                    <Param><Set/></Param>                
+                  </FormatterLib>
+                </Var>
+              </Then>
+            </If>
+
+            <If condition="$formattedValue == ''">
+              <Then>
+                <Var name="formattedValue"><String.parse>$value</String.parse></Var>                
+              </Then>
+              <Else>
+                <Var name="formattedValue"><String.parse><![CDATA[$formattedValue | $value]]></String.parse></Var>                
+              </Else>
+            </If>
+          </Then>
+        </If>
+      </ForEach>
+
+      <Return><Var name="formattedValue"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="getContentByDataTag" doc="Get all content based on tag values">
+    <Params>
+      <Param name="content_type_code" type="string"/>
+      <Param name="filters" type="json" doc="Array: {logical, tag, comparison, value} example {'AND', 'context', '=', 'something'}"/>
+      <Param name="sort" type="json" doc="Array: {tag, direction} example {'context', 'ASC'}"/>
+    </Params>
+    <Return type="multiple"/>
+    <Begin>
+      <If condition="$PARAMS->content_type_code != ''">
+        <Then>
+          <Var name="idContentType">
+            <Call library="framework,cms.content.type,api" function="getIdByCode">
+              <Param name="code"><Var name="PARAMS" key="content_type_code"/></Param>
+            </Call>
+          </Var>
+        </Then>
+        <Else>
+          <Var name="idContentType"><String/></Var>
+        </Else>
+      </If>
+      <Var name="filters"><JsonToSet><Var name="PARAMS" key="filters"/></JsonToSet></Var>
+      <Var name="sort"><JsonToSet><Var name="PARAMS" key="sort"/></JsonToSet></Var>
+
+      <!-- standard variables -->
+      <Var name="now"><Now/></Var>
+
+      <Var name="condition"><String/></Var>
+      <ForEach var="filters" item="filter">
+        <If condition="$filter->value != ''">
+          <Then>
+            <Var name="value"><String.parse><String.parse>'$filter->value'</String.parse></String.parse></Var>
+          </Then>
+          <Else>
+            <Var name="value"><Int.parse><String.parse>$filter->intValue</String.parse></Int.parse></Var>
+          </Else>
+        </If>
+        <Var name="condition"><String.stripSlashes><Param><String.parse>$condition $filter['logical'] EXTRACTVALUE(data, '//$filter->tag') $filter['comparison'] $value</String.parse></Param></String.stripSlashes></Var>
+      </ForEach>
+      <Var name="orderBy"><List/></Var>
+      <ForEach var="sort" item="sortElement">
+        <Var name="orderBy">
+          <List.add>
+            <Param><Var name="orderBy"/></Param>
+            <Param><String.parse>EXTRACTVALUE(data, '//$sortElement->tag') $sortElement['direction']</String.parse></Param>
+          </List.add>
+        </Var>
+      </ForEach>
+
+      <Var name="records">
+        <DataAccess method="this,this,getByTag">
+          <Param name="id_content_type"><Var name="idContentType"/></Param>
+          <Param name="condition"><Var name="condition"/></Param>
+          <Param name="sort"><Var name="orderBy"/></Param>
+        </DataAccess>
+      </Var>
+
+      <Var name="transformedRecords"><Set/></Var>
+      <ForEach var="records" item="content">
+        <Var name="data">
+          <XmlToSet><Var name="content" key="data"/></XmlToSet>
+        </Var>
+        <!-- Apply the formatters in order to show formatted values in templates-->
+        <Var name="contentType">
+          <Call library="framework,cms.content.type,api" function="getById">
+            <Param name="id"><Var name="content" key="id_content_type"/></Param>
+          </Call>
+        </Var>
+        <Var name="fields"><JsonToSet><Var name="contentType" key="fields"/></JsonToSet></Var>
+        <ForEach var="fields" item="field">
+          <If condition="$field->formatter != ''">
+            <Then>
+              <Var name="newId"><String.parse><![CDATA[$field['id']_formatted]]></String.parse></Var>
+              <Var name="data" key="$newId">
+                <FormatterLib method="format">
+                  <Param><Var name="field" key="formatter"/></Param>
+                  <Param><Var name="field" key="formatterMethod"/></Param>
+                  <Param><Var name="data" key="$field->id"/></Param>
+                  <Param><Set/></Param>                
+                </FormatterLib>
+              </Var>
+            </Then>
+          </If>
+        </ForEach>
+        <Var name="content" key="dataSet"><Var name="data"/></Var>
+
+        <Var name="transformedRecords" key=""><Var name="content"/></Var>
+      </ForEach>
+
+      <Return><Var name="transformedRecords"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="addToChannel" doc="Add this content to a new channel">
+    <Params>
+      <Param name="id_content" type="int" doc=""/>
+      <Param name="id_channel" type="int" doc=""/>
+      <Param name="start_date" type="int" doc=""/>
+      <Param name="end_date" type="int" doc=""/>
+      <Param name="is_published" type="int" doc=""/>
+      <Param name="change_position" type="int" doc=""/>
+      <Param name="id_content_before" type="int" doc="The id of the content previous to this one. Insert after."/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="optionalParams"><Set/></Var>
+      <If condition="$PARAMS->change_position == 1">
+        <Then>
+          <!-- Get the previous content -->
+          <Var name="contentPrevious">
+            <If condition="$PARAMS->id_content_before != ''">
+              <Then>
+                <DataAccess method="load">
+                  <Param name="_entity">fw_cms_channel_content</Param>
+                  <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+                  <Param name="id_content"><Var name="PARAMS" key="id_content_before"/></Param>
+                </DataAccess>
+              </Then>
+              <Else><Set/></Else>
+            </If>
+          </Var>
+                
+          <!-- Get the next content -->
+          <Var name="contentNext">
+            <DataAccess method="load">
+              <Param name="_entity">fw_cms_channel_content</Param>
+              <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+              <Param name="rank" op="gt"><Var name="contentPrevious" key="rank"/></Param>
+              <Param name="_sort">rank DESC</Param>
+            </DataAccess>
+          </Var>
+
+          <!-- Set previous and next -->
+          <Var name="rankPrevious"><Var name="contentPrevious" key="rank"/></Var>          
+          <Var name="rankNext"><Var name="contentNext" key="rank"/></Var>          
+
+          <Var name="optionalParams" key="rank">
+            <Rank>
+              <Param><Var name="rankPrevious"/></Param>
+              <Param><Var name="rankNext"/></Param>
+            </Rank>
+          </Var>
+        </Then>
+      </If>
+      
+      
+
+      <!-- Check if the content is already published in that channel -->
+      <Var name="check">
+        <DataAccess method="load">
+          <Param name="_entity">fw_cms_channel_content</Param>
+          <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+          <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>
+        </DataAccess>
+      </Var>
+      <If condition="$check->__length != 0">
+        <Then>
+          <!-- update -->
+          <DataAccess method="update" params="optionalParams">
+            <Param name="_entity">fw_cms_channel_content</Param>
+            <Param name="id"><Var name="check" key="id"/></Param>
+            <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
+            <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
+            <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
+            <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
+            <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
+            <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
+            <Param name="_base">true</Param>
+          </DataAccess>
+          <Var name="id"><Var name="check" key="id"/></Var>
+        </Then>
+        <Else>
+          <!-- insert -->
+          <Var name="id">
+            <DataAccess method="insert" params="optionalParams">
+              <Param name="_entity">fw_cms_channel_content</Param>
+              <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
+              <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
+              <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
+              <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
+              <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
+              <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
+              <Param name="_base">true</Param>
+            </DataAccess>
+          </Var>
+        </Else>
+      </If>
+        <!-- proceed with the publishment -->
+      <Return><Var name="id"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="removeFromChannel" doc="Removes this content from a channel">
+    <Params>
+      <Param name="id_content" type="int" doc=""/>
+      <Param name="id_channel" type="int" doc=""/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <DataAccess method="delete">
+        <Param name="_entity">fw_cms_channel_content</Param>
+        <Param name="id_content" pk="true"><Var name="PARAMS" key="id_content"/></Param>
+        <Param name="id_channel" pk="true"><Var name="PARAMS" key="id_channel"/></Param>
+      </DataAccess>
+      <Return></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="getChannels" doc="Get channels where this content is published">
+    <Params>
+      <Param name="id_content" type="int" doc=""/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="channels">
+        <DataAccess method="getAll">
+          <Param name="_entity">fw_cms_channel_content</Param>
+          <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>
+        </DataAccess>
+      </Var>
+      <Return><Var name="channels"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="getContentHtml" doc="doc">
+    <Params>
+      <Param name="id" type="int" doc=""/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="content">
+        <Call library="framework,cms.content,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>          
+        </Call>
+      </Var>
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="content" key="id_content_type"/></Param>
+        </Call>
+      </Var>
+      <Var name="template">
+        <Call library="framework,cms.template,api" function="getById">
+          <Param name="id">
+            <IsNull>
+              <Param><Var name="content" key="id_template_override"/></Param>
+              <Param><Var name="contentType" key="id_template"/></Param>
+            </IsNull>
+          </Param>
+        </Call>
+      </Var>
+
+      <Var name="item">
+        <XmlToSet><Var name="content" key="data"/></XmlToSet>
+      </Var>
+      <If condition="($content->id_file != '') &amp;&amp; ($content->id_file != 0)">
+        <Then>
+          <Var name="item" key="uri">
+            <Call library="framework,file,api" function="getStreamUrl">
+              <Param name="id"><Var name="content" key="id_file"/></Param>
+            </Call>
+          </Var>
+        </Then>
+      </If>
+
+      <!-- Apply the formatters in order to show formatted values in templates-->
+      <Var name="fields"><JsonToSet><Var name="contentType" key="fields"/></JsonToSet></Var>
+      <ForEach var="fields" item="field">
+        <If condition="$field->formatter != ''">
+          <Then>
+            <Var name="newId"><String.parse><![CDATA[$field['id']_formatted]]></String.parse></Var>
+            <Var name="item" key="$newId">
+              <FormatterLib method="format">
+                <Param><Var name="field" key="formatter"/></Param>
+                <Param><Var name="field" key="formatterMethod"/></Param>
+                <Param><Var name="item" key="$field->id"/></Param>
+                <Param><Set/></Param>                
+              </FormatterLib>
+            </Var>
+          </Then>
+        </If>
+      </ForEach>
+
+      <!-- Check if this is an API execution -->
+      <If condition="$item->api != '' &amp;&amp; $item->params != ''">
+        <Then>
+          <Trace><String.parse><![CDATA[Executing: $item->api <br/> $item->params]]></String.parse></Trace>
+          <!-- Override item -->
+          <Var name="apiParams">
+            <XmlToSet><Var name="item" key="params"/></XmlToSet>
+          </Var>
+          <Var name="result">
+            <Call library="$item->api" params="apiParams"/>
+          </Var>
+          <!-- Match the result with the content configuration -->
+          <Var name="newItems"><Set/></Var>
+          <If condition="$item->relation == '__raw'">
+            <Then>
+              <!-- Inject the resulting array into the item->list -->
+              <Var name="newItems"><Var name="result"/></Var>
+            </Then>
+            <Else>
+              <!-- Inject the resulting array into the item->list -->
+              <ForEach var="result" item="record">
+                <Var name="newItems" key=""><String.parse><String.parse>$item->relation</String.parse></String.parse></Var>
+              </ForEach>
+            </Else>
+          </If>
+          <Var name="item" key="list"><Var name="newItems"/></Var>
+        </Then>
+      </If>
+
+      <Var name="appFileStreamUrl" dump="true"><String.parse><![CDATA[$SYSTEM['wwwRoot']/$SYSTEM['streamUrl']?idcontext=$CONTEXT['idContext']&type=app_file&guid=]]></String.parse></Var>
+      <Var name="item" key="appFileStreamUrl"><Var name="appFileStreamUrl"/></Var>
+
+      <Var name="html">
+        <TemplateLib method="ExecuteTemplate">
+          <Param>framework</Param>
+          <Param>cms.template</Param>
+          <Param>generic</Param>
+          <Param><Var name="item"/></Param>
+          <Param><Var name="template" key="source"/></Param>
+        </TemplateLib>
+      </Var>
+      <Return><Var name="html"/></Return>
+    </Begin>
+    </Function>
+
+  </Library>
+</Node>

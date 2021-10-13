@@ -29,7 +29,7 @@
                     <XCondition>r.id_company = {param->id_company}</XCondition>
                     <XCondition optional="name">AND name LIKE '{param->name}'</XCondition>
                     <XCondition optional="code">AND code LIKE '{param->code}'</XCondition>
-                    <XCondition optional="capabilities">AND c.code IN ({param->capabilities})</XCondition>
+                    <XCondition optional="capabilities">AND c.code IN ({@param->capabilities})</XCondition>
                     <!--XCondition optional="capabilities">AND c.code IN ('framework/company::manage','framework/all::admin')</XCondition-->
                 </XWhere>
                 <XGroupBy>

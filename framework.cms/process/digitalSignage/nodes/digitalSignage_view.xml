@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+    <Param name="device" doc="The device to play contents"/>
+  </Params>
+  <Screens>
+    <Screen name="playScreen" doc="">
+      <Custom name="contentCtrl" control="framework.cms,digitalSignage,view"/>
+		</Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init">
+      <If condition="$PARAMS->device != ''">
+        <Then>
+          <Var name="idDevice">
+            <Call library="framework,cms.device,api" function="getIdByCode">
+              <Param name="code"><Var name="PARAMS" key="device"/></Param>
+            </Call>
+          </Var>
+          <Exception name="framework/digitalSignage::invalidDevice" condition="$idDevice == ''">
+            <Param><Var name="PARAMS" key="device"/></Param>
+            <Param><Var name="SYSTEM" key="ip"/></Param>
+          </Exception>
+          <Var name="device" process="true"><Var name="PARAMS" key="device"/></Var>
+        </Then>
+      </If>
+      <!-- Get current channel for this device -->
+      <If condition="$PARAMS->channel != ''">
+        <Then>
+          <Var name="deviceChannel"><Var name="PARAMS" key="channel"/></Var>
+        </Then>
+        <Else>
+          <Var name="deviceChannel">
+            <Call library="framework,cms.digitalSignage,api" function="getDeviceChannel">
+              <Param name="device"><Var name="device" process="true"/></Param>
+            </Call>
+          </Var>
+        </Else>
+      </If>
+      <Exception name="framework/digitalSignage::cannotAccess" condition="($PARAMS->device == '') &amp;&amp; ($PARAMS->channel == '')">
+        <Param><Var name="PARAMS" key="device"/></Param>
+        <Param><Var name="PARAMS" key="channel"/></Param>
+      </Exception>
+      
+      <If condition="@currentChannel != $deviceChannel">
+        <Then>
+          <Var name="order" process="true"><Int>0</Int></Var>
+          <Var name="total" process="true"><Int>-1</Int></Var>
+          <Var name="currentChannel" process="true"><Var name="deviceChannel"/></Var>
+        </Then>
+      </If>
+
+    	<Action name="play"/>
+    </Action>
+      
+    <Action name="play" screen="playScreen">
+      <Control method="bind" object="contentCtrl">
+        <Param name="channel"><Var name="currentChannel" process="true"/></Param>          
+        <Param name="order"><Var name="order" process="true"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="next">
+      <Var name="order" dump="true"><Var name="order" process="true"/></Var>
+      <If condition="@order >= @total - 1">
+        <Then>
+          <Var name="order"><Int>0</Int></Var>          
+        </Then>
+        <Else>
+          <Var name="order"><Int.parse>$order+1</Int.parse></Var>          
+        </Else>
+      </If>
+      <Var name="order" process="true"><Var name="order"/></Var>
+
+      <Action name="play"/>
+    </Action>
+  </Actions>
+  <Library/>
+</Node>

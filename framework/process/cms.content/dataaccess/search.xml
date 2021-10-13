@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    Search all fw_cms_content
+  </Doc>
+	<Params>
+		<Param name="data" />
+		<Param name="id_content_type" />
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>*</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+            fw_cms_content t
+          </XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>1 = 1</XCondition>
+					<XCondition optional="data">AND t.data like '{param->data}'</XCondition>
+					<XCondition optional="id_content_type">AND t.id_content_type like '{param->id_content_type}'</XCondition>
+				</XWhere>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>

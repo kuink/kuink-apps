@@ -227,5 +227,21 @@
     </Begin>
     </Function>
 
+    <Function scope="public" name="getStreamUrl" doc="Get the url to stream the file">
+    <Params>
+      <Param name="id" type="int" doc=""/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="file">
+        <Call function="get">
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </Call>
+      </Var>
+      <Var name="url" dump="true"><String.parse>$SYSTEM['wwwRoot']/$SYSTEM['streamFileUrl']$file['guid']&amp;idcontext=$CONTEXT['idContext']</String.parse></Var>
+      <Return><Var name="url"/></Return>
+    </Begin>
+    </Function>
+
   </Library>
 </Node>

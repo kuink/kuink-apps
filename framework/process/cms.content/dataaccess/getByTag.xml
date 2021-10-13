@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    Search all fw_cms_content by tag element
+  </Doc>
+	<Params>
+		<Param name="condition" />
+		<Param name="sort" />
+		<Param name="id_content_type" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>*</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+            fw_cms_content t
+          </XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition optional="condition">{@param->condition}</XCondition>
+					<XCondition optional="id_content_type">AND t.id_content_type = {param->id_content_type}</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder optional="sort">{@param->sort}</XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
