@@ -7,6 +7,7 @@
   <Libraries>
     <Use name="DateTimeLib" type="lib"/>
     <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
   </Libraries>
   <Configuration/>
   <Screens>
@@ -269,7 +270,30 @@
               </Var>
             </Then>
             <Else>
-              <Call library="framework,cms.content,api" function="update">
+              <!-- Get the content record and unlink the old file if there's one -->
+              <Var name="content" dump="true">
+                <Call library="framework,cms.content,api" function="getById">
+                  <Param name="id"><Var name="selectedId" process="true"/></Param>
+                </Call>                
+              </Var>
+              <Trace><String.parse>Setting: $idFile</String.parse></Trace>
+              <If condition="($idFile != '') &amp;&amp; ($idFile != 0) &amp;&amp; ($content->id_file != '') &amp;&amp; ($content->id_file != 0) ">
+                <Then>
+                  <Trace><String.parse>Unlinking: $content->id_file | Setting: $idFile</String.parse></Trace>
+                  <FileLib method="unlink">
+                    <Param><Var name="content" key="id_file" /></Param>
+                  </FileLib>                  
+                </Then>
+              </If>
+
+              <!-- Update the content -->
+              <Var name="optionalParams"><Set/></Var>
+              <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+                <Then>
+                  <Var name="optionalParams" key="id_file"><Var name="idFile"/></Var>
+                </Then>
+              </If>
+              <Call library="framework,cms.content,api" function="update" params="optionalParams">
                 <Param name="id"><Var name="selectedId" process="true"/></Param>
                 <Param name="id_template_override">
                   <If condition="$POSTDATA->id_template_override != ''">
@@ -278,11 +302,6 @@
                   </If>
                 </Param>
                 <Param name="data"><Var name="dataXml"/></Param>
-                <Param name="id_file">
-                  <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
-                    <Then><Var name="idFile"/></Then>
-                  </If>
-                </Param>
             </Call>
             </Else>
           </If>
