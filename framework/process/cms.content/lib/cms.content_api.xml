@@ -255,6 +255,35 @@
     </Begin>
     </Function>
 
+    <Function scope="private" name="getComparisonOperator" doc="doc">
+    <Params>
+      <Param name="comparison" type="string" doc=""/>
+    </Params>
+    <Return type="string"/>
+    <Begin>
+      <Var name="result"><Var name="PARAMS" key="comparison"/></Var>
+      <If condition="$PARAMS->comparison == 'eq'">
+        <Then><Var name="result"><String><![CDATA[=]]></String></Var></Then>
+      </If>
+      <If condition="$PARAMS->comparison == 'neq'">
+        <Then><Var name="result"><String><![CDATA[!=]]></String></Var></Then>
+      </If>      
+      <If condition="$PARAMS->comparison == 'lt'">
+        <Then><Var name="result"><String><![CDATA[<]]></String></Var></Then>
+      </If>      
+      <If condition="$PARAMS->comparison == 'lte'">
+        <Then><Var name="result"><String><![CDATA[<=]]></String></Var></Then>
+      </If>
+      <If condition="$PARAMS->comparison == 'gt'">
+        <Then><Var name="result"><String><![CDATA[>]]></String></Var></Then>
+      </If>
+      <If condition="$PARAMS->comparison == 'gte'">
+        <Then><Var name="result"><String><![CDATA[>=]]></String></Var></Then>
+      </If>
+      <Return><Var name="result"/></Return>
+    </Begin>
+    </Function>
+
     <Function scope="public" name="getContentByDataTag" doc="Get all content based on tag values">
     <Params>
       <Param name="content_type_code" type="string"/>
@@ -265,7 +294,7 @@
     <Begin>
       <If condition="$PARAMS->content_type_code != ''">
         <Then>
-          <Var name="idContentType">
+          <Var name="idContentType" dump="true">
             <Call library="framework,cms.content.type,api" function="getIdByCode">
               <Param name="code"><Var name="PARAMS" key="content_type_code"/></Param>
             </Call>
@@ -277,7 +306,9 @@
       </If>
       <Var name="filters"><JsonToSet><Var name="PARAMS" key="filters"/></JsonToSet></Var>
       <Var name="sort"><JsonToSet><Var name="PARAMS" key="sort"/></JsonToSet></Var>
-
+      <Var name="PARAMS" key="dump"/>
+      <Var name="filters" dump="true"/>
+      <Var name="sort" dump="true"/>
       <!-- standard variables -->
       <Var name="now"><Now/></Var>
 
@@ -291,7 +322,12 @@
             <Var name="value"><Int.parse><String.parse>$filter->intValue</String.parse></Int.parse></Var>
           </Else>
         </If>
-        <Var name="condition"><String.stripSlashes><Param><String.parse>$condition $filter['logical'] EXTRACTVALUE(data, '//$filter->tag') $filter['comparison'] $value</String.parse></Param></String.stripSlashes></Var>
+        <Var name="comparisonOp">
+          <Call function="getComparisonOperator">
+            <Param name="comparison"><Var name="filter" key="comparison"/></Param>
+          </Call>
+        </Var>
+        <Var name="condition"><String.stripSlashes><Param><String.parse>$condition $filter['logical'] EXTRACTVALUE(data, '//$filter->tag') $comparisonOp $value</String.parse></Param></String.stripSlashes></Var>
       </ForEach>
       <Var name="orderBy"><List/></Var>
       <ForEach var="sort" item="sortElement">
