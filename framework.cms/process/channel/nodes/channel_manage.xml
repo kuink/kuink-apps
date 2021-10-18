@@ -132,6 +132,14 @@
           </Call>
         </Param>
       </Control>
+      <Control method="bind" object="grdContent">
+        <Param>
+          <Call library="framework,cms.channel,api" function="getContent">
+            <Param name="id_channel"><ActionValue/></Param>
+            <Param name="is_published"><Int>1</Int></Param>
+          </Call>
+        </Param>
+      </Control>      
     </Action>
     <Action name="save">
       <If condition="@selectedId == ''">

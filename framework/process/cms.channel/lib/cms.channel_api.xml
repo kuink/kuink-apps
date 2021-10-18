@@ -24,7 +24,6 @@
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
-        <Var name="PARAMS" dump="true"/>
         <Return>
           <DataAccess method="insert">
             <Param name="_entity">fw_cms_channel</Param>
@@ -230,15 +229,13 @@
     </Begin>
     </Function>
 
-    <Function scope="public" name="getHtml" doc="Get the ">
+    <Function scope="public" name="getHtml" doc="Get the html">
     <Params>
       <Param name="id_channel" type="int" doc=""/>
       <Param name="data" type="array" doc=""/>
     </Params>
     <Return type=""/>
     <Begin>
-      <Var name="PARAMS" dump="true"/>
-
       <Var name="channel">
         <Call library="framework,cms.channel,api" function="getById">
           <Param name="id"><Var name="PARAMS" key="id_channel"/></Param>
@@ -267,28 +264,31 @@
           <Param><Var name="template" key="source"/></Param>						
         </String.stripslashes>        
       </Var>
-      <Var name="templateSource" dump="true">
+      <Var name="templateSource">
         <String.stripslashes>
           <Param><Var name="templateSource"/></Param>						
         </String.stripslashes>        
       </Var>
 
-      <Var name="data" dump="true"/>
-      <!-- <Var name="content" dump="true"/> -->
-      <Var name="html">
-        <TemplateLib method="ExecuteTemplate">
-          <Param>framework</Param>
-          <Param>cms.template</Param>
-          <Param>generic</Param>
-          <Param><Var name="data"/></Param>
-          <Param><Var name="templateSource"/></Param>
-        </TemplateLib>
-      </Var>   
-      <Var name="html">
-        <String.stripslashes>
-          <Param><Var name="html"/></Param>						
-        </String.stripslashes>        
-      </Var>
+      <Var name="html"><String/></Var>
+      <If condition="$content->_html != ''">
+        <Then>
+          <Var name="html">
+            <TemplateLib method="ExecuteTemplate">
+              <Param>framework</Param>
+              <Param>cms.template</Param>
+              <Param>generic</Param>
+              <Param><Var name="data"/></Param>
+              <Param><Var name="templateSource"/></Param>
+            </TemplateLib>
+          </Var>   
+          <Var name="html">
+            <String.stripslashes>
+              <Param><Var name="html"/></Param>						
+            </String.stripslashes>        
+          </Var>
+        </Then>
+      </If>
 
       <Return><Var name="html"/></Return>
       <!-- <Return> <Var name="content" key="_html"/></Return> -->

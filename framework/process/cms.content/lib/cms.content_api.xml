@@ -51,6 +51,21 @@
       </Params>
       <Return type="int" doc=""/>
       <Begin>
+        <!-- Get the content record and unlink the old file if there's one -->
+        <Var name="content">
+          <Call library="framework,cms.content,api" function="getById">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </Call>                
+        </Var>
+        <If condition="($content->id_file != '') &amp;&amp; ($content->id_file != 0)">
+          <Then>
+            <Trace><String.parse>Unlinking: $content->id_file before deletion</String.parse></Trace>
+            <FileLib method="unlink">
+              <Param><Var name="content" key="id_file" /></Param>
+            </FileLib>                  
+          </Then>
+        </If>
+
         <Return>
           <DataAccess method="delete">
             <Param name="_entity">fw_cms_content</Param>
@@ -294,7 +309,7 @@
     <Begin>
       <If condition="$PARAMS->content_type_code != ''">
         <Then>
-          <Var name="idContentType" dump="true">
+          <Var name="idContentType">
             <Call library="framework,cms.content.type,api" function="getIdByCode">
               <Param name="code"><Var name="PARAMS" key="content_type_code"/></Param>
             </Call>
@@ -306,9 +321,6 @@
       </If>
       <Var name="filters"><JsonToSet><Var name="PARAMS" key="filters"/></JsonToSet></Var>
       <Var name="sort"><JsonToSet><Var name="PARAMS" key="sort"/></JsonToSet></Var>
-      <Var name="PARAMS" key="dump"/>
-      <Var name="filters" dump="true"/>
-      <Var name="sort" dump="true"/>
       <!-- standard variables -->
       <Var name="now"><Now/></Var>
 
@@ -520,6 +532,8 @@
     </Params>
     <Return type=""/>
     <Begin>
+      <Var name="executeTemplate"><Int>1</Int></Var>
+      <Var name="html"><String/></Var>
       <Var name="content">
         <Call library="framework,cms.content,api" function="getById">
           <Param name="id"><Var name="PARAMS" key="id"/></Param>          
@@ -575,12 +589,12 @@
       <!-- Check if this is an API execution -->
       <If condition="$item->api != '' &amp;&amp; $item->params != ''">
         <Then>
-          <Trace><String.parse><![CDATA[Executing: $item->api <br/> $item->params]]></String.parse></Trace>
+          <!-- <Trace><String.parse><![CDATA[Executing: $item->api <br/> $item->params]]></String.parse></Trace> -->
           <!-- Override item -->
           <Var name="apiParams">
             <XmlToSet><Var name="item" key="params"/></XmlToSet>
           </Var>
-          <Var name="result">
+          <Var name="result" dump="true">
             <Call library="$item->api" params="apiParams"/>
           </Var>
           <!-- Match the result with the content configuration -->
@@ -588,7 +602,24 @@
           <If condition="$item->relation == '__raw'">
             <Then>
               <!-- Inject the resulting array into the item->list -->
-              <Var name="newItems"><Var name="result"/></Var>
+              <ForEach var="result" item="record">
+                <If condition="($record->id_file != '') &amp;&amp; ($record->id_file != 0)">
+                  <Then>
+                    <Var name="record" key="uri">
+                      <Call library="framework,file,api" function="getStreamUrl">
+                        <Param name="id"><Var name="record" key="id_file"/></Param>
+                      </Call>
+                    </Var>
+                  </Then>
+                  <Else>
+                    <Var name="dataSet"><Var name="record" key="dataSet"/></Var>
+                    <Var name="record" key="uri"><Var name="dataSet" key="uri"/></Var>
+                  </Else>
+                </If>
+                <Var name="newItems" key=""><Var name="record"/></Var>
+                <Var name="record" dump="true"/>
+              </ForEach>
+
             </Then>
             <Else>
               <!-- Inject the resulting array into the item->list -->
@@ -598,21 +629,31 @@
             </Else>
           </If>
           <Var name="item" key="list"><Var name="newItems"/></Var>
+          <If condition="$newItems->__length == 0">
+            <Then>
+              <Var name="executeTemplate"><Int>0</Int></Var>
+            </Then>
+          </If>
         </Then>
       </If>
 
-      <Var name="appFileStreamUrl" dump="true"><String.parse><![CDATA[$SYSTEM['wwwRoot']/$SYSTEM['streamUrl']?idcontext=$CONTEXT['idContext']&type=app_file&guid=]]></String.parse></Var>
+      <Var name="appFileStreamUrl"><String.parse><![CDATA[$SYSTEM['wwwRoot']/$SYSTEM['streamUrl']?idcontext=$CONTEXT['idContext']&type=app_file&guid=]]></String.parse></Var>
       <Var name="item" key="appFileStreamUrl"><Var name="appFileStreamUrl"/></Var>
 
-      <Var name="html">
-        <TemplateLib method="ExecuteTemplate">
-          <Param>framework</Param>
-          <Param>cms.template</Param>
-          <Param>generic</Param>
-          <Param><Var name="item"/></Param>
-          <Param><Var name="template" key="source"/></Param>
-        </TemplateLib>
-      </Var>
+      <If condition="$executeTemplate == 1">
+        <Then>
+          <Var name="html">
+            <TemplateLib method="ExecuteTemplate">
+              <Param>framework</Param>
+              <Param>cms.template</Param>
+              <Param>generic</Param>
+              <Param><Var name="item"/></Param>
+              <Param><Var name="template" key="source"/></Param>
+            </TemplateLib>
+          </Var>
+         </Then>
+      </If>
+
       <Return><Var name="html"/></Return>
     </Begin>
     </Function>
