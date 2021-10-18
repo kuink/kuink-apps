@@ -343,13 +343,19 @@
       </ForEach>
       <Var name="orderBy"><List/></Var>
       <ForEach var="sort" item="sortElement">
+        <Var name="sortExpr"><String/></Var>
+        <If condition="$sortElement['tag'] == '__rand'">
+          <Then><Var name="sortExpr">RAND()</Var></Then>
+          <Else><Var name="sortExpr"><String.parse>EXTRACTVALUE(data, '//$sortElement->tag') $sortElement['direction']</String.parse></Var></Else>
+        </If>
         <Var name="orderBy">
           <List.add>
             <Param><Var name="orderBy"/></Param>
-            <Param><String.parse>EXTRACTVALUE(data, '//$sortElement->tag') $sortElement['direction']</String.parse></Param>
+            <Param><Var name="sortExpr"/></Param>
           </List.add>
         </Var>
       </ForEach>
+      <Var name="orderBy" dump="true"/>
 
       <Var name="records">
         <DataAccess method="this,this,getByTag">
