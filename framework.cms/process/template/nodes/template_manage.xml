@@ -70,8 +70,9 @@
     <Action name="init">
       <Action name="search"/>
     </Action>
+
     <Action name="search" screen="scrSearch">
-      <If condition="$defaultData-&gt;__length &gt; 0">
+      <If condition="$defaultData->__length != 0">
         <Then>
           <Control method="setDefaultData" object="frmSearch">
             <Param>
@@ -83,25 +84,28 @@
       <Var name="currentData">
         <Control method="getCurrentData" object="frmSearch"/>
       </Var>
+      <Var name="templates">
+        <Call library="framework,cms.template,api" function="search">
+          <Param name="code">
+            <Var name="currentData" key="code"/>
+          </Param>
+          <Param name="name">
+            <Var name="currentData" key="name"/>
+          </Param>
+          <Param name="pagesize">
+            <Control method="getPageSize" object="grdSearchResult"/>
+          </Param>
+          <Param name="pagenum">
+            <Control method="getCurrentPage" object="grdSearchResult"/>
+          </Param>
+        </Call>
+      </Var>
+
       <Control method="bind" object="grdSearchResult">
-        <Param>
-          <Call library="framework,cms.template,api" function="search">
-            <Param name="code">
-              <Var name="currentData" key="code"/>
-            </Param>
-            <Param name="name">
-              <Var name="currentData" key="name"/>
-            </Param>
-            <Param name="pagesize">
-              <Control method="getPageSize" object="grdSearchResult"/>
-            </Param>
-            <Param name="pagenum">
-              <Control method="getCurrentPage" object="grdSearchResult"/>
-            </Param>
-          </Call>
-        </Param>
+        <Param><Var name="templates"/></Param>
       </Control>
     </Action>
+
     <Action name="view" screen="scrView">
       <Var name="selectedId" process="true">
         <ActionValue/>
