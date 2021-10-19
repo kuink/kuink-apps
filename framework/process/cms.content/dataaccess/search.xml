@@ -19,7 +19,7 @@
           </XTable>
 				</XFrom>
 				<XWhere>
-					<XCondition>1 = 1</XCondition>
+					<XCondition>t.id_parent IS NULL</XCondition>
 					<XCondition optional="data">AND t.data like '{param->data}'</XCondition>
 					<XCondition optional="id_content_type">AND t.id_content_type like '{param->id_content_type}'</XCondition>
 				</XWhere>

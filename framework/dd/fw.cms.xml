@@ -35,6 +35,7 @@
 				<Attribute name="id_template" domain="foreign" refentity="fw_cms_template" refattr="id" required="true" doc="Defines the template used for this type of content"/>
 				<Attribute name="fields" domain="json" doc="The template source"/>
 				<Attribute name="allowed_extensions" domain="string" doc="The allowed extensions"/>
+				<Attribute name="id_child_type" domain="foreign" refentity="fw_cms_content_type" refattr="id" required="false" doc="The content type of childs"/>
 				<Template name="fw.identity"/>
 				<Template name="fw.base"/>
 			</Attributes>
@@ -43,6 +44,7 @@
     <Entity name="fw_cms_content" doc="Defines a content item in the cms system">
 			<Attributes>
 				<Attribute name="id" domain="id" />
+				<Attribute name="id_parent" domain="foreign" refentity="fw_cms_content" refattr="id" required="false" doc="The conten data if stored in a file like an image or video"/>				
 				<Attribute name="id_content_type" domain="foreign" refentity="fw_cms_content_type" refattr="id" required="true" doc="Defines the sontent type of this content item"/>				
 				<Attribute name="id_template_override" domain="foreign" refentity="fw_cms_template" refattr="id" required="false" doc="Defines a specific template used to override the content type template"/>
 				<Attribute name="data" domain="xml" required="false" doc="The content data"/>

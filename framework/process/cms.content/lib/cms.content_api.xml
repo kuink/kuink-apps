@@ -21,6 +21,7 @@
         <Param name="id_content_type" type="int" required="false"/>
         <Param name="data" type="text" required="false"/>
         <Param name="id_file" type="int" required="false"/>
+        <Param name="id_parent" type="int" required="false"/>
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
@@ -33,6 +34,9 @@
             </Param>
             <Param name="id_content_type">
               <Var name="PARAMS" key="id_content_type"/>
+            </Param>
+            <Param name="id_parent">
+              <Var name="PARAMS" key="id_parent"/>
             </Param>
             <Param name="data">
               <Var name="PARAMS" key="data"/>
@@ -532,6 +536,136 @@
     </Begin>
     </Function>
 
+    <Function scope="public" name="getAllChild" doc="Get all the content childs">
+      <Params>
+        <Param name="id_content" type="int" doc=""/>
+        <Param name="filters" type="json" doc="To filter the data"/>
+        <Param name="sort" type="json" doc="To sort the records"/>
+        <Param name="items_num" type="int" doc="Return only this number of items"/>
+        <Param name="random" type="int" doc="Random items order?"/>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+        <Var name="filters"><JsonToSet><Var name="PARAMS" key="filters"/></JsonToSet></Var>
+        <Var name="sort"><JsonToSet><Var name="PARAMS" key="sort"/></JsonToSet></Var>
+        <Var name="PARAMS" dump="true"/>
+        <!-- standard variables -->
+        <Var name="now"><Now/></Var>
+  
+        <Var name="condition"><String/></Var>
+        <ForEach var="filters" item="filter">
+          <If condition="$filter->value != ''">
+            <Then>
+              <Var name="value"><String.parse><String.parse>'$filter->value'</String.parse></String.parse></Var>
+            </Then>
+            <Else>
+              <Var name="value"><Int.parse><String.parse>$filter->intValue</String.parse></Int.parse></Var>
+            </Else>
+          </If>
+          <Var name="value" dump="true"/>
+          <Var name="comparisonOp">
+            <Call function="getComparisonOperator">
+              <Param name="comparison"><Var name="filter" key="comparison"/></Param>
+            </Call>
+          </Var>
+          <Var name="condition"><String.stripSlashes><Param><String.parse>$condition $filter['logical'] EXTRACTVALUE(data, '//$filter->tag') $comparisonOp $value</String.parse></Param></String.stripSlashes></Var>
+        </ForEach>
+        <Var name="orderBy"><List/></Var>
+        <ForEach var="sort" item="sortElement">
+          <Var name="sortExpr"><String/></Var>
+          <If condition="$sortElement['tag'] == '__rand'">
+            <Then><Var name="sortExpr">RAND()</Var></Then>
+            <Else><Var name="sortExpr"><String.parse>EXTRACTVALUE(data, '//$sortElement->tag') $sortElement['direction']</String.parse></Var></Else>
+          </If>
+          <Var name="orderBy">
+            <List.add>
+              <Param><Var name="orderBy"/></Param>
+              <Param><Var name="sortExpr"/></Param>
+            </List.add>
+          </Var>
+        </ForEach>
+
+        <If condition="$random == 1">
+          <Then>
+            <Var name="orderBy"><String.parse>$orderBy RAND()</String.parse></Var>
+          </Then>
+        </If>
+        <If condition="$items_num != '' &amp;&amp; $items_num != 'null'">
+          <Then><Var name="orderBy"><String.parse>$orderBy LIMIT $items_num</String.parse></Var></Then>
+        </If>
+        <Var name="orderBy" dump="true"/>
+        
+        <Var name="records">
+          <DataAccess method="this,this,getChilds">
+            <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
+            <Param name="filter"><Var name="condition"/></Param>
+            <Param name="sort"><Var name="orderBy"/></Param>
+          </DataAccess>
+        </Var>
+        <Var name="transformedRecords"><Set/></Var>
+        <ForEach var="records" item="content">
+          <Var name="data">
+            <XmlToSet><Var name="content" key="data"/></XmlToSet>
+          </Var>
+          <!-- Apply the formatters in order to show formatted values in templates-->
+          <Var name="contentType">
+            <Call library="framework,cms.content.type,api" function="getById">
+              <Param name="id"><Var name="content" key="id_content_type"/></Param>
+            </Call>
+          </Var>
+          <Var name="fields"><JsonToSet><Var name="contentType" key="fields"/></JsonToSet></Var>
+          <ForEach var="fields" item="field">
+            <If condition="$field->formatter != ''">
+              <Then>
+                <Var name="newId"><String.parse><![CDATA[$field['id']_formatted]]></String.parse></Var>
+                <Var name="data" key="$newId">
+                  <FormatterLib method="format">
+                    <Param><Var name="field" key="formatter"/></Param>
+                    <Param><Var name="field" key="formatterMethod"/></Param>
+                    <Param><Var name="data" key="$field->id"/></Param>
+                    <Param><Set/></Param>                
+                  </FormatterLib>
+                </Var>
+              </Then>
+            </If>
+          </ForEach>
+          <Var name="content" key="dataSet"><Var name="data"/></Var>
+  
+          <Var name="transformedRecords" key=""><Var name="content"/></Var>
+        </ForEach>
+  
+        <Return><Var name="transformedRecords"/></Return>
+      </Begin>
+    </Function>
+
+      <Function scope="public" name="getChildContentTypes" doc="Get all child possible content types">
+      <Params>
+        <Param name="id_content" type="int" doc="The content"/>
+      </Params>
+      <Return type=""/>
+      <Begin>
+        <Var name="content">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
+          </Call>
+        </Var>
+        <Var name="contentType" dump="true">
+          <Call library="framework,cms.content.type,api" function="getById">
+            <Param name="id"><Var name="content" key="id_content_type"/></Param>
+          </Call>
+        </Var>
+        <Var name="contentChild" dump="true">
+          <Call library="framework,cms.content.type,api" function="getById">
+            <Param name="id"><Var name="contentType" key="id_child_type"/></Param>
+          </Call>
+        </Var>
+        <Var name="childTypes"><Set/></Var>
+        <Var name="childTypes" key=""><Var name="contentChild"/></Var>
+        <Var name="childTypes" dump="true"/>
+        <Return><Var name="childTypes"/></Return>
+      </Begin>
+      </Function>
+
     <Function scope="public" name="getContentHtml" doc="doc">
     <Params>
       <Param name="id" type="int" doc=""/>
@@ -597,9 +731,14 @@
         <Then>
           <!-- <Trace><String.parse><![CDATA[Executing: $item->api <br/> $item->params]]></String.parse></Trace> -->
           <!-- Override item -->
+          <Var name="now"><Now/></Var>
           <Var name="apiParams">
             <XmlToSet><Var name="item" key="params"/></XmlToSet>
           </Var>
+          <!-- Expand params with local variables -->
+          <ForEach var="apiParams" item="paramValue" key="paramKey">
+            <Var name="apiParams" key="$paramKey"><String.parse><String.parse>$paramValue</String.parse></String.parse></Var>
+          </ForEach>
           <Var name="result" dump="true">
             <Call library="$item->api" params="apiParams"/>
           </Var>
