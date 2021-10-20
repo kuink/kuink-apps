@@ -49,6 +49,27 @@
       </Begin>
     </Function>
 
+    <Function scope="public" name="duplicate" doc="Duplicates a content">
+    <Params>
+      <Param name="id" type="int" doc="The content id"/>
+    </Params>
+    <Return type="single"/>
+    <Begin>
+      <Var name="content">
+        <DataAccess method="load">
+          <Param name="_entity">fw_cms_content</Param>
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </DataAccess>
+      </Var>
+      <Var name="content" key="id" clear="true"></Var>
+      <Var name="content" key="uuid" clear="true"></Var>
+      <Var name="newId">
+        <Call function="add" params="content"/>
+      </Var>
+      <Return><Var name="newId"/></Return>
+    </Begin>
+    </Function> 
+
     <Function name="delete" doc="Delete a record by id from table fw_cms_content">
       <Params>
         <Param name="id" type="int" required="true"/>
@@ -56,26 +77,37 @@
       <Return type="int" doc=""/>
       <Begin>
         <!-- Get the content record and unlink the old file if there's one -->
-        <Var name="content">
-          <Call library="framework,cms.content,api" function="getById">
-            <Param name="id"><Var name="PARAMS" key="id"/></Param>
-          </Call>                
-        </Var>
-        <If condition="($content->id_file != '') &amp;&amp; ($content->id_file != 0)">
-          <Then>
-            <Trace><String.parse>Unlinking: $content->id_file before deletion</String.parse></Trace>
-            <FileLib method="unlink">
-              <Param><Var name="content" key="id_file" /></Param>
-            </FileLib>                  
-          </Then>
-        </If>
+        <Transaction>
+          <Var name="content">
+            <Call library="framework,cms.content,api" function="getById">
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            </Call>                
+          </Var>
+          <If condition="($content->id_file != '') &amp;&amp; ($content->id_file != 0)">
+            <Then>
+              <Trace><String.parse>Unlinking: $content->id_file before deletion</String.parse></Trace>
+              <FileLib method="unlink">
+                <Param><Var name="content" key="id_file" /></Param>
+              </FileLib>                  
+            </Then>
+          </If>
 
+          <!-- Delete all children recursively -->
+          <Var name="children">
+            <Call function="getAllChild">
+              <Param name="id_content"><Var name="id" key="key"/></Param>
+            </Call>  
+          </Var>
+          <ForEach var="children" item="child">
+            <Call function="delete">
+              <Param name="id"><Var name="child" key="id"/></Param>
+            </Call>
+          </ForEach>
+        </Transaction>
         <Return>
           <DataAccess method="delete">
             <Param name="_entity">fw_cms_content</Param>
-            <Param name="id">
-              <Var name="PARAMS" key="id"/>
-            </Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
           </DataAccess>
         </Return>
       </Begin>

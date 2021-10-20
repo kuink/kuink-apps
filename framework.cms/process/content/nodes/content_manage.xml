@@ -31,6 +31,7 @@
           <Actions separator="true">
             <Action name="selectContent" label="view" actionvalue="id"/>
             <Action name="edit" actionvalue="id"/>
+            <Action name="duplicate" actionvalue="id"/>
             <Action name="delete" actionvalue="id" confirm="true"/>
           </Actions>
         </Template>
@@ -392,12 +393,8 @@
     <Action name="delete">
       <Var name="selectedId" process="true">
         <IsNull>
-          <Param>
-            <ActionValue/>
-          </Param>
-          <Param>
-            <Var name="selectedId" process="true"/>
-          </Param>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
         </IsNull>
       </Var>
       <Call library="framework,cms.content,api" function="delete">
@@ -406,6 +403,22 @@
         </Param>
       </Call>
       <Action name="search"/>
+    </Action>
+
+    <Action name="duplicate">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+      <!-- Setting the id to the duplicated one-->
+      <Var name="selectedId" process="true">
+        <Call library="framework,cms.content,api" function="duplicate">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Action name="edit"/>
     </Action>
 
     <Action name="edit">
