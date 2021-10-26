@@ -18,6 +18,7 @@
     <Function name="add" doc="Adds a record in table ">
       <Params>
         <Param name="id_template" type="int" required="true"/>
+        <Param name="id_theme" type="int" required="true"/>
         <Param name="code" type="text" required="true"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="false"/>
@@ -29,6 +30,9 @@
             <Param name="_entity">fw_cms_channel</Param>
             <Param name="id_template">
               <Var name="PARAMS" key="id_template"/>
+            </Param>
+            <Param name="id_theme">
+              <Var name="PARAMS" key="id_theme"/>
             </Param>
             <Param name="uuid"><Uuid/></Param>
             <Param name="code">
@@ -199,7 +203,6 @@
         </Return>
       </Begin>
     </Function>
-
     <Function scope="public" name="getContent" doc="Get the content of the channel">
     <Params>
       <Param name="id_channel" type="int" doc="The channel to get the content"/>
@@ -228,7 +231,6 @@
       <Return><Var name="formatted"/></Return>
     </Begin>
     </Function>
-
     <Function scope="public" name="getHtml" doc="Get the html">
     <Params>
       <Param name="id_channel" type="int" doc=""/>
@@ -269,7 +271,23 @@
           <Param><Var name="templateSource"/></Param>						
         </String.stripslashes>        
       </Var>
+      <Var name="data" key="appFileStreamUrl"><String.parse><![CDATA[$SYSTEM['wwwRoot']/$SYSTEM['streamUrl']?idcontext=$CONTEXT['idContext']&type=app_file&guid=]]></String.parse></Var>
 
+      <!-- Get the theme -->
+      <Var name="themeTemplate">
+        <Call library="framework,cms.template,api" function="getById">
+          <Param name="id"><Var name="channel" key="id_theme"/></Param>
+        </Call>
+      </Var>
+      <Var name="data" key="theme">
+        <TemplateLib method="ExecuteTemplate">
+          <Param>framework</Param>
+          <Param>cms.template</Param>
+          <Param>generic</Param>
+          <Param><Var name="data"/></Param>
+          <Param><Var name="themeTemplate" key="source"/></Param>
+        </TemplateLib>
+      </Var>
       <Var name="html"><String/></Var>
       <If condition="$content->_html != ''">
         <Then>

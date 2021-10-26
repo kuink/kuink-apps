@@ -18,6 +18,7 @@
   <Screens>
     <Screen id="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
+        <Static id="id"/>
         <Select id="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
         <Container id="contentTypeFields"/>
         <ButtonGroup>
@@ -76,23 +77,25 @@
           <If condition="$PARAMS->id == ''">
             <Then>
               <!-- Insert the record -->
-              <Call library="framework,cms.content,api" function="add">
-                <Param name="id_template_override">
-                  <If condition="$POSTDATA->id_template_override != ''">
-                    <Then><Var name="POSTDATA" key="id_template_override"/></Then>
-                    <Else><Null/></Else>
-                  </If>
-                </Param>
-                <Param name="id_content_type"><Var name="contentType" key="id"/></Param>
-                <Param name="data"><Var name="dataXml"/></Param>
-                <Param name="id_parent"><Var name="PARAMS" key="id_parent"/></Param>
-                <Param name="id_file">
-                  <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
-                    <Then><Var name="idFile"/></Then>
-                    <Else><Null/></Else>
-                  </If>
-                </Param>
-              </Call>
+              <Var name="errors">
+                <Call library="framework,cms.content,api" function="add">
+                  <Param name="id_template_override">
+                    <If condition="$POSTDATA->id_template_override != ''">
+                      <Then><Var name="POSTDATA" key="id_template_override"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                  <Param name="id_content_type"><Var name="contentType" key="id"/></Param>
+                  <Param name="data"><Var name="dataXml"/></Param>
+                  <Param name="id_parent"><Var name="PARAMS" key="id_parent"/></Param>
+                  <Param name="id_file">
+                    <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+                      <Then><Var name="idFile"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                </Call>
+              </Var>
             </Then>
             <Else>
               <!-- Get the content record and unlink the old file if there's one -->
@@ -118,21 +121,36 @@
                   <Var name="optionalParams" key="id_file"><Var name="idFile"/></Var>
                 </Then>
               </If>
-              <Call library="framework,cms.content,api" function="update" params="optionalParams">
-                <Param name="id"><Var name="PARAMS" key="id"/></Param>
-                <Param name="id_template_override">
-                  <If condition="$POSTDATA->id_template_override != ''">
-                    <Then><Var name="POSTDATA" key="id_template_override"/></Then>
-                    <Else><Null/></Else>
-                  </If>
-                </Param>
-                <Param name="data"><Var name="dataXml"/></Param>
-            </Call>
+              <Var name="errors">
+                <Call library="framework,cms.content,api" function="update" params="optionalParams">
+                  <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                  <Param name="id_template_override">
+                    <If condition="$POSTDATA->id_template_override != ''">
+                      <Then><Var name="POSTDATA" key="id_template_override"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                  <Param name="data"><Var name="dataXml"/></Param>
+                </Call>
+              </Var>
             </Else>
           </If>
         </Then>
       </If>
-      <Action name="back"/>
+      <If condition="$errors->__length != 0">
+        <Then>
+          <ForEach var="errors" item="error">
+            <UserMessage type="error">
+              <String.parse>$error->label | $error->message</String.parse>
+            </UserMessage>
+          </ForEach>
+          <Action name="init"/>
+        </Then>
+        <Else>
+          <Action name="back"/>          
+        </Else>
+      </If>
+
     </Action>
 
     <Action name="insert" screen="scrEdit">
@@ -213,7 +231,7 @@
         </Control>
         <If condition="$field->default != ''">
           <Then>
-            <Var name="defaultData" key="$field->id"><Int>1</Int></Var>
+            <Var name="defaultData" key="$field->id"><Var name="field" key="default"/></Var>
           </Then>
         </If>
         <Var name="options"><Var name="field" key="options"/></Var>

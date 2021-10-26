@@ -39,12 +39,15 @@
     <Screen id="scrView" doc="View Screen">
       <Form name="frmView">
         <Static id="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
-        <Static id="fields"/>
-        <Static id="allowed_extensions"/>
-        <Static id="id_child_type" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="false"/>
         <Static id="code"/>
         <Static id="name"/>
         <Static id="description"/>
+        <Static id="allowed_extensions"/>
+        <Static id="id_child_type" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <Static id="allow_zero_duration">
+          <Formatter name="YesNo"/>
+        </Static>
+        <Static id="fields"/>
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>
           <Button id="edit" type="update" label="edit" action="edit"/>
@@ -59,6 +62,7 @@
         <Text id="name" label="name" required="true"/>
         <Text id="description" label="description" required="false"/>
         <Text id="allowed_extensions" label="allowed_extensions" required="false"/>
+        <Checkbox id="allow_zero_duration" required="true"/>
         <Select id="id_child_type" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="false"/>
         <CodeEditor id="fields" label="fields" required="false"/>        
         <ButtonGroup>

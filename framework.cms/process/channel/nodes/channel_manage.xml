@@ -23,6 +23,7 @@
           <Columns>
             <Column name="id" label="id"/>
             <Column name="id_template" label="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+            <Column name="id_theme" label="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
             <Column name="uuid" label="uuid"/>
             <Column name="code" label="code"/>
             <Column name="name" label="name" action="view" actionvalue="id"/>
@@ -40,6 +41,7 @@
       <Form name="frmView">
         <Static id="id"/>
         <Static id="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+        <Static id="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
         <Static id="code"/>
         <Static id="name"/>
         <Static id="description"/>
@@ -73,6 +75,7 @@
       <Form name="frmEdit">
         <Static id="id" label="id" required="true"/>
         <Select id="id_template" label="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <Select id="id_theme" label="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
         <Text id="code" label="code" required="true"/>
         <Text id="name" label="name" required="true"/>
         <Text id="description" label="description" required="false"/>

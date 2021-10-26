@@ -16,8 +16,7 @@
   <Library forceinterface="true">
     <Function name="add" doc="Adds a record in table ">
       <Params>
-        <Param name="id_template_type" type="int" required="true"/>
-        <Param name="source" type="text" required="true"/>
+        <Param name="uuid" type="text" required="true"/>
         <Param name="code" type="text" required="true"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="false"/>
@@ -26,13 +25,11 @@
       <Begin>
         <Return>
           <DataAccess method="insert">
-            <Param name="_entity">fw_cms_template</Param>
+            <Param name="_entity">fw_cms_template_type</Param>
             <Param name="_base">true</Param>
-            <Param name="id_template_type"><Var name="PARAMS" key="id_template_type"/></Param>
-            <Param name="source">
-              <Var name="PARAMS" key="source"/>
+            <Param name="uuid">
+              <Var name="PARAMS" key="uuid"/>
             </Param>
-            <Param name="uuid"><Uuid/></Param>
             <Param name="code">
               <Var name="PARAMS" key="code"/>
             </Param>
@@ -46,7 +43,7 @@
         </Return>
       </Begin>
     </Function>
-    <Function name="delete" doc="Delete a record by id from table fw_cms_template">
+    <Function name="delete" doc="Delete a record by id from table fw_cms_template_type">
       <Params>
         <Param name="id" type="int" required="true"/>
       </Params>
@@ -54,7 +51,7 @@
       <Begin>
         <Return>
           <DataAccess method="delete">
-            <Param name="_entity">fw_cms_template</Param>
+            <Param name="_entity">fw_cms_template_type</Param>
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
@@ -62,11 +59,10 @@
         </Return>
       </Begin>
     </Function>
-    <Function name="update" doc="Updates a record in table fw_cms_template">
+    <Function name="update" doc="Updates a record in table fw_cms_template_type">
       <Params>
         <Param name="id" type="int" required="true"/>
-        <Param name="id_template_type" type="int" required="true"/>
-        <Param name="source" type="text" required="false"/>
+        <Param name="uuid" type="text" required="false"/>
         <Param name="code" type="text" required="false"/>
         <Param name="name" type="text" required="false"/>
         <Param name="description" type="text" required="false"/>
@@ -80,22 +76,19 @@
           </UtilsLib>
         </Var>
         <DataAccess method="update" params="paramData">
-          <Param name="_entity">fw_cms_template</Param>
+          <Param name="_entity">fw_cms_template_type</Param>
           <Param name="_base">true</Param>
         </DataAccess>
       </Begin>
     </Function>
-    <Function name="search" doc="Search records from table fw_cms_template">
+    <Function name="search" doc="Search records from table fw_cms_template_type">
       <Params>
-        <Param name="code" type="text"/>
         <Param name="name" type="text"/>
         <Param name="pagenum" type="int"/>
         <Param name="pagesize" type="int"/>
       </Params>
       <Return type="multiple" doc="">
         <External name="id" type="int" doc=""/>
-        <Exctenal name="id_template_type" type="int"/>
-        <External name="source" type="text" doc=""/>
         <External name="uuid" type="text" doc=""/>
         <External name="code" type="text" doc=""/>
         <External name="name" type="text" doc=""/>
@@ -111,9 +104,6 @@
       <Begin>
         <Return>
           <DataAccess method="this,this,search">
-            <Param name="code" wildcard="full">
-              <Var name="PARAMS" key="code"/>
-            </Param>
             <Param name="name" wildcard="full">
               <Var name="PARAMS" key="name"/>
             </Param>
@@ -127,12 +117,10 @@
         </Return>
       </Begin>
     </Function>
-    <Function name="getAll" doc="Get all records from table fw_cms_template">
+    <Function name="getAll" doc="Get all records from table fw_cms_template_type">
       <Params/>
       <Return type="multiple" doc="">
         <External name="id" type="int" doc=""/>
-        <Exctenal name="id_template_type" type="int"/>
-        <External name="source" type="text" doc=""/>
         <External name="uuid" type="text" doc=""/>
         <External name="code" type="text" doc=""/>
         <External name="name" type="text" doc=""/>
@@ -148,19 +136,17 @@
       <Begin>
         <Return>
           <DataAccess method="getAll">
-            <Param name="_entity">fw_cms_template</Param>
+            <Param name="_entity">fw_cms_template_type</Param>
           </DataAccess>
         </Return>
       </Begin>
     </Function>
-    <Function name="getById" doc="Get a record by id from table fw_cms_template">
+    <Function name="getById" doc="Get a record by id from table fw_cms_template_type">
       <Params>
         <Param name="id" type="int" required="true"/>
       </Params>
       <Return type="single" doc="">
         <External name="id" type="int" doc=""/>
-        <Exctenal name="id_template_type" type="int"/>
-        <External name="source" type="text" doc=""/>
         <External name="uuid" type="text" doc=""/>
         <External name="code" type="text" doc=""/>
         <External name="name" type="text" doc=""/>
@@ -176,7 +162,7 @@
       <Begin>
         <Return>
           <DataAccess method="load">
-            <Param name="_entity">fw_cms_template</Param>
+            <Param name="_entity">fw_cms_template_type</Param>
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
@@ -184,7 +170,7 @@
         </Return>
       </Begin>
     </Function>
-    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_cms_template">
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_cms_template_type">
       <Params>
         <Param name="code" type="string" required="true"/>
       </Params>
@@ -193,7 +179,7 @@
       <Begin>
         <Var name="record">
           <DataAccess method="load">
-            <Param name="_entity">fw_cms_template</Param>
+            <Param name="_entity">fw_cms_template_type</Param>
             <Param name="code">
               <Var name="PARAMS" key="code"/>
             </Param>

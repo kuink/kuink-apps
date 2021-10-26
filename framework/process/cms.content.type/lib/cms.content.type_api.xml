@@ -23,6 +23,7 @@
         <Param name="code" type="text" required="true"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="false"/>
+        <Param name="allow_zero_duration" type="int" required="false"/>
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
@@ -33,7 +34,7 @@
             <Param name="id_template"><Var name="PARAMS" key="id_template"/></Param>
             <Param name="fields"><Var name="PARAMS" key="fields"/></Param>
             <Param name="allowed_extensions"><Var name="PARAMS" key="allowed_extensions"/></Param>
-            <Param name="allowed_childs"><Var name="PARAMS" key="allowed_childs"/></Param>
+            <Param name="allow_zero_duration"><Var name="PARAMS" key="allow_zero_duration"/></Param>
             <Param name="uuid"><Uuid/></Param>
             <Param name="code"><Var name="PARAMS" key="code"/></Param>
             <Param name="name"><Var name="PARAMS" key="name"/></Param>
@@ -68,6 +69,7 @@
         <Param name="code" type="text" required="false"/>
         <Param name="name" type="text" required="false"/>
         <Param name="description" type="text" required="false"/>
+        <Param name="allow_zero_duration" type="int" required="false"/>
       </Params>
       <Begin>
         <Var name="paramData">

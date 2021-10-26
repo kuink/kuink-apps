@@ -38,7 +38,6 @@
     <Screen id="scrView" doc="View Screen">
       <Form name="frmView">
         <Static id="id"/>
-        <Static id="id_channel" label="id_channel" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
         <Static id="uuid"/>
         <Static id="code"/>
         <Static id="name"/>
@@ -53,15 +52,13 @@
     <Screen id="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Static id="id" label="id" required="true"/>
-        <Select id="id_template_type" label="id_template_type" required="true" datasource="call:framework,cms.template.type,api,getAll" bindid="id" bindvalue="name"/>
+        <Text id="uuid" label="uuid" required="true"/>
         <Text id="code" label="code" required="true"/>
         <Text id="name" label="name" required="true"/>
         <Text id="description" label="description" required="false"/>
-        <CodeEditor id="source" label="source" required="true"/>        
         <ButtonGroup>
           <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="saveAndStay" type="update" action="saveAndStay"/>
-          <Button id="saveAndLeave" type="update" action="saveAndLeave"/>
+          <Button id="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>
@@ -70,9 +67,8 @@
     <Action name="init">
       <Action name="search"/>
     </Action>
-
     <Action name="search" screen="scrSearch">
-      <If condition="$defaultData->__length != 0">
+      <If condition="$defaultData-&gt;__length &gt; 0">
         <Then>
           <Control method="setDefaultData" object="frmSearch">
             <Param>
@@ -84,35 +80,29 @@
       <Var name="currentData">
         <Control method="getCurrentData" object="frmSearch"/>
       </Var>
-      <Var name="templates">
-        <Call library="framework,cms.template,api" function="search">
-          <Param name="code">
-            <Var name="currentData" key="code"/>
-          </Param>
-          <Param name="name">
-            <Var name="currentData" key="name"/>
-          </Param>
-          <Param name="pagesize">
-            <Control method="getPageSize" object="grdSearchResult"/>
-          </Param>
-          <Param name="pagenum">
-            <Control method="getCurrentPage" object="grdSearchResult"/>
-          </Param>
-        </Call>
-      </Var>
-
       <Control method="bind" object="grdSearchResult">
-        <Param><Var name="templates"/></Param>
+        <Param>
+          <Call library="framework,cms.template.type,api" function="search">
+            <Param name="name">
+              <Var name="currentData" key="name"/>
+            </Param>
+            <Param name="pagesize">
+              <Control method="getPageSize" object="grdSearchResult"/>
+            </Param>
+            <Param name="pagenum">
+              <Control method="getCurrentPage" object="grdSearchResult"/>
+            </Param>
+          </Call>
+        </Param>
       </Control>
     </Action>
-
     <Action name="view" screen="scrView">
       <Var name="selectedId" process="true">
         <ActionValue/>
       </Var>
       <Control method="bind" object="frmView">
         <Param>
-          <Call library="framework,cms.template,api" function="getById">
+          <Call library="framework,cms.template.type,api" function="getById">
             <Param name="id">
               <ActionValue/>
             </Param>
@@ -120,27 +110,20 @@
         </Param>
       </Control>
     </Action>
-    <Action name="saveAndStay">
-      <Action name="save"/>
-      <Action name="edit"/>
-    </Action>
-    <Action name="saveAndLeave">
-      <Action name="save"/>
-      <Action name="search"/>
-    </Action>    
     <Action name="save">
       <If condition="@selectedId == ''">
         <Then>
-          <Call library="framework,cms.template,api" function="add" params="POSTDATA"/>
+          <Call library="framework,cms.template.type,api" function="add" params="POSTDATA"/>
         </Then>
         <Else>
-          <Call library="framework,cms.template,api" function="update" params="POSTDATA">
+          <Call library="framework,cms.template.type,api" function="update" params="POSTDATA">
             <Param name="id">
               <Var name="selectedId" process="true"/>
             </Param>
           </Call>
         </Else>
       </If>
+      <Action name="search"/>
     </Action>
     <Action name="insert" screen="scrEdit">
       <Var name="selectedId" process="true">
@@ -158,7 +141,7 @@
           </Param>
         </IsNull>
       </Var>
-      <Call library="framework,cms.template,api" function="delete">
+      <Call library="framework,cms.template.type,api" function="delete">
         <Param name="id">
           <Var name="selectedId" process="true"/>
         </Param>
@@ -178,7 +161,7 @@
       </Var>
       <Control method="bind" object="frmEdit">
         <Param>
-          <Call library="framework,cms.template,api" function="getById">
+          <Call library="framework,cms.template.type,api" function="getById">
             <Param name="id">
               <Var name="selectedId" process="true"/>
             </Param>

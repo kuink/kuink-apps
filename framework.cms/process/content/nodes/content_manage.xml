@@ -20,7 +20,7 @@
           <Button id="insert" type="add" label="insert" action="fill"/>
         </ButtonGroup>
       </Form>
-      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="contentItems">
         <Template>
           <Columns>
             <Column name="id" label="id" action="selectContent" actionvalue="id">
@@ -92,7 +92,7 @@
           </Actions>
         </Template>
       </Grid>
-      <Form name="frmNewChild" position="bottom">
+      <Form name="frmNewChild" position="bottom" title="addChild">
         <Select id="id_content_type" required="true" datasource="childContentTypes" bindid="id" bindvalue="name" action="addChild"/>
         <!--
         <ButtonGroup>
@@ -418,25 +418,37 @@
           <Param name="id"><Var name="selectedId" process="true"/></Param>
         </Call>
       </Var>
-      <Action name="edit"/>
+      <Action name="editSelected"/>
     </Action>
 
     <Action name="edit">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+      <Action name="editSelected"/>
+    </Action>
+
+    <Action name="editSelected">
       <RaiseEvent name="edit">
-        <Param name="id">
-          <IsNull>
-            <Param><ActionValue/></Param>
-            <Param><Var name="selectedId" process="true"/></Param>
-          </IsNull>
-        </Param>
+        <Param name="id"><Var name="selectedId" process="true"/></Param>
       </RaiseEvent>
     </Action>
 
     <Action name="addToChannel">
       <Var name="POSTDATA" dump="true"/>
-      <Call library="framework,cms.content,api" function="addToChannel" params="POSTDATA">
-        <Param name="id_content"><Var name="selectedId" process="true"/></Param>
-      </Call>
+      <Var name="error">
+        <Call library="framework,cms.content,api" function="addToChannel" params="POSTDATA">
+          <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <If condition="$error == -1">
+        <Then>
+          <UserMessage type="error"><Lang key="zeroDurationNotAllowed"/></UserMessage>
+        </Then>
+      </If>
       <Action name="view"/>
     </Action>
 

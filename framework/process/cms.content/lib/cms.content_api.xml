@@ -25,27 +25,41 @@
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
-        <Return>
-          <DataAccess method="insert">
-            <Param name="_entity">fw_cms_content</Param>
-            <Param name="_base">true</Param>
-            <Param name="id_template_override">
-              <Var name="PARAMS" key="id_template_override"/>
-            </Param>
-            <Param name="id_content_type">
-              <Var name="PARAMS" key="id_content_type"/>
-            </Param>
-            <Param name="id_parent">
-              <Var name="PARAMS" key="id_parent"/>
-            </Param>
-            <Param name="data">
-              <Var name="PARAMS" key="data"/>
-            </Param>
-            <Param name="id_file">
-              <Var name="PARAMS" key="id_file"/>
-            </Param>
-          </DataAccess>
-        </Return>
+        <If condition="($PARAMS->id_parent == 0) || ($PARAMS->id_parent == '')">
+          <Then>
+            <Var name="PARAMS" key="id_parent" clear="true"/>
+          </Then>
+        </If>
+        <Var name="errors">
+          <Call function="validate">
+            <Param name="id_content_type"><Var name="PARAMS" key="id_content_type"/></Param>
+            <Param name="data"><Var name="PARAMS" key="data"/></Param>
+          </Call>
+        </Var>
+        <If condition="$errors->__length == 0">
+          <Then>
+            <DataAccess method="insert">
+              <Param name="_entity">fw_cms_content</Param>
+              <Param name="_base">true</Param>
+              <Param name="id_template_override">
+                <Var name="PARAMS" key="id_template_override"/>
+              </Param>
+              <Param name="id_content_type">
+                <Var name="PARAMS" key="id_content_type"/>
+              </Param>
+              <Param name="id_parent">
+                <Var name="PARAMS" key="id_parent"/>
+              </Param>
+              <Param name="data">
+                <Var name="PARAMS" key="data"/>
+              </Param>
+              <Param name="id_file">
+                <Var name="PARAMS" key="id_file"/>
+              </Param>
+            </DataAccess>        
+          </Then>
+        </If>
+        <Return><Var name="errors"/></Return>
       </Begin>
     </Function>
 
@@ -95,7 +109,7 @@
           <!-- Delete all children recursively -->
           <Var name="children">
             <Call function="getAllChild">
-              <Param name="id_content"><Var name="id" key="key"/></Param>
+              <Param name="id_content"><Var name="content" key="id"/></Param>
             </Call>  
           </Var>
           <ForEach var="children" item="child">
@@ -103,12 +117,28 @@
               <Param name="id"><Var name="child" key="id"/></Param>
             </Call>
           </ForEach>
-        </Transaction>
-        <Return>
+
+          <!-- Remove from all channels -->
+          <Var name="channels" dump="true">
+            <Call function="getChannels">
+              <Param name="id_content"><Var name="content" key="id"/></Param>
+            </Call>  
+          </Var>
+          <ForEach var="channels" item="channel">
+            <Call function="removeFromChannel">
+              <Param name="id_content"><Var name="content" key="id"/></Param>
+              <Param name="id_channel"><Var name="channel" key="id_channel"/></Param>
+            </Call>
+          </ForEach>
+
+          <!-- Finally delete this record -->
           <DataAccess method="delete">
             <Param name="_entity">fw_cms_content</Param>
             <Param name="id"><Var name="PARAMS" key="id"/></Param>
           </DataAccess>
+
+        </Transaction>
+        <Return>
         </Return>
       </Begin>
     </Function>
@@ -121,6 +151,12 @@
         <Param name="id_file" type="int" required="false"/>
       </Params>
       <Begin>
+        <Var name="errors">
+          <Call function="validate">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="data"><Var name="PARAMS" key="data"/></Param>
+          </Call>
+        </Var>
         <Var name="paramData">
           <UtilsLib method="filterNotEmpty">
             <Param>
@@ -128,11 +164,77 @@
             </Param>
           </UtilsLib>
         </Var>
-        <DataAccess method="update" params="paramData">
-          <Param name="_entity">fw_cms_content</Param>
-          <Param name="_base">true</Param>
-        </DataAccess>
+        <If condition="$errors->__length == 0">
+          <Then>
+            <DataAccess method="update" params="paramData">
+              <Param name="_entity">fw_cms_content</Param>
+              <Param name="_base">true</Param>
+            </DataAccess>
+          </Then>
+        </If>
+        <Return><Var name="errors"/></Return>
       </Begin>
+    </Function>
+
+    <Function scope="public" name="validate" doc="Validates a conten record before insert or update">
+    <Params>
+      <Param name="id" type="int" doc="The content id"/>
+      <Param name="id_content_type" type="int" doc="The content type id"/>
+      <Param name="data" type="text" doc="The entire data to validate"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <If condition="$PARAMS->id != ''">
+        <Then>
+          <!-- This is an update -->
+          <Var name="content">
+            <Call function="getById">
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            </Call>
+          </Var>
+          <Var name="contentType">
+            <Call library="framework,cms.content.type,api" function="getById">
+              <Param name="id"><Var name="content" key="id_content_type"/></Param>
+            </Call>
+          </Var>
+        </Then>
+        <Else>
+          <!-- This is an insert -->
+          <Var name="contentType">
+            <Call library="framework,cms.content.type,api" function="getById">
+              <Param name="id"><Var name="PARAMS" key="id_content_type"/></Param>
+            </Call>
+          </Var>
+        </Else>
+      </If>
+
+      <Var name="errors"><Set/></Var>
+      <!-- Validate fields custom properties -->
+      <Var name="item">
+        <XmlToSet><Var name="PARAMS" key="data"/></XmlToSet>
+      </Var>
+      <Var name="fieldsSet">
+        <JsonToSet><Var name="contentType" key="fields"/></JsonToSet>
+      </Var>
+      <ForEach var="fieldsSet" item="field">
+        <If condition="$field->validation != ''">
+          <Then>
+            <Var name="value" dump="true"><EvalCondition><Var name="field" key="validation"/></EvalCondition></Var>
+            <If condition="!($value)">
+              <Then>
+                <Var name="error"><Set/></Var>
+                <Var name="error" key="id"><Var name="field" key="id"/></Var>
+                <Var name="error" key="label"><Var name="field" key="label"/></Var>
+                <Var name="error" key="message"><Var name="field" key="validation_message"/></Var>
+                <Var name="errors" key=""><Var name="error"/></Var>
+              </Then>
+            </If>
+          </Then>
+        </If>
+      </ForEach>
+
+      <Return><Var name="errors"/></Return>
+    </Begin>
     </Function>
 
     <Function name="search" doc="Search records from table fw_cms_content">
@@ -488,51 +590,71 @@
           </Var>
         </Then>
       </If>
-      
-      
-
-      <!-- Check if the content is already published in that channel -->
-      <Var name="check">
-        <DataAccess method="load">
-          <Param name="_entity">fw_cms_channel_content</Param>
-          <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
-          <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>
-        </DataAccess>
+      <Var name="content">
+        <Call function="getById">
+          <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
+        </Call>
       </Var>
-      <If condition="$check->__length != 0">
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="content" key="id_content_type"/></Param>
+        </Call>
+      </Var>      
+      <Var name="error"><Int>0</Int></Var>
+      <!-- Validate zero duration -->
+      <If condition="(($contentType->allow_zero_duration == 0) &amp;&amp; ($PARAMS->seconds_duration == 0)) || ($PARAMS->seconds_duration &lt; 0)">
         <Then>
-          <!-- update -->
-          <DataAccess method="update" params="optionalParams">
-            <Param name="_entity">fw_cms_channel_content</Param>
-            <Param name="id"><Var name="check" key="id"/></Param>
-            <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
-            <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
-            <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
-            <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
-            <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
-            <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
-            <Param name="_base">true</Param>
-          </DataAccess>
-          <Var name="id"><Var name="check" key="id"/></Var>
+          <Var name="error"><Int>-1</Int></Var>
         </Then>
-        <Else>
-          <!-- insert -->
-          <Var name="id">
-            <DataAccess method="insert" params="optionalParams">
+      </If>
+
+      <If condition="$error == 0">
+        <Then>
+          <!-- Check if the content is already published in that channel -->
+          <Var name="check">
+            <DataAccess method="load">
               <Param name="_entity">fw_cms_channel_content</Param>
-              <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
-              <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
-              <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
-              <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
-              <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
-              <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
-              <Param name="_base">true</Param>
+              <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+              <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>
             </DataAccess>
           </Var>
-        </Else>
+          <If condition="$check->__length != 0">
+            <Then>
+              <!-- update -->
+              <DataAccess method="update" params="optionalParams">
+                <Param name="_entity">fw_cms_channel_content</Param>
+                <Param name="id"><Var name="check" key="id"/></Param>
+                <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
+                <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
+                <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
+                <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
+                <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
+                <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
+                <Param name="_base">true</Param>
+              </DataAccess>
+              <Var name="id"><Var name="check" key="id"/></Var>
+            </Then>
+            <Else>
+              <!-- insert -->
+              <Var name="error">
+                <DataAccess method="insert" params="optionalParams">
+                  <Param name="_entity">fw_cms_channel_content</Param>
+                  <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
+                  <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
+                  <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
+                  <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
+                  <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
+                  <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
+                  <Param name="_base">true</Param>
+                </DataAccess>
+              </Var>
+            </Else>
+          </If>
+        </Then>
       </If>
-        <!-- proceed with the publishment -->
-      <Return><Var name="id"/></Return>
+
+      <!-- proceed with the publishment -->
+      <Return><Var name="error"/></Return>
     </Begin>
     </Function>
 
@@ -556,7 +678,7 @@
     <Params>
       <Param name="id_content" type="int" doc=""/>
     </Params>
-    <Return type=""/>
+    <Return type="multiple"/>
     <Begin>
       <Var name="channels">
         <DataAccess method="getAll">
@@ -670,33 +792,33 @@
       </Begin>
     </Function>
 
-      <Function scope="public" name="getChildContentTypes" doc="Get all child possible content types">
-      <Params>
-        <Param name="id_content" type="int" doc="The content"/>
-      </Params>
-      <Return type=""/>
-      <Begin>
-        <Var name="content">
-          <Call function="getById">
-            <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
-          </Call>
-        </Var>
-        <Var name="contentType" dump="true">
-          <Call library="framework,cms.content.type,api" function="getById">
-            <Param name="id"><Var name="content" key="id_content_type"/></Param>
-          </Call>
-        </Var>
-        <Var name="contentChild" dump="true">
-          <Call library="framework,cms.content.type,api" function="getById">
-            <Param name="id"><Var name="contentType" key="id_child_type"/></Param>
-          </Call>
-        </Var>
-        <Var name="childTypes"><Set/></Var>
-        <Var name="childTypes" key=""><Var name="contentChild"/></Var>
-        <Var name="childTypes" dump="true"/>
-        <Return><Var name="childTypes"/></Return>
-      </Begin>
-      </Function>
+    <Function scope="public" name="getChildContentTypes" doc="Get all child possible content types">
+    <Params>
+      <Param name="id_content" type="int" doc="The content"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="content">
+        <Call function="getById">
+          <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
+        </Call>
+      </Var>
+      <Var name="contentType" dump="true">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="content" key="id_content_type"/></Param>
+        </Call>
+      </Var>
+      <Var name="contentChild" dump="true">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="contentType" key="id_child_type"/></Param>
+        </Call>
+      </Var>
+      <Var name="childTypes"><Set/></Var>
+      <Var name="childTypes" key=""><Var name="contentChild"/></Var>
+      <Var name="childTypes" dump="true"/>
+      <Return><Var name="childTypes"/></Return>
+    </Begin>
+    </Function>
 
     <Function scope="public" name="getContentHtml" doc="doc">
     <Params>
