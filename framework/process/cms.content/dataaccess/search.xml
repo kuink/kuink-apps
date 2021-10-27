@@ -6,12 +6,31 @@
 	<Params>
 		<Param name="data" />
 		<Param name="id_content_type" />
+		<Param name="now" />
 	</Params>
 	<Body>
 		<SqlPaginated>
 			<XSql>
 				<XSelect>
-					<XField>*</XField>
+					<XField>
+						t.*,
+						(
+							SELECT
+							GROUP_CONCAT(c.name)
+						FROM 
+							fw_cms_content ti
+							INNER JOIN fw_cms_channel_content cc ON (cc.id_content = ti.id)
+							INNER JOIN fw_cms_channel c ON (c.id = cc.id_channel)
+						WHERE 
+								ti.id = t.id
+								AND (cc.is_published = 1 || cc.is_published = NULL) 
+								AND (cc.end_date IS NULL OR cc.end_date = 0 OR cc.end_date > 1635339117)
+						GROUP BY 
+							ti.id 
+						ORDER BY 
+							c.name
+						) as channels
+					</XField>
 				</XSelect>
 				<XFrom>
 					<XTable>
@@ -23,6 +42,9 @@
 					<XCondition optional="data">AND t.data like '{param->data}'</XCondition>
 					<XCondition optional="id_content_type">AND t.id_content_type like '{param->id_content_type}'</XCondition>
 				</XWhere>
+				<XGroupBy>
+					<XCondition>t.id</XCondition>
+				</XGroupBy>
 			</XSql>
 		</SqlPaginated>
 	</Body>

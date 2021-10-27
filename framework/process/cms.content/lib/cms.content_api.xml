@@ -265,7 +265,8 @@
             </Param>
             <Param name="id_content_type">
               <Var name="PARAMS" key="id_content_type"/>
-            </Param>            
+            </Param>
+            <Param name="now"><Now/></Param>            
             <Param name="_pageNum">
               <Var name="PARAMS" key="pagenum"/>
             </Param>

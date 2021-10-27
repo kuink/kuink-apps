@@ -49,6 +49,7 @@
           <Button id="back" type="back" label="back" action="search"/>
           <Button id="edit" type="update" label="edit" action="edit"/>
           <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button id="reorder" type="refresh" label="reorder" action="reorder" confirm="true"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdContent" pageable="true" collapsible="false" pagesize="50" pagingaction="view" title="content">
@@ -128,7 +129,10 @@
     </Action>
     <Action name="view" screen="scrView">
       <Var name="selectedId" process="true">
-        <ActionValue/>
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
       </Var>
       <Control method="bind" object="frmView">
         <Param>
@@ -142,7 +146,7 @@
       <Control method="bind" object="grdContent">
         <Param>
           <Call library="framework,cms.channel,api" function="getContent">
-            <Param name="id_channel"><ActionValue/></Param>
+            <Param name="id_channel"><Var name="selectedId" process="true"/></Param>
             <Param name="is_published"><Int>1</Int></Param>
           </Call>
         </Param>
@@ -150,11 +154,17 @@
       <Control method="bind" object="grdContent">
         <Param>
           <Call library="framework,cms.channel,api" function="getContent">
-            <Param name="id_channel"><ActionValue/></Param>
+            <Param name="id_channel"><Var name="selectedId" process="true"/></Param>
             <Param name="is_published"><Int>0</Int></Param>
           </Call>
         </Param>
       </Control>      
+    </Action>
+    <Action name="reorder">
+      <Call library="framework,cms.channel,api" function="rebuildContentOrder">
+        <Param name="id_channel"><Var name="selectedId" process="true"/></Param>
+      </Call>
+      <Action name="view"/>
     </Action>
     <Action name="save">
       <If condition="@selectedId == ''">
@@ -215,6 +225,7 @@
         </Param>
       </Control>
     </Action>
+
   </Actions>
   <Library forceinterface="true">
   </Library>

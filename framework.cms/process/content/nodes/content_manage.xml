@@ -27,6 +27,7 @@
               <Formatter name="Call" library="framework,cms.content,api" function="formatter"/>
             </Column>
             <Column name="id_content_type" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name"/>            
+            <Column name="channels"/>
           </Columns>
           <Actions separator="true">
             <Action name="selectContent" label="view" actionvalue="id"/>
