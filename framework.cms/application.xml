@@ -13,6 +13,5 @@
         <Menu role="Teacher,Student" startuc="device" startnode="" event="init" label="manageDevices" default="false"/>
         <Menu role="Teacher,Student" startuc="template" startnode="" event="init" label="manageTemplates" default="false"/>        
         <Menu role="Teacher,Student" startuc="contentType" startnode="" event="init" label="manageContentTypes" default="false"/>
-        <Menu role="Guest,Teacher,Student" startuc="digitalSignage" startnode="" event="init" label="digitalSignage" default="false"/>
     </Menus>
 </Application>

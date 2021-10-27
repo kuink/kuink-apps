@@ -51,6 +51,11 @@
           <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
+      <!--
+      <Form name="frmPreview" position="left" title="preview">
+        <Select id="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name" action="preview"/>
+      </Form>            
+      -->
       <Form name="frmChannels" title="publishNewChannel" position="right">
         <Select id="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
         <Select id="change_position" required="true">
@@ -94,11 +99,6 @@
       </Grid>
       <Form name="frmNewChild" position="bottom" title="addChild">
         <Select id="id_content_type" required="true" datasource="childContentTypes" bindid="id" bindvalue="name" action="addChild"/>
-        <!--
-        <ButtonGroup>
-          <Button id="addChild" type="add" action="addChild"/>
-        </ButtonGroup>
-        -->
       </Form>
 
       <Grid name="grdChilds" title="childs">
@@ -137,6 +137,15 @@
           <Button id="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
+    </Screen>
+
+    <Screen id="scrPreview">
+      <Form name="frmGlobalOptions">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <HtmlContainer name="previewHtml"/>
     </Screen>
   </Screens>
   <Actions>
@@ -266,6 +275,13 @@
       <Control method="bind" object="grdChilds">
         <Param><Var name="childs"/></Param>
       </Control>
+      <!--
+      <Control method="bind" object="frmPreview">
+        <Param><Set>
+          <Element name="id_channel"><Null/></Element>
+        </Set></Param>
+      </Control>
+      -->
     </Action>
 
     <Action name="addChild">
@@ -438,7 +454,6 @@
     </Action>
 
     <Action name="addToChannel">
-      <Var name="POSTDATA" dump="true"/>
       <Var name="error">
         <Call library="framework,cms.content,api" function="addToChannel" params="POSTDATA">
           <Param name="id_content"><Var name="selectedId" process="true"/></Param>
@@ -458,6 +473,19 @@
         <Param name="id_channel"><ActionValue/></Param>
       </Call>
       <Action name="view"/>
+    </Action>
+
+    <Action name="preview" screen="scrPreview">
+      <Var name="POSTDATA" dump="true"/>
+      <Var name="htmlPreview">
+        <Call library="framework,cms.channel,api" function="getPreviewHtml">
+          <Param name="id_channel"><Var name="POSTDATA" key="id_channel"/></Param>
+          <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="previewHtml">
+        <Param><Var name="htmlPreview"/></Param>
+      </Control>
     </Action>
 
   </Actions>

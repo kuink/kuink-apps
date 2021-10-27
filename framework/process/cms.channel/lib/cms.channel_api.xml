@@ -49,6 +49,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="delete" doc="Delete a record by id from table fw_cms_channel">
       <Params>
         <Param name="id" type="int" required="true"/>
@@ -65,6 +66,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="update" doc="Updates a record in table fw_cms_channel">
       <Params>
         <Param name="id" type="int" required="true"/>
@@ -87,6 +89,7 @@
         </DataAccess>
       </Begin>
     </Function>
+
     <Function name="search" doc="Search records from table fw_cms_channel">
       <Params>
         <Param name="uuid" type="text"/>
@@ -128,6 +131,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="getAll" doc="Get all records from table fw_cms_channel">
       <Params/>
       <Return type="multiple" doc="">
@@ -153,6 +157,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="getById" doc="Get a record by id from table fw_cms_channel">
       <Params>
         <Param name="id" type="int" required="true"/>
@@ -183,6 +188,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="getIdByCode" doc="Get a record id by its code from entity fw_cms_channel">
       <Params>
         <Param name="code" type="string" required="true"/>
@@ -203,6 +209,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function scope="public" name="getContent" doc="Get the content of the channel">
     <Params>
       <Param name="id_channel" type="int" doc="The channel to get the content"/>
@@ -231,6 +238,7 @@
       <Return><Var name="formatted"/></Return>
     </Begin>
     </Function>
+
     <Function scope="public" name="getHtml" doc="Get the html">
     <Params>
       <Param name="id_channel" type="int" doc=""/>
@@ -312,5 +320,68 @@
       <!-- <Return> <Var name="content" key="_html"/></Return> -->
     </Begin>
     </Function>
+
+    <Function scope="public" name="getPreviewHtml" doc="doc">
+    <Params>
+      <Param name="id_channel" type="int" doc="The channel to get the theme and template"/>
+      <Param name="id_content" type="int" doc="The content to get the html"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="content">
+        <Call library="framework,cms.content,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
+        </Call>
+      </Var>
+      <Var name="data"><Set/></Var>
+      <Var name="data" key="item"><Var name="content"/></Var>
+      <Var name="html">
+        <Call function="getHtml">
+          <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+          <Param name="data"><Var name="data"/></Param>
+        </Call>
+      </Var>
+      <Return><Var name="html"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="rebuildContentOrder" doc="Rebuilds the content order from a channel">
+    <Params>
+      <Param name="id_channel" type="int" doc="The channel to reorder the content"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <!-- Get all the content order by the rank -->
+      <Var name="allContent">
+        <DataAccess method="getAll">
+          <Param name="_entity">fw_cms_channel_content</Param>
+          <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+          <Param name="_sort">rank ASC</Param>
+        </DataAccess>
+      </Var>
+
+      <!-- Rebuild the content rank -->
+      <Var name="currentRank"><String/></Var>
+      <ForEach var="allContent" item="content">
+        <Var name="content" dump="true"/>
+        <Var name="currentRank" dump="true"/>
+        <Var name="newRank" dump="true">
+          <Rank>
+            <Param><Var name="currentRank"/></Param>
+            <Param><String/></Param>
+          </Rank>
+        </Var>
+        <DataAccess method="update">
+          <Param name="_entity">fw_cms_channel_content</Param>
+          <Param name="id" pk="true"><Var name="content" key="id"/></Param>
+          <Param name="rank"><Var name="newRank"/></Param>
+        </DataAccess>
+        <Var name="currentRank"><Var name="newRank"/></Var>
+      </ForEach>
+
+      <Return></Return>
+    </Begin>
+    </Function>
+
   </Library>
 </Node>

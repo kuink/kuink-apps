@@ -555,7 +555,7 @@
       <If condition="$PARAMS->change_position == 1">
         <Then>
           <!-- Get the previous content -->
-          <Var name="contentPrevious">
+          <Var name="contentPrevious" dump="true">
             <If condition="$PARAMS->id_content_before != ''">
               <Then>
                 <DataAccess method="load">
@@ -569,25 +569,25 @@
           </Var>
                 
           <!-- Get the next content -->
-          <Var name="contentNext">
+          <Var name="contentNext" dump="true">
             <DataAccess method="load">
               <Param name="_entity">fw_cms_channel_content</Param>
               <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
               <Param name="rank" op="gt"><Var name="contentPrevious" key="rank"/></Param>
-              <Param name="_sort">rank DESC</Param>
+              <Param name="_sort">rank ASC</Param>
             </DataAccess>
           </Var>
 
           <!-- Set previous and next -->
-          <Var name="rankPrevious"><Var name="contentPrevious" key="rank"/></Var>          
-          <Var name="rankNext"><Var name="contentNext" key="rank"/></Var>          
-
-          <Var name="optionalParams" key="rank">
+          <Var name="rankPrevious" dump="true"><Var name="contentPrevious" key="rank"/></Var>          
+          <Var name="rankNext" dump="true"><Var name="contentNext" key="rank"/></Var>          
+          <Var name="newRank" dump="true">
             <Rank>
               <Param><Var name="rankPrevious"/></Param>
               <Param><Var name="rankNext"/></Param>
             </Rank>
           </Var>
+          <Var name="optionalParams" key="rank"><Var name="newRank"/></Var>
         </Then>
       </If>
       <Var name="content">

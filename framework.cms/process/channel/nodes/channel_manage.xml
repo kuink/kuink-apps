@@ -59,10 +59,14 @@
               <Formatter name="Call" library="framework,cms.content,api" function="formatter"/>
             </Column>
             <Column name="is_published"/>
-            <Column name="order"/>
+            <Column name="rank"/>
             <Column name="seconds_duration"/>
-            <Column name="publish_start"/>
-            <Column name="publish_end"/>
+            <Column name="start_date">
+              <Formatter name="DateTime" method="shortDate"/>
+            </Column>
+            <Column name="end_date">
+              <Formatter name="DateTime" method="shortDate"/>
+            </Column>
           </Columns>
           <Actions separator="true">
             <Action name="preview" actionvalue="id"/>
@@ -140,6 +144,14 @@
           <Call library="framework,cms.channel,api" function="getContent">
             <Param name="id_channel"><ActionValue/></Param>
             <Param name="is_published"><Int>1</Int></Param>
+          </Call>
+        </Param>
+      </Control>      
+      <Control method="bind" object="grdContent">
+        <Param>
+          <Call library="framework,cms.channel,api" function="getContent">
+            <Param name="id_channel"><ActionValue/></Param>
+            <Param name="is_published"><Int>0</Int></Param>
           </Call>
         </Param>
       </Control>      
