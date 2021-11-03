@@ -45,7 +45,9 @@
         <Static id="id_template_override"/>
         <Static id="data"/>
         <Container id="contentTypeFields"/>
-        <Static id="id_file"/>
+        <Static id="id_file">
+          <Formatter name="FileDownload" method="preview" width="100" center="0"/>
+        </Static>
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>
           <Button id="edit" type="update" label="edit" action="edit"/>
@@ -108,11 +110,14 @@
             <Column name="id" label="id" action="selectContent" actionvalue="id">
               <Formatter name="Call" library="framework,cms.content,api" function="formatter"/>
             </Column>
+            <Column name="id_file">
+              <Formatter name="FileDownload" method="preview" width="100"/>
+            </Column>
           </Columns>
           <Actions separator="true">
             <Action name="selectContent" label="view" actionvalue="id"/>
-            <Action name="edit" actionvalue="id"/>
-            <Action name="delete" actionvalue="id" confirm="true"/>
+            <Action name="editChild" actionvalue="id"/>
+            <Action name="deleteChild" actionvalue="id" confirm="true"/>
           </Actions>
         </Template>
       </Grid>
@@ -422,6 +427,14 @@
       <Action name="search"/>
     </Action>
 
+    <Action name="deleteChild">
+      <Call library="framework,cms.content,api" function="delete">
+        <Param name="id"><ActionValue/></Param>
+      </Call>
+      <Action name="view"/>
+    </Action>
+
+
     <Action name="duplicate">
       <Var name="selectedId" process="true">
         <IsNull>
@@ -453,6 +466,13 @@
         <Param name="id"><Var name="selectedId" process="true"/></Param>
       </RaiseEvent>
     </Action>
+
+    <Action name="editChild">
+      <RaiseEvent name="edit">
+        <Param name="id"><ActionValue/></Param>
+      </RaiseEvent>
+    </Action>
+
 
     <Action name="addToChannel">
       <Var name="error">

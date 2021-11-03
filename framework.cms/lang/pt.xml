@@ -20,6 +20,8 @@
     <String key="text" value="Texto"/>
     <String key="uuid" value="Uuid"/>
     <String key="code" value="Código"/>
+    <String key="deleteChild" value="Apagar"/>    
+    <String key="editChild" value="Editar"/>    
 
     <!-- Content -->
     <String key="id_content" value="Conteúdo"/>    
