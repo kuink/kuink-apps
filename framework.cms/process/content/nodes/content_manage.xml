@@ -43,11 +43,11 @@
       <Form name="frmView" position="left">
         <Static id="id"/>
         <Static id="id_template_override"/>
-        <Static id="data"/>
         <Container id="contentTypeFields"/>
         <Static id="id_file">
           <Formatter name="FileDownload" method="preview" width="100" center="0"/>
         </Static>
+        <Static id="data"/>
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>
           <Button id="edit" type="update" label="edit" action="edit"/>
