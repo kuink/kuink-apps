@@ -1062,7 +1062,7 @@
 						</Var>
 
 						<Var name="actionPreview" key="name"><Var name="action" key="name"/></Var>
-						<Var name="participants">
+						<Var name="participants" dump="true">
 							<StringLib method="explode">
 		            <Param>,</Param>
 		            <Param>
@@ -1070,21 +1070,29 @@
 		            </Param>
 		          </StringLib>
 						</Var>
-
+						
 						<Var name="eventParams" key="participants"><String/></Var>
+						
 						<ForEach var="participants" item="participant">
 							<Var name="person"><String/></Var>
 							<Var name="person"><Var name="personData" key="$participant"/></Var>
+							
 							<If condition="$person->name == ''">
 								<Then>
 									<Var name="person" clear="true"/>
 									<Var name="person" key="name"><String.parse><Var name="participant"/></String.parse></Var>
-									<Var name="person">
-										<DataAccess method="load">
-											<Param name="_entity">person</Param>
-											<Param name="id"><Var name="person" key="name"/></Param>
-										</DataAccess>
-									</Var>
+									<Var name="parsedIdPerson"><Int.parse>$person->name</Int.parse></Var>
+									<If condition="$parsedIdPerson != 0">
+										<Then>
+											<Var name="person">
+												<DataAccess method="load">
+													<Param name="_entity">person</Param>
+													<Param name="id"><Var name="parsedIdPerson"/></Param>
+												</DataAccess>
+											</Var>
+										</Then>
+									</If>
+									
 								</Then>
 							</If>
 							<Var name="eventParams" key="participants">
@@ -1095,15 +1103,15 @@
 								</String.concatenate>
 							</Var>
 						</ForEach>
-
-						<Var name="templateContent">
+						
+						<Var name="templateContent" dump="true">
 							<TemplateLib method="ExecuteStandardTemplate">
        					<Param><String>gecol.core,preEnroll,pe.events</String></Param>
        					<Param><Var name="USER" key="lang"/></Param>
        					<Param><Var name="eventParams"/></Param>
        				</TemplateLib>
 						</Var><Var name="templateContent"><Var name="templateContent" key="Content"/></Var>
-
+						
        			<Var name="actionPreview" key="message">
 							<Var name="templateContent"/>
 						</Var>
