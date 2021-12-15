@@ -14,6 +14,181 @@
   <Actions>
   </Actions>
   <Library forceinterface="true">
+
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="field" type="text" required="true"/>
+        <Param name="id_agreement_statement_type" type="int" required="true"/>
+        <Param name="is_active" type="int" required="true"/>
+        <Param name="mandatory_response_value" type="int" required="false"/>
+        <Param name="expire_date_expression" type="text" required="false"/>
+        <Param name="id_controlled_document" type="int" required="false"/>
+        <Param name="code" type="text" required="true"/>
+        <Param name="name" type="text" required="true"/>
+        <Param name="description" type="text" required="true"/>
+        <Param name="statement" type="text" required="true"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_agreement_statement</Param>
+            <Param name="_base">true</Param>
+            <Param name="_multilang_fields" >statement,name,description</Param>            
+            <Param name="uuid"><Uuid/></Param>
+            <Param name="field"><Var name="PARAMS" key="field"/></Param>
+            <Param name="id_agreement_statement_type"><Var name="PARAMS" key="id_agreement_statement_type"/></Param>
+            <Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+            <Param name="mandatory_response_value">
+              <If condition="$PARAMS->mandatory_response_value == ''">
+                <Then><Null/></Then>
+                <Else><Var name="PARAMS" key="mandatory_response_value"/></Else>
+              </If>
+            </Param>
+            <Param name="expire_date_expression"><Var name="PARAMS" key="expire_date_expression"/></Param>
+            <Param name="id_controlled_document">
+              <If condition="$PARAMS->id_controlled_document == ''">
+                <Then><Null/></Then>
+                <Else><Var name="PARAMS" key="id_controlled_document"/></Else>
+              </If>
+            </Param>
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+            <Param name="statement"><Var name="PARAMS" key="statement"/></Param>
+            <Param name="name"><Var name="PARAMS" key="name"/></Param>
+            <Param name="description"><Var name="PARAMS" key="description"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="delete" doc="Delete a record by id from table fw_agreement_statement">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <!-- Delete also the multilang fields -->
+          <DataAccess method="delete">
+            <Param name="_entity">fw_agreement_statement</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="_multilang">true</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="update" doc="Updates a record in table fw_agreement_statement">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="field" type="text" required="false"/>
+        <Param name="id_agreement_statement_type" type="int" required="false"/>
+        <Param name="is_active" type="int" required="false"/>
+        <Param name="mandatory_response_value" type="int" required="false"/>
+        <Param name="expire_date_expression" type="text" required="false"/>
+        <Param name="id_controlled_document" type="int" required="false"/>
+        <Param name="uuid" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="name" type="text" required="true"/>
+        <Param name="description" type="text" required="true"/>
+        <Param name="statement" type="text" required="true"/>        
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_agreement_statement</Param>
+          <Param name="_multilang_fields" >statement,name,description</Param>  
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+
+    <Function name="search" doc="Search records from table fw_agreement_statement">
+      <Params>
+        <Param name="id_agreement_statement_type" type="int"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="field" type="text" doc=""/>
+        <External name="id_agreement_statement_type" type="int" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="mandatory_response_value" type="int" doc=""/>
+        <External name="expire_date_expression" type="text" doc=""/>
+        <External name="id_controlled_document" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,statement.search">
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+            <Param name="id_agreement_statement_type"><Var name="PARAMS" key="id_agreement_statement_type"/></Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getById" doc="Get a record by id from table fw_agreement_statement">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="lang" type="text" required="false"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="field" type="text" doc=""/>
+        <External name="id_agreement_statement_type" type="int" doc=""/>
+        <External name="is_active" type="int" doc=""/>
+        <External name="mandatory_response_value" type="int" doc=""/>
+        <External name="expire_date_expression" type="text" doc=""/>
+        <External name="id_controlled_document" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+				<Var name="selectedLanguage">
+					<If condition="$PARAMS->lang == ''">
+						<Then><Var name="USER" key="lang"/></Then>
+						<Else><Var name="PARAMS" key="lang"/></Else>
+					</If>
+				</Var>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_agreement_statement</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="_lang"><Var name="selectedLanguage"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
     <Function name="getIdByCode" doc="Get a record id by its code from entity fw_agreement_statement">
       <Params>
         <Param name="code" type="string" required="true"/>
@@ -115,6 +290,17 @@
       </Begin>
     </Function>    
 
+    <Function name="getAllExtended" doc="Gets more fields">
+      <Params/>
+      <Return type="multiple" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,statement.getAll">
+            <Param name="_lang"><Var name="USER" key="lang"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
 
   </Library>
 </Node>

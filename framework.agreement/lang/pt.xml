@@ -1,14 +1,37 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <Lang>
    <Strings>
-		<String key="fillSuccess" value="Formulário preenchido com sucesso"/>
-		<String key="statements" value="Declarações"/>
-		<String key="validUntil" value="Válido até:"/>
-    <String key="id_agreement" value="Autorização"/>
-    <String key="removeAgreementFromList" value="Remover da lista"/>
-    <String key="downloadAgreement" value="Descarregar Autorizações"/>
+	<String key="fillSuccess" value="Formulário preenchido com sucesso"/>
+	<String key="statements" value="Declarações"/>
+	<String key="validUntil" value="Válido até:"/>
+   <String key="id_agreement" value="Autorização"/>
+   <String key="removeAgreementFromList" value="Remover da lista"/>
+   <String key="downloadAgreement" value="Descarregar Autorizações"/>
+   <String key="manageSchema" value="Gerir Esquemas"/>
+   <String key="manageStatement" value="Gerir Declarações"/>
+
+    <!-- Actions -->
+    <String key="previewStatements" value="Pré-visualizar"/>
+
+    <!-- Fields -->
+    <String key="statement" value="Declaração"/>
+    <String key="id_agreement_statement_type" value="Tipo"/>
+    <String key="is_active" value="Ativo"/>
+    <String key="mandatory_response_value" value="Valor obrigatório"/>
+    <String key="expire_date_expression" value="Expressão para a data de expiração"/>
+    <String key="id_controlled_document" value="Documento controlado"/>
+    
+    
+    
     
    </Strings>
    <HelpStrings>
+      <Help key="mandatory_response_value">
+         <![CDATA[
+         Apenas aceita a resposta que estiver definida aqui.<br/>
+         Por exemplo se quisermos que o utilizador seja obrigado a aceitar uma checkbox, então definimos este valor como sendo 1.<br/>
+         Se a checkbox não estiver selecionada, então o valor recebido é 0. Como 0 != 1 então a validação falha.<br/>
+         ]]>
+      </Help>
    </HelpStrings>
 </Lang>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen id="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Select id="id_agreement_statement_type" datasource="call:framework,agreement.statement.type,api,getAll" bindid="id" bindvalue="name" action="search"/>
+        <ButtonGroup>
+          <Button id="insert" type="add" label="insert" action="insert"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="id_agreement_statement_type" datasource="call:framework,agreement.statement.type,api,getAll" bindid="id" bindvalue="name" label="id_agreement_statement_type"/>
+            <Column name="code" label="code"/>
+            <Column name="statement"/>
+            <Column name="name"/>
+            <Column name="is_active" label="is_active"/>
+            <Column name="mandatory_response_value" label="mandatory_response_value"/>
+            <Column name="expire_date_expression" label="expire_date_expression"/>
+            <Column name="id_controlled_document" label="id_controlled_document" datasource="call:framework,rm.controlledDocument,api,getAll" bindid="id" bindvalue="name"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" actionvalue="id"/>
+            <Action name="edit" actionvalue="id"/>
+            <Action name="delete" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen id="scrView" doc="View Screen">
+      <Form name="frmView">
+        <Static id="id"/>
+        <Static id="field"/>
+        <Static id="id_agreement_statement_type"/>
+        <Static id="is_active"/>
+        <Static id="mandatory_response_value"/>
+        <Static id="expire_date_expression"/>
+        <Static id="id_controlled_document" label="id_controlled_document" datasource="call:framework,rm.controlledDocument,api,getAll" bindid="id" bindvalue="name"/>
+        <Static id="code"/>
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+          <Button id="edit" type="update" label="edit" action="edit"/>
+          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    <Screen id="scrEdit" doc="Edit Screen">
+      <Form name="frmEdit">
+        <Static id="id" label="id" required="true"/>
+        <Text id="code" label="code" required="true"/>
+        <Select id="id_agreement_statement_type" datasource="call:framework,agreement.statement.type,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <Text id="statement" label="statement" multilang="true" required="true"/>
+        <Text id="name" label="name" multilang="true" required="true"/>
+        <TextArea id="description" label="description" multilang="true" required="true"/>
+        <CodeEditor id="field" label="field" required="true"/>
+        <Checkbox id="is_active" label="is_active" required="true"/>
+        <Int id="mandatory_response_value" help="true" required="false"/>
+        <Text id="expire_date_expression" label="expire_date_expression" required="false"/>
+        <Select id="id_controlled_document" label="id_controlled_document" datasource="call:framework,rm.controlledDocument,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <ButtonGroup>
+          <Button id="cancel" type="cancel" label="cancel" action="search"/>
+          <Button id="save" type="update" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+    <Action name="search" screen="scrSearch">
+      <If condition="$defaultData-&gt;__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param>
+              <Var name="defaultData"/>
+            </Param>
+          </Control>
+        </Then>
+      </If>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Call library="framework,agreement.statement,api" function="search">
+            <Param name="id_agreement_statement_type">
+              <Var name="currentData" key="id_agreement_statement_type"/>
+            </Param>
+            <Param name="pagesize">
+              <Control method="getPageSize" object="grdSearchResult"/>
+            </Param>
+            <Param name="pagenum">
+              <Control method="getCurrentPage" object="grdSearchResult"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="view" screen="scrView">
+      <Var name="selectedId" process="true">
+        <ActionValue/>
+      </Var>
+      <Control method="bind" object="frmView">
+        <Param>
+          <Call library="framework,agreement.statement,api" function="getById">
+            <Param name="id">
+              <ActionValue/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="save">
+      <If condition="@selectedId == ''">
+        <Then>
+          <Call library="framework,agreement.statement,api" function="add" params="POSTDATA"/>
+        </Then>
+        <Else>
+          <Call library="framework,agreement.statement,api" function="update" params="POSTDATA">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Else>
+      </If>
+      <Action name="search"/>
+    </Action>
+    <Action name="insert" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <Null/>
+      </Var>
+      <!-- Add empty language boxes workaround-->
+      <Var name="language"><Set/></Var>
+      <Var name="language" key="pt"><String/></Var>
+      <Var name="language" key="en"><String/></Var>
+      <Var name="defaults"><Set/></Var>
+      <Var name="defaults" key="statement"><Var name="language"/></Var>
+      <Var name="defaults" key="name"><Var name="language"/></Var>
+      <Var name="defaults" key="description"><Var name="language"/></Var>
+      <Control method="bind" object="frmEdit">
+        <Param><Var name="defaults"/></Param>
+      </Control>
+    </Action>
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Call library="framework,agreement.statement,api" function="delete">
+        <Param name="id">
+          <Var name="selectedId" process="true"/>
+        </Param>
+      </Call>
+      <Action name="search"/>
+    </Action>
+    <Action name="edit" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Control method="bind" object="frmEdit">
+        <Param>
+          <Call library="framework,agreement.statement,api" function="getById">
+            <Param name="id"><Var name="selectedId" process="true"/></Param>
+            <Param name="lang">*</Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

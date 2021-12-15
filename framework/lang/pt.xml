@@ -15,6 +15,7 @@
         <String key="add" value="Adicionar"/>
         <String key="insert" value="Inserir"/>
         <String key="search" value="Pesquisar"/>
+        <String key="filter" value="Filtrar"/>
         <String key="edit" value="Editar"/>
         <String key="view" value="Ver"/>
         <String key="save" value="Gravar"/>
@@ -40,6 +41,7 @@
         <String key="_modification_ip" value="IP Modificação"/>
         <String key="_submission" value="Submissão"/>
 
+        <String key="result" value="Resultado"/>
         <String key="first" value="Primeiro"/>
         <String key="last" value="Último"/>
         <String key="previous" value="Anterior"/>
@@ -56,6 +58,11 @@
         <String key="email" value="e-Mail"/>
         <String key="bugArea" value="Área"/>
 
+        <String key="start_date" value="Início"/>
+        <String key="startDate" value="Início"/>
+        <String key="end_date" value="Fim"/>
+        <String key="endDate" value="Fim"/>
+
 
         <String key="actions" value="Ações"/>
         <String key="action" value="Ação"/>
@@ -66,8 +73,10 @@
         <String key="toggleMenu" value="Alternar Menu" />
 
         <String key="id" value="Id"/>
+        <String key="uuid" value="Id Único"/>
         <String key="ficheiro" value="Ficheiro"/>
         <String key="name" value="Nome"/>
+        <String key="code" value="Código"/>
         <String key="order" value="Ordem"/>
         <String key="default" value="Omissão"/>
         <String key="active" value="Ativo"/>
