@@ -185,6 +185,7 @@
 						<Var name="statements" key="$statement->code"><Var name="statement"/></Var>
 					</ForEach>
 					
+					
 					<ForEach var="responseData" item="response">
 						<Var name="statement"><Var name="statements" key="$response->code"/></Var>
 						<!-- Check if this item has already a response, in this case update it -->

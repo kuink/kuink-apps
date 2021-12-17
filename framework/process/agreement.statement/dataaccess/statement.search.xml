@@ -8,7 +8,7 @@
     <Param name="_lang" />
   </Params>
   <Body>
-    <SqlPaginated>
+    <Sql>
       <XSql>
         <XSelect>
           <XField>
@@ -53,6 +53,6 @@
         	<XOrder>stt.order</XOrder>
         </XOrderBy>
       </XSql>
-    </SqlPaginated>
+    </Sql>
   </Body>
 </Method>
