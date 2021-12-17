@@ -54,6 +54,7 @@
 			</Then>
 		</If>
 		  
+		
 		<Var name="submitedData">
 	       <Call library="framework,form,api" function="getSubmitedData">
 	         <Param name="id"><Var name="PARAMS" key="idForm"/></Param>
