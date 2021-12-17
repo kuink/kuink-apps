@@ -15,8 +15,8 @@
 	  </Params>
     <Screens>
     	<Screen id="showScreen">
-		<HtmlContainer name="title"/>  
-		<HtmlContainer name="subtitle"/>				  	
+		<HtmlContainer name="titleShow"/>  
+		<HtmlContainer name="subtitleShow"/>				  	
       	<Form name="viewForm" title="viewForm" freeze="true">
       		<ButtonGroup>
       			<Button id="back" type="back" action="back"/>
@@ -34,7 +34,7 @@
 			<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
 		</Call>
 		</Var>
-		<Control method="bind" object="title">
+		<Control method="bind" object="titleShow">
 			<Param>
 				<Lang key="title">
 					<Param><Var name="form" key="description"/></Param>
@@ -44,7 +44,7 @@
 		</Control>
 		<If condition="$PARAMS->subtitle != ''">
 			<Then>
-			  <Control method="bind" object="subtitle">
+			  <Control method="bind" object="subtitleShow">
 				<Param>
 				  <Lang key="subtitle">
 					<Param><Var name="PARAMS" key="subtitle"/></Param>
