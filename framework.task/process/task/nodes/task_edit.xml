@@ -33,20 +33,19 @@
 			 <Date id="end_date" name="end_date" visible="true" help="false">
 			 	<Rule attr="visible" condition="$just_one_time == '1'" value="false" runat="client"/>
 			 </Date>
-			 <Text id="start_time" name="end_time" required="true" help="false" />
-			 <Text id="end_time" name="end_time" help="false">
+			 <Text id="start_time" required="true" help="false" />
+			 <Text id="end_time" help="false">
 			 	<Rule attr="visible" condition="$just_one_time == '1'" value="false" runat="client"/>
 			 </Text>
 			 <Int id="run_interval" help="false"/>
 
-
-			 <Checkbox id="dow_1" name="dow_1" help="false" label="monday"/>
-			 <Checkbox id="dow_2" name="dow_2" help="false" label="tuesday"/>
-			 <Checkbox id="dow_3" name="dow_3" help="false" label="wednesday"/>
-			 <Checkbox id="dow_4" name="dow_4" help="false" label="thursday"/>
-			 <Checkbox id="dow_5" name="dow_5" help="false" label="friday"/>
-			 <Checkbox id="dow_6" name="dow_6" help="false" label="saturday"/>
-			 <Checkbox id="dow_7" name="dow_7" help="false" label="sunday"/>
+			 <Checkbox id="dow_1" help="false" label="monday"/>
+			 <Checkbox id="dow_2" help="false" label="tuesday"/>
+			 <Checkbox id="dow_3" help="false" label="wednesday"/>
+			 <Checkbox id="dow_4" help="false" label="thursday"/>
+			 <Checkbox id="dow_5" help="false" label="friday"/>
+			 <Checkbox id="dow_6" help="false" label="saturday"/>
+			 <Checkbox id="dow_7" help="false" label="sunday"/>
 
        <DateTime id="run_next" name="run_next" />
 			 <ButtonGroup>

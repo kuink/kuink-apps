@@ -14,8 +14,8 @@
 		<Screen id="screen001">
 			<Form name="test" title="01.02">
 			 <Column id="col1"/>
-			 <Text id="name" name="name" label="name" required="true"/>
-			 <Text id="name2" name="name2" label="name2"/>
+			 <Text id="name" label="name" required="true"/>
+			 <Text id="name2" label="name2"/>
 			 <ButtonGroup>
 			   <Button type="cancel" id="prev" label="prev" action="prev"/>  
 			   <Button type="submit" id="next" label="next" action="next"/>
@@ -46,4 +46,3 @@
 
 	</Actions>
 </Node>
-

@@ -20,9 +20,7 @@
     <String key="mandatory_response_value" value="Valor obrigatório"/>
     <String key="expire_date_expression" value="Expressão para a data de expiração"/>
     <String key="id_controlled_document" value="Documento controlado"/>
-    
-    
-    
+    <String key="levels" value="Aplicado aos anos"/>
     
    </Strings>
    <HelpStrings>

@@ -42,8 +42,8 @@
         <If condition="$result == 0">
           <Then>
             <Var name="id">
-              <Execute method="framework,generic,insert" params="PARAMS">
-                <Param name="table">fw_capability</Param>
+              <DataAccess method="insert" params="PARAMS">
+                <Param name="_entity">fw_capability</Param>
                 <Param name="_creation">
                   <DateTimeLib method="Now"/>
                 </Param>
@@ -56,7 +56,7 @@
                 <Param name="_modification_ip">
                   <Var name="USER" key="ip"/>
                 </Param>
-              </Execute>
+              </DataAccess>
             </Var>
             <Var name="result">
               <Var name="id"/>

@@ -10,15 +10,15 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen" template="1col_LeftMenu">
+    <Screen name="scrSearch" doc="Search Screen" template="1col_LeftMenu">
       <Form name="frmSearch" persist="true">
-        <Int id="id"/>
-        <Select id="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
-        <Select id="id_user" datasource="call:framework,user,api,getAll" bindid="id" bindvalue="username"/>
-        <Select id="id_role" datasource="call:framework,user.role,api,getAll" bindid="id" bindvalue="code"/>
+        <Int name="id"/>
+        <Select name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" inline="true"/>
+        <Select name="id_user" datasource="call:framework,user,api,getAll" searchable="true" bindid="id" bindvalue="username"/>
+        <Select name="id_role" datasource="call:framework,user.role,api,getAll" searchable="true" bindid="id" bindvalue="code" inline="true"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -28,9 +28,13 @@
             <Column name="id_company" label="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
             <Column name="id_user" label="id_user" datasource="call:framework,user,api,getAll" bindid="id" bindvalue="username"/>
             <Column name="id_role" label="id_role" datasource="call:framework,user.role,api,getAll" bindid="id" bindvalue="code"/>
-            <Column name="_creation" label="_creation"/>
+            <Column name="_creation" label="_creation">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
             <Column name="_creation_ip" label="_creation_ip"/>
-            <Column name="_modification" label="_modification"/>
+            <Column name="_modification" label="_modification">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
             <Column name="_modification_ip" label="_modification_ip"/>
           </Columns>
           <Actions separator="true">
@@ -41,36 +45,36 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen" template="1col_LeftMenu">
+    <Screen name="scrView" doc="View Screen" template="1col_LeftMenu">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
-        <Static id="id_user" datasource="call:framework,user,api,getAll" bindid="id" bindvalue="username"/>
-        <Static id="id_role" datasource="call:framework,user.role,api,getAll" bindid="id" bindvalue="code"/>
-        <Static id="_creation"/>
-        <Static id="_creation_ip"/>
-        <Static id="_modification"/>
-        <Static id="_modification_ip"/>
+        <Static name="id"/>
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Static name="id_user" datasource="call:framework,user,api,getAll" bindid="id" bindvalue="username"/>
+        <Static name="id_role" datasource="call:framework,user.role,api,getAll" bindid="id" bindvalue="code"/>
+        <Static name="_creation">
+          <Formatter name="DateTime" method="shortDateTime"/>
+        </Static>
+        <Static name="_creation_ip"/>
+        <Static name="_modification">
+          <Formatter name="DateTime" method="shortDateTime"/>
+        </Static>
+        <Static name="_modification_ip"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen" template="1col_LeftMenu">
+    <Screen name="scrEdit" doc="Edit Screen" template="1col_LeftMenu">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Select id="id_company" label="id_company" required="true" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
-        <Select id="id_user" label="id_user" required="true" datasource="call:framework,user,api,getAll" bindid="id" bindvalue="username"/>
-        <Select id="id_role" label="id_role" required="true" datasource="call:framework,user.role,api,getAll" bindid="id" bindvalue="code"/>
-        <Int id="_creation" label="_creation" required="false"/>
-        <Text id="_creation_ip" label="_creation_ip" required="false"/>
-        <Int id="_modification" label="_modification" required="false"/>
-        <Text id="_modification_ip" label="_modification_ip" required="false"/>
+        <Static name="id" label="id" required="true"/>
+        <Select name="id_company" label="id_company" required="true" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Select name="id_user" label="id_user" required="true" searchable="true" datasource="call:framework,user,api,getAll" bindid="id" bindvalue="username"/>
+        <Select name="id_role" label="id_role" required="true" searchable="true" datasource="call:framework,user.role,api,getAll" bindid="id" bindvalue="code"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

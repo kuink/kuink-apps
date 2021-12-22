@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search
+  </Doc>
+  <Params>
+    <Param name="id_agreement_statement_type" />
+    <Param name="_lang" />
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            st.id, 
+            st.uuid,  
+            st.code as code, 
+            st.is_active as is_active, 
+            st.mandatory_response_value as mandatory_response_value, 
+						st.field as field,
+            st.id_agreement_statement_type as id_agreement_statement_type,
+            st.id_controlled_document as id_controlled_document,
+						stl.statement as statement,
+            stl.name as name, 
+            stl.description as description,
+            stt.code as statement_type_code,
+            sttl.name as statement_type_name,
+            sttl.description as statement_type_description,
+            st.expire_date_expression,
+            cd.code as controlled_document_code,
+            cd.name as controlled_document_name,
+            cd.uri_external as controlled_document_uri_external,
+            COALESCE(cdv.code, '') as controlled_document_version_current_code,
+            cdv.id as id_controlled_document_version
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_agreement_statement st
+            INNER JOIN fw_agreement_statement_lang stl ON (stl.id = st.id AND stl.lang='{param->_lang}')
+						INNER JOIN fw_agreement_statement_type stt ON (stt.id = st.id_agreement_statement_type)
+            INNER JOIN fw_agreement_statement_type_lang sttl ON (sttl.id = stt.id AND sttl.lang='{param->_lang}')            
+            LEFT OUTER JOIN fw_rm_controlled_document cd ON (cd.id = st.id_controlled_document)
+            LEFT OUTER JOIN fw_rm_controlled_document_version cdv ON (cdv.id = cd.id_current_version)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition optional="id_agreement_statement_type">  
+            st.id_agreement_statement_type = {param->id_agreement_statement_type}
+          </XCondition>
+        </XWhere>
+        <XOrderBy>
+        	<XOrder>stt.order</XOrder>
+        </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

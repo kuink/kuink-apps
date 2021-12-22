@@ -1,65 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-    <Libraries>
-        <Use name="UtilsLib" type="lib" />
-    </Libraries>
-    <Configuration />
-    <Params>
-    </Params>
-    <Screens>
-        <Screen id="main_screen" template="1col_LeftMenu">
-            <Menu name="permissions" id="permissions" icon="lock" label="permissions">
-                <Action name="go_users" id="go_users" label="users" modal="false" />
-                <Action name="go_allocations" id="go_allocations" label="allocations" modal="false" />
-                <Action name="init" id="init" label="----" modal="false" />
-                <Action name="go_capabilities" id="go_capabilities" label="capabilities" modal="false" />
-                <Action name="go_roles" id="go_roles" label="roles" modal="false" />
-                <Action name="go_roleCapabilities" id="go_roleCapabilities" label="roleCapabilities" modal="false" />
-            </Menu>
-            <Menu name="records" id="records" icon="file" label="records">
-                <Action name="go_listRecords" id="go_listRecords" label="listRecords" modal="false" />
-            </Menu>
-        </Screen>
-    </Screens>
-    <Actions>
-        <Action name="init" screen="main_screen">
-        	<UserMessage type="information">
-                <Lang key="Information Message"/>
-            </UserMessage>
-            <UserMessage type="error">
-                <Lang key="Error Message"/>
-            </UserMessage>		
-            <UserMessage type="warning">
-                <Lang key="Warning Message"/>
-            </UserMessage>
-            <UserMessage type="success">
-                <Lang key="Success Message"/>
-            </UserMessage>		
-        </Action>
+  <Libraries>
+    <Use name="UtilsLib" type="lib" />
+  </Libraries>
+  <Configuration />
+  <Params></Params>
+  <Screens>
+    <Screen name="scrMain" template="1col_LeftMenu">
+      <Menu name="permissions" icon="lock" label="permissions">
+        <Action name="processAction" label="users" actionvalue="manageUsers"/>
+        <Action name="processAction" label="allocations" actionvalue="manageAllocations"/>
+        <Action name="init" label="----"/>
+        <Action name="processAction" label="capabilities" actionvalue="manageCapabilities"/>
+        <Action name="processAction" label="roles" actionvalue="manageRoles"/>
+        <Action name="processAction" label="roleCapabilities" actionvalue="manageRoleCapabilities"/>
+      </Menu>
+      <Menu name="records" icon="file" label="records">
+        <Action name="processAction" label="listRecords" actionvalue="records"/>
+      </Menu>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scrMain"/>
 
-        <Action name="go_users">
-            <RaiseEvent name="manageUsers"/>
-        </Action>
-        <Action name="go_capabilities">
-            <RaiseEvent name="manageCapabilities"/>
-        </Action>
-        <Action name="go_roles">
-            <RaiseEvent name="manageRoles"/>
-        </Action>
-        <Action name="go_roleCapabilities">
-            <RaiseEvent name="manageRoleCapabilities"/>
-        </Action>
-        <Action name="go_allocations">
-            <RaiseEvent name="manageAllocations"/>
-        </Action>
-        <Action name="go_listRecords">
-            <RaiseEvent name="records"/>
-        </Action>
+    <Action name="processAction">
+      <Var name="eventName"><ActionValue/></Var>
+      <RaiseEvent name="$eventName" />
+    </Action>
 
-        <Action name="back">
-            <RaiseEvent name="back" />
-        </Action>
-    </Actions>
-    <Library>
-    </Library>
+    <Action name="back">
+      <RaiseEvent name="back" />
+    </Action>
+  </Actions>
+  <Library></Library>
 </Node>

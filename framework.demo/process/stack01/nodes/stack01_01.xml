@@ -82,18 +82,18 @@
                 <Option id="2">BBBB</Option>
               </Options>
             </Select>
-            <Text id="txt11" name="txt11" label="txt11" decoration="success"/>
-            <Text id="txt12" name="txt12" label="txt12" visible="true" required="true" >
+            <Text id="txt11" label="txt11" decoration="success"/>
+            <Text id="txt12" label="txt12" visible="true" required="true" >
                 <Rule attr="visible" condition="$state == '2'" value="false" runat="client"/>
             </Text>
             
-            <Tab id="second" name="second" label="second"/>
-            <Text id="txt21" name="txt21" label="txt21" >
+            <Tab id="second" label="second"/>
+            <Text id="txt21" label="txt21" >
               <Rule attr="visible" condition="$state == '1'" value="false" runat="client"/>
             </Text>
-            <Text id="txt22" name="txt22" label="txt22" required="false"/>
-            <Tab id="third" name="third" label="third"/>
-            <Text id="txt31" name="txt31" label="txt31" required="false"/>
+            <Text id="txt22" label="txt22" required="false"/>
+            <Tab id="third" label="third"/>
+            <Text id="txt31"  label="txt31" required="false"/>
             <ButtonGroup>
               <Button type="cancel" id="prev" label="prev" action="prev"/>  
               <Button type="submit" id="next" label="next" action="next">
@@ -356,4 +356,3 @@
 	 </Function>
 	</Library>
 </Node>
-

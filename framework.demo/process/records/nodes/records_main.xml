@@ -12,15 +12,15 @@
       <Screen id="screenTest" name="screenTest">
           <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
           <Form name="aa" id="aa">
-            <Int id="b" name="b" required="true" />
-            <Text id="s" name="s" required="true" icon="envelope" help="aaasdsfdsdf"/>
-            <DateTime id="k" name="k"/>
-            <Date id="j" name="j" disabled="true"/>
-            <Select id="id_school_year" name="id_school_year" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" action="init" />
-            <TextArea id="p" name="p" />
-            <Static id="m" name="m" />
-            <Header name="m2" id="m2" label="My Header"/>
-            <Checkbox name="c1" id="c1" label="Checkbox"/>
+            <Int id="b" required="true" />
+            <Text id="s" required="true" icon="envelope" help="aaasdsfdsdf"/>
+            <DateTime id="k" />
+            <Date id="j" disabled="true"/>
+            <Select id="id_school_year" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" action="init" />
+            <TextArea id="p" />
+            <Static id="m" />
+            <Header id="m2" label="My Header"/>
+            <Checkbox id="c1" label="Checkbox"/>
             <CheckBoxList id="educationalProjectItems" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" readonly="true" />
             <ButtonGroup>
                 <Button type="submit" id="submit" action="ola" confirm="asdasdadavvvvv" />
@@ -29,20 +29,20 @@
           <Grid id="gridExample" name="gridExample" title="Grid de Exemplo">
               <Template>
                   <Columns>
-                      <Column id="id" name="id"/>
-                      <Column id="name" name="name"/>
+                      <Column name="id"/>
+                      <Column name="name"/>
                   </Columns>
                   
               </Template>
               <Actions>
-                        <Action id="init" name="init" icon="list" confirm="true"/>
+                        <Action name="init" icon="list" confirm="true"/>
               </Actions>
           </Grid>
       </Screen>
       <Screen id="screenTest2" name="screenTest2">
           <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
           <Form name="aa" id="aa">
-            <Int id="c2" name="c2" required="true" />
+            <Int id="c2" required="true" />
             <ButtonGroup>
                 <Button type="submit" id="submit" action="ola"/>
             </ButtonGroup>

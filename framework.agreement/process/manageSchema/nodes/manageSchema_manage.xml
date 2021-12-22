@@ -25,7 +25,7 @@
             <Column name="uuid"/>
             <Column name="code"/>
             <Column name="name"/>
-            <Column name="description"/>
+            <Column name="levels"/>
           </Columns>
           <Actions separator="true">
             <Action name="statements" actionvalue="id"/>
@@ -122,7 +122,15 @@
           <Button id="cancel" type="cancel" action="statements"/>
         </ButtonGroup>
       </Form>
-    </Screen>    
+    </Screen> 
+    <Screen id="scrPreview">
+      <Form name="frmView">
+        <ButtonGroup>
+          <Button id="back" type="back" label="back" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <Custom name="statementsCtrl" control="framework.agreement,manage,show"/>
+    </Screen>   
   </Screens>
   <Actions>
     <Action name="init">
@@ -288,8 +296,37 @@
         <Param><Var name="result"/></Param>
       </Control>
     </Action>    
-    <Action name="previewStatements" screen="scrPreviewStatements">
-      <!-- Get schema data -->
+    <Action name="previewStatements" screen="scrPreview">
+      <Var name="selectedId" process="true">
+        <ActionValue/>
+      </Var>
+      <Var name="schema" dump="true">
+        <Call library="framework,agreement.schema,api" function="getById">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+
+      <Control method="bind" object="statementsCtrl">
+        <Param name="schemaCode"><Var name="schema" key="code"/></Param>
+        <Param name="guidObject">PREVIEW</Param>        	
+        <!--Param name="guidObjectContext"><SetToJson><Var name="context"/></SetToJson></Param -->
+        <Param name="data"><SetToJson><Set/></SetToJson></Param>
+        <Param name="useTemporary"><Int>1</Int></Param>
+        <Param name="startDate"><Now/></Param>
+        <Param name="postMessage">
+          <FormatterLib method="format">
+            <Param>Style</Param>
+            <Param>nl2br</Param>
+            <Param>
+              <Call library="gecol.core,system.config,api" function="getSysConfigMessage">
+                <Param name="code">enroll_disclaimer_end</Param>    
+              </Call>							
+            </Param>
+            <Param><Set></Set></Param>
+          </FormatterLib>						
+        </Param>
+      </Control>
+
       <!-- Get the statements -->
     </Action>  
 
@@ -349,6 +386,10 @@
       </Call>
       <Action name="init"/>
     </Action>    
+
+    <Action name="backAgreement">
+      <Action name="search"/>
+    </Action>
 
   </Actions>
   <Library forceinterface="true">

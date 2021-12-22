@@ -9,7 +9,17 @@
         <String key="allocations"><![CDATA[Allocations]]></String>
         <String key="records"><![CDATA[Records]]></String>
         <String key="listRecords"><![CDATA[Listar]]></String>
+
+        <!-- fw_user -->
+        <String key="username"><![CDATA[Nome Utilizador]]></String>
+        <String key="id_user"><![CDATA[Id Utilizador]]></String>
+        <String key="id_company"><![CDATA[Empresa]]></String>
+        <String key="id_role"><![CDATA[Papel]]></String>
+
+        <!-- fw_capability -->
+        <String key="is_global"><![CDATA[Global?]]></String>
     </Strings>
     <HelpStrings>
+        <Help key="is_global"><![CDATA[Uma capacidade global aplica-se a todas as companhias.]]></Help>
     </HelpStrings>
 </Lang>

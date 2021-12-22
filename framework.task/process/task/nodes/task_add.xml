@@ -27,8 +27,8 @@
 			 <Date id="end_date" name="end_date" visible="true" help="false">
 			 	<Rule attr="visible" condition="$just_one_time == '1'" value="false" runat="client"/>
 			 </Date>
-			 <Text id="start_time" name="end_time" required="true" help="false" />
-			 <Text id="end_time" name="end_time" help="false">
+			 <Text id="start_time" required="true" help="false" />
+			 <Text id="end_time" help="false">
 			 	<Rule attr="visible" condition="$just_one_time == '1'" value="false" runat="client"/>
 			 </Text>
 			 <Int id="run_interval" help="false"/>
@@ -85,4 +85,3 @@
 		</Action>
 	</Actions>
 </Node>
-

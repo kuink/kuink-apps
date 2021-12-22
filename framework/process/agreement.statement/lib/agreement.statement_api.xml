@@ -135,7 +135,7 @@
       </Return>
       <Begin>
         <Return>
-          <DataAccess method="this,this,statement.search">
+          <DataAccess method="this,this,statement.searchPaginated">
             <Param name="_lang"><Var name="USER" key="lang"/></Param>
             <Param name="id_agreement_statement_type"><Var name="PARAMS" key="id_agreement_statement_type"/></Param>
             <Param name="_pageNum">
