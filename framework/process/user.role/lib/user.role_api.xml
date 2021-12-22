@@ -60,8 +60,8 @@
         <If condition="$result == 0">
           <Then>
             <Var name="id">
-              <Execute method="framework,generic,insert" params="PARAMS">
-                <Param name="table">fw_role</Param>
+              <DataAccess method="insert" params="PARAMS">
+                <Param name="_entity">fw_role</Param>
                 <Param name="_creation">
                   <DateTimeLib method="Now"/>
                 </Param>
@@ -74,7 +74,7 @@
                 <Param name="_modification_ip">
                   <Var name="USER" key="ip"/>
                 </Param>
-              </Execute>
+              </DataAccess>
             </Var>
             <Var name="result">
               <Var name="id"/>
@@ -144,9 +144,9 @@
         <If condition="$result == 0">
           <Then>
             <Var name="id">
-              <Execute method="framework,generic,insert" params="PARAMS">
-                <Param name="table">fw_role_capability</Param>
-              </Execute>
+              <DataAccess method="insert" params="PARAMS">
+                <Param name="_entity">fw_role_capability</Param>
+              </DataAccess>
             </Var>
             <Var name="result">
               <Var name="id"/>
@@ -248,8 +248,8 @@
         </If>
         <If condition="$result == 0">
           <Then>
-            <Execute method="framework,generic,update" params="PARAMS">
-              <Param name="table">fw_role</Param>
+            <DataAccess method="update" params="PARAMS">
+              <Param name="_entity">fw_role</Param>
               <Param name="_creation">
                 <DateTimeLib method="Now"/>
               </Param>
@@ -262,7 +262,7 @@
               <Param name="_modification_ip">
                 <Var name="USER" key="ip"/>
               </Param>
-            </Execute>
+            </DataAccess>
             <Var name="result">
               <Var name="id"/>
             </Var>
@@ -293,7 +293,7 @@
               </Permissions-->
         <!-- Set default values -->
         <Var name="roles">
-          <Execute method="this,this,role.search">
+          <DataAccess method="this,this,role.search">
             <Param name="id_company">
               <Var name="id_company"/>
             </Param>
@@ -306,7 +306,7 @@
             <Param name="capabilities">
               <Var name="capabilities"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="roles"/>
@@ -336,12 +336,12 @@
               </Permissions-->
         <!-- Set default values -->
         <Var name="role">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_role</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
             <Param name="id">
               <Var name="id"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="role"/>
@@ -372,12 +372,12 @@
               </Permissions-->
         <!-- Set default values -->
         <Var name="role">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_role</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
             <Param name="code">
               <Var name="code"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="role"/>
@@ -398,15 +398,15 @@
               </Permissions-->
         <Var name="result">0</Var>
         <Var name="role">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_role</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
             <Param name="id">
               <Var name="id"/>
             </Param>
             <Param name="id_company">
               <Var name="id_company"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Var name="rid">
           <Var name="role" key="id"/>
@@ -435,15 +435,15 @@
               </Permissions-->
         <Var name="result">0</Var>
         <Var name="role">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_role</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
             <Param name="code">
               <Var name="code"/>
             </Param>
             <Param name="id_company">
               <Var name="id_company"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Var name="rid">
           <Var name="role" key="id"/>
@@ -466,12 +466,12 @@
       <Return type="int" doc=""/>
       <Begin>
         <Return>
-          <Execute method="framework,generic,delete">
-            <Param name="table">fw_role</Param>
+          <DataAccess method="framework,generic,delete">
+            <Param name="_entity">fw_role</Param>
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -499,7 +499,7 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="this,this,search">
+          <DataAccess method="this,this,search">
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
@@ -521,7 +521,7 @@
             <Param name="pagesize">
               <Var name="PARAMS" key="pagesize"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -540,10 +540,10 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,getAll">
-            <Param name="table">fw_role</Param>
-            <Param name="fields">*</Param>
-          </Execute>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_role</Param>
+            <Param name="_attributes">*</Param>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>

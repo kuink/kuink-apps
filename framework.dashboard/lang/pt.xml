@@ -15,6 +15,7 @@
         <String key="id_user"><![CDATA[Id Utilizador]]></String>
         <String key="id_company"><![CDATA[Empresa]]></String>
         <String key="id_role"><![CDATA[Papel]]></String>
+        <String key="id_capability"><![CDATA[Capacidade]]></String>
 
         <!-- fw_capability -->
         <String key="is_global"><![CDATA[Global?]]></String>

@@ -10,11 +10,11 @@
   <Configuration/>
   <Screens>
     <Screen name="scrSearch" doc="Search Screen" template="1col_LeftMenu">
-      <Form name="frmSearch" persist="true">
+      <Form name="frmSearch" title="search" persist="true">
         <Int name="id"/>
         <Text name="name" inline="true"/>
         <Text name="code"/>
-        <Checkbox name="is_global" inline="true"/>
+        <Select name="is_global" datasource="call:framework,generic,api,getYesNoDataSource" bindid="id" bindvalue="value" inline="true"/>
         <ButtonGroup>
           <Button name="search" type="search" label="search" action="search"/>
           <Button name="insert" type="add" label="insert" action="insert"/>
@@ -46,7 +46,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen name="scrView" doc="View Screen" template="1col_LeftMenu">
+    <Screen name="scrView" title="view" doc="View Screen" template="1col_LeftMenu">
       <Form name="frmView">
         <Static name="id"/>
         <Static name="name"/>
@@ -70,7 +70,7 @@
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen" template="1col_LeftMenu">
-      <Form name="frmEdit">
+      <Form name="frmEdit" title="edit">
         <Static name="id" label="id" required="true"/>
         <Text name="name" label="name" required="true"/>
         <Text name="code" label="code" required="true"/>

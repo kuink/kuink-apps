@@ -34,6 +34,7 @@
         <String key="home" value="Home"/>
         <String key="file" value="Ficheiro"/>
         <String key="help" value="Ajuda"/>
+        <String key="is_active" value="Ativo"/>
 
         <String key="_creation" value="Criação"/>
         <String key="_creation_ip" value="IP Criação"/>

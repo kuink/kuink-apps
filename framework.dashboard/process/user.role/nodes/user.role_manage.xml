@@ -11,12 +11,12 @@
   <Configuration/>
   <Screens>
     <Screen name="scrSearch" doc="Search Screen" template="1col_LeftMenu">
-      <Form name="frmSearch" persist="true">
+      <Form name="frmSearch" title="search" persist="true">
         <Int name="id"/>
-        <Select name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Select name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" inline="true"/>
         <Text name="name"/>
-        <Text name="code"/>
-        <Int name="is_active"/>
+        <Text name="code" inline="true"/>
+        <Select name="is_active" datasource="call:framework,generic,api,getYesNoDataSource" bindid="id" bindvalue="value"/>
         <ButtonGroup>
           <Button name="search" type="search" label="search" action="search"/>
           <Button name="insert" type="add" label="insert" action="insert"/>
@@ -30,9 +30,13 @@
             <Column name="name" label="name"/>
             <Column name="code" label="code"/>
             <Column name="is_active" label="is_active"/>
-            <Column name="_creation" label="_creation"/>
+            <Column name="_creation" label="_creation">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
             <Column name="_creation_ip" label="_creation_ip"/>
-            <Column name="_modification" label="_modification"/>
+            <Column name="_modification" label="_modification">
+              <Formatter name="DateTime" method="shortDateTime"/>
+            </Column>
             <Column name="_modification_ip" label="_modification_ip"/>
           </Columns>
           <Actions separator="true">
@@ -44,15 +48,19 @@
       </Grid>
     </Screen>
     <Screen name="scrView" doc="View Screen" template="1col_LeftMenu">
-      <Form name="frmView">
+      <Form name="frmView" title="view">
         <Static name="id"/>
         <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
         <Static name="name"/>
         <Static name="code"/>
         <Static name="is_active"/>
-        <Static name="_creation"/>
+        <Static name="_creation">
+          <Formatter name="DateTime" method="shortDateTime"/>
+        </Static>
         <Static name="_creation_ip"/>
-        <Static name="_modification"/>
+        <Static name="_modification">
+          <Formatter name="DateTime" method="shortDateTime"/>
+        </Static>
         <Static name="_modification_ip"/>
         <ButtonGroup>
           <Button name="back" type="back" label="back" action="search"/>
@@ -62,16 +70,12 @@
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen" template="1col_LeftMenu">
-      <Form name="frmEdit">
+      <Form name="frmEdit" title="edit">
         <Static name="id" label="id" required="true"/>
         <Select name="id_company" label="id_company" required="true" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
         <Text name="name" label="name" required="true"/>
         <Text name="code" label="code" required="true"/>
-        <Int name="is_active" label="is_active" required="false"/>
-        <Int name="_creation" label="_creation" required="false"/>
-        <Text name="_creation_ip" label="_creation_ip" required="false"/>
-        <Int name="_modification" label="_modification" required="false"/>
-        <Text name="_modification_ip" label="_modification_ip" required="false"/>
+        <Checkbox name="is_active" label="is_active" required="false"/>
         <ButtonGroup>
           <Button name="cancel" type="cancel" label="cancel" action="search"/>
           <Button name="save" type="update" label="save" action="save"/>

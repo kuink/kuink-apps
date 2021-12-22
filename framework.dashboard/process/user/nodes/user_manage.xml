@@ -45,7 +45,7 @@
       </Grid>
     </Screen>
     <Screen name="scrView" doc="View Screen" template="1col_LeftMenu">
-      <Form name="frmView">
+      <Form name="frmView" title="view">
         <Static name="id"/>
         <Static name="username"/>
         <Static name="email"/>
@@ -66,7 +66,7 @@
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen" template="1col_LeftMenu">
-      <Form name="frmEdit">
+      <Form name="frmEdit" title="edit">
         <Static name="id" label="id" required="true"/>
         <Text name="username" label="username" required="false"/>
         <Text name="email" label="email" required="false"/>
