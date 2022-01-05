@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Libraries />
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen name="scrSample">
+      <Sample name="ctrlSample" type="primary" removable="true">
+        <Title attribute="name"/>
+        <Content attribute="description"/>
+        <Footer attribute="endNote"/>
+      </Sample>      
+      <Form name="frmSampleFormatter" title="sampleFormatter">
+        <Static name="name">
+          <!-- Call the sample formatter method header-->
+          <Formatter name="Sample" method="header"/>
+        </Static>
+        <Static name="description">
+          <!-- Call the sample formatter default method format-->
+          <Formatter name="Sample"/>
+        </Static>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scrSample">
+      <!-- Initialize the data to pass to the sample control -->
+      <Var name="data"><Set/></Var>
+      <Var name="data" key="name">Sample Title</Var>
+      <Var name="data" key="description">Sample Content</Var>
+      <Var name="data" key="endNote">Sample Footer</Var>
+
+      <!-- Bind this data to the sample control -->
+      <Control method="bind" object="ctrlSample">
+        <Param><Var name="data"/></Param>
+      </Control>
+
+      <!-- Bind the same data to the form to see the sample formatter in action -->
+      <Control method="bind" object="frmSampleFormatter">
+        <Param><Var name="data"/></Param>
+      </Control>      
+    </Action>
+  </Actions>
+  <Library />
+</Node>
