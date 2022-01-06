@@ -39,6 +39,7 @@
 			<Menu role="Teacher" label="LdapConnector@TODO" />
 			<Menu role="Teacher" label="RestConnector@TODO" />
 			<Menu role="Teacher" label="SoapConnector@TODO" />
+			<Menu role="Teacher" label="AppFileConnector" startuc="appFileConnector" startnode="" event="init" default="false"/>
 		</Menu>
 		<Menu role="Teacher" label="DataAccess">
 			<Menu role="Teacher" label="DataAccess.external@TODO" />
