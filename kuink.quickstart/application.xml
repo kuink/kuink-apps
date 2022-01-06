@@ -22,6 +22,7 @@
 			<Menu role="Teacher" label="Form.field.formatter@TODO" />
 			<Menu role="Teacher" startuc="form.field.inline" startnode="" event="init" label="Form.field.inline" default="false" />
 			<Menu role="Teacher" startuc="form.dateTime" startnode="" event="init" label="Form.dateTime" default="false" />
+			<Menu role="Teacher" startuc="sample.control" startnode="" event="init" label="Sample.control" default="false" />
 
 			<Menu role="Teacher" label="Grid.simple@TODO" />
 			<Menu role="Teacher" label="Grid.pageable@TODO" />

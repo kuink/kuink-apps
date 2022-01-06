@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Libraries>
+    <Use name="SampleLib" type="lib"/>
+  </Libraries>
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen name="scrSample">
+      <Sample name="ctrlSample" type="primary" removable="true">
+        <Title attribute="name"/>
+        <Content attribute="description"/>
+        <Footer attribute="endNote"/>
+      </Sample>      
+      <Grid name="grdSample" title="sampleFormatterAndSampleDatasource">
+        <Template>
+          <Columns>
+            <Column name="id">
+              <!-- Call the sample formatter method header-->
+              <Formatter name="Sample" method="header"/>
+            </Column>
+            <Column name="name">
+              <!-- Call the sample formatter default method format-->
+              <Formatter name="Sample"/>              
+            </Column>
+          </Columns>
+        </Template>
+      </Grid>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scrSample">
+      <!-- Initialize the data to pass to the sample control -->
+      <Var name="data"><Set/></Var>
+      <Var name="data" key="name">Sample Control Title</Var>
+      <Var name="data" key="description">Sample Control Content</Var>
+      <Var name="data" key="endNote">Sample Control Footer</Var>
+
+      <!-- Bind this data to the sample control -->
+      <Control method="bind" object="ctrlSample">
+        <Param><Var name="data"/></Param>
+      </Control>
+
+      <!-- Calling the Sample instruction -->
+      <Var name="sampleInstruction"><String/></Var>
+      <Var name="test"><String>PT</String></Var>
+      <Sample var="test">
+        <Branch value="PT">
+          <Var name="sampleInstruction">Portugal!!</Var>
+        </Branch>
+        <Branch value="EN">
+          <Var name="sampleInstruction">England!!</Var>
+        </Branch>
+        <Default>
+          <Var name="sampleInstruction">Any other country</Var>
+        </Default>  
+      </Sample>
+      
+      <Var name="sampleInstruction"><String.parse>Sample Instruction: $sampleInstruction</String.parse></Var>
+      <UserMessage type="information">
+        <Var name="sampleInstruction"/>
+      </UserMessage>
+
+      <!-- Calling the SampleLib -->
+      <Var name="sampleLib">
+        <SampleLib method="sample">
+          <Param>A</Param>
+          <Param>B</Param>
+          <Param>C</Param>
+        </SampleLib>
+      </Var>      
+      <Var name="sampleLib"><String.parse>Sample Library: $sampleLib</String.parse></Var>      
+      <UserMessage type="success">
+        <Var name="sampleLib"/>
+      </UserMessage>      
+
+      <!-- Calling the SampleConnector -->
+      <!-- Defining the datasource -->
+      <DataSource name="sampleDataSource" connector="SampleConnector">
+        <Param name="type">SampleType</Param>
+      </DataSource>      
+      <Var name="sampleDatasourceRecord" dump="true">
+        <DataAccess method="getAll" datasource="sampleDataSource">
+          <Param name="_entity">SampleEntity</Param>
+        </DataAccess>
+      </Var>      
+      <Control method="bind" object="grdSample">
+        <Param><Var name="sampleDatasourceRecord"/></Param>
+      </Control>
+    </Action>
+  </Actions>
+  <Library />
+</Node>
