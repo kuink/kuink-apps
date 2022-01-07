@@ -7,7 +7,7 @@
   <Params />
   <Screens>
     <Screen name="scrSample">
-      <Sample name="ctrlSample" type="primary" removable="true">
+      <Sample name="ctrlSample" type="success" removable="true">
         <Title attribute="name"/>
         <Content attribute="description"/>
         <Footer attribute="endNote"/>
