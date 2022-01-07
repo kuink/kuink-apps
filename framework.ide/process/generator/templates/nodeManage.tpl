@@ -9,7 +9,7 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         {foreach $attributes as $field}
         {if $field['search'] == 1}
@@ -44,7 +44,7 @@
       </Grid>
     </Screen>
 
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
         {foreach $attributes as $field}
         {if $field['form'] == 1}
@@ -57,7 +57,7 @@
       </Form>
     </Screen>
     
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         {foreach $attributes as $field}
         {if $field['form'] == 1}

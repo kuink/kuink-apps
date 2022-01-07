@@ -15,7 +15,7 @@
   </Params>
   <Screens>
 
-    <Screen id="scrIcons" doc="All icons used" template="1x2x1col">
+    <Screen name="scrIcons" doc="All icons used" template="1x2x1col">
       <Grid name="objects" pageable="false" collapsible="false" title="objects" position="top">
         <Template>
           <Columns>

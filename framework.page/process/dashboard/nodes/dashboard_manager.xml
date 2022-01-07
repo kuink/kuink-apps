@@ -7,7 +7,7 @@
         <Use name="UtilsLib" type="lib"/>
     </Libraries>
     <Screens>
-        <Screen id="dashScreen" template="1x2x1col">
+        <Screen name="dashScreen" template="1x2x1col">
         </Screen>
     </Screens>
     <Actions>
@@ -46,4 +46,3 @@
         </Action>
 	</Actions>
 </Node>
-

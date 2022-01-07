@@ -11,7 +11,7 @@
       <Param name="code" doc="The class code to edit"/>
   </Params>
   <Screens>
-    <Screen id="scrEdit">
+    <Screen name="scrEdit">
       <Form name="frmEditClass" title="editClass">
         <Column id="c1"/>
         <Header id="baseData"/>

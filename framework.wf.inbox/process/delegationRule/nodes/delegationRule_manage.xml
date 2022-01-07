@@ -12,7 +12,7 @@
   <Params>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
 	    <Form name="frmAdd">
         <ButtonGroup>
           <Button id="add" type="add" label="add" action="add"/>
@@ -47,7 +47,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrAdd">
+    <Screen name="scrAdd">
       <Form name="frmAdd">
         <Text id="name" required="true"/>
         <Text id="id_person_delegate" required="true"/>
@@ -60,7 +60,7 @@
         </ButtonGroup>           
       </Form>
     </Screen>
-    <Screen id="scrEdit">
+    <Screen name="scrEdit">
       <Form name="frmEdit">
         <Hidden id="id"/>
         <Text id="name" required="true"/>

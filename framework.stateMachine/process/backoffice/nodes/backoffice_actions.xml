@@ -16,7 +16,7 @@
 		<Param name="context" type="string" doc="The record context"/>
 	</Params>
 	<Screens>
-		<Screen id="previewScreen">
+		<Screen name="previewScreen">
 			<Form name="actionsForm" >
 				<Container id="messages"/>
 				<ButtonGroup>

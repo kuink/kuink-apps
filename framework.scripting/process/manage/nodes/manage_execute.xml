@@ -18,7 +18,7 @@
   <Configuration/>
   <Screens>
 
-    <Screen id="executeScreen">
+    <Screen name="executeScreen">
       <Grid name="resultGrid" infer="true" title="result"/>
       <Form name="viewForm">
         <ButtonGroup>

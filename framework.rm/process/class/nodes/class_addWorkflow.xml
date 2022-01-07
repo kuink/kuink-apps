@@ -11,7 +11,7 @@
       <Param name="code" doc="The class code"/>
   </Params>
   <Screens>
-    <Screen id="scrAdd">
+    <Screen name="scrAdd">
       <Form name="frmAdd" title="classWorkflow">
         <Select id="wf_id_process" datasource="call:framework,wf.process,api,getAll" label="workflowProcess" bindid="id" bindvalue="code"/>               
         <Select id="wf_type_code" datasource="call:framework,rm.class.workflow,api,getWorkflowTypes" label="workflowType" bindid="code" bindvalue="name"/>               

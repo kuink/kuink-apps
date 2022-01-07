@@ -4,7 +4,7 @@
     <Configuration />
     <Params />
     <Screens >
-        <Screen id="screenbita" >
+        <Screen name="screenbita" >
             <Form name="formbita" >
                 <Text name="username" id="username"/>
                 <ButtonGroup >

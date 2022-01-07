@@ -12,7 +12,7 @@
         <Param name="title"/>
     </Params>
     <Screens>
-        <Screen id="mainScreen">
+        <Screen name="mainScreen">
             <Grid name="recordDetails" title="record">
                 <Template>
                     <Columns>

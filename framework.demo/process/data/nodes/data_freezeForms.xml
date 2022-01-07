@@ -15,10 +15,10 @@
         <Config key="masterTable" value="fw_demo_composite"/>
     </Configuration>
     <Screens>
-    	<Screen id="showLog">
+    	<Screen name="showLog">
     		<Custom name="logList" control="framework,log,search"/>
     	</Screen>
-        <Screen id="editRecord">
+        <Screen name="editRecord">
             <Form name="editRecordForm">
             	<Header/>           
                 <Header id="head1" label="edit"/>
@@ -45,7 +45,7 @@
                 </Template>
             </Grid>            
         </Screen>
-        <Screen id="viewRecord">
+        <Screen name="viewRecord">
             <Form name="viewRecordForm">
             	<Header/>           
                 <Header id="head1" label="edit"/>
@@ -91,18 +91,18 @@
         	<Action name="bind"/>
         </Action>
         <Action name="bind" screen="viewRecord">
-        	<FormControl method="setProperty" object="viewRecordForm">
+        	<Control method="setProperty" object="viewRecordForm">
         		<Param>freeze_</Param>
         		<Param>true</Param>
-        	</FormControl>        
-        	<FormControl method="bind" object="viewRecordForm">
+        	</Control>        
+        	<Control method="bind" object="viewRecordForm">
         		<Param>
         			<Execute method="framework,generic,load">
         				<Param name="table"><Config key="masterTable"/></Param>
         				<Param name="id">1</Param>
         			</Execute>
         		</Param>
-        	</FormControl>
+        	</Control>
 
         </Action>
         <Action name="delete">
@@ -112,4 +112,3 @@
         </Action>
     </Actions>
 </Node>
-

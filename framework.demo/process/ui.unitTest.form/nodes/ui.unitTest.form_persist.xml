@@ -11,7 +11,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-      <Screen id="screen001" >
+      <Screen name="screen001" >
           <Form name="form01" title="changePassword" persist="true">
             <Text id="id" label="id"/>
             <Text id="name" label="name"/>
@@ -27,7 +27,7 @@
             </ButtonGroup>
           </Form>
        </Screen>
-       <Screen id="screen002" >
+       <Screen name="screen002" >
           <Form name="form02" title="changePassword" >
             <ButtonGroup>
               <Button id="back" type="cancel" action="search"/>
@@ -62,4 +62,3 @@
       
 	</Actions>
 </Node>
-

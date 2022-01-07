@@ -11,7 +11,7 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scr001">
+    <Screen name="scr001">
       <Form name="frmTest" persist="true">
         <Text id="application" required="true" />
         <Text id="node" required="true" />
@@ -24,7 +24,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrDiagram" doc="Diagram">
+    <Screen name="scrDiagram" doc="Diagram">
       <Form name="frmOptions" persist="true">
         <Text id="application" required="true" />
         <Text id="node" required="true" inline="true"/>

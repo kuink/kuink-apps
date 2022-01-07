@@ -10,7 +10,7 @@
         <Param name="guid"/>
     </Params>
     <Screens>
-        <Screen id="headerScreen">
+        <Screen name="headerScreen">
             <HtmlContainer name="messageHtml" id="messageHtml"/>
         </Screen>
     </Screens>

@@ -14,7 +14,7 @@
       <Param name="result"/>
   </Params>
   <Screens>
-    <Screen id="scrLogin" doc="Login Screen">
+    <Screen name="scrLogin" doc="Login Screen">
       <Form name="frmLogin">
       	<Text id="username" label="username"/>
       	<Password id="password" label="password"/>
@@ -23,7 +23,7 @@
         </ButtonGroup>
       </Form>    
     </Screen>
-    <Screen id="scrRedirect" doc="Redirect Screen">
+    <Screen name="scrRedirect" doc="Redirect Screen">
       <Redirect name="redirect" url="view.php"/>
     </Screen>    
 	</Screens>

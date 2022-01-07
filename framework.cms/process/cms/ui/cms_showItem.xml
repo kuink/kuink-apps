@@ -8,7 +8,7 @@
     <Libraries>
     </Libraries>
     <Screens>
-        <Screen id="scCmsItem">
+        <Screen name="scCmsItem">
             <HtmlContainer name="hcCmsItem" />
         </Screen>
     </Screens>
@@ -30,4 +30,3 @@
         </Action>
 	</Actions>
 </Node>
-

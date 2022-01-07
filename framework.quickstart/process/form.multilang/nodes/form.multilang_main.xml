@@ -4,7 +4,7 @@
   <Configuration />
   <Params />
   <Screens>
-    <Screen id="scr01">
+    <Screen name="scr01">
       <Form name="form01">
         <Header id="h1" label="Multilang input fields"/>
         <Text id="name" label="name" multilang="true"/>

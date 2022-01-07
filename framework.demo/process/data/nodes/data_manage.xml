@@ -14,7 +14,7 @@
         <Config key="masterTable" value="fw_demo_test_type"/>
     </Configuration>
     <Screens>
-        <Screen id="searchRecords">
+        <Screen name="searchRecords">
             <Form name="searchRecordsForm" >
                 <Header id="headSearch" label="search" help="true"/>
                 <Text id="nome" label="nome" visible="true" required="false"  help="true"/>
@@ -38,7 +38,7 @@
                 </Template>
             </Grid>
         </Screen>
-        <Screen id="editRecord">
+        <Screen name="editRecord">
             <Form name="editRecordForm">
                 <Header id="head1" label="edit"/>
                 <Int id="id" label="id" required="true"/>
@@ -63,13 +63,13 @@
     </Screens>
     <Actions>
         <Action name="init" screen="editRecord">
-        	<FormControl method="bind" object="editRecordForm">
+        	<Control method="bind" object="editRecordForm">
         		<Param>
         			<Execute method="this,this,demo.getRecordFromSelect">
         				<Param name="id">1</Param>
         			</Execute>
         		</Param>
-        	</FormControl>
+        	</Control>
         	<!--  FormControl method="bind" object="editRecordForm">
         		<Param>
         			<Execute method="framework,generic,load">
@@ -78,14 +78,14 @@
         			</Execute>
         		</Param>
         	</FormControl-->
-        	<GridControl method="bind" object="searchResultGrid">
+        	<Control method="bind" object="searchResultGrid">
         		<Param>
         			<Execute method="framework,generic,getAll">
         				<Param name="table"><Config key="masterTable"/></Param>
         				<Param name="fields">id,name</Param>
         			</Execute>
         		</Param>
-        	</GridControl>
+        	</Control>
         </Action>
         <Action name="save">
         	<Execute method="framework,generic,save">
@@ -108,4 +108,3 @@
         </Action>
     </Actions>
 </Node>
-

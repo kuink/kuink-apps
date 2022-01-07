@@ -10,7 +10,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="screen001" >
+		<Screen name="screen001" >
           <Grid name="eventsGrid" title="events">
             <Template>
               <Columns>
@@ -72,4 +72,3 @@
       </Action>
 	</Actions>
 </Node>
-

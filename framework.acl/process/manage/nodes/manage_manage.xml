@@ -10,7 +10,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
       	<Text id="code"/>
       	<Text id="name" inline="tight"/>
@@ -36,7 +36,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
       	<Static id="id"/>
       	<Static id="uuid"/>
@@ -50,7 +50,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit" title="acl">
       	<Text id="code" required="true"/>
       	<Text id="name"/>
@@ -102,7 +102,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrEditEntry" doc="Edit Entry Screen">
+    <Screen name="scrEditEntry" doc="Edit Entry Screen">
       <Form name="frmEditEntry" title="aclEntry">
       	<Select id="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
           datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>

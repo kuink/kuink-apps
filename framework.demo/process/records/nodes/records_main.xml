@@ -9,7 +9,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-      <Screen id="screenTest" name="screenTest">
+      <Screen name="screenTest">
           <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
           <Form name="aa" id="aa">
             <Int id="b" required="true" />
@@ -39,7 +39,7 @@
               </Actions>
           </Grid>
       </Screen>
-      <Screen id="screenTest2" name="screenTest2">
+      <Screen name="screenTest2">
           <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
           <Form name="aa" id="aa">
             <Int id="c2" required="true" />

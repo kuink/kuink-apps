@@ -10,7 +10,7 @@
     <Use name="FormatterLib" type="lib"/>
   </Libraries>
   <Screens>
-    <Screen id="listApiScreen">
+    <Screen name="listApiScreen">
       <Form name="search" persist="true">
           <Text id="dataSource" label="dataSource"/>
           <ButtonGroup>
@@ -57,7 +57,7 @@
       </Grid>
     </Screen>
 		
-    <Screen id="callFunctionScreen">
+    <Screen name="callFunctionScreen">
       <Form name="callForm">
         <Container id="fields"/>
         <Checkbox id="_debug_" label="debug"/>
@@ -165,4 +165,3 @@
   </Actions>
   <Library/>
 </Node>
-

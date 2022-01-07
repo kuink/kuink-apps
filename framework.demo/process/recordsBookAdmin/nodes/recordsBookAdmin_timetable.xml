@@ -11,7 +11,7 @@
     <Libraries />
     <Configuration/>
     <Screens>
-    	<Screen id="mainScreen">
+    	<Screen name="mainScreen">
     	
     		<Form name="filter">
     			<Header label="timetableFilter" />

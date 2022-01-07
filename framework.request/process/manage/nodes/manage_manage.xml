@@ -13,7 +13,7 @@
       <Param name="result"/>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Column id="col1"/>
 	      <ActionGroup >
@@ -62,7 +62,7 @@
       </Grid>
     </Screen>
     
-    <Screen id="scrLog" doc="Show log">
+    <Screen name="scrLog" doc="Show log">
       <Form name="frmSearch" persist="true" title="search">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>
@@ -78,7 +78,7 @@
       </Grid>
     </Screen>  
 
-    <Screen id="scrComment" doc="Comment the request">
+    <Screen name="scrComment" doc="Comment the request">
       <Form name="frmComment" title="addComments">
         <TextArea id="comment" label="comment"/>
         <ButtonGroup>
@@ -101,7 +101,7 @@
       </Grid>
     </Screen>  
         
-    <Screen id="scrResult" doc="Result Screen">
+    <Screen name="scrResult" doc="Result Screen">
       <Form name="frmSearch" persist="true" title="search">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>

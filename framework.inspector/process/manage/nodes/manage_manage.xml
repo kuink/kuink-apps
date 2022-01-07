@@ -17,7 +17,7 @@
       <Param name="type"/>
   </Params>
   <Screens>
-    <Screen id="scrDiagram" doc="Diagram">
+    <Screen name="scrDiagram" doc="Diagram">
       <Uml name="umlViewer" format="svg" title="diagram"/>
     </Screen>
 	</Screens>

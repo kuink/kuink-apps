@@ -13,7 +13,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Select id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>      
         <Text id="name"/>
@@ -46,7 +46,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
         <Static id="id"/>
         <Static id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
@@ -68,7 +68,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Static id="id" label="id" required="true"/>
         <Static id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>

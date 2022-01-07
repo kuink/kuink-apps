@@ -7,7 +7,7 @@
       <Param name="param4"/>
     </Params>
     <Screens >
-      <Screen id="scr02" >
+      <Screen name="scr02" >
                 
       </Screen>
     </Screens>

@@ -17,7 +17,7 @@
 		<Param name="postMessage" type="string" doc="A emessage to include in the bottom of the agreement form"/>
 	</Params>
     <Screens>
-    	<Screen id="showScreen">
+    	<Screen name="showScreen">
 			<Form name="statementsForm" title="statements">
 				<Container id="preMessageContainer"/>
 				<Container id="content"/>

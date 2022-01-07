@@ -4,7 +4,7 @@
   <Configuration />
   <Params />
   <Screens>
-    <Screen id="scr01">
+    <Screen name="scr01">
       <Form name="form01" title="inlineFields">
         <Tab id="tab1"/>
         <Header id="h0" label="Test Inline and Cols"/>

@@ -10,7 +10,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Text id="code"/>
         <ButtonGroup>
@@ -37,7 +37,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
         <Static id="id"/>
         <Static id="uuid"/>
@@ -51,7 +51,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Static id="id" label="id" required="true"/>
         <Text id="code" label="code" required="true"/>
@@ -63,7 +63,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrStatements" doc="Manage schema statements...">
+    <Screen name="scrStatements" doc="Manage schema statements...">
       <Form name="frmView">
         <Static id="id"/>
         <Static id="code"/>
@@ -100,7 +100,7 @@
         </Template>
       </Grid>      
     </Screen>
-    <Screen id="scrSchemaStatementEdit">
+    <Screen name="scrSchemaStatementEdit">
       <Form name="frmSchemaStatementEdit" persist="true">
         <Date id="start_date" required="true"/>
         <Date id="end_date" now="false"/>
@@ -111,7 +111,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrSchemaStatementAdd">
+    <Screen name="scrSchemaStatementAdd">
       <Form name="frmSchemaStatementAdd" title="add">
         <Select id="id_agreement_statement" datasource="call:framework,agreement.statement,api,getAllExtended" bindid="id" bindvalue="name_extended" required="true"/>
         <Date id="start_date" required="true"/>
@@ -123,7 +123,7 @@
         </ButtonGroup>
       </Form>
     </Screen> 
-    <Screen id="scrPreview">
+    <Screen name="scrPreview">
       <Form name="frmView">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>

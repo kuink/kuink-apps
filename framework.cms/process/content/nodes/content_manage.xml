@@ -11,7 +11,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Text id="data"/>
         <Select id="id_content_type" label="contentType" searchable="true" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name"/>
@@ -39,7 +39,7 @@
       </Grid>
     </Screen>
 
-    <Screen id="scrView" doc="View Screen" template="1x2x1col">
+    <Screen name="scrView" doc="View Screen" template="1x2x1col">
       <Form name="frmView" position="left">
         <Static id="id"/>
         <Static id="id_template_override"/>
@@ -124,7 +124,7 @@
       <!--Custom name="contentCtrl" control="framework.cms,content,view" position="right"/-->
     </Screen>
 
-    <Screen id="scrFill" doc="Screen fill">
+    <Screen name="scrFill" doc="Screen fill">
       <Form name="frmInsert">
         <Select id="id_content_type" label="contentType" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="true"/>
         <ButtonGroup>
@@ -134,7 +134,7 @@
       </Form>
     </Screen>
 
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Select id="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
         <Container id="contentTypeFields"/>
@@ -145,7 +145,7 @@
       </Form>
     </Screen>
 
-    <Screen id="scrPreview">
+    <Screen name="scrPreview">
       <Form name="frmGlobalOptions">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>

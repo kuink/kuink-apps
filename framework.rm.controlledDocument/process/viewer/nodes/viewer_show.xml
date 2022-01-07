@@ -6,7 +6,7 @@
     <Libraries>
     </Libraries>
     <Screens>
-        <Screen id="scrShow" template="2x1col">
+        <Screen name="scrShow" template="2x1col">
             <DocViewer name="dcPreview" title="preview" position="left"/>
             <Form name="frmDocData" position="right" title="documentDetails">
 			        <Header id="baseData" label="baseData"/>

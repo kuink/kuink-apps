@@ -7,7 +7,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="screen001">
+		<Screen name="screen001">
 			<Form name="test" title="01.03">
 			 <ButtonGroup>
 			   <Button type="cancel" id="prev" label="prev" action="prev"/>  
@@ -34,4 +34,3 @@
 
 	</Actions>
 </Node>
-

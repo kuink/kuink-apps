@@ -1,5 +1,5 @@
 {nocache}
-<Screen id="scrSearch" doc="Search Screen">
+<Screen name="scrSearch" doc="Search Screen">
   <Form name="frmSearch" persist="true" title="search">
     {foreach $attributes as $field}
     {if $field['search'] == 1}

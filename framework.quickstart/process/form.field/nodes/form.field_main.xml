@@ -4,7 +4,7 @@
   <Configuration />
   <Params />
   <Screens>
-    <Screen id="scr01">
+    <Screen name="scr01">
       <Form name="form01">
       	<Text id="f1" label="Test default value" default="test"/>
         <Information id="h1" label="declaration" value="Declaro que..."/>

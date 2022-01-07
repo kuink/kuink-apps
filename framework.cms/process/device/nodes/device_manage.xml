@@ -10,7 +10,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Text id="code"/>
         <ButtonGroup>
@@ -36,7 +36,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
         <Static id="id_channel"  datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
         <Static id="code"/>
@@ -50,7 +50,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Select id="id_channel" label="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
         <Text id="code" label="code" required="true"/>

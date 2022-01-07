@@ -11,7 +11,7 @@
 	</Params>
 	<Configuration />
 	<Screens>
-		<Screen id="screen001">
+		<Screen name="screen001">
 			<Form name="test" title="01.02">
 			 <Column id="col1"/>
 			 <Text id="name" label="name" required="true"/>

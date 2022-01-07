@@ -10,7 +10,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Text id="name"/>
         <ButtonGroup>
@@ -35,7 +35,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
         <Static id="id"/>
         <Static id="uuid"/>
@@ -49,7 +49,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Static id="id" label="id" required="true"/>
         <Text id="uuid" label="uuid" required="true"/>

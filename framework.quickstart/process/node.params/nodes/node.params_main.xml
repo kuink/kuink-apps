@@ -7,7 +7,7 @@
       <Param name="param2"/>
     </Params>
     <Screens >
-        <Screen id="scr01" >
+        <Screen name="scr01" >
           <Form name="frm01">
             <ButtonGroup>
               <Button type="submit" label="submit" id="submit" action="event" />

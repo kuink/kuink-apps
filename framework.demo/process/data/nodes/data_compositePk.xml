@@ -15,10 +15,10 @@
         <Config key="masterTable" value="fw_demo_composite"/>
     </Configuration>
     <Screens>
-    	<Screen id="showLog">
+    	<Screen name="showLog">
     		<Custom name="logList" control="framework,log,search"/>
     	</Screen>
-        <Screen id="editRecord">
+        <Screen name="editRecord">
             <Form name="editRecordForm">
             	<Header/>
                 <ActionGroup>
@@ -58,22 +58,22 @@
         			</Execute>
         		</Param>
         	</FormControl-->
-        	<FormControl method="bind" object="editRecordForm">
+        	<Control method="bind" object="editRecordForm">
         		<Param>
         			<Execute method="framework,generic,load">
         				<Param name="table"><Config key="masterTable"/></Param>
         				<Param name="id">1</Param>
         			</Execute>
         		</Param>
-        	</FormControl>
-        	<GridControl method="bind" object="searchResultGrid">
+        	</Control>
+        	<Control method="bind" object="searchResultGrid">
         		<Param>
         			<Execute method="framework,generic,getAll">
         				<Param name="table"><Config key="masterTable"/></Param>
         				<Param name="fields">id,id_key1,id_key2,name</Param>
         			</Execute>
         		</Param>
-        	</GridControl>
+        	</Control>
         </Action>
         <Action name="save">
         	<Var name="var_teste">8881</Var>
@@ -109,4 +109,3 @@
         </Action>
     </Actions>
 </Node>
-

@@ -7,7 +7,7 @@
     <Libraries>
     </Libraries>
     <Screens>
-      <Screen id="scrShow">
+      <Screen name="scrShow">
         <Form name="frmOptions">
           <ButtonGroup>
             <Button type="back" id="back" action="back"/>

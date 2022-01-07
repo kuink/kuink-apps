@@ -12,7 +12,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="mainScreen">
+		<Screen name="mainScreen">
 			<Form name="frmTask" persist="true">
 			 <Header id="TaskDescription" name="TaskDescription" collapsible="true" collapsed="false"/>
 			 <TextArea id="description" help="false"/>

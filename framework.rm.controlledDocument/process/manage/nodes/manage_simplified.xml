@@ -17,7 +17,7 @@
       <Param name="workflowAgents" type="string" doc="The workflow agents to inject in workflow"/>
   </Params>
   <Screens>
-    <Screen id="scrAddDocumentAndVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
+    <Screen name="scrAddDocumentAndVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
       <Form name="frmNewVersion" title="newVersion">
         <Header id="h1" label="controlledDocument"/>>
         <File id="file" required="true"/>
@@ -54,7 +54,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrAddVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
+    <Screen name="scrAddVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
       <Form name="frmNewVersion" title="newVersion">
         <Header id="h1" label="controlledDocument"/>>
         <Static id="code" label="code"/>
@@ -95,7 +95,7 @@
         </Template>
       </Grid>      
     </Screen>
-    <Screen id="scrObservations" doc="Version observations">
+    <Screen name="scrObservations" doc="Version observations">
       <Form name="frmOptions">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="init"/>

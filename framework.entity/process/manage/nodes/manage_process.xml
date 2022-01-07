@@ -14,7 +14,7 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scr002">
+    <Screen name="scr002">
       <Grid name="changesGrid" title="result">
         <Template>
           <Columns>
@@ -34,7 +34,7 @@
       </Form>
     </Screen>
 
-    <Screen id="scr003">
+    <Screen name="scr003">
       <Grid name="logGrid" infer="true" title="log"/>      
       <Form name="actions">
         <ButtonGroup>
@@ -89,4 +89,3 @@
 
   </Actions>
 </Node>
-

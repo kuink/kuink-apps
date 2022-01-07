@@ -16,7 +16,7 @@
       <Param name="subtitle" doc="A custom subtitle"/>
   </Params>
   <Screens>
-    <Screen id="fillScreen" doc="Fill the form">
+    <Screen name="fillScreen" doc="Fill the form">
       <HtmlContainer name="title"/>
       <HtmlContainer name="subtitle"/>
       <Form name="fillForm">
@@ -25,7 +25,7 @@
         </ButtonGroup>
       </Form>
    	</Screen>
-		<Screen id="showScreen">
+		<Screen name="showScreen">
       <HtmlContainer name="title"/>
 			<Custom name="inquiryCtrl" control="framework.form,manage,show"/>
 		</Screen>

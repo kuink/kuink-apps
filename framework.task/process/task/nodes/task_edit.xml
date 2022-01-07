@@ -15,7 +15,7 @@
 	</Params>
 	<Configuration />
 	<Screens>
-		<Screen id="mainScreen">
+		<Screen name="mainScreen">
 			<Form name="frmTask" persist="true">
 				<Hidden id="id" name="id"/>
 			 <Header id="TaskDescription" name="TaskDescription" collapsible="true" collapsed="false"/>

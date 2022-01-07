@@ -10,7 +10,7 @@
   <Configuration/>
 
   <Screens>
-    <Screen id="sc01">
+    <Screen name="sc01">
       <Form name="frmTables">
         <Header id="hdEntity" label="entity"/>
         <Select id="entity" required="true" searchable="true" datasource="dsTables"
@@ -73,7 +73,7 @@
       </Form>
     </Screen>
 
-    <Screen id="sc02">
+    <Screen name="sc02">
       <Grid name="grdColumns" title="tableColumns" freeze="false">
         <Template>
           <Columns>
@@ -104,7 +104,7 @@
       </Grid>
     </Screen>
 
-    <Screen id="sc03">
+    <Screen name="sc03">
       <Form name="frmOptions">
         <!--Checkbox id="gAPI" label="generateAPI" required="true"/>
         <Checkbox id="gProcess" label="generateProcess" required="true"/-->
@@ -133,7 +133,7 @@
       </Grid>
     </Screen>
 
-    <Screen id="sc04">
+    <Screen name="sc04">
       <Form name="frmOptions">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="init"/>
@@ -141,7 +141,7 @@
       </Form>
     </Screen>
 
-    <Screen id="scResume">
+    <Screen name="scResume">
       <Form name="frmOptions">
         <ButtonGroup>
           <Button id="previous" type="submit" label="previous" action="step02"/>

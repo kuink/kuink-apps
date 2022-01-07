@@ -10,7 +10,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="scTasks">
+		<Screen name="scTasks">
 			<Form name="frmCronStatus" title="cronStatus" freeze="true">
 				<DateTime id="_modification" help="false">
 					<Formatter name="DateTime" method="shortDateTime"/>
@@ -75,7 +75,7 @@
 			</Grid>
 			
 		</Screen>
-		<Screen id="scTaskExecuted">
+		<Screen name="scTaskExecuted">
 			<Form name="frmOptions">
 			 <ButtonGroup>
 			   <Button type="submit" id="ok" label="ok" action="init"/>
@@ -180,4 +180,3 @@
 		
 	</Actions>
 </Node>
-

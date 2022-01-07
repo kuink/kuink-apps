@@ -14,7 +14,7 @@
 		<Param name="subtitle" doc="A custom subtitle"/>
 	  </Params>
     <Screens>
-    	<Screen id="showScreen">
+    	<Screen name="showScreen">
 		<HtmlContainer name="titleShow"/>  
 		<HtmlContainer name="subtitleShow"/>				  	
       	<Form name="viewForm" title="viewForm" freeze="true">

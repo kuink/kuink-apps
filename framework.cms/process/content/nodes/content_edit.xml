@@ -16,7 +16,7 @@
   </Params>
   <Configuration/>
   <Screens>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Static id="id"/>
         <Select id="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>

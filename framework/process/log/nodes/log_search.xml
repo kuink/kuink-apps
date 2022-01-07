@@ -7,7 +7,7 @@
         <Use name="DateTimeFormatter" type="formatter"/>
     </Libraries>
     <Screens>
-        <Screen id="searchRecords">
+        <Screen name="searchRecords">
             <Form name="searchRecordsForm" >
                 <Header id="headSearch" label="search" help="true"/>
                 <!--Text id="nome" label="nome" visible="true" required="false"  help="true"/-->
@@ -62,22 +62,21 @@
                 <!--Execute method="this,this,gerir.pesquisa"-->
                 <Execute method="this,this,log.search" params="searchFormDataFilled">
                     <Param name="pagesize">
-                        <GridControl method="getPageSize" object="searchResult"/>
+                        <Control method="getPageSize" object="searchResult"/>
                     </Param>
                     <Param name="pagenum">
                         <GetParam name="page"/>
                     </Param>
                 </Execute>
             </Var>
-            <FormControl method="bind" object="searchRecordsForm">
+            <Control method="bind" object="searchRecordsForm">
                 <Param>
                     <Var name="searchFormDataSession" session="true"/>
                 </Param>
-            </FormControl>
-            <GridControl method="bind" object="searchResult">
+            </Control>
+            <Control method="bind" object="searchResult">
                 <Param><Var name="searchRecords"/></Param>
-            </GridControl>
+            </Control>
         </Action>
 	</Actions>
 </Node>
-

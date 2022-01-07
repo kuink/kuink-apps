@@ -24,7 +24,7 @@
 		<Param name="uiDetails" type="string" doc="The kid for the custom control that is able to show the object details"/>
 	</Params>
 	<Screens>
-		<Screen id="manageScreen">
+		<Screen name="manageScreen">
 			<Form name="searchForm" title="search" persist="true" visible="false" doc="Only show this form if the user doesn't supply one">
 				<Column id="col1"/>
 				<Header id="statesHead" collapsible="true" collapsed="true"/>
@@ -40,7 +40,7 @@
 			<!-- Add the custom searchResults -->
 		</Screen>
 
-		<Screen id="detailScreen" template="1x2col">
+		<Screen name="detailScreen" template="1x2col">
 			<Form name="optionsFormTop" position="left">
 				<ButtonGroup>
 					<Button type="back" id="back" label="back" action="search"/>
@@ -115,7 +115,7 @@
 			</Grid>
 		</Screen>
 
-		<Screen id="chooseBulkScreen">
+		<Screen name="chooseBulkScreen">
 			<Form name="eventsForm" title="actions">
 				<Select id="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
 				<Container id="container"/>

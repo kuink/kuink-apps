@@ -11,7 +11,7 @@
     <Param name="code"/>
   </Params>
   <Screens>
-    <Screen id="scrMain" doc="Main screen">
+    <Screen name="scrMain" doc="Main screen">
       <Repeatable name="rptItems" template="menuBox" cols="4" type="type" icon="icon" label="name" url="url" tooltip="description"/>
     </Screen>
   </Screens>

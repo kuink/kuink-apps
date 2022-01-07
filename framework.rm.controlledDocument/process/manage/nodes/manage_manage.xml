@@ -19,7 +19,7 @@
       <Param name="type_code" type="string"/>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true">
         <Select id="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name" help="true"/>
         <Text id="text" label="text" help="true"/>
@@ -60,7 +60,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" template="2x1col">
+    <Screen name="scrView" template="2x1col">
       <DocViewer name="dcPreview" title="preview" position="left"/>
       <HtmlContainer name="htmlPreview" title="previewTpl" position="left"/> 
       <HtmlContainer name="testDataPreview" position="left"/>
@@ -147,7 +147,7 @@
       </Grid>
       <HtmlContainer id="previewTpl" position="left"/>
     </Screen>
-    <Screen id="scrNotifyPreview" doc="Preview Notification">
+    <Screen name="scrNotifyPreview" doc="Preview Notification">
       <Form name="frmNotifyPreview" title="preview">
         <Static id="message" label="message"/>
         <ButtonGroup>
@@ -156,7 +156,7 @@
         </ButtonGroup>
       </Form>
     </Screen>    
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         <Header id="baseData"/>
         <Static id="id" label="id" required="true"/>
@@ -179,7 +179,7 @@
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrNewVersion"  template="1x2x1col" doc="New version screen">
+    <Screen name="scrNewVersion"  template="1x2x1col" doc="New version screen">
       <Form name="frmNewVersion" title="version" position="top">
         <Hidden id="id_version" label="id"/>
         <Static id="code" label="code"/>
@@ -198,7 +198,7 @@
       <DocViewer name="dcPreview" title="previewDoc" position="left"/>
       <HtmlContainer name="htmlPreview" title="previewTpl" position="right"/>
     </Screen>
-    <Screen id="scrDeployment">
+    <Screen name="scrDeployment">
       <Form name="frmDeployment" title="version">
         <Hidden id="id_version" label="id"/>
         <Static id="code" label="code"/>

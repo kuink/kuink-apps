@@ -14,7 +14,7 @@
     </Libraries>
     <Configuration />
     <Screens>
-        <Screen id="FW_RecordsManagment_screenAggregation" name="FW_RecordsManagment_screenAggregation">
+        <Screen name="FW_RecordsManagment_screenAggregation" name="FW_RecordsManagment_screenAggregation">
             <Grid name="FW_RecordsManagment_RecordsGrid" id="FW_RecordsManagment_RecordsGrid"
                 tree="true" treeid="id" treeparentid="id_parent" treecollapsed="true">
                 <Template>

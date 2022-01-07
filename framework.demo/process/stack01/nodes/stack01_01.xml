@@ -11,7 +11,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-      <Screen id="screen001" >
+      <Screen name="screen001" >
           <Form name="changePasswordForm" title="changePassword">
             <Password id="oldPassword" label="oldPassword" required="true"/>
             <Password id="newPassword" label="newPassword" required="true"/>
@@ -20,10 +20,10 @@
           <Grid name="resultGrid" infer="true" title="result"/>
           <Form name="resultForm" infer="true" title="result"/>          
        </Screen>    
-      <Screen id="soapList" >
+      <Screen name="soapList" >
           <Grid name="resultGrid" infer="true" title="result"/>
        </Screen>    
-      <Screen id="soapCall" >
+      <Screen name="soapCall" >
           <Form name="callFrm" title="call">
             <Container id="container"/>
             <ButtonGroup>
@@ -34,7 +34,7 @@
        </Screen>           
   
   
-		<Screen id="screen001b" >
+		<Screen name="screen001b" >
           <Grid name="resultGrid" infer="true" title="result"/>    
           <!--Grid name="absenceResume" title="absenceResume" pivot="true" pivotlines="id_person,display_name" pivotcols="subject_code" pivotdata="count_unjustified,max_absences">
               <Template>

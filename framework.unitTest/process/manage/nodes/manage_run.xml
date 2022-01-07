@@ -19,7 +19,7 @@
     <Config key="process" value="user"/>
   </Configuration>
   <Screens>
-    <Screen id="runScreen">
+    <Screen name="runScreen">
       <Form name="runForm">
       	<Select id="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
         <ButtonGroup>
@@ -28,7 +28,7 @@
       </Form>
     </Screen>
 		
-    <Screen id="resultsScreen">
+    <Screen name="resultsScreen">
       <Form name="runForm">
 	      <Select id="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
         <ButtonGroup>
@@ -262,4 +262,3 @@
   </Actions>
   <Library/>
 </Node>
-

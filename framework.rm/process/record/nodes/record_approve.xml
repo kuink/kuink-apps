@@ -7,7 +7,7 @@
     <Libraries>
     </Libraries>
     <Screens>
-        <Screen id="scrShow">
+        <Screen name="scrShow">
             <Form name="frmDocData" title="components">
               <Header id="id" label="id"/>
               <Static id="uuid" title="uuid"/>

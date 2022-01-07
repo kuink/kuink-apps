@@ -13,7 +13,7 @@
       <Param name="id_process_instance" doc="The process instance to get the history"/>
   </Params>
   <Screens>
-    <Screen id="scrHistory" doc="Token history">
+    <Screen name="scrHistory" doc="Token history">
       <Grid name="grdHistory" title="history">
         <Template>
           <Columns>

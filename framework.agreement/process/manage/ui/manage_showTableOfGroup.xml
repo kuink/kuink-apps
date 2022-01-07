@@ -22,7 +22,7 @@
 			<Param name="startDate" type="json" doc=""/>
 	  </Params>
     <Screens>
-    	<Screen id="showScreen">
+    	<Screen name="showScreen">
 				<!-- This grid is not dynamic because the columns and formatters must be here-->
 				<Grid name="agreementsPivot" exportable="true" infer="true">
 					<Template>

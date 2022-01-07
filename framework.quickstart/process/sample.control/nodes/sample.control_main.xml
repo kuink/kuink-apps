@@ -2,12 +2,13 @@
 <Node>
   <Libraries>
     <Use name="SampleLib" type="lib"/>
+    <Use name="FormatterLib" type="lib"/>
   </Libraries>
   <Configuration />
   <Params />
   <Screens>
     <Screen name="scrSample">
-      <Sample name="ctrlSample" type="primary" removable="true">
+      <Sample name="ctrlSample" type="primary">
         <Title attribute="name"/>
         <Content attribute="description"/>
         <Footer attribute="endNote"/>
@@ -43,7 +44,7 @@
 
       <!-- Calling the Sample instruction -->
       <Var name="sampleInstruction"><String/></Var>
-      <Var name="test"><String>PT</String></Var>
+      <Var name="test"><String>FR</String></Var>
       <Sample var="test">
         <Branch value="PT">
           <Var name="sampleInstruction">Portugal!!</Var>
@@ -64,7 +65,7 @@
       <!-- Calling the SampleLib -->
       <Var name="sampleLib">
         <SampleLib method="sample">
-          <Param>A</Param>
+          <Param><Var name="test"/></Param>
           <Param>B</Param>
           <Param>C</Param>
         </SampleLib>
@@ -87,7 +88,22 @@
       <Control method="bind" object="grdSample">
         <Param><Var name="sampleDatasourceRecord"/></Param>
       </Control>
+
+      <!-- Calling the formatter in the code instead of in a control -->
+      <!-- Make sure you've included the FormatterLib up in the Library/Use list-->
+      <Var name="sampleFormatter">
+        <FormatterLib method="format">
+          <Param>Sample</Param>
+          <Param>header</Param>
+          <Param><String>Value to format</String></Param>
+          <Param><Null/></Param>
+        </FormatterLib>
+      </Var>      
+      <UserMessage type="warning">
+        <Var name="sampleFormatter"/>
+      </UserMessage>      
+
     </Action>
-  </Actions>
+   </Actions>
   <Library />
 </Node>

@@ -16,7 +16,7 @@
   </Configuration>
   <Params/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="actions">
         <ButtonGroup>
           <Button id="add" type="add" label="addClass" action="addClass"/>
@@ -44,7 +44,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrEditClass">
+    <Screen name="scrEditClass">
       <Form name="frmEditClass" title="editClass">
         <Column id="c1"/>
         <Header id="baseData"/>
@@ -98,7 +98,7 @@
 
     
     
-    <Screen id="scrAddClass">
+    <Screen name="scrAddClass">
       <Form name="frmAddRecord" title="addRecord">
         <Select id="class_code" required="true" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="saveClass"/>
         <TextArea id="data" label="data" disabled="true"/>

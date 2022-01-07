@@ -8,7 +8,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="screen001" template="2x1col">
+		<Screen name="screen001" template="2x1col">
 
 			<Form name="searchForm" id="searchForm" persist="true" position="left">
 				<Text name="name" id="name" />
@@ -257,4 +257,3 @@
 		</Function>
 	</Library>
 </Node>
-

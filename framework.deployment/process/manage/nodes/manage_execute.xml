@@ -12,7 +12,7 @@
   <Configuration>
   </Configuration>
   <Screens>
-    <Screen id="mainScreen">
+    <Screen name="mainScreen">
       <Form name="changePasswordForm" title="changePassword">
         <Password id="userPassword" label="userPassword"
           required="true" />
@@ -38,4 +38,3 @@
 
   </Actions>
 </Node>
-

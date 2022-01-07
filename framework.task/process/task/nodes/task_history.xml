@@ -11,7 +11,7 @@
 	</Params>
 	<Configuration />
 	<Screens>
-		<Screen id="scTaskHistory">
+		<Screen name="scTaskHistory">
 			<Grid name="grdTaskHistory" title="taskHistory" pageable="true" pagingaction="init" pagesize="10">
 				<Template>
 					<Columns>
@@ -61,4 +61,3 @@
 		</Action>
 	</Actions>
 </Node>
-

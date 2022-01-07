@@ -10,7 +10,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="listScreen">
+    <Screen name="listScreen">
       <Grid name="listGrid" title="scriptList">
         <Template>
           <Columns>
@@ -69,4 +69,3 @@
   </Actions>
   <Library/>
 </Node>
-

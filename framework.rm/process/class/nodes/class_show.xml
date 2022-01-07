@@ -11,7 +11,7 @@
       <Param name="code" doc="The class code to view"/>
   </Params>
   <Screens>
-    <Screen id="scrView">
+    <Screen name="scrView">
       <Form name="frmView" title="viewClass">
         <Column id="c1"/>
         <Header id="baseData"/>

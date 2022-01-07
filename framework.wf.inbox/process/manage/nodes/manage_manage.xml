@@ -13,7 +13,7 @@
       <Param name="result"/>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Column id="col1"/>
         <Text id="text" label="text"/>
@@ -47,7 +47,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrHistory" doc="Token history">
+    <Screen name="scrHistory" doc="Token history">
       <Grid name="grdHistory" title="result">
         <Template>
           <Columns>

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Application name="kuink.quickstart" version="1.0.0">
+<Application name="framework.quickstart" version="1.0.0">
 	<Configuration />
 	<Menus>
 		<Menu role="Teacher" label="Basics">

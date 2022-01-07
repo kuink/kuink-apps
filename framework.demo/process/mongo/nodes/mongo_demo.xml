@@ -13,7 +13,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="screen002">
+		<Screen name="screen002">
 			<Grid name="grid001">
 				<Template>
 					<Columns>
@@ -35,11 +35,11 @@
 	</Screens>
 	<Actions>
 		<Action name="init" screen="screen002">
-			<GridControl method="bind" object="grid001">
+			<Control method="bind" object="grid001">
 				<Param>
 					<Execute method="this,this,mongo.getPrices"/>
 				</Param>
-			</GridControl>
+			</Control>
 		</Action>
 		<Action name="save">
 			<Execute method="framework,generic,mongoInsert" params="POSTDATA">
@@ -52,4 +52,3 @@
 		</Action>
 	</Actions>
 </Node>
-

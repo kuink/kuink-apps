@@ -10,7 +10,7 @@
   </Libraries>
   <Configuration/>
   <Screens>
-      <Screen id="screen01" name="screen01">
+      <Screen name="screen01">
 
           <Custom name="coursePathControl" control="gecol.core,course,showCoursePath" />
 

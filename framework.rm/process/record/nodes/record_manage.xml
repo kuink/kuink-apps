@@ -21,7 +21,7 @@
       <Param name="code" doc="Class code"/>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Column id="col1"/>
 	      <DateTime id="dateFrom" />
@@ -59,7 +59,7 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrAddRecord">
+    <Screen name="scrAddRecord">
       <Form name="frmAddRecord" title="addRecord">
         <Select id="class_code" required="true" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="saveClass"/>
         <TextArea id="data" label="data" disabled="true"/>
@@ -84,7 +84,7 @@
       </Grid>
     </Screen>
 
-    <Screen id="scrAddComponent">
+    <Screen name="scrAddComponent">
       <Form name="frmAddComponent" title="addComponent">
         <Select id="id_plugin" datasource="call:framework,rm.component.plugin,api,getAll" bindid="id" bindvalue="name" action="addComponent"/>
         <Container id="setting"/>
@@ -95,7 +95,7 @@
       </Form>
     </Screen>
 
-    <Screen id="scrAddMetadata">
+    <Screen name="scrAddMetadata">
       <Form name="frmAddMetadata" title="addMetadata">
         <Static id="code" label="code"/>
         <Static id="name" label="name"/>
@@ -109,7 +109,7 @@
     </Screen>
 
 
-    <Screen id="scrRecordView" template="1x2col">
+    <Screen name="scrRecordView" template="1x2col">
       <Form name="frmOptions" title="record" position="left">
         <ButtonGroup>
           <Button id="back" type="back" label="back" action="search"/>

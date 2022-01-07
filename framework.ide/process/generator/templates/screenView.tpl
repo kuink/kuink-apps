@@ -1,5 +1,5 @@
 {nocache}
-<Screen id="scrView" doc="View Screen">
+<Screen name="scrView" doc="View Screen">
   <Form name="frmView">
     {foreach $attributes as $field}
     {if $field['form'] == 1}
