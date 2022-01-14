@@ -6,7 +6,6 @@
         <Flow role='Teacher' startnode='manage' event='manageUsers' endnode='xpManageUsers' />
         <Flow role='Teacher' startnode='xpManageUsers' event='back' endnode='manage' />
         
-        
         <!-- manage capabilities -->
         <Flow role='Teacher' startnode='manage' event='manageCapabilities' endnode='xpManageCapabilities' />
         <Flow role='Teacher' startnode='xpManageCapabilities' event='back' endnode='manage' />
@@ -14,7 +13,6 @@
         <!-- manage roles -->
         <Flow role='Teacher' startnode='manage' event='manageRoles' endnode='xpManageRoles' />
         <Flow role='Teacher' startnode='xpManageRoles' event='back' endnode='manage' />
-        
         
         <!-- manage role capabilities -->
         <Flow role='Teacher' startnode='manage' event='manageRoleCapabilities' endnode='xpManageRoleCapabilities' />
@@ -27,5 +25,9 @@
         <!-- manage records -->
         <Flow role='Teacher' startnode='manage' event='records' endnode='xpRecords' />
         <Flow role='Teacher' startnode='xpRecords' event='back' endnode='manage' />
+
+        <!-- manage app files -->
+        <Flow role='Teacher' startnode='manage' event='manageAppFiles' endnode='xpManageAppFiles' />
+        <Flow role='Teacher' startnode='xpManageAppFiles' event='back' endnode='manage' />
     </Transitions>
 </Process>

@@ -18,6 +18,9 @@
       <Menu name="records" icon="file" label="records">
         <Action name="processAction" label="listRecords" actionvalue="records"/>
       </Menu>
+      <Menu name="appFiles" icon="folder-open" label="appFiles">
+        <Action name="processAction" label="manage" actionvalue="manageAppFiles"/>
+      </Menu>
     </Screen>
   </Screens>
   <Actions>
