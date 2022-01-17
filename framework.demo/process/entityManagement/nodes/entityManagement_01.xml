@@ -13,7 +13,7 @@
   <Screens>
     <Screen name="scr001">
       <Form name="frmTest">
-        <Text id="template" required="true"/>      
+        <Text name="template" required="true"/>      
         <ButtonGroup>
           <Button id ="execute" type="execute" action="showTemplate"/>
         </ButtonGroup>

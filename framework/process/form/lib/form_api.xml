@@ -806,7 +806,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="back" type="back" label="Voltar" action="previousPage"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="back" type="back" label="Voltar" action="previousPage"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -816,7 +816,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="back" type="back" label="Voltar" action="back"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="back" type="back" label="Voltar" action="back"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -827,7 +827,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="Continue" type="continue" action="nextPage"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="Continue" type="continue" action="nextPage"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -838,7 +838,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="back" type="back" action="back"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="back" type="back" action="back"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -850,7 +850,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="Submeter" type="save" action="submit"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="Submeter" type="save" action="submit"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -932,7 +932,7 @@
 					<Var name="formXml">
 						<String.concatenate>
 							<Param><Var name="formXml"/></Param>
-							<Param><String.parse><![CDATA[<Tab id="tab_$currentPage" label="Página $currentPage"/>]]></String.parse></Param>
+							<Param><String.parse><![CDATA[<Tab name="tab_$currentPage" label="Página $currentPage"/>]]></String.parse></Param>
 						</String.concatenate>
 					</Var>
 				</Then>
@@ -961,7 +961,7 @@
 		<Var name="formXml">
 			<String.concatenate>
 				<Param><Var name="formXml"/></Param>
-				<Param><String><![CDATA[<ButtonGroup><Button id="back" type="back" label="Voltar" action="previousPage"/></ButtonGroup></Form>]]></String></Param>
+				<Param><String><![CDATA[<ButtonGroup><Button name="back" type="back" label="Voltar" action="previousPage"/></ButtonGroup></Form>]]></String></Param>
 			</String.concatenate>
 		</Var>
 		<Var name="data"><Set/></Var>

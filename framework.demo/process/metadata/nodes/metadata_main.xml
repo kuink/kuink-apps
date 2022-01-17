@@ -19,7 +19,7 @@
 
               <TextArea name="metadataDefinition" id="metadataDefinition" cols="60" rows="20" />
               <ButtonGroup>
-                  <Button type="submit" id="do" action="init"/>
+                  <Button type="submit" name="do" action="init"/>
               </ButtonGroup>
           </Form>
 

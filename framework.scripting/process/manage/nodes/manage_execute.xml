@@ -22,7 +22,7 @@
       <Grid name="resultGrid" infer="true" title="result"/>
       <Form name="viewForm">
         <ButtonGroup>
-          <Button id="back" type="back" action="back"/>
+          <Button name="back" type="back" action="back"/>
         </ButtonGroup>
       </Form>
     </Screen>

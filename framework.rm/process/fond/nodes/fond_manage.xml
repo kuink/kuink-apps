@@ -19,7 +19,7 @@
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="actions">
         <ButtonGroup>
-          <Button id="add" type="add" label="addClass" action="addClass"/>
+          <Button name="add" type="add" label="addClass" action="addClass"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" collapsible="false" pagesize="10" title="result" freeze="false">
@@ -47,51 +47,51 @@
     <Screen name="scrEditClass">
       <Form name="frmEditClass" title="editClass">
         <Column id="c1"/>
-        <Header id="baseData"/>
-        <Int id="id" label="id" hidden="true" disabled="true"/>
-        <Static id="uuid" label="uuid" disabled="true"/>
-        <TextArea id="producer"/>
-        <Text id="ref_pgd_mec"/>
-        <Select id="id_parent" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
-        <Text id="code" label="code" />
-        <TextArea id="name" label="name" maxlength="128" help="class_name"/>
-        <TextArea id="description" label="description" />
-        <TextArea id="business_process"/>
-        <Checkbox id="is_open"/>
-        <Int id="year_from"/>
-        <Int id="year_to"/>
+        <Header name="baseData"/>
+        <Int name="id" label="id" hidden="true" disabled="true"/>
+        <Static name="uuid" label="uuid" disabled="true"/>
+        <TextArea name="producer"/>
+        <Text name="ref_pgd_mec"/>
+        <Select name="id_parent" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
+        <Text name="code" label="code" />
+        <TextArea name="name" label="name" maxlength="128" help="class_name"/>
+        <TextArea name="description" label="description" />
+        <TextArea name="business_process"/>
+        <Checkbox name="is_open"/>
+        <Int name="year_from"/>
+        <Int name="year_to"/>
         
-        <Select id="id_archival_medium" label="id_archival_medium" datasource="call:framework,rm.archival.medium,api,getAll" bindid="id" bindvalue="name" />
-        <TextArea id="medium"/>
-        <Text id="linear_meters"/>
-        <TextArea id="location"/>
-        <TextArea id="obs_private"/>
-        <Select id="id_manager" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
+        <Select name="id_archival_medium" label="id_archival_medium" datasource="call:framework,rm.archival.medium,api,getAll" bindid="id" bindvalue="name" />
+        <TextArea name="medium"/>
+        <Text name="linear_meters"/>
+        <TextArea name="location"/>
+        <TextArea name="obs_private"/>
+        <Select name="id_manager" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
           datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
         <Column id="c2"/>
-        <Header id="relatedSerieData"/>
-        <Text id="related_serie_num"/>
-        <TextArea id="related_serie_title"/>
-        <Text id="related_serie_type"/>
+        <Header name="relatedSerieData"/>
+        <Text name="related_serie_num"/>
+        <TextArea name="related_serie_title"/>
+        <Text name="related_serie_type"/>
                         
-        <Header id="disposalInfo"/>
-        <Int id="action_duration"/>
+        <Header name="disposalInfo"/>
+        <Int name="action_duration"/>
         
-        <Select id="id_action_interval_code" datasource="intervals" bindid="id" bindvalue="name"/>
-        <TextArea id="interval_justification"/>
-        <Select id="id_action_code" datasource="actions" bindid="id" bindvalue="name"/>
-        <TextArea id="action_justification"/>
+        <Select name="id_action_interval_code" datasource="intervals" bindid="id" bindvalue="name"/>
+        <TextArea name="interval_justification"/>
+        <Select name="id_action_code" datasource="actions" bindid="id" bindvalue="name"/>
+        <TextArea name="action_justification"/>
 
-        <Header id="componentsData"/>        
-        <Select id="id_component_type" label="id_component_type" datasource="call:framework,rm.component.type,api,getAll" bindid="id" bindvalue="name" />        
-        <Select id="id_plugin" label="id_plugin" datasource="call:framework,rm.component.plugin,api,getAll" bindid="id" bindvalue="name" />
+        <Header name="componentsData"/>        
+        <Select name="id_component_type" label="id_component_type" datasource="call:framework,rm.component.type,api,getAll" bindid="id" bindvalue="name" />        
+        <Select name="id_plugin" label="id_plugin" datasource="call:framework,rm.component.plugin,api,getAll" bindid="id" bindvalue="name" />
         
-        <Header id="metaData"/>
-        <TextArea id="last_xml" label="metadataDefinition"/>
+        <Header name="metaData"/>
+        <TextArea name="last_xml" label="metadataDefinition"/>
                 
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="save" type="save" label="save" action="saveClass"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="save" type="save" label="save" action="saveClass"/>
         </ButtonGroup>
       </Form>
     </Screen>
@@ -100,14 +100,14 @@
     
     <Screen name="scrAddClass">
       <Form name="frmAddRecord" title="addRecord">
-        <Select id="class_code" required="true" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="saveClass"/>
-        <TextArea id="data" label="data" disabled="true"/>
+        <Select name="class_code" required="true" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="saveClass"/>
+        <TextArea name="data" label="data" disabled="true"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="addComponent" type="add" label="addComponent" action="addComponent"/>
-          <Button id="addMetadata" type="add" label="addMetadata" action="addMetadata"/>
-          <Button id="declareRecord" type="execute" label="declare" action="declareRecord" confirm="true"/>
-          <Button id="archiveRecord" type="continue" label="archive" action="archiveRecord" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="addComponent" type="add" label="addComponent" action="addComponent"/>
+          <Button name="addMetadata" type="add" label="addMetadata" action="addMetadata"/>
+          <Button name="declareRecord" type="execute" label="declare" action="declareRecord" confirm="true"/>
+          <Button name="archiveRecord" type="continue" label="archive" action="archiveRecord" confirm="true"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdComponents" title="components">

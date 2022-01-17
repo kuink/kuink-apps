@@ -12,11 +12,11 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-      	<Text id="code"/>
-      	<Text id="name" inline="tight"/>
+      	<Text name="code"/>
+      	<Text name="name" inline="tight"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="acl">
@@ -38,31 +38,31 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-      	<Static id="id"/>
-      	<Static id="uuid"/>
-      	<Static id="code"/>
-      	<Static id="name"/>
-      	<Static id="description"/>
+      	<Static name="id"/>
+      	<Static name="uuid"/>
+      	<Static name="code"/>
+      	<Static name="name"/>
+      	<Static name="description"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit" title="acl">
-      	<Text id="code" required="true"/>
-      	<Text id="name"/>
-      	<Text id="description"/>
+      	<Text name="code" required="true"/>
+      	<Text name="name"/>
+      	<Text name="description"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
       <Form name="frmAddEntry">
         <ButtonGroup>
-          <Button id="addEntry" type="add" label="addEntry" action="addEntry"/>
+          <Button name="addEntry" type="add" label="addEntry" action="addEntry"/>
         </ButtonGroup>
       </Form>
       
@@ -104,13 +104,13 @@
     </Screen>
     <Screen name="scrEditEntry" doc="Edit Entry Screen">
       <Form name="frmEditEntry" title="aclEntry">
-      	<Select id="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
+      	<Select name="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
           datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
-      	<Select id="id_person_group" datasource="call:gecol.core,person.group,api,getAll" bindid="id" bindvalue="code" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person.group,api,getById"/>
-      	<Select id="id_permission" datasource="call:framework,permission,api,search" bindid="id" bindvalue="code" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,permission,api,getById"/>
+      	<Select name="id_person_group" datasource="call:gecol.core,person.group,api,getAll" bindid="id" bindvalue="code" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person.group,api,getById"/>
+      	<Select name="id_permission" datasource="call:framework,permission,api,search" bindid="id" bindvalue="code" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,permission,api,getById"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="edit"/>
-          <Button id="save" type="update" label="save" action="saveNewEntry"/>
+          <Button name="cancel" type="cancel" label="cancel" action="edit"/>
+          <Button name="save" type="update" label="save" action="saveNewEntry"/>
         </ButtonGroup>
       </Form>
     </Screen>

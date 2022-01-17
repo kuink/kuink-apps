@@ -37,7 +37,7 @@
 			</Grid>
 			<Form name="frmOptions">
 			 <ButtonGroup>
-			   <Button type="cancel" id="back" label="back" action="back"/>
+			   <Button type="cancel" name="back" label="back" action="back"/>
 			 </ButtonGroup>
 			</Form>
 		</Screen>

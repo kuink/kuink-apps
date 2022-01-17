@@ -19,7 +19,7 @@
 		<HtmlContainer name="subtitleShow"/>				  	
       	<Form name="viewForm" title="viewForm" freeze="true">
       		<ButtonGroup>
-      			<Button id="back" type="back" action="back"/>
+      			<Button name="back" type="back" action="back"/>
       		</ButtonGroup>
       	</Form>
     	</Screen>

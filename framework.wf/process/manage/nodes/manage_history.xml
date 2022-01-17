@@ -51,7 +51,7 @@
 
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
+          <Button name="back" type="back" label="back" action="back"/>
         </ButtonGroup>
       </Form>
       <Image name="imgDiagram" title="bpmnProcess"/>

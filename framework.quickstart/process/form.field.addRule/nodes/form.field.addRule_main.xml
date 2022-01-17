@@ -6,28 +6,28 @@
   <Screens>
     <Screen name="scr01">
       <Form name="form01">
-        <Header id="h1" label="Select - Change value to Option 2"/>
+        <Header name="h1" label="Select - Change value to Option 2"/>
 
-        <Select id="id_test">
+        <Select name="id_test">
           <Options>
             <Option id="1">Option 1</Option>
             <Option id="2">Option 2</Option>
           </Options>        
         </Select>
           
-        <Header id="h2" label="Fixed Field and Fixed Rule"/>
-        <Select id="id_test2" label="applyRules" visible="true">
+        <Header name="h2" label="Fixed Field and Fixed Rule"/>
+        <Select name="id_test2" label="applyRules" visible="true">
           <Rule runat="client" attr="visible" condition="$id_test==2" value="false"/>
         </Select>
 
-        <Header id="h3" label="Fixed Field and Dynamically added Rule"/>
-        <Select id="id_test3" label="applyRules" visible="true"/>
+        <Header name="h3" label="Fixed Field and Dynamically added Rule"/>
+        <Select name="id_test3" label="applyRules" visible="true"/>
 
-        <Header id="h4" label="Dynamically added Field and Dynamically added Rule"/>
-        <Container id="c1"/>
+        <Header name="h4" label="Dynamically added Field and Dynamically added Rule"/>
+        <Container name="c1"/>
                           
         <ButtonGroup>
-          <Button type="submit" label="save" id="submitusername"
+          <Button type="submit" label="save" name="submitusername"
             action="process" />
         </ButtonGroup>
       </Form>

@@ -12,10 +12,10 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Text id="name"/>
+        <Text name="name"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -37,31 +37,31 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="id_channel" label="id_channel" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
-        <Static id="uuid"/>
-        <Static id="code"/>
-        <Static id="name"/>
-        <Static id="description"/>
+        <Static name="id"/>
+        <Static name="id_channel" label="id_channel" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
+        <Static name="uuid"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Select id="id_template_type" label="id_template_type" required="true" datasource="call:framework,cms.template.type,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="code" label="code" required="true"/>
-        <Text id="name" label="name" required="true"/>
-        <Text id="description" label="description" required="false"/>
-        <CodeEditor id="source" label="source" required="true"/>        
+        <Static name="id" label="id" required="true"/>
+        <Select name="id_template_type" label="id_template_type" required="true" datasource="call:framework,cms.template.type,api,getAll" bindid="id" bindvalue="name"/>
+        <Text name="code" label="code" required="true"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="description" label="description" required="false"/>
+        <CodeEditor name="source" label="source" required="true"/>        
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="saveAndStay" type="update" action="saveAndStay"/>
-          <Button id="saveAndLeave" type="update" action="saveAndLeave"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="saveAndStay" type="update" action="saveAndStay"/>
+          <Button name="saveAndLeave" type="update" action="saveAndLeave"/>
         </ButtonGroup>
       </Form>
     </Screen>

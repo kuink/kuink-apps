@@ -21,18 +21,18 @@
   <Screens>
     <Screen name="runScreen">
       <Form name="runForm">
-      	<Select id="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
+      	<Select name="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
         <ButtonGroup>
-          <Button id="run" label="runTests" type="submit" icon="play" action="run"/>
+          <Button name="run" label="runTests" type="submit" icon="play" action="run"/>
         </ButtonGroup>
       </Form>
     </Screen>
 		
     <Screen name="resultsScreen">
       <Form name="runForm">
-	      <Select id="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
+	      <Select name="application" searchable="true" datasource="applications" bindid="name" bindvalue="name"/>
         <ButtonGroup>
-          <Button id="run" label="runTests" type="submit" icon="play" action="run"/>
+          <Button name="run" label="runTests" type="submit" icon="play" action="run"/>
         </ButtonGroup>
       </Form>
       <Grid name="resultGrid" title="testResult">

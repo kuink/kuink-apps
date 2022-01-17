@@ -19,11 +19,11 @@
   <Screens>
     <Screen name="scrAddDocumentAndVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
       <Form name="frmNewVersion" title="newVersion">
-        <Header id="h1" label="controlledDocument"/>>
+        <Header name="h1" label="controlledDocument"/>>
         <File id="file" required="true"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
-          <Button id="save" type="update" label="submitToApproval" action="createDocAndSaveVersion"/>
+          <Button name="back" type="cancel" label="back" action="back"/>
+          <Button name="save" type="update" label="submitToApproval" action="createDocAndSaveVersion"/>
         </ButtonGroup>
       </Form>  
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -56,14 +56,14 @@
     </Screen>
     <Screen name="scrAddVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
       <Form name="frmNewVersion" title="newVersion">
-        <Header id="h1" label="controlledDocument"/>>
-        <Static id="code" label="code"/>
-        <Static id="description" label="description"/>                
-        <Header id="h2" label="newVersion"/>
+        <Header name="h1" label="controlledDocument"/>>
+        <Static name="code" label="code"/>
+        <Static name="description" label="description"/>                
+        <Header name="h2" label="newVersion"/>
         <File id="file" required="true"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
-          <Button id="save" type="update" label="submitToApproval" action="saveVersion"/>
+          <Button name="back" type="back" label="back" action="back"/>
+          <Button name="save" type="update" label="submitToApproval" action="saveVersion"/>
         </ButtonGroup>
       </Form>      
       <Grid name="grdVersions" title="versions">
@@ -98,7 +98,7 @@
     <Screen name="scrObservations" doc="Version observations">
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="init"/>
+          <Button name="back" type="back" label="back" action="init"/>
         </ButtonGroup>
       </Form>    
       <Grid name="grdObservations" title="obs">

@@ -6,12 +6,12 @@
   <Screens>
     <Screen name="scr01">
       <Form name="form01">
-        <Header id="h1" label="Multilang input fields"/>
-        <Text id="name" label="name" multilang="true"/>
-        <TextArea id="description" label="description" multilang="true"/>
-        <Text id="current_value" label="single value"/>
+        <Header name="h1" label="Multilang input fields"/>
+        <Text name="name" label="name" multilang="true"/>
+        <TextArea name="description" label="description" multilang="true"/>
+        <Text name="current_value" label="single value"/>
         <ButtonGroup>
-          <Button type="submit" label="save" id="submitusername"
+          <Button type="submit" label="save" name="submitusername"
             action="process" />
         </ButtonGroup>
       </Form>

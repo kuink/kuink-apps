@@ -18,7 +18,7 @@
   <Screens>
     <Screen name="listApiScreen">
       <Form name="search" persist="true">
-        <Select id="api" label="api" inputsize="xlarge" searchable="dynamic" datasource="call:framework,ide,api,searchLibrary" bindid="id" bindvalue="name" bindresults="id" bindimage="" datasource-params="library,pagenum"  datasource-initial="call:framework,ide,api,searchLibrary" action="search"/>
+        <Select name="api" label="api" inputsize="xlarge" searchable="dynamic" datasource="call:framework,ide,api,searchLibrary" bindid="id" bindvalue="name" bindresults="id" bindimage="" datasource-params="library,pagenum"  datasource-initial="call:framework,ide,api,searchLibrary" action="search"/>
       </Form>
       <Grid name="apiGrid" title="api">
         <Template>
@@ -66,12 +66,12 @@
 
     <Screen name="callFunctionScreen">
       <Form name="callForm">
-        <Text id="wslibrary" required="true"/>
-        <Container id="fields" />
-        <Checkbox id="_debug_" label="debug"/>
+        <Text name="wslibrary" required="true"/>
+        <Container name="fields" />
+        <Checkbox name="_debug_" label="debug"/>
         <ButtonGroup>
-          <Button id="call" type="save" action="test"/>        
-          <Button id="back" type="back" action="search"/>
+          <Button name="call" type="save" action="test"/>        
+          <Button name="back" type="back" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="resultGrid" infer="true" title="result"/>

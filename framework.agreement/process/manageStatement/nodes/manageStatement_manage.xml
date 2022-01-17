@@ -12,9 +12,9 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Select id="id_agreement_statement_type" datasource="call:framework,agreement.statement.type,api,getAll" bindid="id" bindvalue="name" action="search"/>
+        <Select name="id_agreement_statement_type" datasource="call:framework,agreement.statement.type,api,getAll" bindid="id" bindvalue="name" action="search"/>
         <ButtonGroup>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -40,37 +40,37 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="field"/>
-        <Static id="id_agreement_statement_type"/>
-        <Static id="is_active"/>
-        <Static id="mandatory_response_value"/>
-        <Static id="expire_date_expression"/>
-        <Static id="id_controlled_document" label="id_controlled_document" datasource="call:framework,rm.controlledDocument,api,getAll" bindid="id" bindvalue="name"/>
-        <Static id="code"/>
+        <Static name="id"/>
+        <Static name="field"/>
+        <Static name="id_agreement_statement_type"/>
+        <Static name="is_active"/>
+        <Static name="mandatory_response_value"/>
+        <Static name="expire_date_expression"/>
+        <Static name="id_controlled_document" label="id_controlled_document" datasource="call:framework,rm.controlledDocument,api,getAll" bindid="id" bindvalue="name"/>
+        <Static name="code"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Text id="code" label="code" required="true"/>
-        <Select id="id_agreement_statement_type" datasource="call:framework,agreement.statement.type,api,getAll" bindid="id" bindvalue="name" required="true"/>
-        <Text id="statement" label="statement" multilang="true" required="true"/>
-        <Text id="name" label="name" multilang="true" required="true"/>
-        <TextArea id="description" label="description" multilang="true" required="true"/>
-        <CodeEditor id="field" label="field" required="true"/>
-        <Checkbox id="is_active" label="is_active" required="true"/>
-        <Int id="mandatory_response_value" help="true" required="false"/>
-        <Text id="expire_date_expression" label="expire_date_expression" required="false"/>
-        <Select id="id_controlled_document" label="id_controlled_document" datasource="call:framework,rm.controlledDocument,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <Static name="id" label="id" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Select name="id_agreement_statement_type" datasource="call:framework,agreement.statement.type,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <Text name="statement" label="statement" multilang="true" required="true"/>
+        <Text name="name" label="name" multilang="true" required="true"/>
+        <TextArea name="description" label="description" multilang="true" required="true"/>
+        <CodeEditor name="field" label="field" required="true"/>
+        <Checkbox name="is_active" label="is_active" required="true"/>
+        <Int name="mandatory_response_value" help="true" required="false"/>
+        <Text name="expire_date_expression" label="expire_date_expression" required="false"/>
+        <Select name="id_controlled_document" label="id_controlled_document" datasource="call:framework,rm.controlledDocument,api,getAll" bindid="id" bindvalue="name" required="false"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

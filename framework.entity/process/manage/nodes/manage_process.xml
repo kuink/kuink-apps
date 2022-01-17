@@ -28,8 +28,8 @@
       </Grid>    
       <Form name="actions">
         <ButtonGroup>
-          <Button id="back" type="back" action="back" />
-          <Button id="apply" type="add" action="applyChanges" />
+          <Button name="back" type="back" action="back" />
+          <Button name="apply" type="add" action="applyChanges" />
         </ButtonGroup>
       </Form>
     </Screen>
@@ -38,7 +38,7 @@
       <Grid name="logGrid" infer="true" title="log"/>      
       <Form name="actions">
         <ButtonGroup>
-          <Button id="back" type="back" action="back" />
+          <Button name="back" type="back" action="back" />
         </ButtonGroup>
       </Form>
     </Screen>

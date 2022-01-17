@@ -17,41 +17,41 @@
 	<Screens>
 		<Screen name="mainScreen">
 			<Form name="frmTask" persist="true">
-				<Hidden id="id" name="id"/>
-			 <Header id="TaskDescription" name="TaskDescription" collapsible="true" collapsed="false"/>
-			 <TextArea id="description" help="false"/>
+				<Hidden name="id"/>
+			 <Header name="TaskDescription" collapsible="true" collapsed="false"/>
+			 <TextArea name="description" help="false"/>
 
-			 <Header id="TaskConfiguration" name="TaskConfiguration" collapsible="true" collapsed="false"/>
-			 <Text id="library" help="false"/>
-			 <TextArea id="params" help="false"/>
-			 <Int id="log_level" help="false"/>
-			 <Checkbox id="active"  help="false"/>
+			 <Header name="TaskConfiguration" collapsible="true" collapsed="false"/>
+			 <Text name="library" help="false"/>
+			 <TextArea name="params" help="false"/>
+			 <Int name="log_level" help="false"/>
+			 <Checkbox name="active"  help="false"/>
 
-			 <Header id="TaskScheduler" name="TaskScheduler" collapsible="true" collapsed="false" help="false"/>
-			 <Select datasource="call:framework,generic,api,getYesNoDataSource" bindid="id" bindvalue="value" id="just_one_time" name="just_one_time" help="false"/>
-			 <Date id="start_date" name="start_date" required="true" help="false"/>
-			 <Date id="end_date" name="end_date" visible="true" help="false">
+			 <Header name="TaskScheduler" collapsible="true" collapsed="false" help="false"/>
+			 <Select name="just_one_time" datasource="call:framework,generic,api,getYesNoDataSource" bindid="id" bindvalue="value" help="false"/>
+			 <Date name="start_date" required="true" help="false"/>
+			 <Date name="end_date" visible="true" help="false">
 			 	<Rule attr="visible" condition="$just_one_time == '1'" value="false" runat="client"/>
 			 </Date>
-			 <Text id="start_time" required="true" help="false" />
-			 <Text id="end_time" help="false">
+			 <Text name="start_time" required="true" help="false" />
+			 <Text name="end_time" help="false">
 			 	<Rule attr="visible" condition="$just_one_time == '1'" value="false" runat="client"/>
 			 </Text>
-			 <Int id="run_interval" help="false"/>
+			 <Int name="run_interval" help="false"/>
 
-			 <Checkbox id="dow_1" help="false" label="monday"/>
-			 <Checkbox id="dow_2" help="false" label="tuesday"/>
-			 <Checkbox id="dow_3" help="false" label="wednesday"/>
-			 <Checkbox id="dow_4" help="false" label="thursday"/>
-			 <Checkbox id="dow_5" help="false" label="friday"/>
-			 <Checkbox id="dow_6" help="false" label="saturday"/>
-			 <Checkbox id="dow_7" help="false" label="sunday"/>
+			 <Checkbox name="dow_1" help="false" label="monday"/>
+			 <Checkbox name="dow_2" help="false" label="tuesday"/>
+			 <Checkbox name="dow_3" help="false" label="wednesday"/>
+			 <Checkbox name="dow_4" help="false" label="thursday"/>
+			 <Checkbox name="dow_5" help="false" label="friday"/>
+			 <Checkbox name="dow_6" help="false" label="saturday"/>
+			 <Checkbox name="dow_7" help="false" label="sunday"/>
 
-       <DateTime id="run_next" name="run_next" />
+       <DateTime name="run_next"/>
 			 <ButtonGroup>
-			   <Button type="back" id="back" name="back" label="back" action="back"/>
-			   <Button type="save" id="save" label="save" action="save"/>
-			   <Button type="refresh" id="refresh" name="refresh" action="init"/>
+			   <Button type="back" name="back" label="back" action="back"/>
+			   <Button type="save" name="save" label="save" action="save"/>
+			   <Button type="refresh" name="refresh" action="init"/>
 			 </ButtonGroup>
 			</Form>
 		</Screen>

@@ -24,15 +24,15 @@
                 <ActionGroup>
                     <Action id="logList" name="logList" label="log" />
                 </ActionGroup>            
-                <Header id="head1" label="edit"/>
-				<Int id="id" label="id" required="true"/>                
-                <Int id="id_key1" label="id_key1" required="true"/>
-                <Int id="id_key2" label="id_key2" required="true"/>
+                <Header name="head1" label="edit"/>
+				<Int name="id" label="id" required="true"/>                
+                <Int name="id_key1" label="id_key1" required="true"/>
+                <Int name="id_key2" label="id_key2" required="true"/>
                 <Name id="name" label="name" />
                 <ButtonGroup>
-                    <Button type="cancel" id="back" label="back" action="cancel"/>
-                    <Button type="submit" id="save" label="save" action="save"/>
-                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                    <Button type="cancel" name="back" label="back" action="cancel"/>
+                    <Button type="submit" name="save" label="save" action="save"/>
+                    <Button type="submit" name="delete" label="delete" action="delete" confirm="ask_proceed"/>
                 </ButtonGroup>
             </Form>
             <Grid name="searchResultGrid">

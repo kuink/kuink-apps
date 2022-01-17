@@ -13,21 +13,21 @@
   <Screens>
     <Screen name="scrEdit">
       <Form name="frmWfEdit" title="classWorkflow">
-        <Select id="wf_id_process" datasource="call:framework,wf.process,api,getAll" label="workflowProcess" bindid="id" bindvalue="code"/>               
-        <Select id="wf_type_code" datasource="call:framework,rm.class.workflow,api,getWorkflowTypes" label="workflowType" bindid="code" bindvalue="name"/>               
-        <TextArea id="wf_params_class"/>        
-        <Static id="wf_params_process">
+        <Select name="wf_id_process" datasource="call:framework,wf.process,api,getAll" label="workflowProcess" bindid="id" bindvalue="code"/>               
+        <Select name="wf_type_code" datasource="call:framework,rm.class.workflow,api,getWorkflowTypes" label="workflowType" bindid="code" bindvalue="name"/>               
+        <TextArea name="wf_params_class"/>        
+        <Static name="wf_params_process">
           <Formatter name="Json" method="prettyPrint"/>
           <Formatter name="Style" method="nl2br"/>          
         </Static>
-        <Static id="wf_params_process_configuration">
+        <Static name="wf_params_process_configuration">
           <Formatter name="Json" method="prettyPrint"/>
           <Formatter name="Style" method="nl2br"/>
         </Static>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
-          <Button id="save" type="save" label="save" action="save"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="back"/>
+          <Button name="save" type="save" label="save" action="save"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>

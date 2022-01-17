@@ -8,7 +8,7 @@
 			<Form name="frmMain"  title="New File">
 				<File name="file"/>
 				<ButtonGroup >
-					<Button type="submit" label="save" id="submitusername" action="insert"/>
+					<Button type="submit" label="save" name="submitusername" action="insert"/>
 				</ButtonGroup>
 			</Form>
 

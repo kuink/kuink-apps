@@ -24,23 +24,23 @@
 			<!--HtmlContainer name="pdfcontent" />
 			<HtmlContainer name="pdfcontent2" /-->
 			<Form name="test" freeze="true">
-				<Header id="testh" label="test"/>
-				<Static id="name" label="name">
+				<Header name="testh" label="test"/>
+				<Static name="name" label="name">
 					<CurrencyFormatter method="currencyAfter"/>
 				</Static>
 				
-				<Static id="name" label="long description name">
+				<Static name="name" label="long description name">
 					<CurrencyFormatter method="currencyAfter"/>
 				</Static>
 			</Form>
 			
 			<Form name="test2" freeze="true">
-				<Header id="testh" label="test"/>
-				<Static id="name" label="name">
+				<Header name="testh" label="test"/>
+				<Static name="name" label="name">
 					<CurrencyFormatter method="currencyAfter"/>
 				</Static>
 				
-				<Static id="name" label="long description name">
+				<Static name="name" label="long description name">
 					<CurrencyFormatter method="currencyAfter"/>
 				</Static>
 			</Form>

@@ -16,10 +16,10 @@
   <Screens>
     <Screen name="scrLogin" doc="Login Screen">
       <Form name="frmLogin">
-      	<Text id="username" label="username"/>
-      	<Password id="password" label="password"/>
+      	<Text name="username" label="username"/>
+      	<Password name="password" label="password"/>
         <ButtonGroup>
-          <Button id="doLogin" type="execute" action="doLogin"/>
+          <Button name="doLogin" type="execute" action="doLogin"/>
         </ButtonGroup>
       </Form>    
     </Screen>

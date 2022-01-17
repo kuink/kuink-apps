@@ -12,12 +12,12 @@
   <Screens>
     <Screen name="sc01">
       <Form name="frmTables">
-        <Select id="entity" required="true" searchable="true" datasource="dsTables" bindid="table" bindvalue="table"/>
-        <Static id="definition">
+        <Select name="entity" required="true" searchable="true" datasource="dsTables" bindid="table" bindvalue="table"/>
+        <Static name="definition">
           <Formatter name="Xml"/>
         </Static>
         <ButtonGroup>
-          <Button type="submit" id="next" action="step01"/>
+          <Button type="submit" name="next" action="step01"/>
         </ButtonGroup>
       </Form>
     </Screen>

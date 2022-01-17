@@ -12,18 +12,18 @@
       <Screen name="screenTest">
           <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
           <Form name="aa" id="aa">
-            <Int id="b" required="true" />
-            <Text id="s" required="true" icon="envelope" help="aaasdsfdsdf"/>
-            <DateTime id="k" />
-            <Date id="j" disabled="true"/>
-            <Select id="id_school_year" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" action="init" />
-            <TextArea id="p" />
-            <Static id="m" />
-            <Header id="m2" label="My Header"/>
-            <Checkbox id="c1" label="Checkbox"/>
-            <CheckBoxList id="educationalProjectItems" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" readonly="true" />
+            <Int name="b" required="true" />
+            <Text name="s" required="true" icon="envelope" help="aaasdsfdsdf"/>
+            <DateTime name="k" />
+            <Date name="j" disabled="true"/>
+            <Select name="id_school_year" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" action="init" />
+            <TextArea name="p" />
+            <Static name="m" />
+            <Header name="m2" label="My Header"/>
+            <Checkbox name="c1" label="Checkbox"/>
+            <CheckBoxList name="educationalProjectItems" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" readonly="true" />
             <ButtonGroup>
-                <Button type="submit" id="submit" action="ola" confirm="asdasdadavvvvv" />
+                <Button type="submit" name="submit" action="ola" confirm="asdasdadavvvvv" />
             </ButtonGroup>
           </Form>
           <Grid id="gridExample" name="gridExample" title="Grid de Exemplo">
@@ -42,9 +42,9 @@
       <Screen name="screenTest2">
           <!--  Custom name="aggregationCtrl" control="framework,record.aggregation,showRecordsByAggregation" /-->
           <Form name="aa" id="aa">
-            <Int id="c2" required="true" />
+            <Int name="c2" required="true" />
             <ButtonGroup>
-                <Button type="submit" id="submit" action="ola"/>
+                <Button type="submit" name="submit" action="ola"/>
             </ButtonGroup>
           </Form>
       </Screen>

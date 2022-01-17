@@ -13,25 +13,25 @@
   <Screens>
     <Screen name="scr001">
       <Form name="frmTest" persist="true">
-        <Text id="application" required="true" />
-        <Text id="node" required="true" />
-        <Checkbox id="createForeignIndexes"/>
-        <Checkbox id="createForeignKeys"/>
-        <Checkbox id="dropTablesBeforeCreate"/>
+        <Text name="application" required="true" />
+        <Text name="node" required="true" />
+        <Checkbox name="createForeignIndexes"/>
+        <Checkbox name="createForeignKeys"/>
+        <Checkbox name="dropTablesBeforeCreate"/>
         <ButtonGroup>
-          <Button id="analyse" type="search" action="process" />
-          <Button id="diagram" type="submit" action="showDiagram" />
+          <Button name="analyse" type="search" action="process" />
+          <Button name="diagram" type="submit" action="showDiagram" />
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrDiagram" doc="Diagram">
       <Form name="frmOptions" persist="true">
-        <Text id="application" required="true" />
-        <Text id="node" required="true" inline="true"/>
-        <Select id="template" datasource="templateOptions" bindid="id" bindvalue="value"/>
+        <Text name="application" required="true" />
+        <Text name="node" required="true" inline="true"/>
+        <Select name="template" datasource="templateOptions" bindid="id" bindvalue="value"/>
         <ButtonGroup>
-          <Button id="back" type="back" action="init" />
-          <Button id="diagram" type="submit" action="showDiagram" />
+          <Button name="back" type="back" action="init" />
+          <Button name="diagram" type="submit" action="showDiagram" />
         </ButtonGroup>
       </Form>      
       <Uml name="umlViewer" format="svg" title="diagram"/>

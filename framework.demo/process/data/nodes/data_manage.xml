@@ -16,11 +16,11 @@
     <Screens>
         <Screen name="searchRecords">
             <Form name="searchRecordsForm" >
-                <Header id="headSearch" label="search" help="true"/>
-                <Text id="nome" label="nome" visible="true" required="false"  help="true"/>
+                <Header name="headSearch" label="search" help="true"/>
+                <Text name="nome" label="nome" visible="true" required="false"  help="true"/>
                 <ButtonGroup>
-                    <Button type="submit" id="search" label="search" action="search" help="true"/>
-                    <Button type="submit" id="new" label="new" action="new" />
+                    <Button type="submit" name="search" label="search" action="search" help="true"/>
+                    <Button type="submit" name="new" label="new" action="new" />
                 </ButtonGroup>
             </Form>
             <Grid name="searchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search">
@@ -40,13 +40,13 @@
         </Screen>
         <Screen name="editRecord">
             <Form name="editRecordForm">
-                <Header id="head1" label="edit"/>
-                <Int id="id" label="id" required="true"/>
+                <Header name="head1" label="edit"/>
+                <Int name="id" label="id" required="true"/>
                 <Name id="name" label="name" />
                 <ButtonGroup>
-                    <Button type="cancel" id="back" label="back" action="cancel"/>
-                    <Button type="submit" id="save" label="save" action="save"/>
-                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                    <Button type="cancel" name="back" label="back" action="cancel"/>
+                    <Button type="submit" name="save" label="save" action="save"/>
+                    <Button type="submit" name="delete" label="delete" action="delete" confirm="ask_proceed"/>
                 </ButtonGroup>
             </Form>
             <Grid name="searchResultGrid">

@@ -17,7 +17,7 @@
         {/if}
         {/foreach}
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
+          <Button name="search" type="search" label="search" action="search"/>
         </ButtonGroup>    
       </Form>
       
@@ -48,11 +48,11 @@
       <Form name="frmView">
         {foreach $attributes as $field}
         {if $field['form'] == 1}
-        <Static id="{$field['name']}" label="{$field['label']}"/>
+        <Static name="{$field['name']}" label="{$field['label']}"/>
         {/if}
         {/foreach}
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>    
       </Form>
     </Screen>
@@ -65,8 +65,8 @@
         {/if}
         {/foreach}
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="cancel"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="cancel"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>    
       </Form>
     </Screen>        

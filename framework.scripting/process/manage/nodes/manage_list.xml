@@ -33,7 +33,7 @@
       </Grid>
       <Form name="addForm">
         <ButtonGroup>
-          <Button id="add" type="add" label="add" action="add"/>
+          <Button name="add" type="add" label="add" action="add"/>
         </ButtonGroup>
       </Form>      
     </Screen>

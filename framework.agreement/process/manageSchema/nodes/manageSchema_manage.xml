@@ -12,10 +12,10 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Text id="code"/>
+        <Text name="code"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -39,42 +39,42 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="uuid"/>
-        <Static id="code"/>
-        <Static id="name" multilang="true"/>
-        <Static id="description" multilang="true"/>        
+        <Static name="id"/>
+        <Static name="uuid"/>
+        <Static name="code"/>
+        <Static name="name" multilang="true"/>
+        <Static name="description" multilang="true"/>        
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Text id="code" label="code" required="true"/>
-        <Text id="name" label="name" multilang="true" required="true"/>
-        <TextArea id="description" label="description" multilang="true" required="true"/>
+        <Static name="id" label="id" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Text name="name" label="name" multilang="true" required="true"/>
+        <TextArea name="description" label="description" multilang="true" required="true"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrStatements" doc="Manage schema statements...">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="code"/>
-        <Static id="name" multilang="true"/>
+        <Static name="id"/>
+        <Static name="code"/>
+        <Static name="name" multilang="true"/>
       </Form>
       <Form name="frmFilter" persist="true">
-        <Date id="startDate"/>
+        <Date name="startDate"/>
         <ButtonGroup>
-          <Button id="back" type="back" action="init"/>
-          <Button id="filter" type="search" action="statements"/>
-          <Button id="add" type="add" action="schemaStatementAdd"/>
+          <Button name="back" type="back" action="init"/>
+          <Button name="filter" type="search" action="statements"/>
+          <Button name="add" type="add" action="schemaStatementAdd"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdStatements" pageable="false" collapsible="false" title="statements">
@@ -102,31 +102,31 @@
     </Screen>
     <Screen name="scrSchemaStatementEdit">
       <Form name="frmSchemaStatementEdit" persist="true">
-        <Date id="start_date" required="true"/>
-        <Date id="end_date" now="false"/>
-        <Int id="order" required="true"/>
+        <Date name="start_date" required="true"/>
+        <Date name="end_date" now="false"/>
+        <Int name="order" required="true"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" action="statements"/>
-          <Button id="save" type="update" action="schemaStatementUpdate"/>
+          <Button name="cancel" type="cancel" action="statements"/>
+          <Button name="save" type="update" action="schemaStatementUpdate"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrSchemaStatementAdd">
       <Form name="frmSchemaStatementAdd" title="add">
-        <Select id="id_agreement_statement" datasource="call:framework,agreement.statement,api,getAllExtended" bindid="id" bindvalue="name_extended" required="true"/>
-        <Date id="start_date" required="true"/>
-        <Date id="end_date" now="false"/>
-        <Int id="order" required="true"/>
+        <Select name="id_agreement_statement" datasource="call:framework,agreement.statement,api,getAllExtended" bindid="id" bindvalue="name_extended" required="true"/>
+        <Date name="start_date" required="true"/>
+        <Date name="end_date" now="false"/>
+        <Int name="order" required="true"/>
         <ButtonGroup>
-          <Button id="save" type="update" action="schemaStatementInsert"/>
-          <Button id="cancel" type="cancel" action="statements"/>
+          <Button name="save" type="update" action="schemaStatementInsert"/>
+          <Button name="cancel" type="cancel" action="statements"/>
         </ButtonGroup>
       </Form>
     </Screen> 
     <Screen name="scrPreview">
       <Form name="frmView">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>
       </Form>
       <Custom name="statementsCtrl" control="framework.agreement,manage,show"/>

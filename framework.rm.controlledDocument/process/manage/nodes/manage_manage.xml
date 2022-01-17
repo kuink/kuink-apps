@@ -21,13 +21,13 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true">
-        <Select id="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name" help="true"/>
-        <Text id="text" label="text" help="true"/>
-        <Checkbox id="is_active"/>
+        <Select name="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name" help="true"/>
+        <Text name="text" label="text" help="true"/>
+        <Checkbox name="is_active"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
-          <Button id="notifyPreview" type="submit" icon="envelope" label="notify" action="notifyPreview"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
+          <Button name="notifyPreview" type="submit" icon="envelope" label="notify" action="notifyPreview"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -65,44 +65,44 @@
       <HtmlContainer name="htmlPreview" title="previewTpl" position="left"/> 
       <HtmlContainer name="testDataPreview" position="left"/>
       <Form name="frmView" title="controlledDocument" position="right">
-        <Header id="baseData" label="baseData"/>
-        <Static id="id"/>
-        <Static id="full_name">
+        <Header name="baseData" label="baseData"/>
+        <Static name="id"/>
+        <Static name="full_name">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="description"/>
-        <Static id="keywords"/>
-        <Static id="is_active">
+        <Static name="description"/>
+        <Static name="keywords"/>
+        <Static name="is_active">
           <Formatter name="YesNo"/>
         </Static>
-        <Static id="is_public">
+        <Static name="is_public">
           <Formatter name="YesNo"/>
         </Static>        
-        <Static id="uri_external">
+        <Static name="uri_external">
           <Formatter name="Url"/>
         </Static>
-        <Static id="deployment_file_format"/>
-        <Header id="currentVersion" label="currentVersion"/>
-        <Static id="version_code">
+        <Static name="deployment_file_format"/>
+        <Header name="currentVersion" label="currentVersion"/>
+        <Static name="version_code">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="version_reason"/>
-        <Static id="version_approval_date">
+        <Static name="version_reason"/>
+        <Static name="version_approval_date">
           <Formatter name="DateTime"/>
         </Static>
-        <Header id="classification"/>
-        <Static id="class"/>
-        <Static id="disposal_info">
+        <Header name="classification"/>
+        <Static name="class"/>
+        <Static name="disposal_info">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="obs_private"/>
-        <Static id="location"/>
+        <Static name="obs_private"/>
+        <Static name="location"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="add" type="add" label="newVersion" action="newVersion"/>
-          <Button id="copy" type="copy" label="copyVersion" action="copyVersion"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="add" type="add" label="newVersion" action="newVersion"/>
+          <Button name="copy" type="copy" label="copyVersion" action="copyVersion"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>      
             
@@ -149,50 +149,50 @@
     </Screen>
     <Screen name="scrNotifyPreview" doc="Preview Notification">
       <Form name="frmNotifyPreview" title="preview">
-        <Static id="message" label="message"/>
+        <Static name="message" label="message"/>
         <ButtonGroup>
-        	<Button id="back" type="back" label="back" action="search"/>
-          <Button id="continue" type="continue" label="notify" action="notifyNewVersions"/>
+        	<Button name="back" type="back" label="back" action="search"/>
+          <Button name="continue" type="continue" label="notify" action="notifyNewVersions"/>
         </ButtonGroup>
       </Form>
     </Screen>    
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Header id="baseData"/>
-        <Static id="id" label="id" required="true"/>
-        <Text id="code" label="code" required="true"/>
-        <Select id="id_controlled_document_type" label="id_controlled_document_type" required="true" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="code_name" label="code_name" required="false"/>
-        <Text id="name" label="name" required="true"/>
-        <Text id="description" label="description" required="false"/>
-        <Text id="keywords" label="keywords" required="false"/>
-        <Text id="uri_external" label="uri_external"/>
-        <Text id="deployment_file_format" />
-        <Select id="id_class" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
-        <Checkbox id="is_active" label="active" required="true"/>
-        <Checkbox id="is_public" required="true"/>
-        <Header id="classTemplate"/>
-        <Select id="id_class_template" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>        
+        <Header name="baseData"/>
+        <Static name="id" label="id" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Select name="id_controlled_document_type" label="id_controlled_document_type" required="true" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name"/>
+        <Text name="code_name" label="code_name" required="false"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="description" label="description" required="false"/>
+        <Text name="keywords" label="keywords" required="false"/>
+        <Text name="uri_external" label="uri_external"/>
+        <Text name="deployment_file_format" />
+        <Select name="id_class" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
+        <Checkbox name="is_active" label="active" required="true"/>
+        <Checkbox name="is_public" required="true"/>
+        <Header name="classTemplate"/>
+        <Select name="id_class_template" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>        
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrNewVersion"  template="1x2x1col" doc="New version screen">
       <Form name="frmNewVersion" title="version" position="top">
-        <Hidden id="id_version" label="id"/>
-        <Static id="code" label="code"/>
-        <TextArea id="reason" required="true"/>
+        <Hidden name="id_version" label="id"/>
+        <Static name="code" label="code"/>
+        <TextArea name="reason" required="true"/>
         <!--Text id="template" required="false"/-->
         <File id="file" required="false"/>
-        <CodeEditor id="template_src"/>
-        <CodeEditor id="template_config"/>
-        <CodeEditor id="test_data"/>        
+        <CodeEditor name="template_src"/>
+        <CodeEditor name="template_config"/>
+        <CodeEditor name="test_data"/>        
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="manage"/>
-          <Button id="save" type="update" label="save" action="saveVersion"/>
-          <Button id="download" type="download" label="download" action="downloadVersionTPL"/>          
+          <Button name="back" type="back" label="back" action="manage"/>
+          <Button name="save" type="update" label="save" action="saveVersion"/>
+          <Button name="download" type="download" label="download" action="downloadVersionTPL"/>          
         </ButtonGroup>
       </Form>
       <DocViewer name="dcPreview" title="previewDoc" position="left"/>
@@ -200,13 +200,13 @@
     </Screen>
     <Screen name="scrDeployment">
       <Form name="frmDeployment" title="version">
-        <Hidden id="id_version" label="id"/>
-        <Static id="code" label="code"/>
+        <Hidden name="id_version" label="id"/>
+        <Static name="code" label="code"/>
         <!--Text id="template" required="false"/-->
         <File id="file" required="false"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="manage"/>
-          <Button id="upload" type="update" action="uploadDeployment"/>
+          <Button name="back" type="back" label="back" action="manage"/>
+          <Button name="upload" type="update" action="uploadDeployment"/>
         </ButtonGroup>
       </Form>
 

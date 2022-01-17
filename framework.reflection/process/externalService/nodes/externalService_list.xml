@@ -12,9 +12,9 @@
   <Screens>
     <Screen name="listApiScreen">
       <Form name="search" persist="true">
-          <Text id="dataSource" label="dataSource"/>
+          <Text name="dataSource" label="dataSource"/>
           <ButtonGroup>
-            <Button id="search" type="search" label="search" action="search"/>
+            <Button name="search" type="search" label="search" action="search"/>
           </ButtonGroup>
       </Form>
       <Grid name="apiGrid" title="api">
@@ -59,11 +59,11 @@
 		
     <Screen name="callFunctionScreen">
       <Form name="callForm">
-        <Container id="fields"/>
-        <Checkbox id="_debug_" label="debug"/>
+        <Container name="fields"/>
+        <Checkbox name="_debug_" label="debug"/>
         <ButtonGroup>
-          <Button id="back" type="back" action="search"/>
-          <Button id="call" type="save" action="test"/>
+          <Button name="back" type="back" action="search"/>
+          <Button name="call" type="save" action="test"/>
         </ButtonGroup>
       </Form>
       <Grid name="resultGrid" infer="true" title="result"/>

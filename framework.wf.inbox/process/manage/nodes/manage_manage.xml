@@ -16,12 +16,12 @@
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Column id="col1"/>
-        <Text id="text" label="text"/>
+        <Text name="text" label="text"/>
         <Column id="col2"/>
-        <Checkbox id="is_completed"/>
-        <Checkbox id="started_by_me"/>
+        <Checkbox name="is_completed"/>
+        <Checkbox name="started_by_me"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
+          <Button name="search" type="search" label="search" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="inbox">

@@ -1,34 +1,38 @@
-<?xml version="1.0" encoding="UTF-8"?><Method>
-    <Doc>
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
         Search all fw_capability
     </Doc>
-    <Params>
-                      <Param name="id"/>
-                  <Param name="name"/>
-                  <Param name="code"/>
-                  <Param name="is_global"/>
-                                            </Params>
-    <Body>
-        <SqlPaginated>
-            <XSql>
-                <XSelect>
-                    <XField >
-                        *
-                    </XField>
-                </XSelect>
-                <XFrom>
-                    <XTable>
-                        fw_capability t
-                    </XTable>
-                </XFrom>
-                <XWhere>
-                  <XCondition>1 = 1</XCondition>
-                                                                                                                                                                                                        <XCondition optional="id">AND t.id = {param->id}</XCondition>
-                                                                                                                                                                                          <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
-                                                                                                                                                                                          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
-                                                                                                                                <XCondition optional="is_global">AND t.is_global = {param->is_global}</XCondition>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                </XWhere>
-            </XSql>
-        </SqlPaginated>
-    </Body>
+  <Params>
+    <Param name="id" />
+    <Param name="name" />
+    <Param name="code" />
+    <Param name="is_global" />
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            *
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_capability t
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>1 = 1</XCondition>
+          <XCondition optional="id">AND t.id = {param->id}</XCondition>
+          <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+          <XCondition optional="is_global">AND t.is_global = {param->is_global}</XCondition>
+        </XWhere>
+        <XOrderBy>
+          <XCondition>t.is_global desc, t.code asc</XCondition>
+        </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
 </Method>

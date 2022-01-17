@@ -9,17 +9,17 @@
     <Screens>
         <Screen name="searchRecords">
             <Form name="searchRecordsForm" >
-                <Header id="headSearch" label="search" help="true"/>
+                <Header name="headSearch" label="search" help="true"/>
                 <!--Text id="nome" label="nome" visible="true" required="false"  help="true"/-->
-                <Text id="application" label="application"/>
-                <Text id="process" label="process"/>
-                <Text id="node" label="node"/>
-                <Text id="action_name" label="action"/>
-                <Text id="id_user" label="user"/>
-                <Text id="key" label="key"/>
+                <Text name="application" label="application"/>
+                <Text name="process" label="process"/>
+                <Text name="node" label="node"/>
+                <Text name="action_name" label="action"/>
+                <Text name="id_user" label="user"/>
+                <Text name="key" label="key"/>
                 <Header/>
 
-                    <Button type="submit" id="search" label="search" action="search"/>
+                    <Button type="submit" name="search" label="search" action="search"/>
  
             </Form>
             <Grid name="searchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search">

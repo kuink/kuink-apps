@@ -27,14 +27,14 @@
 		<Screen name="manageScreen">
 			<Form name="searchForm" title="search" persist="true" visible="false" doc="Only show this form if the user doesn't supply one">
 				<Column id="col1"/>
-				<Header id="statesHead" collapsible="true" collapsed="true"/>
-				<CheckBoxList id="states" datasource="states" bindid="id" bindvalue="name" help="false"/>
+				<Header name="statesHead" collapsible="true" collapsed="true"/>
+				<CheckBoxList name="states" datasource="states" bindid="id" bindvalue="name" help="false"/>
 				<Column id="col2"/>
-				<Select id="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
-				<Text id="id"/>
+				<Select name="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
+				<Text name="id"/>
 				<ButtonGroup>
-					<Button type="search" id="search" label="search" action="search"/>
-					<Button type="submit" icon="bar-chart" id="stats" label="stats" action="stats"/>
+					<Button type="search" name="search" label="search" action="search"/>
+					<Button type="submit" icon="bar-chart" name="stats" label="stats" action="stats"/>
 				</ButtonGroup>
 			</Form>
 			<!-- Add the custom searchResults -->
@@ -43,18 +43,18 @@
 		<Screen name="detailScreen" template="1x2col">
 			<Form name="optionsFormTop" position="left">
 				<ButtonGroup>
-					<Button type="back" id="back" label="back" action="search"/>
+					<Button type="back" name="back" label="back" action="search"/>
 				</ButtonGroup>
 			</Form>
 			<!-- Placeholder for the custom details control -->
 			<Form name="eventsForm" title="actions" position="right">
-				<Static id="state_name">
+				<Static name="state_name">
 					<Formatter name="Badge" min="0" max="0" field="$state_code" showvalue="true" pallete="success"/>
 				</Static>				
-				<Select id="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
-				<Container id="container"/>
+				<Select name="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
+				<Container name="container"/>
 				<ButtonGroup>
-					<Button type="continue" id="execute" label="execute" action="doActionSingle"/>
+					<Button type="continue" name="execute" label="execute" action="doActionSingle"/>
 				</ButtonGroup>
 			</Form>
 			<Grid name="historyGrid" title="history" position="right">
@@ -117,11 +117,11 @@
 
 		<Screen name="chooseBulkScreen">
 			<Form name="eventsForm" title="actions">
-				<Select id="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
-				<Container id="container"/>
+				<Select name="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
+				<Container name="container"/>
 				<ButtonGroup>
-					<Button type="back" id="back" label="back" action="search"/>
-					<Button type="continue" id="execute" label="execute" action="doActionBulk"/>
+					<Button type="back" name="back" label="back" action="search"/>
+					<Button type="continue" name="execute" label="execute" action="doActionBulk"/>
 				</ButtonGroup>
 			</Form>
 		</Screen>

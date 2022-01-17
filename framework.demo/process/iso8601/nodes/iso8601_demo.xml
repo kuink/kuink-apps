@@ -12,8 +12,8 @@
         
         <Screen name="screen001">
             <Form name="form001">
-                <DateTime id="dt001" />
-                <Date id="dt002" />
+                <DateTime name="dt001" />
+                <Date name="dt002" />
             </Form>
             <Grid id="grid000" name="grid000" title="Default Formats">
                 <Template>

@@ -18,12 +18,12 @@
   <Screens>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id"/>
-        <Select id="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
-        <Container id="contentTypeFields"/>
+        <Static name="id"/>
+        <Select name="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <Container name="contentTypeFields"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="back"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="back"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

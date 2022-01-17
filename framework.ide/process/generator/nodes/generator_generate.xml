@@ -12,63 +12,63 @@
   <Screens>
     <Screen name="sc01">
       <Form name="frmTables">
-        <Header id="hdEntity" label="entity"/>
-        <Select id="entity" required="true" searchable="true" datasource="dsTables"
+        <Header name="hdEntity" label="entity"/>
+        <Select name="entity" required="true" searchable="true" datasource="dsTables"
           bindid="table" bindvalue="table"/>
-        <Header id="api" label="api"/>
-        <Select id="apiTemplate" required="false" datasource="dsAPITemplates" bindid="id" bindvalue="name"/>
-        <Text id="apiBase" visible="true" required="true">
+        <Header name="api" label="api"/>
+        <Select name="apiTemplate" required="false" datasource="dsAPITemplates" bindid="id" bindvalue="name"/>
+        <Text name="apiBase" visible="true" required="true">
           <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="apiApplication" visible="true" required="true">
+        <Text name="apiApplication" visible="true" required="true">
           <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="apiProcess" required="true">
+        <Text name="apiProcess" required="true">
           <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="apiNode" required="true">
+        <Text name="apiNode" required="true">
           <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Header id="nodes" label="nodes"/>
-        <Select id="nodeTemplate" required="false" datasource="dsNodeTemplates" bindid="id" bindvalue="name"/>
-        <Text id="nodeBase" required="true">
+        <Header name="nodes" label="nodes"/>
+        <Select name="nodeTemplate" required="false" datasource="dsNodeTemplates" bindid="id" bindvalue="name"/>
+        <Text name="nodeBase" required="true">
           <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="nodeApplication" required="true">
+        <Text name="nodeApplication" required="true">
           <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="nodeProcess" required="true">
+        <Text name="nodeProcess" required="true">
           <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
         </Text>
         
-        <Header id="unit" label="unitTests"/>
-        <Select id="unitTemplate" required="false" datasource="dsUnitTemplates" bindid="id" bindvalue="name"/>
-        <Text id="unitBase" required="true">
+        <Header name="unit" label="unitTests"/>
+        <Select name="unitTemplate" required="false" datasource="dsUnitTemplates" bindid="id" bindvalue="name"/>
+        <Text name="unitBase" required="true">
           <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="unitApplication" required="true">
+        <Text name="unitApplication" required="true">
           <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="unitProcess" required="true">
+        <Text name="unitProcess" required="true">
           <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="unitNode" required="true">
+        <Text name="unitNode" required="true">
           <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
         </Text>
         
         <ButtonGroup>
-          <Button type="submit" id="next" action="step02"/>
+          <Button type="submit" name="next" action="step02"/>
         </ButtonGroup>
       </Form>
     </Screen>
@@ -107,10 +107,10 @@
     <Screen name="sc03">
       <Form name="frmOptions">
         <!--Checkbox id="gAPI" label="generateAPI" required="true"/>
-        <Checkbox id="gProcess" label="generateProcess" required="true"/-->
+        <Checkbox name="gProcess" label="generateProcess" required="true"/-->
         <ButtonGroup>
-          <Button id="previous" type="cancel" label="previous" action="step02"/>
-          <Button id="next" type="submit" label="next" action="step04"/>
+          <Button name="previous" type="cancel" label="previous" action="step02"/>
+          <Button name="next" type="submit" label="next" action="step04"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdFunctions" title="Functions" freeze="false">
@@ -136,7 +136,7 @@
     <Screen name="sc04">
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="init"/>
+          <Button name="back" type="back" label="back" action="init"/>
         </ButtonGroup>
       </Form>
     </Screen>
@@ -144,8 +144,8 @@
     <Screen name="scResume">
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="previous" type="submit" label="previous" action="step02"/>
-          <Button id="next" type="submit" label="next" action="step03"/>
+          <Button name="previous" type="submit" label="previous" action="step02"/>
+          <Button name="next" type="submit" label="next" action="step03"/>
         </ButtonGroup>
       </Form>
     </Screen>

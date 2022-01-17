@@ -24,13 +24,13 @@
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Column id="col1"/>
-	      <DateTime id="dateFrom" />
-	      <DateTime id="dateTo" />
-	      <Select id="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
-        <Text id="text" label="text"/>
+	      <DateTime name="dateFrom" />
+	      <DateTime name="dateTo" />
+	      <Select name="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
+        <Text name="text" label="text"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="add" type="add" label="addRecord" action="newRecord"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="add" type="add" label="addRecord" action="newRecord"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" pagingaction="search" collapsible="false" pagesize="10" title="result" freeze="false">
@@ -61,14 +61,14 @@
     </Screen>
     <Screen name="scrAddRecord">
       <Form name="frmAddRecord" title="addRecord">
-        <Select id="class_code" required="true" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="saveClass"/>
-        <TextArea id="data" label="data" disabled="true"/>
+        <Select name="class_code" required="true" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="name" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="saveClass"/>
+        <TextArea name="data" label="data" disabled="true"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="addComponent" type="add" label="addComponent" action="addComponent"/>
-          <Button id="addMetadata" type="add" label="addMetadata" action="addMetadata"/>
-          <Button id="declareRecord" type="execute" label="declare" action="declareRecord" confirm="true"/>
-          <Button id="archiveRecord" type="continue" label="archive" action="archiveRecord" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="addComponent" type="add" label="addComponent" action="addComponent"/>
+          <Button name="addMetadata" type="add" label="addMetadata" action="addMetadata"/>
+          <Button name="declareRecord" type="execute" label="declare" action="declareRecord" confirm="true"/>
+          <Button name="archiveRecord" type="continue" label="archive" action="archiveRecord" confirm="true"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdComponents" title="components">
@@ -86,24 +86,24 @@
 
     <Screen name="scrAddComponent">
       <Form name="frmAddComponent" title="addComponent">
-        <Select id="id_plugin" datasource="call:framework,rm.component.plugin,api,getAll" bindid="id" bindvalue="name" action="addComponent"/>
-        <Container id="setting"/>
+        <Select name="id_plugin" datasource="call:framework,rm.component.plugin,api,getAll" bindid="id" bindvalue="name" action="addComponent"/>
+        <Container name="setting"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="addRecord"/>
-          <Button id="save" type="save" label="save" action="saveComponentSettings"/>
+          <Button name="back" type="back" label="back" action="addRecord"/>
+          <Button name="save" type="save" label="save" action="saveComponentSettings"/>
         </ButtonGroup>
       </Form>
     </Screen>
 
     <Screen name="scrAddMetadata">
       <Form name="frmAddMetadata" title="addMetadata">
-        <Static id="code" label="code"/>
-        <Static id="name" label="name"/>
-        <TextArea id="last_xml" label="metadata" disabled="true"/>
-        <TextArea id="data" label="data"/>
+        <Static name="code" label="code"/>
+        <Static name="name" label="name"/>
+        <TextArea name="last_xml" label="metadata" disabled="true"/>
+        <TextArea name="data" label="data"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="addRecord"/>
-          <Button id="save" type="save" label="save" action="saveMetadata"/>
+          <Button name="back" type="back" label="back" action="addRecord"/>
+          <Button name="save" type="save" label="save" action="saveMetadata"/>
         </ButtonGroup>
       </Form>
     </Screen>
@@ -112,31 +112,31 @@
     <Screen name="scrRecordView" template="1x2col">
       <Form name="frmOptions" title="record" position="left">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>
       </Form>
 
       <Form name="frmData" title="record" position="left">
-        <Static id="id"/>
-        <Static id="uuid"/>
-        <Static id="name" label="recName"/>
-        <Static id="description" label="recDesc"/>
-        <Static id="_creation">
+        <Static name="id"/>
+        <Static name="uuid"/>
+        <Static name="name" label="recName"/>
+        <Static name="description" label="recDesc"/>
+        <Static name="_creation">
           <Formatter name="DateTime" method="shortDateTime"/>
         </Static>
-        <Static id="retention_date">
+        <Static name="retention_date">
           <Formatter name="DateTime" method="shortDate"/>        
         </Static>
-        <Static id="disposal_due_date">
+        <Static name="disposal_due_date">
           <Formatter name="DateTime" method="shortDate"/>        
         </Static>
-        <Static id="disposal_date">
+        <Static name="disposal_date">
           <Formatter name="DateTime" method="shortDate"/>        
         </Static>        
-        <Static id="is_archived">
+        <Static name="is_archived">
           <Formatter name="YesNo" method="format"/>        
         </Static>
-        <Static id="last_xml">
+        <Static name="last_xml">
           <Formatter name="Xml" method="prettyForm"/>
         </Static>
       </Form>

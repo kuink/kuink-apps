@@ -10,14 +10,14 @@
       <Screen name="scrShow">
         <Form name="frmOptions">
           <ButtonGroup>
-            <Button type="back" id="back" action="back"/>
+            <Button type="back" name="back" action="back"/>
           </ButtonGroup>
         </Form>
 
         <Form name="frmSearch">
-          <Select id="class_code" datasource="classes" bindid="code" bindvalue="name" action="init" help="false"/>
+          <Select name="class_code" datasource="classes" bindid="code" bindvalue="name" action="init" help="false"/>
           <!--ButtonGroup>
-            <Button type="search" id="search" action="init"/>
+            <Button type="search" name="search" action="init"/>
           </ButtonGroup-->
         </Form>
 

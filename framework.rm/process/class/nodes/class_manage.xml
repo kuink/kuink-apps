@@ -18,11 +18,11 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-	      <Select id="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="search"/>
+	      <Select name="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="search"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="add" type="add" label="addClass" action="addClass"/>
-          <Button id="edit" type="update" label="editClass" action="editClass"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="add" type="add" label="addClass" action="addClass"/>
+          <Button name="edit" type="update" label="editClass" action="editClass"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" collapsible="false" pagesize="10" title="result" pagingaction="search" exportable="true">

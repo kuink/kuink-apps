@@ -10,8 +10,8 @@
 		<Screen name="screen001">
 			<Form name="test" title="02.02">
 			 <ButtonGroup>
-			   <Button type="cancel" id="prev" label="prev" action="prev"/>  
-			   <Button type="submit" id="next" label="next" action="next"/>
+			   <Button type="cancel" name="prev" label="prev" action="prev"/>  
+			   <Button type="submit" name="next" label="next" action="next"/>
 			 </ButtonGroup>
 			</Form>
 		</Screen>

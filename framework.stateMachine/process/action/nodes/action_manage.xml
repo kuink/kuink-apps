@@ -14,12 +14,12 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Select id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="name"/>
+        <Select name="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <Text name="name"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>    
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="back" type="back" label="back" action="back"/>    
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -44,33 +44,33 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
-        <Static id="action_list">
+        <Static name="id"/>
+        <Static name="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <Static name="action_list">
           <Formatter name="Json" method="prettyPrint"/>
           <Formatter name="Style" method="nl2br"/>        
         </Static>
-        <Static id="code"/>
-        <Static id="name"/>
-        <Static id="description"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Select id="id_state_machine" label="id_state_machine" required="true" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
-        <CodeEditor id="action_list" label="action_list" required="true"/>
-        <Text id="code" label="code" required="true"/>
-        <Text id="name" label="name" required="true"/>
-        <TextArea id="description" label="description" required="false"/>
+        <Static name="id" label="id" required="true"/>
+        <Select name="id_state_machine" label="id_state_machine" required="true" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <CodeEditor name="action_list" label="action_list" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Text name="name" label="name" required="true"/>
+        <TextArea name="description" label="description" required="false"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

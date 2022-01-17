@@ -11,8 +11,8 @@
     {/if}
     {/foreach}
     <ButtonGroup>
-      <Button id="cancel" type="cancel" label="cancel" action="search"/>
-      <Button id="save" type="update" label="save" action="save"/>
+      <Button name="cancel" type="cancel" label="cancel" action="search"/>
+      <Button name="save" type="update" label="save" action="save"/>
     </ButtonGroup>    
   </Form>
 </Screen>

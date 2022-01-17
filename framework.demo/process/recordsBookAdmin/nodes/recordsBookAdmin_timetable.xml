@@ -15,19 +15,19 @@
     	
     		<Form name="filter">
     			<Header label="timetableFilter" />
-				<DateTime id="startDate" label="startDate" />
-				<DateTime id="endDate" label="endDate" />
-				<Select id="idClass" label="class" datasource="class.list" bindid="id" bindvalue="name" />
-				<Select id="idTeacher" label="idTeacher" datasource="teacher.list" bindid="id" bindvalue="name" />
-				<Select id="idSubject" label="idSubject" datasource="subject.list" bindid="id" bindvalue="name" />
-				<Select id="idGroup" label="idGroup">
+				<DateTime name="startDate" label="startDate" />
+				<DateTime name="endDate" label="endDate" />
+				<Select name="idClass" label="class" datasource="class.list" bindid="id" bindvalue="name" />
+				<Select name="idTeacher" label="idTeacher" datasource="teacher.list" bindid="id" bindvalue="name" />
+				<Select name="idSubject" label="idSubject" datasource="subject.list" bindid="id" bindvalue="name" />
+				<Select name="idGroup" label="idGroup">
 					<Options value="1">1</Options>
 					<Options value="2">2</Options>
 					<Options value="3">3</Options>
 				</Select>
-				<ButtonGroup id="class">
-					<Button id="back" type="cancel" label="back" action="back" />
-    				<Button id="search" type="submit" label="search" action="search" />
+				<ButtonGroup name="class">
+					<Button name="back" type="cancel" label="back" action="back" />
+    				<Button name="search" type="submit" label="search" action="search" />
     			</ButtonGroup>
     		</Form>
     		

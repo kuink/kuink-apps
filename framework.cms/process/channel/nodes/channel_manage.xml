@@ -12,10 +12,10 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Text id="text"/>
+        <Text name="text"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -39,17 +39,17 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
-        <Static id="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
-        <Static id="code"/>
-        <Static id="name"/>
-        <Static id="description"/>
+        <Static name="id"/>
+        <Static name="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+        <Static name="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
-          <Button id="reorder" type="refresh" label="reorder" action="reorder" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="reorder" type="refresh" label="reorder" action="reorder" confirm="true"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdContent" pageable="true" collapsible="false" pagesize="50" pagingaction="view" title="content">
@@ -78,15 +78,15 @@
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Select id="id_template" label="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
-        <Select id="id_theme" label="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
-        <Text id="code" label="code" required="true"/>
-        <Text id="name" label="name" required="true"/>
-        <Text id="description" label="description" required="false"/>
+        <Static name="id" label="id" required="true"/>
+        <Select name="id_template" label="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <Select name="id_theme" label="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="description" label="description" required="false"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

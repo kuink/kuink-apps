@@ -13,11 +13,11 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Text id="data"/>
-        <Select id="id_content_type" label="contentType" searchable="true" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name"/>
+        <Text name="data"/>
+        <Select name="id_content_type" label="contentType" searchable="true" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="fill"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="fill"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="contentItems">
@@ -41,42 +41,42 @@
 
     <Screen name="scrView" doc="View Screen" template="1x2x1col">
       <Form name="frmView" position="left">
-        <Static id="id"/>
-        <Static id="id_template_override"/>
-        <Container id="contentTypeFields"/>
-        <Static id="id_file">
+        <Static name="id"/>
+        <Static name="id_template_override"/>
+        <Container name="contentTypeFields"/>
+        <Static name="id_file">
           <Formatter name="FileDownload" method="preview" width="100" center="0"/>
         </Static>
-        <Static id="data"/>
+        <Static name="data"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
       <!--
       <Form name="frmPreview" position="left" title="preview">
-        <Select id="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name" action="preview"/>
+        <Select name="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name" action="preview"/>
       </Form>            
       -->
       <Form name="frmChannels" title="publishNewChannel" position="right">
-        <Select id="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
-        <Select id="change_position" required="true">
+        <Select name="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
+        <Select name="change_position" required="true">
           <Options>
             <Option id="0">no</Option>
             <Option id="1">yes</Option>
           </Options>
         </Select>        
-        <Select id="id_content_before" help="false" datasource="call:framework,cms.channel,api,getContent" datasource-params="id_channel=$id_channel;is_published=1" bindid="id" bindvalue="_formatted">
+        <Select name="id_content_before" help="false" datasource="call:framework,cms.channel,api,getContent" datasource-params="id_channel=$id_channel;is_published=1" bindid="id" bindvalue="_formatted">
           <Rule runat="client" attr="visible" condition="$change_position == 0" value="false"/>	
           <Rule runat="client" attr="value" datasource="framework,cms.channel,api,getContent" datasourceparams="id_channel=$id_channel&amp;is_published=1"/>
         </Select>        
-        <Date id="start_date" required="true" />
-        <Date id="end_date" now="false"/>
-        <Int id="seconds_duration" required="true"/>
-        <Checkbox id="is_published" required="true"/>
+        <Date name="start_date" required="true" />
+        <Date name="end_date" now="false"/>
+        <Int name="seconds_duration" required="true"/>
+        <Checkbox name="is_published" required="true"/>
         <ButtonGroup>
-          <Button id="addToChannel" type="add" action="addToChannel"/>
+          <Button name="addToChannel" type="add" action="addToChannel"/>
         </ButtonGroup>
       </Form>
         <Grid name="grdChannels" collapsible="false" pagesize="10" title="channels" position="bottom">
@@ -101,7 +101,7 @@
         </Template>
       </Grid>
       <Form name="frmNewChild" position="bottom" title="addChild">
-        <Select id="id_content_type" required="true" datasource="childContentTypes" bindid="id" bindvalue="name" action="addChild"/>
+        <Select name="id_content_type" required="true" datasource="childContentTypes" bindid="id" bindvalue="name" action="addChild"/>
       </Form>
 
       <Grid name="grdChilds" title="childs">
@@ -126,21 +126,21 @@
 
     <Screen name="scrFill" doc="Screen fill">
       <Form name="frmInsert">
-        <Select id="id_content_type" label="contentType" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <Select name="id_content_type" label="contentType" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="true"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="continue" type="continue" label="continue" action="insert"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="continue" type="continue" label="continue" action="insert"/>
         </ButtonGroup>
       </Form>
     </Screen>
 
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Select id="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
-        <Container id="contentTypeFields"/>
+        <Select name="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <Container name="contentTypeFields"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>
@@ -148,7 +148,7 @@
     <Screen name="scrPreview">
       <Form name="frmGlobalOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>
       </Form>
       <HtmlContainer name="previewHtml"/>

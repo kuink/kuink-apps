@@ -18,10 +18,10 @@
 	<Screens>
 		<Screen name="previewScreen">
 			<Form name="actionsForm" >
-				<Container id="messages"/>
+				<Container name="messages"/>
 				<ButtonGroup>
-					<Button type="back" id="back" label="back" action="back"/>
-					<Button type="continue" id="continue" label="confirm" action="confirm" confirm="true"/>
+					<Button type="back" name="back" label="back" action="back"/>
+					<Button type="continue" name="continue" label="confirm" action="confirm" confirm="true"/>
 				</ButtonGroup>
 			</Form>
 		</Screen>

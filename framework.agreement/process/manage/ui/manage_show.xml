@@ -19,12 +19,12 @@
     <Screens>
     	<Screen name="showScreen">
 			<Form name="statementsForm" title="statements">
-				<Container id="preMessageContainer"/>
-				<Container id="content"/>
-				<Container id="postMessageContainer"/>
+				<Container name="preMessageContainer"/>
+				<Container name="content"/>
+				<Container name="postMessageContainer"/>
 				<ButtonGroup>
-					<Button type="back" id="back" label="back" action="backAgreement" />
-					<Button type="save" id="save" label="save" action="saveAgreement" />
+					<Button type="back" name="back" label="back" action="backAgreement" />
+					<Button type="save" name="save" label="save" action="saveAgreement" />
 				</ButtonGroup>
 			</Form>
     	</Screen>

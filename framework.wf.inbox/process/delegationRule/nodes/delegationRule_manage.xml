@@ -15,7 +15,7 @@
     <Screen name="scrSearch" doc="Search Screen">
 	    <Form name="frmAdd">
         <ButtonGroup>
-          <Button id="add" type="add" label="add" action="add"/>
+          <Button name="add" type="add" label="add" action="add"/>
         </ButtonGroup>	      
 	    </Form>
       <Grid name="grdSearchResult" title="result">
@@ -49,28 +49,28 @@
     </Screen>
     <Screen name="scrAdd">
       <Form name="frmAdd">
-        <Text id="name" required="true"/>
-        <Text id="id_person_delegate" required="true"/>
-        <Text id="condition" required="true"/>
-        <DateTime id="start_date" required="true"/>
-        <DateTime id="end_date" required="true"/>
-        <Checkbox id="is_active"/>
+        <Text name="name" required="true"/>
+        <Text name="id_person_delegate" required="true"/>
+        <Text name="condition" required="true"/>
+        <DateTime name="start_date" required="true"/>
+        <DateTime name="end_date" required="true"/>
+        <Checkbox name="is_active"/>
         <ButtonGroup>
-          <Button id="save" type="save" label="save" action="save"/>
+          <Button name="save" type="save" label="save" action="save"/>
         </ButtonGroup>           
       </Form>
     </Screen>
     <Screen name="scrEdit">
       <Form name="frmEdit">
-        <Hidden id="id"/>
-        <Text id="name" required="true"/>
-        <Text id="id_person_delegate" required="true"/>
-        <Text id="condition" required="true"/>
-        <DateTime id="start_date" required="true"/>
-        <DateTime id="end_date" required="true"/>
-        <Checkbox id="is_active"/>
+        <Hidden name="id"/>
+        <Text name="name" required="true"/>
+        <Text name="id_person_delegate" required="true"/>
+        <Text name="condition" required="true"/>
+        <DateTime name="start_date" required="true"/>
+        <DateTime name="end_date" required="true"/>
+        <Checkbox name="is_active"/>
         <ButtonGroup>
-          <Button id="save" type="save" label="save" action="save"/>
+          <Button name="save" type="save" label="save" action="save"/>
         </ButtonGroup>           
       </Form>
     </Screen>

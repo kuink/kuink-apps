@@ -15,14 +15,14 @@
   <Screens>
     <Screen name="viewScreen">
       <Form name="viewForm">
-        <Int id="id" disabled="true"/>
-        <Text id="description" />
-        <CodeEditor id="script" cols="80" rows="20"/>
+        <Int name="id" disabled="true"/>
+        <Text name="description" />
+        <CodeEditor name="script" cols="80" rows="20"/>
         <ButtonGroup>
-          <Button id="back" type="back" event="back"/>
-          <Button id="execute" type="execute" action="execute" default="true"/>
-          <Button id="save" type="save" action="save"/>
-          <Button id="delete" type="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" event="back"/>
+          <Button name="execute" type="execute" action="execute" default="true"/>
+          <Button name="save" type="save" action="save"/>
+          <Button name="delete" type="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>

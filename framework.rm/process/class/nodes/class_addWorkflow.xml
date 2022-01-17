@@ -13,12 +13,12 @@
   <Screens>
     <Screen name="scrAdd">
       <Form name="frmAdd" title="classWorkflow">
-        <Select id="wf_id_process" datasource="call:framework,wf.process,api,getAll" label="workflowProcess" bindid="id" bindvalue="code"/>               
-        <Select id="wf_type_code" datasource="call:framework,rm.class.workflow,api,getWorkflowTypes" label="workflowType" bindid="code" bindvalue="name"/>               
-        <TextArea id="wf_params"/>
+        <Select name="wf_id_process" datasource="call:framework,wf.process,api,getAll" label="workflowProcess" bindid="id" bindvalue="code"/>               
+        <Select name="wf_type_code" datasource="call:framework,rm.class.workflow,api,getWorkflowTypes" label="workflowType" bindid="code" bindvalue="name"/>               
+        <TextArea name="wf_params"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="back"/>
-          <Button id="save" type="save" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="back"/>
+          <Button name="save" type="save" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

@@ -15,13 +15,13 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Select id="id_start_state" datasource="states" bindid="id" bindvalue="code"/>
-        <Select id="id_end_state" datasource="states" bindid="id" bindvalue="code"/>
-        <Text id="event"/>
+        <Select name="id_start_state" datasource="states" bindid="id" bindvalue="code"/>
+        <Select name="id_end_state" datasource="states" bindid="id" bindvalue="code"/>
+        <Text name="event"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="back" type="back" label="back" action="back"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -48,38 +48,38 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="id_start_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
-        <Static id="id_end_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
-        <Static id="event"/>
-        <Static id="event_description"/>
-        <Static id="role_list"/>
-        <Static id="is_active"/>
-        <Static id="notify_role_list"/>
-        <Static id="id_form" datasource="call:framework,stateMachine.form,api,getAll" bindid="id" bindvalue="code"/>
-        <Static id="id_action" datasource="call:framework,stateMachine.action,api,getAll" bindid="id" bindvalue="code"/>
+        <Static name="id"/>
+        <Static name="id_start_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Static name="id_end_state" datasource="call:framework,stateMachine.state,api,getAll" bindid="id" bindvalue="code"/>
+        <Static name="event"/>
+        <Static name="event_description"/>
+        <Static name="role_list"/>
+        <Static name="is_active"/>
+        <Static name="notify_role_list"/>
+        <Static name="id_form" datasource="call:framework,stateMachine.form,api,getAll" bindid="id" bindvalue="code"/>
+        <Static name="id_action" datasource="call:framework,stateMachine.action,api,getAll" bindid="id" bindvalue="code"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Select id="id_start_state" label="id_start_state" required="false" datasource="states" bindid="id" bindvalue="code"/>
-        <Select id="id_end_state" label="id_end_state" required="false" datasource="states" bindid="id" bindvalue="code"/>
-        <Text id="event" label="event" required="true"/>
-        <Text id="event_description" label="event_description" required="true"/>
-        <Text id="role_list" label="role_list" required="true"/>
-        <Checkbox id="is_active" label="is_active" required="true"/>
-        <Text id="notify_role_list" label="notify_role_list" />
-        <Select id="id_form" label="id_form" required="false" datasource="call:framework,stateMachine.form,api,getAll" bindid="id" bindvalue="code"/>
-        <Select id="id_action" label="id_action" required="false" datasource="call:framework,stateMachine.action,api,getAll" bindid="id" bindvalue="code"/>
+        <Static name="id" label="id" required="true"/>
+        <Select name="id_start_state" label="id_start_state" required="false" datasource="states" bindid="id" bindvalue="code"/>
+        <Select name="id_end_state" label="id_end_state" required="false" datasource="states" bindid="id" bindvalue="code"/>
+        <Text name="event" label="event" required="true"/>
+        <Text name="event_description" label="event_description" required="true"/>
+        <Text name="role_list" label="role_list" required="true"/>
+        <Checkbox name="is_active" label="is_active" required="true"/>
+        <Text name="notify_role_list" label="notify_role_list" />
+        <Select name="id_form" label="id_form" required="false" datasource="call:framework,stateMachine.form,api,getAll" bindid="id" bindvalue="code"/>
+        <Select name="id_action" label="id_action" required="false" datasource="call:framework,stateMachine.action,api,getAll" bindid="id" bindvalue="code"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

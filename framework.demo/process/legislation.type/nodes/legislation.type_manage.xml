@@ -10,11 +10,11 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true">
-        <Text id="name"/>
-        <Text id="code"/>
+        <Text name="name"/>
+        <Text name="code"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -34,26 +34,26 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="name"/>
-        <Static id="code"/>
-        <Static id="description"/>
+        <Static name="id"/>
+        <Static name="name"/>
+        <Static name="code"/>
+        <Static name="description"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="edit" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="edit" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Text id="name" label="name" required="true"/>
-        <Text id="code" label="code" required="false"/>
-        <Text id="description" label="description" required="false"/>
+        <Static name="id" label="id" required="true"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="code" label="code" required="false"/>
+        <Text name="description" label="description" required="false"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

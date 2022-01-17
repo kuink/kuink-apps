@@ -15,12 +15,12 @@
   <Screens>
     <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Select id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>      
-        <Text id="name"/>
+        <Select name="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>      
+        <Text name="name"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>        
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="back" type="back" label="back" action="back"/>        
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -48,44 +48,44 @@
     </Screen>
     <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
-        <Static id="code"/>
-        <Static id="name"/>
-        <Static id="description"/>
-        <Static id="name_public"/>
-        <Static id="description_public"/>
-        <Static id="is_bulk"/>
-        <Static id="is_start_state"/>
-        <Static id="is_end_state"/>
-        <Static id="is_active"/>
-        <Static id="default_to_roles"/>
-        <Static id="visible_to_roles"/>
+        <Static name="id"/>
+        <Static name="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
+        <Static name="name_public"/>
+        <Static name="description_public"/>
+        <Static name="is_bulk"/>
+        <Static name="is_start_state"/>
+        <Static name="is_end_state"/>
+        <Static name="is_active"/>
+        <Static name="default_to_roles"/>
+        <Static name="visible_to_roles"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
     <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Static id="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="code" label="code" required="true"/>
-        <Text id="name" label="name" required="true"/>
-        <Text id="description" label="description" required="true"/>
-        <Text id="name_public" label="name_public" required="true"/>
-        <Text id="description_public" label="description_public" required="true"/>
-        <Checkbox id="is_bulk" label="is_bulk" required="true"/>
-        <Checkbox id="is_start_state" label="is_start_state" required="true"/>
-        <Checkbox id="is_end_state" label="is_end_state" required="true"/>
-        <Checkbox id="is_active" label="is_active" required="true"/>
-        <Text id="default_to_roles" label="default_to_roles" required="false"/>
-        <Text id="visible_to_roles" label="visible_to_roles" required="false"/>
+        <Static name="id" label="id" required="true"/>
+        <Static name="id_state_machine" datasource="call:framework,stateMachine,api,getAll" bindid="id" bindvalue="name"/>
+        <Text name="code" label="code" required="true"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="description" label="description" required="true"/>
+        <Text name="name_public" label="name_public" required="true"/>
+        <Text name="description_public" label="description_public" required="true"/>
+        <Checkbox name="is_bulk" label="is_bulk" required="true"/>
+        <Checkbox name="is_start_state" label="is_start_state" required="true"/>
+        <Checkbox name="is_end_state" label="is_end_state" required="true"/>
+        <Checkbox name="is_active" label="is_active" required="true"/>
+        <Text name="default_to_roles" label="default_to_roles" required="false"/>
+        <Text name="visible_to_roles" label="visible_to_roles" required="false"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

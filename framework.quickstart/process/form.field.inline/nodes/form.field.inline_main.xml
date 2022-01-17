@@ -6,45 +6,45 @@
   <Screens>
     <Screen name="scr01">
       <Form name="form01" title="inlineFields">
-        <Tab id="tab1"/>
-        <Header id="h0" label="Test Inline and Cols"/>
-				<Select id="f01" label="Field 01" help="helpTest"/>
-        <Text id="f02" label="Field 02" inline="true"/>
-        <Text id="f03" label="Field 03" inline="true"/>
-        <Text id="f04" label="Field 04" />
-        <Text id="f05" label="Field 05" inline="true"/>
+        <Tab name="tab1"/>
+        <Header name="h0" label="Test Inline and Cols"/>
+				<Select name="f01" label="Field 01" help="helpTest"/>
+        <Text name="f02" label="Field 02" inline="true"/>
+        <Text name="f03" label="Field 03" inline="true"/>
+        <Text name="f04" label="Field 04" />
+        <Text name="f05" label="Field 05" inline="true"/>
 
         <Column id="col1"/>
-        <Header id="h1" label="Test Inline"/>
-				<Text id="f1" label="Field 1"/>
-				<Text id="f21" label="Field 21"/>
-				<Text id="f22" label="Field 22" inline="true"/>
-				<Text id="f23" label="Field 23" inline="true"/>
-        <Text id="f24" label="Teste 24" inline="true"/>
-				<DateTime id="f31" label="Field 31"/>
-				<TextArea id="f32" inline="true" label="-" help="false"/>
+        <Header name="h1" label="Test Inline"/>
+				<Text name="f1" label="Field 1"/>
+				<Text name="f21" label="Field 21"/>
+				<Text name="f22" label="Field 22" inline="true"/>
+				<Text name="f23" label="Field 23" inline="true"/>
+        <Text name="f24" label="Teste 24" inline="true"/>
+				<DateTime name="f31" label="Field 31"/>
+				<TextArea name="f32" inline="true" label="-" help="false"/>
         
         <Column id="col2"/>
-        <Header id="h2" label="Test Cols"/>
-				<Text id="f41" label="Field 41"/>
-				<Text id="f42" label="Field 42" inline="true"/>
-        <Text id="f5" label="Field 5"/>
+        <Header name="h2" label="Test Cols"/>
+				<Text name="f41" label="Field 41"/>
+				<Text name="f42" label="Field 42" inline="true"/>
+        <Text name="f5" label="Field 5"/>
 
         <Column id="col5" close="true"/>
-        <Header id="h5" label="Test Close Column"/>
-        <Text id="f8" label="Field 8"/>
+        <Header name="h5" label="Test Close Column"/>
+        <Text name="f8" label="Field 8"/>
         
-        <Tab id="tab2"/>
+        <Tab name="tab2"/>
         <Column id="col3"/>
-        <Header id="h3" label="Test Close Column"/>
-        <Text id="f6" label="Field 6"/>
+        <Header name="h3" label="Test Close Column"/>
+        <Text name="f6" label="Field 6"/>
 
         <Column id="col4"/>
-        <Header id="h4" label="Test Close Column"/>
-        <Text id="f7" label="Field 7"/>
+        <Header name="h4" label="Test Close Column"/>
+        <Text name="f7" label="Field 7"/>
         
         <ButtonGroup>
-          <Button type="submit" label="save" id="submit" action="process" />
+          <Button type="submit" label="save" name="submit" action="process" />
         </ButtonGroup>
       </Form>
     </Screen>

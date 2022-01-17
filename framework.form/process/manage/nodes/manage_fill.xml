@@ -21,7 +21,7 @@
       <HtmlContainer name="subtitle"/>
       <Form name="fillForm">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
+          <Button name="back" type="back" label="back" action="back"/>
         </ButtonGroup>
       </Form>
    	</Screen>
