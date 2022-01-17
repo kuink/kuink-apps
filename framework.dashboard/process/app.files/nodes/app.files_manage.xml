@@ -26,7 +26,7 @@
 			</Form>
 
 			<!-- Grid that shows all the files and sub-dirs of the current directory -->
-			<Grid name="filesGrid" title="files" infer="false" visible="false">
+			<Grid name="filesGrid" title="files" infer="false" visible="false" pageable="true" pagesize="10" pagingaction="setupMainScreen">
 				<Template>
 					<Columns>
 						<Column name="id" label="preview">
