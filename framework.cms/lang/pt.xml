@@ -9,6 +9,7 @@
     <String key="manageChannels" value="Canais"/>
     <String key="manageDevices" value="Dispositivos"/>
     <String key="manageContentTypes" value="Tipos de Conteúdos"/>
+    <String key="manageAppFiles" value="Ficheiros"/>
     <String key="digitalSignage" value="Digital Signage"/>
     <String key="manage" value="Gerir"/>
     <String key="content" value="Conteúdos"/>

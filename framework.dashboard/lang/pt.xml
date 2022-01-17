@@ -9,6 +9,8 @@
         <String key="allocations"><![CDATA[Allocations]]></String>
         <String key="records"><![CDATA[Records]]></String>
         <String key="listRecords"><![CDATA[Listar]]></String>
+        <String key="appFiles"><![CDATA[Ficheiros]]></String>
+        <String key="manage"><![CDATA[Gerir]]></String>
 
         <!-- fw_user -->
         <String key="username"><![CDATA[Nome Utilizador]]></String>
@@ -19,6 +21,17 @@
 
         <!-- fw_capability -->
         <String key="is_global"><![CDATA[Global?]]></String>
+
+        <!-- App Files -->
+        <String key="directory" value="Pasta"/>
+        <String key="currentDirectory" value="Pasta atual"/>
+        <String key="goTo" value="Ir para"/>
+        <String key="files" value="Ficheiros"/>
+        <String key="preview" value="Pré-visualização"/>
+        <String key="basename" value="Nome do ficheiro"/>
+        <String key="size" value="Tamanho"/>
+        <String key="newFile" value="Novo ficheiro"/>
+
     </Strings>
     <HelpStrings>
         <Help key="is_global"><![CDATA[Uma capacidade global aplica-se a todas as companhias.]]></Help>
