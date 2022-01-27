@@ -471,6 +471,7 @@
             <!-- Try to change password in google Apps -->
             <Var name="googleAppsSuccess">
               <DataAccess method="update" datasource="googleAPIAdminSDK">
+                <Param name="_entity">user</Param>
                 <Param name="uid"><Var name="request"/></Param>
                 <Param name="password"><Var name="PARAMS" key="newPassword" /></Param>
               </DataAccess>
@@ -484,7 +485,7 @@
             </Var>
 
             <Var name="googleResult">
-              <If condition="$googleAppsSuccess == 1">
+              <If condition="$googleAppsSuccess == 0">
                 <Then>OK</Then>
                 <Else>ERROR</Else>
               </If>

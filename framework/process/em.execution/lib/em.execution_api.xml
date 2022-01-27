@@ -288,7 +288,7 @@
 						</Var>
 						<Var name="logEntry" key="action"><String.parse>Creating person in google status:$statusGoogle</String.parse></Var>						            
 						<Var name="logEntry" key="result">
-							<If condition="$statusGoogle == 1 ">
+							<If condition="$statusGoogle == 0 ">
 								<Then>OK</Then>
 								<Else>ERROR</Else>
 							</If>
@@ -605,6 +605,7 @@
 							<Instructions>
 								<Var name="googleUser" dump="true">
 										<DataAccess method="load" datasource="googleAPIAdminSDK">
+											<Param name="_entity">user</Param>
 											<Param name="uid"><Var name="object" key="uid"/></Param>
 										</DataAccess>
 								</Var>
@@ -615,6 +616,7 @@
 						</Try>
 						<Var name="googleUser" dump="true">
 								<DataAccess method="load" datasource="googleAPIAdminSDK">
+									<Param name="_entity">user</Param>
 									<Param name="uid"><Var name="object" key="uid"/></Param>
 								</DataAccess>
 						</Var>
