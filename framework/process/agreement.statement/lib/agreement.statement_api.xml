@@ -217,12 +217,13 @@
 		  </Return>
       <Begin>
       <Trace><String>*** GetFieldsFromStatementList</String></Trace>
+        <Var name="PARAMS" dump="true"/>
         <Var name="idList"><Set/></Var>
         <ForEach var="statementList" item="statement">
           <Var name="idList" key="$statement->id_agreement_statement"><Var name="statement" key="id_agreement_statement"/></Var>
         </ForEach>
 
-        <!--Var name="idList" dump="true"/-->
+        <Var name="idList" dump="true"/>
 
         <Var name="fields" dump="true">
           <DataAccess method="this,this,statement.getFields">

@@ -132,7 +132,7 @@
 									<Param name="id_current_state"><Var name="endStateId"/></Param>
 								</DataAccess>
 
-								<Var name="dataJson"><SetToJson><Var name="PARAMS" key="eventData"/></SetToJson></Var>
+								<Var name="dataJson"><SetToJson escape="false"><Var name="PARAMS" key="eventData"/></SetToJson></Var>
 
             		<!-- Add the new state to the instance history -->
             		<DataAccess method="insert">

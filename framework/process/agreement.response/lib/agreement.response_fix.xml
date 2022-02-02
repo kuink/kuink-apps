@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="FormatterLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+
+    <Function name="decodeResponseContext" doc="Context is encoded when converted to json. We need to update the table and decode it">
+      <Params>
+        <Param name="pageNum" type="int" required="true"/>
+				<Param name="pageSize" type="int" required="true"/>
+      </Params>
+      <Return type="multiple" doc="">
+		  </Return>
+      <Begin>
+
+				<Var name="search">
+					<DataAccess method="this,this,fixGetResponsesToFix">
+						<Param name="_pageNum"><Var name="PARAMS" key="pageNum"/></Param>
+						<Param name="_pageSize"><Var name="PARAMS" key="pageSize"/></Param>
+					</DataAccess>					
+				</Var>
+
+				<Var name="records"><Var name="search" key="records"/></Var>
+
+				<Var name="result"><Set/></Var>
+				<ForEach var="records" item="record">
+					<Var name="decoded"><JsonToSet escape="true"><Var name="record" key="agreement_statement_context"/></JsonToSet></Var>
+					<Var name="encoded" dump="true"><SetToJson escape="false"><Var name="decoded"/></SetToJson></Var>
+					<DataAccess method="update">
+						<Param name="_entity">fw_agreement_response</Param>
+						<Param name="id"><Var name="record" key="id"/></Param>
+						<Param name="agreement_statement_context"><Var name="encoded"/></Param>
+					</DataAccess>
+				</ForEach>
+
+        <Return>
+          <Var name="records" key="records"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+
+  </Library>
+</Node>

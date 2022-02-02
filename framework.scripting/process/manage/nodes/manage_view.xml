@@ -93,7 +93,6 @@
               <Param name="data"/>
           </Params>
           <Begin>
-            <Var name="PARAMS" dump="true"/>
             <If condition="$PARAMS->id == ''">
               <Then>
                 <Var name="id">
@@ -102,18 +101,18 @@
                     <Param name="script"><Var name="data" key="script"/></Param>
                   </Call>
                 </Var>      
-                <Trace><String.parse>Adding... id($id)</String.parse></Trace>
+                <!-- Trace><String.parse>Adding... id($id)</String.parse></ -->
               </Then>
               <Else>
                 <Call library="framework,script,api" function="update">
                   <Param name="id"><Var name="PARAMS" key="id"/></Param>
                   <Param name="description"><Var name="data" key="description"/></Param>
                   <Param name="script"><Var name="data" key="script"/></Param>
-                </Call>      
-                <Trace><String.parse>Updating... id($id)</String.parse></Trace>
+                </Call> 
+
+                <!-- Trace><String.parse>Updating... id($id)</String.parse></ -->
               </Else>
             </If>
-            <Var name="id" dump="true"/>
             <Return><Var name="id"/></Return>
           </Begin>
       </Function>

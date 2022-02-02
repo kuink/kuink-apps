@@ -250,7 +250,10 @@
 								</If>
 							</Else>
 						</If>
-
+						<!-- Decode the response context to prevent unicode characters -->
+						<Var name="contextDecodedArr"><JsonToSet><Var name="response" key="context"/></JsonToSet></Var>
+						<Var name="response" key="context"><SetToJson escape="false"><Var name="contextDecodedArr"/></SetToJson></Var>
+						<!-- Now the json does not have any more encoded chars -->
 						<If condition="$loadedResponse->__length &gt; 0">
 							<Then>
 								<!-- Response allready exists -->
@@ -779,19 +782,20 @@
 		</Var>
 
 		<!-- Expand the values of context into each statement -->
+		<Var name="PARAMS" key="context" dump="true"/>
 		<ForEach var="schemaStatements" item="statement">
 			<!-- If this item is allready in the response, then update the agreement_statement_context else create it-->	
 			<Var name="responseItem"><Set/></Var>
 			<Var name="responseItem" key="code"><Var name="statement" key="statement_code"/></Var>
 			<Var name="responseItem" key="value"><Int>1</Int></Var>
-			<Var name="responseItem" key="context"><SetToJson><Var name="PARAMS" key="context"/></SetToJson></Var>
+			<Var name="responseItem" key="context"><SetToJson escape="false"><Var name="PARAMS" key="context"/></SetToJson></Var>
 			<Var name="responsePost" key=""><Var name="responseItem"/></Var>
 		</ForEach>
 
 		<!-- Save/Update the response -->
 		<Call library="framework,agreement.response,api" function="save">
 			<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
-			<Param name="responseData"><Var name="responsePost" dump="true"/></Param>
+			<Param name="responseData"><Var name="responsePost"/></Param>
 			<Param name="startDate"><Var name="PARAMS" key="startDate"/></Param>
 			<Param name="endDate"><Var name="PARAMS" key="endDate"/></Param>						
 		</Call>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    Get agreement responses to fix
+  </Doc>
+	<Params>
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>
+						*
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+            fw_agreement_response
+          </XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>agreement_statement_context IS NOT NULL</XCondition>
+				</XWhere>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>
