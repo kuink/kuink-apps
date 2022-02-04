@@ -275,9 +275,9 @@
 					  <Param>google</Param>
 					</SetLib>
 				</Var>
+				<Trace><String.parse>Creating google ($inGoogle) user $object->uid</String.parse></Trace>
 				<If condition="$inGoogle == 1 || $all == 1">
 					<Then>
-						<Trace><String.parse>Creating google user $object->uid</String.parse></Trace>
 						<Var name="statusGoogle" dump="true">
 							<DataAccess method="insert" datasource="googleAPIAdminSDK">
 								<Param name="_entity">user</Param>
@@ -607,6 +607,7 @@
 								<Var name="googleUser" dump="true">
 										<DataAccess method="load" datasource="googleAPIAdminSDK">
 											<Param name="_entity">user</Param>
+											<Param name="_attributes">id,email,given_name,surname,suspended</Param>											
 											<Param name="uid"><Var name="object" key="uid"/></Param>
 										</DataAccess>
 								</Var>
@@ -618,6 +619,7 @@
 						<Var name="googleUser" dump="true">
 								<DataAccess method="load" datasource="googleAPIAdminSDK">
 									<Param name="_entity">user</Param>
+									<Param name="_attributes">id,email,given_name,surname,suspended</Param>									
 									<Param name="uid"><Var name="object" key="uid"/></Param>
 								</DataAccess>
 						</Var>

@@ -472,7 +472,7 @@
             <Var name="googleUser" dump="true">
               <DataAccess method="load" datasource="googleAPIAdminSDK">
                 <Param name="_entity">user</Param>
-                <Param name="id"></Param>
+                <Param name="uid"><Var name="request"/></Param>
               </DataAccess>
             </Var>
 
