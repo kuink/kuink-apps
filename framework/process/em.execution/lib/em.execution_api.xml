@@ -626,13 +626,9 @@
             <Var name="entry"><Set/></Var>
             <Var name="entry" key="datasource">google</Var>
             <Var name="entry" key="exists">
-            	<If condition="$googleUser->uid == ''">
-								<Then>
-									<Int>0</Int>
-								</Then>
-								<Else>
-									<Int>1</Int>
-								</Else>
+            	<If condition="$googleUser->email == ''">
+								<Then><Int>0</Int></Then>
+								<Else><Int>1</Int></Else>
 							</If>
             </Var>
             <Var name="entry" key="uid"><Var name="googleUser" key="uid"/></Var>
