@@ -144,6 +144,7 @@
             </Return>
             <Begin>
                 <Var name="PARAMS" dump="true"/>
+                <Var name="SYSTEM" dump="true"/>
 
               <If condition="$PARAMS->template == '' &amp;&amp; $PARAMS->subject == '' &amp;&amp; $PARAMS->content == ''">
                 <Then>
