@@ -143,6 +143,7 @@
                 <External name="_modification" type="text" doc=""/>
             </Return>
             <Begin>
+                <Var name="PARAMS" dump="true"/>
 
               <If condition="$PARAMS->template == '' &amp;&amp; $PARAMS->subject == '' &amp;&amp; $PARAMS->content == ''">
                 <Then>
@@ -168,7 +169,7 @@
                 </Then>
               </If>
 
-              <Var name="headers">
+              <Var name="headers" dump="true">
                   <MessageLib method="createHeader">
                       <Param name="subject"><Var name="subject" /></Param>
                       <Param name="content"><Var name="content" /></Param>
@@ -184,7 +185,7 @@
                   </MessageLib>
               </Var>
 
-              <Var name="sendMailResult">
+              <Var name="sendMailResult" dump="true">
                 <MessageLib method="sendMessage">
                   <Param name="headers"><Var name="headers"/></Param>
                   <Param name="body"><Var name="content"/></Param>
