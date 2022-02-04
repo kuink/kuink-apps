@@ -283,7 +283,7 @@
 								<Param name="given_name"><Var name="object" key="given_name"/></Param>
 								<Param name="surname"><Var name="object" key="surname"/></Param>
 								<Param name="password"><Var name="password"/></Param>
-								<Param name="email"><Var name="object" key="email"/></Param>
+								<Param name="uid"><Var name="object" key="uid"/></Param>
 							</DataAccess>
 						</Var>
 						<Var name="logEntry" key="action"><String.parse>Creating person in google status:$statusGoogle</String.parse></Var>						            
