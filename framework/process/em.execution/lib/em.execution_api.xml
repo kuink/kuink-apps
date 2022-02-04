@@ -277,13 +277,14 @@
 				</Var>
 				<If condition="$inGoogle == 1 || $all == 1">
 					<Then>
+						<Trace><String.parse>Creating google user $object->uid</String.parse></Trace>
 						<Var name="statusGoogle" dump="true">
 							<DataAccess method="insert" datasource="googleAPIAdminSDK">
 								<Param name="_entity">user</Param>
+								<Param name="uid"><Var name="object" key="uid"/></Param>								
 								<Param name="given_name"><Var name="object" key="given_name"/></Param>
 								<Param name="surname"><Var name="object" key="surname"/></Param>
 								<Param name="password"><Var name="password"/></Param>
-								<Param name="uid"><Var name="object" key="uid"/></Param>
 							</DataAccess>
 						</Var>
 						<Var name="logEntry" key="action"><String.parse>Creating person in google status:$statusGoogle</String.parse></Var>						            
