@@ -6,7 +6,7 @@
       {if $field['datasource'] != ''}
         <Select name="{$field['name']}" datasource="{$field['datasource']}" bindid="{$field['bindid']}" bindvalue="{$field['bindvalue']}"/>
       {else}
-        <{$field['type']} id="{$field['name']}"/>
+        <{$field['type']} name="{$field['name']}"/>
       {/if}
     {/if}
     {/foreach}

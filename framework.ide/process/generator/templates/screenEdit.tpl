@@ -4,9 +4,9 @@
     {foreach $attributes as $field}
     {if $field['form'] == 1}
       {if $field['datasource'] != ''}
-        <{if $field['key']=='PRI'}Static{else}Select{/if} id="{$field['name']}" label="{$field['name']}" required="{$field['required']}" datasource="{$field['datasource']}" bindid="{$field['bindid']}" bindvalue="{$field['bindvalue']}"/>
+        <{if $field['key']=='PRI'}Static{else}Select{/if} name="{$field['name']}" label="{$field['name']}" required="{$field['required']}" datasource="{$field['datasource']}" bindid="{$field['bindid']}" bindvalue="{$field['bindvalue']}"/>
       {else}
-        <{if $field['key']=='PRI'}Static{else}{$field['type']}{/if}  id="{$field['name']}" label="{$field['name']}" required="{$field['required']}"/>
+        <{if $field['key']=='PRI'}Static{else}{$field['type']}{/if}  name="{$field['name']}" label="{$field['name']}" required="{$field['required']}"/>
       {/if}
     {/if}
     {/foreach}
