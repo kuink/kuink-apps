@@ -11,10 +11,6 @@
   </Libraries>
   <Configuration/>
   <Params>
-      <Param name="application"/>
-      <Param name="process"/>
-      <Param name="node"/>
-      <Param name="type"/>
   </Params>
   <Screens>
     <Screen name="scrDiagram" doc="Diagram">
@@ -24,19 +20,27 @@
 
   <Actions>
     <Action name="init" screen="scrDiagram">
-      <Var name="application"><Var name="PARAMS" key="application"/></Var>
-      <Var name="process"><Var name="PARAMS" key="process"/></Var>
-      <Var name="node"><Var name="PARAMS" key="node"/></Var>
-      <Var name="event"><Var name="PARAMS" key="event"/></Var>
-      <NativeCode>
-        <![CDATA[ 
-          $variables['uml'] = \Kuink\Core\Reflection::getUml($variables['application'], $variables['process']);	
-        ]]>
-        </NativeCode>
-        <Print><Var name="uml"/></Print>
-        <Control method="bind" object="umlViewer">
-          <Param><Var name="uml"/></Param>
-        </Control>         
+      <Var name="PARAMS" dump="true"/>
+      <Var name="application" dump="true"><QueryString.get param="application"/></Var>
+      <Var name="process" dump="true"><QueryString.get param="process"/></Var>
+      <Var name="node" dump="true"><QueryString.get param="node"/></Var>
+      <Var name="type"><QueryString.get param="type"/></Var>
+      <Var name="uml">
+        <ReflectionLib method="getUml">
+          <Param><Var name="application"/></Param>
+          <Param><Var name="process"/></Param>
+          <Param><Var name="node"/></Param>
+          <Param><Var name="type"/></Param>
+        </ReflectionLib>
+      </Var>
+      <!-- <Print><Var name="uml"/></Print> -->
+      <Control method="bind" object="umlViewer">
+        <Param><Var name="uml"/></Param>
+      </Control>         
+    </Action>
+
+    <Action name="processAction">
+
     </Action>
         
   </Actions>

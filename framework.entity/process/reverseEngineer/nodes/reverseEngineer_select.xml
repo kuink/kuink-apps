@@ -12,7 +12,7 @@
   <Screens>
     <Screen name="sc01">
       <Form name="frmTables">
-        <Select name="entity" required="true" searchable="true" datasource="dsTables" bindid="table" bindvalue="table"/>
+        <Select name="entity" required="true" searchable="true" datasource="dsTables" bindid="table" bindvalue="table" action="step01"/>
         <Static name="definition">
           <Formatter name="Xml"/>
         </Static>
