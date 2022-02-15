@@ -14,7 +14,7 @@
       <Form name="frmSearch" title="search" persist="true">
         <Int name="id"/>
         <Select name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" inline="true"/>
-        <Select name="id_user" datasource="call:framework,user,api,getAll" searchable="true" bindid="id" bindvalue="username"/>
+        <Select name="id_user" required="true" datasource="call:framework,user,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,username" searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,user,api,getById"/>
         <Select name="id_role" datasource="call:framework,user.role,api,getAll" searchable="true" bindid="id" bindvalue="code" inline="true"/>
         <ButtonGroup>
           <Button name="search" type="search" label="search" action="search"/>
@@ -70,7 +70,7 @@
       <Form name="frmEdit" title="edit">
         <Static name="id" label="id" required="true"/>
         <Select name="id_company" label="id_company" required="true" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
-        <Select name="id_user" label="id_user" required="true" searchable="true" datasource="call:framework,user,api,getAll" bindid="id" bindvalue="username"/>
+        <Select name="id_user" required="true" datasource="call:framework,user,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,username" searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,user,api,getById"/>
         <Select name="id_role" label="id_role" required="true" searchable="true" datasource="call:framework,user.role,api,getAll" bindid="id" bindvalue="code"/>
         <ButtonGroup>
           <Button name="cancel" type="cancel" label="cancel" action="search"/>
@@ -138,7 +138,15 @@
     <Action name="save">
       <If condition="@selectedId == ''">
         <Then>
-          <Call library="framework,user.allocation,api" function="add" params="POSTDATA"/>
+          <Try>
+            <Instructions>
+              <Call library="framework,user.allocation,api" function="add" params="POSTDATA"/>    
+            </Instructions>
+            <Catch>
+              <UserMessage type="warning"><Lang key="duplicateAllocation"/></UserMessage>
+            </Catch>
+          </Try>
+          
         </Then>
         <Else>
           <Call library="framework,user.allocation,api" function="update" params="POSTDATA">
@@ -151,6 +159,9 @@
       <Action name="search"/>
     </Action>
     <Action name="insert" screen="scrEdit">
+      <Control method="bind" object="frmEdit">
+        <Param><Var name="POSTDATA"/></Param>
+      </Control>
       <Var name="selectedId" process="true">
         <Null/>
       </Var>

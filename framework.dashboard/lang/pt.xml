@@ -32,6 +32,9 @@
         <String key="size" value="Tamanho"/>
         <String key="newFile" value="Novo ficheiro"/>
 
+        <!-- User Messages -->
+        <String key="duplicateAllocation" value="O utilizador já tem a role selecionada."/>
+
     </Strings>
     <HelpStrings>
         <Help key="is_global"><![CDATA[Uma capacidade global aplica-se a todas as companhias.]]></Help>

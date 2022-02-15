@@ -702,6 +702,26 @@
       </Begin>
     </Function>
 
+    <Function name="searchFullText" doc="Search users by text">
+      <Params>
+          <Param name="text"/>
+          <Param name="pagesize"/>
+          <Param name="pagenum"/>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+          <Var name="returnValue">
+          <DataAccess method="this,this,user.searchFullText">
+            <Param name="text" wildcard="fullSplit"><Var name="PARAMS" key="text"/></Param>
+            <Param name="_pageSize"><Var name="PARAMS" key="pagesize"/></Param>
+            <Param name="_pageNum"><Var name="PARAMS" key="pagenum"/></Param>
+          </DataAccess>
+          </Var>
+          <Return><Var name="returnValue"/></Return>
+      </Begin>
+  </Function>
+
+
     <Function name="getAll" doc="Get all records from table fw_user">
       <Params />
       <Return type="multiple" doc="">
@@ -715,11 +735,13 @@
         <External name="_modification_ip" type="text" doc="" />
       </Return>
       <Begin>
-        <Return>
+        <Var name="users" dump="true">
           <DataAccess method="getAll">
             <Param name="_entity">fw_user</Param>
-            <Param name="_attributes">*</Param>
-          </DataAccess>
+          </DataAccess>          
+        </Var>
+        <Return>
+          <Var name="users"/>
         </Return>
       </Begin>
     </Function>
