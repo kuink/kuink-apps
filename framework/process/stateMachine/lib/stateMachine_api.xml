@@ -254,6 +254,7 @@
 							<DataAccess method="getAll">
 								<Param name="_entity">fw_state_machine_state</Param>
 								<Param name="id_state_machine"><Var name="stateMachine" key="id"/></Param>
+								<Param name="is_active"><Int>1</Int></Param>
 								<Param name="_sort">code</Param>
 							</DataAccess>
 						</Var>
@@ -547,4 +548,3 @@
 
     </Library>
 </Node>
-
