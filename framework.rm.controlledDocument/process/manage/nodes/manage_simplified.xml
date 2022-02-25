@@ -124,7 +124,7 @@
       <!-- Check to see if there is allready a guid object created. If so then list all the documents with thah guid_object -->
       <!-- Setting is Manager to 1 to view document_types 0. There's no problem since the user can only see the guid_object documents -->
       <Var name="documents">
-        <Call library="framework,rm.controlledDocument,api" function="search">
+        <Call library="framework,rm.controlledDocument,api" function="searchForSimplified">
           <Param name="text">
             <Var name="PARAMS" key="guid_object"/>
           </Param>
