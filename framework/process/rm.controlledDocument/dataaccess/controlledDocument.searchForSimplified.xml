@@ -33,6 +33,22 @@
                       GROUP_CONCAT(CONCAT(c.code,' - ', c.name) SEPARATOR ',') as class_full_name,
                       (
                         SELECT 
+                            IF( COUNT(cdviii.id) = 0, 1, IF (cdviii.is_approved = 0, -1, IF(cdviii.is_approved IS NULL, 0, 1) ) )
+                        FROM 
+                            fw_rm_controlled_document_version cdviii
+                        WHERE
+                        cdviii.id IN (
+                        SELECT 
+                            MAX(cdvii.id)
+                        FROM 
+                            fw_rm_controlled_document_version cdvii
+                            INNER JOIN fw_rm_controlled_document cdii ON (cdii.id = cdvii.id_controlled_document)
+                        WHERE 
+                        cdvii.id > cdii.id_current_version
+                        AND cdvii.id_controlled_document = cd.id)
+                      ) as version_approval_status,
+                      (
+                        SELECT 
                             count(wfpio.id)
                         FROM 
                             fw_rm_controlled_document_version cdvii

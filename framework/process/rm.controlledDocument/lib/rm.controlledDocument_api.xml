@@ -237,7 +237,50 @@
         </Return>
       </Begin>
     </Function>
-    
+
+    <Function name="searchForSimplified" doc="Search records from table fw_rm_controlled_document for manage simple generic node, copied from search for performance issues on version approval subquery">
+      <Params>
+        <Param name="id_controlled_document_type" type="int"/>
+        <Param name="text" type="string"/>
+        <Param name="is_active" type="string"/>
+        <Param name="isManager" type="int" doc="Can view doctype 0"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="id_current_version" type="int" doc=""/>
+        <External name="id_controlled_document_type" type="int" doc=""/>
+        <External name="current_version_number" type="int" doc=""/>
+        <External name="code_name" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,controlledDocument.searchForSimplified">
+            <Param name="id_controlled_document_type">
+              <Var name="PARAMS" key="id_controlled_document_type"/>
+            </Param>
+            <Param name="text" wildcard="fullSplit">
+              <Var name="PARAMS" key="text"/>
+            </Param>
+            <Param name="is_active"><Var name="is_active"/></Param>
+            <Param name="isManager"><Var name="isManager"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
     <Function name="getAll" doc="Get all records from table fw_rm_controlled_document">
       <Params/>
       <Return type="multiple" doc="">

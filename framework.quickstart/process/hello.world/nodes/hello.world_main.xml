@@ -19,10 +19,12 @@
         </Action>
         
         <Action name="processusername" >
-            <Var name="POSTDATA" dump="true"/>
-            <Var name="c" >2</Var>
-            <Var name="ab" ><Var name="c"/></Var>
-            <Var name="ab" sum="8" dump="true"/>
+
+            <If condition="$POSTDATA->username == 'AA'">
+                <Then>
+                    
+                </Then>
+            </If>
             <Action name="init"/>
         </Action>
     </Actions>
