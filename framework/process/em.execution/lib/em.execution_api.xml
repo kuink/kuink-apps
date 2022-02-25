@@ -310,7 +310,7 @@
 					<Then>
 						<Var name="statusMicrosoft" dump="true">
 							<DataAccess method="insert" datasource="microsoftAPIAdminSDK">
-								<Param name="_entity">users</Param>
+								<Param name="_entity">user</Param>
 								<Param name="uid"><Var name="object" key="uid"/></Param>								
 								<Param name="given_name"><Var name="object" key="given_name"/></Param>
 								<Param name="surname"><Var name="object" key="surname"/></Param>
@@ -685,7 +685,7 @@
 							<Instructions>
 								<Var name="microsoftUser" dump="true">
 										<DataAccess method="load" datasource="microsoftAPIAdminSDK">
-											<Param name="_entity">users</Param>
+											<Param name="_entity">user</Param>
 											<Param name="uid"><Var name="object" key="uid"/></Param>
 										</DataAccess>
 								</Var>
@@ -1138,7 +1138,7 @@
 					<Then>
 						<Var name="statusMicrosoft" dump="true">
 							<DataAccess method="update" datasource="microsoftAPIAdminSDK">
-								<Param name="_entity">users</Param>
+								<Param name="_entity">user</Param>
 								<Param name="uid"><Var name="object" key="uid"/></Param>								
 								<Param name="given_name"><Var name="object" key="given_name"/></Param>
 								<Param name="surname"><Var name="object" key="surname"/></Param>
