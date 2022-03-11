@@ -571,13 +571,23 @@
 										<Param><String>_formatted</String></Param>
 									</String.concatenate>
 								</Var>
-								<Var name="eventData" key="$formattedFieldId">
+								<Var name="formattedField">
 									<FormatterLib method="format">
 										<Param><Var name="eventVisibleField" key="formatter"/></Param>
 										<Param><Var name="eventVisibleField" key="formatterMethod"/></Param>
 										<Param><Var name="fieldValue"/></Param>
 										<Param><Var name="eventVisibleField" key="formatterParams"/></Param>
 									</FormatterLib>
+								</Var>
+								<If condition="$eventVisibleField->formatterAddSlashes == 'true'">
+									<Then>
+										<Var name="formattedField">
+											<String.addslashes><Var name="formattedField"/></String.addslashes>
+										</Var>
+									</Then>
+								</If>
+								<Var name="eventData" key="$formattedFieldId">
+									<Var name="formattedField"/>
 								</Var>
 							</Then>
 						</If>
