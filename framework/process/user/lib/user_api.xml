@@ -422,9 +422,10 @@
       <Begin>
         <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
           </Allow> </Permissions -->
-        <Var name="companies">
+        <Var name="companies" dump="true">
           <DataAccess method="this,this,user.getRoles">
-            <Param name="id_user"><Var name="id" /></Param>
+            <Param name="id_person"><Var name="PARAMS" key="id"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
           </DataAccess>
         </Var>
         <Return>
@@ -721,7 +722,6 @@
       </Begin>
   </Function>
 
-
     <Function name="getAll" doc="Get all records from table fw_user">
       <Params />
       <Return type="multiple" doc="">
@@ -942,5 +942,27 @@
       </Begin>
     </Function>
 
+    <Function name="isRole" doc="A given user is a determined role.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="The id person." />
+        <Param name="code" type="String" required="true" doc="The code role to test." />
+      </Params>
+      <Return type="int" doc="1 if it is the given role"/>
+      
+      <Begin>
+        <Var name="records" dump="true">
+          <Execute method="this,this,isRole">
+            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </Execute>
+        </Var>
+        <Return>
+          <If condition="$records->__length &gt; 0">
+            <Then>1</Then>
+            <Else>0</Else>
+          </If>
+        </Return>
+      </Begin>
+    </Function>
   </Library>
 </Node>

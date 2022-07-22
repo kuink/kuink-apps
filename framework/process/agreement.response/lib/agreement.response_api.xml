@@ -633,12 +633,12 @@
 		</Params>
 		<Return type=""/>
 		<Begin>
-			<Var name="currentAgreement">
+			<Var name="currentAgreement" dump="true">
 				<DataAccess method="load">
 					<Param name="_entity">fw_agreement</Param>
-					<Param name="guid_object"><Var name="PARAMS" key="guidObject"/></Param>
+					<Param name="guid_object"><Var name="PARAMS" key="guidObject" dump="true"/></Param>
 					<Param name="is_active"><Int>1</Int></Param>
-					<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>						
+					<Param name="start_date"><Var name="PARAMS" key="startDate" dump="true"/></Param>						
 				</DataAccess>
 			</Var>
 			<If condition="$currentAgreement->id_record !== null">
