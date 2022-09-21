@@ -1,0 +1,40 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<Description>Search all active companies</Description>
+	</Doc>
+	<Params>
+		<Param name="name"/>
+		<Param name="code"/>
+		<Param name="is_active"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							s.id, 
+							s.description, 
+							s.script, 
+							s._creation, 
+							s._creation_ip, 
+							s._modification, 
+							s._modification_ip
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_script s
+						]]>
+					</XTable>
+				</XFrom>
+				<XOrderBy>
+					<XOrder><![CDATA[ s.description ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

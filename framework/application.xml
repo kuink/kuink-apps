@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<Application name="framework" version="1.001.000">
+<Application name="framework" version="1.002.000">
     <Config>
         <!-- Global configuration... -->
         <Key name="message_id_context" value="neon.framework"/>
