@@ -82,6 +82,21 @@
       </If>
       <Var name="order" process="true"><Var name="order"/></Var>
 
+      <Action name="back">
+        <Var name="order"><Var name="order" process="true"/></Var>
+        <Var name="total"><Var name="total" process="true"/></Var>
+        <If condition="@order >= @total - 1">
+          <Then>
+            <Var name="order"><Int>0</Int></Var>          
+            <Var name="order"><Int.parse>$total-1</Int.parse></Var>
+          </Then>
+          <Else>
+            <Var name="order"><Int.parse>$order-1</Int.parse></Var>          
+          </Else>
+        </If>
+        <Var name="order" process="true"><Var name="order"/></Var>
+      </Action>
+
       <Action name="play"/>
     </Action>
   </Actions>
