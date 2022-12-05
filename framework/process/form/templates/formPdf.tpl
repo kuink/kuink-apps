@@ -5,7 +5,7 @@
 		<table id="header" align="center" >
 				<tr>
 						<td align="left">
-								<img src="http://apps.cscm-lx.pt/~docs/imagens/normasGraficas/pagina_04/v1/v1.svg" width="300"/>
+								<img src="http://apps.cscm-lx.pt/~docs/imagens/normas_graficas/pagina_04/v1/v1.svg" width="300"/>
 						</td>
 				</tr>
 			</table>
