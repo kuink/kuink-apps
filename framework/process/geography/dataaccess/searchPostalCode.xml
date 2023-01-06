@@ -1,0 +1,52 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<Description>Search postal codes given the code</Description>
+	</Doc>
+	<Params>
+		<Param name="text" doc="Postal code code or local name"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							pc.code AS "postal_code",
+							pc.name AS "postal_address_name",
+							pc.local_name AS "postal_address_local_name",
+							CONCAT(pc.code, " ", pc.name) AS "postal_address",
+							pc.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_postal_code pc
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[
+							1=1 AND '{param->text}' != ''
+						]]>
+					</XCondition>
+					<XCondition optional="text">
+						<![CDATA[
+							AND ( 
+								pc.code LIKE '{param->text}'
+								OR pc.name LIKE '{param->text}'
+								OR pc.local_name LIKE '{param->text}'
+							)  
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[  pc.code ASC  ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

@@ -1,0 +1,50 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+  	<Description>Gets a list of civil parishes (active or not) of the given county.</Description>
+  </Doc>
+	<Params>
+		<Param name="code_county"/>
+		<Param name="code_district"/>
+		<Param name="is_active"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							cp.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_civil_parish cp
+							INNER JOIN fw_county c ON (c.code_county = cp.code_county)
+							INNER JOIN fw_district d ON (d.code_district = cp.code_district)
+							INNER JOIN fw_country ct ON (ct.id = d.id_country)
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[ 
+							cp.code_county = {param->code_county}
+							AND cp.code_district = {param->code_district}
+						]]>
+					</XCondition>
+					<XCondition optional="is_active">
+						<![CDATA[
+							AND cp.is_active = {param->is_active}
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ cp.name ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
