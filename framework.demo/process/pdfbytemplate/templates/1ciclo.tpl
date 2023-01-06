@@ -13,7 +13,7 @@
 	<table >
 		<tr>
 			<td valign="top">
-				<img id="logo" src="http://apps.cscm-lx.pt/~docs/imagens/normasGraficas/pagina_03/v2/v2.svg" width="200" />
+				<img id="logo" src="http://apps.cscm-lx.pt/~docs/imagens/normas_graficas/pagina_03/v2/v2.svg" width="200" />
 			</td>
 			<td valign="top" align="center">
 				<div style="font-size: 20px" >

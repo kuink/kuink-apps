@@ -45,6 +45,7 @@
         <Var name="data" key="channel"><Var name="currentChannel" process="true"/></Var>
         <Var name="data" key="order"><Var name="order" process="true"/></Var>
         <Var name="data" key="total"><Var name="total" process="true"/></Var>
+        <Var name="data" key="actionBackUrl"><Action.getUrl>back</Action.getUrl></Var>
 
         <!-- <Var name="data" dump="true"/> -->
         <Var name="idChannel">
