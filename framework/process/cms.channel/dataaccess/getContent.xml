@@ -22,10 +22,12 @@
 				</XFrom>
 				<XWhere>
 					<XCondition>cc.id_channel = '{param->id_channel}'</XCondition>
-					<XCondition condition="$is_published === '' || $is_published === 1">
+					<!--<XCondition condition="$is_published === '' || $is_published === 1">-->
+					<XCondition condition="$is_published === 1">
 						<![CDATA[
 						AND cc.is_published = 1
 						AND (cc.end_date IS NULL OR cc.end_date=0 OR cc.end_date > {param->now})
+						AND (cc.start_date IS NULL OR cc.start_date=0 OR cc.start_date < {param->now})
 						]]>
 					</XCondition>
 					<XCondition condition="$is_published === 0">AND cc.is_published = 0</XCondition>

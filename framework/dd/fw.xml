@@ -129,7 +129,7 @@
       <Attributes>
         <Attribute name="id" domain="id" />
         <Attribute name="id_role" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The role"/>
-        <Attribute name="id_permission" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The permission can be either role or capability"/>
+        <Attribute name="id_permission" domain="foreign" refentity="fw_permission" refattr="id" required="true" doc="The permission can be either role or capability"/>
         <Attribute name="_path" domain="string" required="false" doc="Only for role to role relation help get the child capabilities"/>
         <Template name="fw.base" />        
       </Attributes>

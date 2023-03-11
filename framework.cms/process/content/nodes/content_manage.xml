@@ -67,9 +67,11 @@
             <Option id="1">yes</Option>
           </Options>
         </Select>        
-        <Select name="id_content_before" help="false" datasource="call:framework,cms.channel,api,getContent" datasource-params="id_channel=$id_channel;is_published=1" bindid="id" bindvalue="_formatted">
+        <!--<Select name="id_content_before" help="false" datasource="call:framework,cms.channel,api,getContent" datasource-params="id_channel=$id_channel;is_published=1" bindid="id" bindvalue="_formatted">-->
+        <Select name="id_content_before" help="false" datasource="call:framework,cms.channel,api,getContent" datasource-params="id_channel=$id_channel;is_published=''" bindid="id" bindvalue="_formatted">
           <Rule runat="client" attr="visible" condition="$change_position == 0" value="false"/>	
-          <Rule runat="client" attr="value" datasource="framework,cms.channel,api,getContent" datasourceparams="id_channel=$id_channel&amp;is_published=1"/>
+          <!--<Rule runat="client" attr="value" datasource="framework,cms.channel,api,getContent" datasourceparams="id_channel=$id_channel&amp;is_published=1"/>-->
+          <Rule runat="client" attr="value" datasource="framework,cms.channel,api,getContent" datasourceparams="id_channel=$id_channel&amp;is_published=''"/>
         </Select>        
         <Date name="start_date" required="true" />
         <Date name="end_date" now="false"/>

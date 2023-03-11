@@ -1,0 +1,46 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+  	<Description>Gets a list of districts (active or not) of the given country.</Description>
+  </Doc>
+	<Params>
+		<Param name="id_country"/>
+		<Param name="is_active"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							d.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_district d
+							INNER JOIN fw_country c ON (c.id = d.id_country)
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[
+							d.id_country = {param->id_country}
+						]]>
+					</XCondition>
+					<XCondition optional="is_active">
+						<![CDATA[ 
+							AND d.is_active = {param->is_active}
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ d.name ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>
