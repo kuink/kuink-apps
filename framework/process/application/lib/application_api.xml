@@ -373,7 +373,9 @@
 		            <Param name="application"><Var name="application"/></Param>
 		            <Param name="node"><Var name="update"/></Param>
 		            <Param name="createForeignIndexes"><Config key="update.createForeignIndexes"/></Param>
+					<Param name="removeExistingIndexes"><Config key="update.removeExistingIndexes"/></Param>
 		            <Param name="createForeignKeys"><Config key="update.createForeignKeys"/></Param>          
+					<Param name="removeExistingForeignKeys"><Config key="update.removeExistingForeignKeys"/></Param>       
 		            <Param name="dropTablesBeforeCreate"><Config key="update.dropTablesBeforeCreate"/></Param>          
 		          </DataAccess>
 		        </Var>

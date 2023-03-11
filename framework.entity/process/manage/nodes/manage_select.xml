@@ -16,7 +16,9 @@
         <Text name="application" required="true" />
         <Text name="node" required="true" />
         <Checkbox name="createForeignIndexes"/>
+        <Checkbox name="removeExistingIndexes" inline="true"/>
         <Checkbox name="createForeignKeys"/>
+        <Checkbox name="removeExistingForeignKeys" inline="true"/>
         <Checkbox name="dropTablesBeforeCreate"/>
         <ButtonGroup>
           <Button name="analyse" type="search" action="process" />
@@ -52,8 +54,20 @@
            <Else>false</Else>
           </If>
         </Param>
+        <Param name="removeExistingIndexes">
+          <If condition="$POSTDATA->removeExistingIndexes == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
         <Param name="createForeignKeys">
           <If condition="$POSTDATA->createForeignKeys == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
+        <Param name="removeExistingForeignKeys">
+          <If condition="$POSTDATA->removeExistingForeignKeys == '1'">
            <Then>true</Then>
            <Else>false</Else>
           </If>

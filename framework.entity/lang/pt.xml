@@ -6,8 +6,10 @@
       <String key="diagram" value="Diagrama ER Uml"/>
       <String key="analyse" value="Analisar"/>
 
-      <String key="createForeignIndexes" value="Criar índices nas FK"/>
-      <String key="createForeignKeys" value="Criar FK"/>
+      <String key="createForeignIndexes" value="Criar índices nas FKs"/>
+      <String key="createForeignKeys" value="Criar FKs"/>
+      <String key="removeExistingIndexes" value="Remover índices existentes"/>
+      <String key="removeExistingForeignKeys" value="Remover FKs existentes"/>
       <String key="dropTablesBeforeCreate" value="Eliminar tabelas antes de criar"/>
       
    </Strings>
