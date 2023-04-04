@@ -20,6 +20,7 @@
         <Checkbox name="createForeignKeys"/>
         <Checkbox name="removeExistingForeignKeys" inline="true"/>
         <Checkbox name="dropTablesBeforeCreate"/>
+        <Checkbox name="dropPermanentlyExcludedColumns" inline="true"/>
         <ButtonGroup>
           <Button name="analyse" type="search" action="process" />
           <Button name="diagram" type="submit" action="showDiagram" />
@@ -74,6 +75,12 @@
         </Param>
         <Param name="dropTablesBeforeCreate">
           <If condition="$POSTDATA->dropTablesBeforeCreate == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
+        <Param name="dropPermanentlyExcludedColumns">
+          <If condition="$POSTDATA->dropPermanentlyExcludedColumns == '1'">
            <Then>true</Then>
            <Else>false</Else>
           </If>
