@@ -11,16 +11,16 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scr001">
+    <Screen name="scr001">
       <Form name="frmTest">
-        <Text id="template" required="true"/>      
+        <Text name="template" required="true"/>      
         <ButtonGroup>
           <Button id ="execute" type="execute" action="showTemplate"/>
         </ButtonGroup>
       </Form>
     </Screen>
     
-    <Screen id="scr002">
+    <Screen name="scr002">
       <Form name="frmTest">
         <ButtonGroup>
           <Button id ="back" type="back" action="init"/>
@@ -58,4 +58,3 @@
     
   </Actions>
 </Node>
-

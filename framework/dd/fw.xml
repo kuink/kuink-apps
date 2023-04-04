@@ -38,6 +38,7 @@
     <Domain name="timestamp" type="datetime" />
     <Domain name="ip" type="string" size="128" doc="Supports ipv4 and ipv6" />
     <Domain name="url" type="string" size="256" doc="url specification"/>
+    <Domain name="uri" type="string" size="256" doc="uri specification"/>
   </Domains>
   <Templates>
     <Template name="fw.base">
@@ -78,20 +79,18 @@
 	    <Attribute name="name" domain="longName" required="false" doc="The object name"/>
 	    <Attribute name="description" domain="longDescription" required="false" doc="The object description"/>
 	  </Template>	  
-	  	  
 	  <Template name="fw.identity.multilang">
-	    <Attribute name="uuid" domain="guid" required="true" doc="The guid to identify the object"/>
+	    <Attribute name="uuid" domain="uuid" required="true" doc="The guid to identify the object"/>
 	    <Attribute name="code" domain="code" required="true" doc="The object code, not multilang"/>
 	    <Attribute name="name" domain="name" required="true" multilang="true" doc="The object name"/>
 	    <Attribute name="description" domain="longDescription" required="false" multilang="true" doc="The object description"/>
 	  </Template>
 	  <Template name="fw.identity.multilang.long">
-	    <Attribute name="uuid" domain="guid" required="true" doc="The guid to identify the object"/>
+	    <Attribute name="uuid" domain="uuid" required="true" doc="The guid to identify the object"/>
 	    <Attribute name="code" domain="code" required="true" doc="The object code, not multilang"/>
 	    <Attribute name="name" domain="longName" required="true" multilang="true" doc="The object name"/>
 	    <Attribute name="description" domain="longDescription" required="false" multilang="true" doc="The object description"/>
 	  </Template>
-
 	  <Template name="fw.dateRestriction">
       <Attribute name="date_from" domain="timestamp" doc="The from date and time" />
       <Attribute name="date_to" domain="timestamp" doc="The to date and time" />
@@ -99,7 +98,6 @@
 	  <Template name="fw.active">
       <Attribute name="is_active" domain="bool" doc="The record is active or not" />
     </Template>
-
   </Templates>
 
   <Entities>
@@ -107,6 +105,17 @@
     <Entity name="fw_person"/>
     <Entity name="fw_user"/-->
     
+    <!-- Permissions -->
+		<Entity name="fw_company" doc="The framework company base data">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Template name="fw.identity.long" />         
+        <Attribute name="timezone" domain="code" doc="The timezone of this company" />
+        <Template name="fw.active" />
+        <Template name="fw.base" />
+      </Attributes>
+    </Entity>    
+
     <!-- Permissions -->
 		<Entity name="fw_permission" doc="The role or capability base data">
       <Attributes>
@@ -120,7 +129,7 @@
       <Attributes>
         <Attribute name="id" domain="id" />
         <Attribute name="id_role" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The role"/>
-        <Attribute name="id_permission" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The permission can be either role or capability"/>
+        <Attribute name="id_permission" domain="foreign" refentity="fw_permission" refattr="id" required="true" doc="The permission can be either role or capability"/>
         <Attribute name="_path" domain="string" required="false" doc="Only for role to role relation help get the child capabilities"/>
         <Template name="fw.base" />        
       </Attributes>
@@ -154,12 +163,13 @@
     <Entity name="fw_widget" doc="An element to display on a page">
       <Attributes>
         <Attribute name="id" domain="id" />
-				<Template name="fw.identity.long" />
+        <Template name="fw.identity.long" />
 				<Attribute name="init_flow" domain="xml" required="false" doc="The application init_flow" />
 				<Attribute name="configuration" domain="xml" required="false" doc="Application configuration" />
 				<Attribute name="is_active" domain="bool" default="1" doc="Is this page active?" />
-				<Attribute name="is_configurable" domain="bool" default="1" doc="Is this page active?" />
+				<Attribute name="is_configurable" domain="bool" default="1" doc="Can the user configure this widget?" />
 				<Attribute name="modal" domain="string" required="false" doc="Modal template to load the widget." />
+        <Attribute name="guid" domain="guid" required="false" doc="Global unique identifier." />
         <Template name="fw.base" />
       </Attributes>
     </Entity>
@@ -198,6 +208,24 @@
         <Template name="fw.base" />
       </Attributes>
     </Entity>    
+
+    <Entity name="fw_timezone" doc="The list of timezones">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="code" domain="code" />        
+      </Attributes>
+    </Entity>    
+
+    <Entity name="fw_context_hook" doc="A hook based on the context. A hook is just an API that will be called within this context.">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="context" domain="code" doc="The context of this api."/>
+        <Attribute name="code" domain="code" doc="The code that the client will use to get the api based on the context."/>
+        <Attribute name="api" domain="apiFunction" doc="The complete function api that will be called ijn this context"/>
+        <Template name="fw.base" />    
+      </Attributes>
+    </Entity>
+
     
     <!-- Legacy roles -->
     

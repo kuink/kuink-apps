@@ -22,15 +22,15 @@
       <Return type="int" doc="The inserted record id"/>
       <Begin>
         <Return>
-          <Execute method="framework,generic,insert">
-            <Param name="table">fw_role_capability</Param>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_role_capability</Param>
             <Param name="id_role">
               <Var name="PARAMS" key="id_role"/>
             </Param>
             <Param name="id_capability">
               <Var name="PARAMS" key="id_capability"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -41,12 +41,12 @@
       <Return type="int" doc=""/>
       <Begin>
         <Return>
-          <Execute method="framework,generic,delete">
-            <Param name="table">fw_role_capability</Param>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_role_capability</Param>
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -64,9 +64,9 @@
             </Param>
           </UtilsLib>
         </Var>
-        <Execute method="framework,generic,update" params="paramData">
-          <Param name="table">fw_role_capability</Param>
-        </Execute>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_role_capability</Param>
+        </DataAccess>
       </Begin>
     </Function>
     <Function name="search" doc="Search records from table fw_role_capability">
@@ -84,7 +84,7 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="this,this,search">
+          <DataAccess method="this,this,search">
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
@@ -100,7 +100,7 @@
             <Param name="pagesize">
               <Var name="PARAMS" key="pagesize"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -113,10 +113,10 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,getAll">
-            <Param name="table">fw_role_capability</Param>
-            <Param name="fields">*</Param>
-          </Execute>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_role_capability</Param>
+            <Param name="_attributes">*</Param>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -131,12 +131,12 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_role_capability</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_role_capability</Param>
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>

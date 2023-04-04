@@ -10,18 +10,17 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="scTasks">
+		<Screen name="scTasks">
 			<Form name="frmCronStatus" title="cronStatus" freeze="true">
-				<DateTime id="_modification" help="false">
+				<DateTime name="_modification" help="false">
 					<Formatter name="DateTime" method="shortDateTime"/>
 				</DateTime>
-				<Int id="num_tasks_executed" help="false"/>
+				<Int name="num_tasks_executed" help="false"/>
 			</Form>
 			<Form name="frmTasks">
 			 <ButtonGroup>
-			   <Button type="submit" id="executeAll" label="executeAll" action="executeAll" icon="play"/>
-			   <!--Button type="submit" decoration="success" id="add" label="add" action="add" icon="plus-sign"/-->
-			   <Button type="add" id="add" label="add" action="add"/>
+			   <Button type="submit" name="executeAll" label="executeAll" action="executeAll" icon="play"/>
+			   <Button type="add" name="add" label="add" action="add"/>
 			 </ButtonGroup>
 			</Form>
 			<Grid name="grdTasks" title="scheduledTasks">
@@ -76,10 +75,10 @@
 			</Grid>
 			
 		</Screen>
-		<Screen id="scTaskExecuted">
+		<Screen name="scTaskExecuted">
 			<Form name="frmOptions">
 			 <ButtonGroup>
-			   <Button type="submit" id="ok" label="ok" action="init"/>
+			   <Button type="submit" name="ok" label="ok" action="init"/>
 			 </ButtonGroup>
 			</Form>
 		</Screen>
@@ -181,4 +180,3 @@
 		
 	</Actions>
 </Node>
-

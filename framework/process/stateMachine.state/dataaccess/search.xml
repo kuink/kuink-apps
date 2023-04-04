@@ -26,6 +26,9 @@
                     <XCondition optional="name">AND t.name like '{param->name}'</XCondition>
                     <XCondition optional="id_state_machine">AND t.id_state_machine = '{param->id_state_machine}'</XCondition>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
                 </XWhere>
+                <XOrderBy>
+                    <XOrder>t.code</XOrder>
+                </XOrderBy>
             </XSql>
         </SqlPaginated>
     </Body>

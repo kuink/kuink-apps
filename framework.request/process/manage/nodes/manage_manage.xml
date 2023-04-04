@@ -13,7 +13,7 @@
       <Param name="result"/>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         <Column id="col1"/>
 	      <ActionGroup >
@@ -22,15 +22,15 @@
 	          <Action name="last5Days" id="last5Days" label="last5Days" />
 	          <Action name="last30Days" id="last30Days" label="last30Days" />
 	      </ActionGroup>
-	      <DateTime id="dateFrom" />
-	      <DateTime id="dateTo" />
+	      <DateTime name="dateFrom" />
+	      <DateTime name="dateTo" />
 	      <Column id="col2"/>
-        <Select id="category" datasource="call:framework,request.category,api,getAll" bindid="id" bindvalue="name"/>
-        <Select id="status" datasource="call:framework,request.status,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="data" label="data"/>
-        <Checkbox id="inTTL"/>
+        <Select name="category" datasource="call:framework,request.category,api,getAll" bindid="id" bindvalue="name"/>
+        <Select name="status" datasource="call:framework,request.status,api,getAll" bindid="id" bindvalue="name"/>
+        <Text name="data" label="data"/>
+        <Checkbox name="inTTL"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
+          <Button name="search" type="search" label="search" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" pagingaction="search" collapsible="false" pagesize="10" title="result" freeze="false">
@@ -62,10 +62,10 @@
       </Grid>
     </Screen>
     
-    <Screen id="scrLog" doc="Show log">
+    <Screen name="scrLog" doc="Show log">
       <Form name="frmSearch" persist="true" title="search">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdLog" pageable="false" collapsible="false" title="result">
@@ -78,12 +78,12 @@
       </Grid>
     </Screen>  
 
-    <Screen id="scrComment" doc="Comment the request">
+    <Screen name="scrComment" doc="Comment the request">
       <Form name="frmComment" title="addComments">
-        <TextArea id="comment" label="comment"/>
+        <TextArea name="comment" label="comment"/>
         <ButtonGroup>
-          <Button id="add" type="add" action="saveComment"/>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="add" type="add" action="saveComment"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdComments" pageable="false" collapsible="false" title="result">
@@ -101,10 +101,10 @@
       </Grid>
     </Screen>  
         
-    <Screen id="scrResult" doc="Result Screen">
+    <Screen name="scrResult" doc="Result Screen">
       <Form name="frmSearch" persist="true" title="search">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdLog" pageable="false" collapsible="false" title="result">

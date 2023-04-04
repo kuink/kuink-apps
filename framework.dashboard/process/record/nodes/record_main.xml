@@ -7,13 +7,13 @@
     <Params>
     </Params>
     <Screens>
-        <Screen id="main_screen" template="1col_LeftMenu">
-            <Grid id="records" name="records">
+        <Screen name="main_screen" template="1col_LeftMenu">
+            <Grid name="records">
                 <Template>
                     <Columns>
-                        <Column id="id" name="id"/>
-                        <Column id="name" name="name"/>
-                        <Column id="id_file" name="id_file"/>
+                        <Column name="id"/>
+                        <Column name="name"/>
+                        <Column name="id_file"/>
                     </Columns>
                 </Template>
             </Grid>

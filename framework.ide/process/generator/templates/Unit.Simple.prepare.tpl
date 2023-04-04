@@ -8,7 +8,7 @@
                   <Capability name="framework/unitTest:run"/>
                 </Allow>
               </Permissions-->              
-              <Var name="context" key="message">{$unitBase}::{$unitApplication}::{$unitTemplate}</Var>
+              <Var name="context" key="message">{$unitBase}::{$unitApplication}::{$unitNode}::{$unitTemplate}</Var>
               <Return>
                   <Var name="context"/>
               </Return>

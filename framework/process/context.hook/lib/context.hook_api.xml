@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function scope="public" name="register" doc="Registers a hook in the system">
+    <Params>
+      <Param name="context" type="string" doc="The context of the api hook"/>
+      <Param name="code" type="string" doc="The code to be assiciated with of the api hook"/>
+      <Param name="api" type="string" doc="The complete api function to be called"/>
+    </Params>
+    <Return type="int"/>
+    <Begin>
+      <!-- Check if there's already this hook defined in the system -->
+      <Var name="hook">
+        <DataAccess method="load">
+          <Param name="_entity">fw_context_hook</Param>
+          <Param name="context"><Var name="PARAMS" key="context"/></Param>
+          <Param name="code"><Var name="PARAMS" key="code"/></Param>
+        </DataAccess>
+      </Var>
+      <Var name="id"><Var name="hook" key="id"/></Var>
+      <If condition="$hook->__length == 0">
+        <Then>
+          <!-- Can be inserted -->
+          <Var name="id">
+            <DataAccess method="insert">
+              <Param name="_entity">fw_context_hook</Param>
+              <Param name="code"><Var name="PARAMS" key="code"/></Param>
+              <Param name="context"><Var name="PARAMS" key="context"/></Param>
+              <Param name="api"><Var name="PARAMS" key="api"/></Param>
+              <Param name="_base">true</Param>
+            </DataAccess>
+          </Var>
+        </Then>
+        <Else>
+          <DataAccess method="update">
+            <Param name="_entity">fw_context_hook</Param>
+            <Param name="id"><Var name="hook" key="id"/></Param>
+            <Param name="api"><Var name="PARAMS" key="api"/></Param>
+          </DataAccess>
+        </Else>
+      </If>
+      <Return><Var name="id"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="isRegistered" doc="Check if this hook exists">
+    <Params>
+      <Param name="context" type="string" doc="The context of the api hook"/>
+      <Param name="code" type="string" doc="The code to be assiciated with of the api hook"/>
+    </Params>
+    <Return type="int"/>
+    <Begin>
+      <Var name="hook">
+        <DataAccess method="load">
+          <Param name="_entity">fw_context_hook</Param>
+          <Param name="context"><Var name="PARAMS" key="context"/></Param>
+          <Param name="code"><Var name="PARAMS" key="code"/></Param>
+        </DataAccess>
+      </Var>
+      <Return>
+        <If condition="$hook->__length == 0">
+          <Then><Int>0</Int></Then>
+          <Else><Int>1</Int></Else>
+        </If>
+      </Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="execute" doc="Executes the corresponding hook.">
+    <Params>
+      <Param name="context" type="string" doc="The context of the api hook"/>
+      <Param name="code" type="string" doc="The code to be assiciated with of the api hook"/>
+      <Param name="hookParams" type="array" doc="The params to passto the caller"/>
+    </Params>
+    <Return type="int"/>
+    <Begin>
+      <Var name="hook">
+        <DataAccess method="load">
+          <Param name="_entity">fw_context_hook</Param>
+          <Param name="context"><Var name="PARAMS" key="context"/></Param>
+          <Param name="code"><Var name="PARAMS" key="code"/></Param>
+        </DataAccess>
+      </Var>
+      <Exception name="framework/context.hook::hookNotFound" condition="$hook->__length == 0">
+          <Param><String.parse>Context: $PARAMS->context | Code: $PARAMS->code</String.parse></Param>
+      </Exception>
+      <Trace><String.parse>Hook ID:$hook->id | CONTEXT:$hook->context | CODE:$hook->code | API:$hook->api</String.parse></Trace>
+      <Var name="result">
+        <Call library="$hook->api" params="hookParams"/>
+      </Var>
+      <Return><Var name="result"/></Return>
+    </Begin>
+    </Function>
+
+  </Library>
+</Node>

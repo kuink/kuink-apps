@@ -15,24 +15,24 @@
         <Config key="masterTable" value="fw_demo_composite"/>
     </Configuration>
     <Screens>
-    	<Screen id="showLog">
+    	<Screen name="showLog">
     		<Custom name="logList" control="framework,log,search"/>
     	</Screen>
-        <Screen id="editRecord">
+        <Screen name="editRecord">
             <Form name="editRecordForm">
             	<Header/>
                 <ActionGroup>
                     <Action id="logList" name="logList" label="log" />
                 </ActionGroup>            
-                <Header id="head1" label="edit"/>
-				<Int id="id" label="id" required="true"/>                
-                <Int id="id_key1" label="id_key1" required="true"/>
-                <Int id="id_key2" label="id_key2" required="true"/>
+                <Header name="head1" label="edit"/>
+				<Int name="id" label="id" required="true"/>                
+                <Int name="id_key1" label="id_key1" required="true"/>
+                <Int name="id_key2" label="id_key2" required="true"/>
                 <Name id="name" label="name" />
                 <ButtonGroup>
-                    <Button type="cancel" id="back" label="back" action="cancel"/>
-                    <Button type="submit" id="save" label="save" action="save"/>
-                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                    <Button type="cancel" name="back" label="back" action="cancel"/>
+                    <Button type="submit" name="save" label="save" action="save"/>
+                    <Button type="submit" name="delete" label="delete" action="delete" confirm="ask_proceed"/>
                 </ButtonGroup>
             </Form>
             <Grid name="searchResultGrid">
@@ -58,22 +58,22 @@
         			</Execute>
         		</Param>
         	</FormControl-->
-        	<FormControl method="bind" object="editRecordForm">
+        	<Control method="bind" object="editRecordForm">
         		<Param>
         			<Execute method="framework,generic,load">
         				<Param name="table"><Config key="masterTable"/></Param>
         				<Param name="id">1</Param>
         			</Execute>
         		</Param>
-        	</FormControl>
-        	<GridControl method="bind" object="searchResultGrid">
+        	</Control>
+        	<Control method="bind" object="searchResultGrid">
         		<Param>
         			<Execute method="framework,generic,getAll">
         				<Param name="table"><Config key="masterTable"/></Param>
         				<Param name="fields">id,id_key1,id_key2,name</Param>
         			</Execute>
         		</Param>
-        	</GridControl>
+        	</Control>
         </Action>
         <Action name="save">
         	<Var name="var_teste">8881</Var>
@@ -109,4 +109,3 @@
         </Action>
     </Actions>
 </Node>
-

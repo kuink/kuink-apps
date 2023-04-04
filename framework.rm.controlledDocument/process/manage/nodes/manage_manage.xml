@@ -11,22 +11,23 @@
     <Use name="TemplateLib" type="lib"/>
   </Libraries>
   <Configuration>
-    <Config key="maxUploadFileSize" value="4000000"/>
+    <Config key="maxUploadFileSize" value="15000000"/>
     <Config key="allowedExtensions" value="ott,odt,ots,ods,otp,odp,pdf,odg"/>
-    <Config key="tmpFolder" value="neon/files/controlled_docs/tmp"/>
+    <Config key="tmpFolder" value="controlled_docs/tmp"/>
   </Configuration>
   <Params>
       <Param name="type_code" type="string"/>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true">
-        <Select id="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="text" label="text"/>
+        <Select name="id_controlled_document_type" label="type" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name" help="true"/>
+        <Text name="text" label="text" help="true"/>
+        <Checkbox name="is_active"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
-          <Button id="notifyPreview" type="submit" icon="envelope" label="notify" action="notifyPreview"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
+          <Button name="notifyPreview" type="submit" icon="envelope" label="notify" action="notifyPreview"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -59,41 +60,49 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" template="2x1col">
+    <Screen name="scrView" template="2x1col">
       <DocViewer name="dcPreview" title="preview" position="left"/>
       <HtmlContainer name="htmlPreview" title="previewTpl" position="left"/> 
-      <HtmlContainer name="testDataPreview" position="left"/>           
+      <HtmlContainer name="testDataPreview" position="left"/>
       <Form name="frmView" title="controlledDocument" position="right">
-        <Header id="baseData" label="baseData"/>
-        <Static id="id"/>
-        <Static id="full_name">
+        <Header name="baseData" label="baseData"/>
+        <Static name="id"/>
+        <Static name="full_name">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="description"/>
-        <Static id="is_active">
+        <Static name="description"/>
+        <Static name="keywords"/>
+        <Static name="is_active">
           <Formatter name="YesNo"/>
-        </Static>      
-        <Header id="currentVersion" label="currentVersion"/>
-        <Static id="version_code">
+        </Static>
+        <Static name="is_public">
+          <Formatter name="YesNo"/>
+        </Static>        
+        <Static name="uri_external">
+          <Formatter name="Url"/>
+        </Static>
+        <Static name="deployment_file_format"/>
+        <Header name="currentVersion" label="currentVersion"/>
+        <Static name="version_code">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="version_reason"/>
-        <Static id="version_approval_date">
+        <Static name="version_reason"/>
+        <Static name="version_approval_date">
           <Formatter name="DateTime"/>
         </Static>
-        <Header id="classification"/>
-        <Static id="class"/>
-        <Static id="disposal_info">
+        <Header name="classification"/>
+        <Static name="class"/>
+        <Static name="disposal_info">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="obs_private"/>
-        <Static id="location"/>
+        <Static name="obs_private"/>
+        <Static name="location"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="add" type="add" label="newVersion" action="newVersion"/>
-          <Button id="copy" type="copy" label="copyVersion" action="copyVersion"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="add" type="add" label="newVersion" action="newVersion"/>
+          <Button name="copy" type="copy" label="copyVersion" action="copyVersion"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>      
             
@@ -121,7 +130,10 @@
             <Column name="id_file">
               <Formatter name="FileDownload"/>
             </Column>
-            <!--Column name="is_finished"/-->
+            <Column name="id_deployment_file">
+              <Formatter name="FileDownload"/>
+            </Column>
+             <!--Column name="is_finished"/-->
           </Columns>
           <Actions separator="true">
             <Action name="history" label="workflow" actionvalue="id" conditionalfield="has_workflow" conditionalvalue="1"/>
@@ -129,60 +141,75 @@
             <Action name="startWorkflow" label="startWorkflow" actionvalue="id" condition="$can_start_workflow == 1"/>
             <Action name="deleteVersion" label="delete" actionvalue="id" condition="$is_finished == 0" confirm="true"/>
             <Action name="finalize" label="finalize" actionvalue="id" condition="$is_finished == 0"/>
+            <Action name="deployment" actionvalue="id" condition="$is_active == 1"/>
           </Actions>
         </Template>
       </Grid>
       <HtmlContainer id="previewTpl" position="left"/>
     </Screen>
-    <Screen id="scrNotifyPreview" doc="Preview Notification">
+    <Screen name="scrNotifyPreview" doc="Preview Notification">
       <Form name="frmNotifyPreview" title="preview">
-        <Static id="message" label="message"/>
+        <Static name="message" label="message"/>
         <ButtonGroup>
-        	<Button id="back" type="back" label="back" action="search"/>
-          <Button id="continue" type="continue" label="notify" action="notifyNewVersions"/>
+        	<Button name="back" type="back" label="back" action="search"/>
+          <Button name="continue" type="continue" label="notify" action="notifyNewVersions"/>
         </ButtonGroup>
       </Form>
     </Screen>    
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Header id="baseData"/>
-        <Static id="id" label="id" required="true"/>
-        <Text id="code" label="code" required="true"/>
-        <Select id="id_controlled_document_type" label="id_controlled_document_type" required="true" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name"/>
-        <Text id="code_name" label="code_name" required="false"/>
-        <Text id="name" label="name" required="true"/>
-        <Text id="description" label="description" required="false"/>
-        <Select id="id_class" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
-        <Checkbox id="is_active" label="active" required="true"/>
-        <Header id="classTemplate"/>
-        <Select id="id_class_template" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>        
+        <Header name="baseData"/>
+        <Static name="id" label="id" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Select name="id_controlled_document_type" label="id_controlled_document_type" required="true" datasource="call:framework,rm.controlledDocument.type,api,getAll" bindid="id" bindvalue="name"/>
+        <Text name="code_name" label="code_name" required="false"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="description" label="description" required="false"/>
+        <Text name="keywords" label="keywords" required="false"/>
+        <Text name="uri_external" label="uri_external"/>
+        <Text name="deployment_file_format" />
+        <Select name="id_class" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>
+        <Checkbox name="is_active" label="active" required="true"/>
+        <Checkbox name="is_public" required="true"/>
+        <Header name="classTemplate"/>
+        <Select name="id_class_template" datasource="call:framework,rm.class,api,searchFullText" bindid="id" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get"/>        
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrNewVersion"  template="1x2x1col" doc="New version screen">
+    <Screen name="scrNewVersion"  template="1x2x1col" doc="New version screen">
       <Form name="frmNewVersion" title="version" position="top">
-        <Hidden id="id_version" label="id"/>
-        <Static id="code" label="code"/>
-        <TextArea id="reason" required="true"/>
+        <Hidden name="id_version" label="id"/>
+        <Static name="code" label="code"/>
+        <TextArea name="reason" required="true"/>
         <!--Text id="template" required="false"/-->
         <File id="file" required="false"/>
-        <CodeEditor id="template_src"/>
-        <CodeEditor id="test_data"/>        
+        <CodeEditor name="template_src"/>
+        <CodeEditor name="template_config"/>
+        <CodeEditor name="test_data"/>        
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="manage"/>
-          <Button id="save" type="update" label="save" action="saveVersion"/>
+          <Button name="back" type="back" label="back" action="manage"/>
+          <Button name="save" type="update" label="save" action="saveVersion"/>
+          <Button name="download" type="download" label="download" action="downloadVersionTPL"/>          
         </ButtonGroup>
       </Form>
       <DocViewer name="dcPreview" title="previewDoc" position="left"/>
       <HtmlContainer name="htmlPreview" title="previewTpl" position="right"/>
-      <Form name="tplOptions" position="right">
+    </Screen>
+    <Screen name="scrDeployment">
+      <Form name="frmDeployment" title="version">
+        <Hidden name="id_version" label="id"/>
+        <Static name="code" label="code"/>
+        <!--Text id="template" required="false"/-->
+        <File id="file" required="false"/>
         <ButtonGroup>
-          <Button id="download" type="download" label="download" action="downloadVersionTPL"/>
-        </ButtonGroup>      
+          <Button name="back" type="back" label="back" action="manage"/>
+          <Button name="upload" type="update" action="uploadDeployment"/>
+        </ButtonGroup>
       </Form>
+
     </Screen>
   </Screens>
   <Actions>
@@ -196,6 +223,7 @@
           </Var>
         </Then>
       </If>
+      <Var name="defaultData" key="is_active" process="true"><Int>1</Int></Var>
       <Action name="search"/>
     </Action>
     
@@ -213,11 +241,16 @@
       <Permissions>
         <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
       </Permissions>    
+      <Permissions>
+        <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
+      </Permissions>
+
       <Call library="framework,rm.controlledDocument,api" function="getVersionAutoContentPdf">
         <Param name="id_version"><Var name="idVersion" process="true"/></Param>
         <Param name="use_test_data"><Int>1</Int></Param>
+        <Param name="download"><Int>1</Int></Param>
       </Call>
-      <Action name="init"/>
+      <Action name="editVersion"/>
     </Action>
 
     <Action name="search" screen="scrSearch">
@@ -245,6 +278,9 @@
               <Param name="text">
                 <Var name="currentData" key="text"/>
               </Param>
+              <Param name="is_active">
+                <Var name="currentData" key="is_active"/>
+              </Param>              
               <Param name="pagesize">
                 <Control method="getPageSize" object="grdSearchResult"/>
               </Param>
@@ -277,7 +313,6 @@
         <Param name="code"><Var name="controlledDocument" key="code"/></Param>
       </RaiseEvent>
     </Action>
-
     
     <Action name="manage" screen="scrView">
   		<Permissions>
@@ -388,15 +423,6 @@
         </Else>
       </If>
       
-      <!-- Handle the class template id_class. Remove all and add -->
-      <!--Call library="framework,rm.controlledDocument,api" function="removeFromClasses">
-        <Param name="id"><Var name="selectedId" process="true"/></Param>
-      </Call>
-      <Call library="framework,rm.controlledDocument,api" function="addToClass">
-        <Param name="id"><Var name="selectedId" process="true"/></Param>
-        <Param name="id_class"><Var name="id_class"/></Param>
-      </Call-->      
-      
       <Action name="search"/>
     </Action>
     
@@ -488,9 +514,15 @@
           </Param>
         </Call>
       </Var>
-      <Var name="docClassData" dump="true">
+      <!--Var name="docClassData" dump="true">
         <Call library="framework,rm.controlledDocument,api" function="getClassData">
           <Param name="code"><Var name="cntDoc" key="code"/></Param>
+        </Call>
+      </Var-->
+      <!-- Get the class where this document is a template -->
+      <Var name="docClassData" dump="true">
+        <Call library="framework,rm.controlledDocument,api" function="getTemplateClassData">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
         </Call>
       </Var>
       
@@ -533,7 +565,7 @@
     </Action>
 
     <Action name="editVersionSet">
-      <Var name="idVersion" process="true"><ActionValue/></Var>
+      <Var name="idVersion" process="true"><ActionValue/></Var>    
       <Action name="editVersion"/>
     </Action>
 
@@ -605,6 +637,7 @@
       <Trace><String.parse>Document @selectedId</String.parse></Trace>
       <!-- Validate file or template, one of them must be present -->
       <Var name="filename"><Guid/></Var>
+      
       <Var name="idFile" dump="true">
         <FileLib method="Upload">
           <Param name="UploadFolder"><Config key="tmpFolder"/></Param>
@@ -630,7 +663,8 @@
 	             <Param name="id_controlled_document"><Var name="selectedId" process="true"/></Param>
 	             <Param name="reason"><Var name="POSTDATA" key="reason"/></Param>
 	             <Param name="id_file"><Var name="idFile"/></Param>
-	              <Param name="template_src"><Var name="POSTDATA" key="template_src"/></Param>
+                <Param name="template_src"><Var name="POSTDATA" key="template_src"/></Param>
+                <Param name="template_config"><Var name="POSTDATA" key="template_config"/></Param>
 	              <Param name="test_data"><Var name="POSTDATA" key="test_data"/></Param>
 	           </Call>
            </Var>           
@@ -643,6 +677,7 @@
              <Param name="reason"><Var name="POSTDATA" key="reason"/></Param>
              <Param name="id_file"><Var name="idFile"/></Param>
              <Param name="template_src"><Var name="POSTDATA" key="template_src"/></Param>
+             <Param name="template_config"><Var name="POSTDATA" key="template_config"/></Param>             
              <Param name="test_data"><Var name="POSTDATA" key="test_data"/></Param>
            </Call>           
 				</Else>
@@ -665,7 +700,8 @@
       <RaiseEvent name="history">
         <Param name="id_process_instance"><Var name="id_process_instance"/></Param>
       </RaiseEvent>
-    </Action>
+		</Action>
+		
 	  <Action name="startWorkflow">
 		  <Permissions>
 		    <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
@@ -677,8 +713,48 @@
 		  </Var>
 		  <Action name="search"/>
     </Action>    
+
+    <Action name="deployment" screen="scrDeployment">
+      <Permissions>
+        <Allow><Capability name="framework/rm.controlledDocuments::manage"/></Allow>
+			</Permissions>    
+      <Var name="version" dump="true">
+        <Call library="framework,rm.controlledDocument.version,api" function="getById">
+          <Param name="id"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="frmDeployment">
+        <Param><Var name="version"/></Param>
+      </Control>
+
+		</Action>
+		
+		<Action name="uploadDeployment">
+			<!--Call library="framework,rm.controlledDocument.version" function="generateDeploymentFile">
+				<Param name="id"><ActionValue/></Param>
+			</Call-->
+			<Var name="filename"><Guid/></Var>
+			<Var name="idDeploymentFile">
+				<FileLib method="Upload">
+					<Param name="UploadFolder"><Config key="tmpFolder"/></Param>
+					<Param name="Filename"><Var name="filename"/></Param>
+					<Param name="MaxUploadFileSize"><Config key="maxUploadFileSize"/></Param>
+					<Param name="AllowedExtensions"><Config key="allowedExtensions"/></Param>
+					<Param name="id_user"><Var name="USER" key="id"/></Param>
+				</FileLib>
+			</Var>
+
+			<Var name="POSTDATA" dump="true"/>
+
+			<Call library="framework,rm.controlledDocument,api" function="uploadDeploymentFile">
+				<Param name="id_version"><Var name="POSTDATA" key="id_version"/></Param>
+				<Param name="id_deployment_file"><Var name="idDeploymentFile"/></Param>
+			</Call>
+			<Action name="manage"/>
+	
+		</Action>		
   </Actions>
-  
+
   <Library forceinterface="true">
   </Library>
 </Node>

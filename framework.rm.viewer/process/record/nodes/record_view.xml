@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Params>
+      <Param name="aggregation" doc="aggregation key"/>
+      <Param name="classList" doc="comma separated list of classes to show documents"/>
+    </Params>
+    <Libraries>
+    </Libraries>
+    <Screens>
+      <Screen name="scrShow">
+        <Form name="frmOptions">
+          <ButtonGroup>
+            <Button type="back" name="back" action="back"/>
+          </ButtonGroup>
+        </Form>
+
+        <Form name="frmSearch">
+          <Select name="class_code" datasource="classes" bindid="code" bindvalue="name" action="init" help="false"/>
+          <!--ButtonGroup>
+            <Button type="search" name="search" action="init"/>
+          </ButtonGroup-->
+        </Form>
+
+        <Grid name="grdRecords" pageable="true" pagingaction="init" pagesize="10">
+          <Template>
+            <Columns>
+              <Column name="uuid" hidden="true"/>
+              <Column name="name" label="recordName"/>
+              <Column name="description" label="recordDescription"/>
+              <Column name="class_name" label="class_code"/>
+            </Columns>
+            <Actions>
+              <Action name="download" type="download" actionvalue="uuid"/>
+            </Actions>
+          </Template>
+        </Grid>
+      </Screen>
+    </Screens>
+    <Actions>
+      <Action name="init" screen="scrShow">
+        <!-- Get the class list data -->
+        <If condition="$PARAMS->classList != ''">
+          <Then>
+            <Var name="classes">
+              <Call library="framework,rm.class,api" function="getByCodeList">
+                <Param name="codeList"><Var name="PARAMS" key="classList"/></Param>
+              </Call>
+            </Var>
+            <Control method="addDatasource" object="frmSearch">
+              <Param>classes</Param>
+              <Param><Var name="classes"/></Param>
+            </Control>
+            
+            <If condition="$POSTDATA->class_code == ''">
+              <Then>
+                <Var name="first"><Var name="classes" key="__first"/></Var>
+                <Var name="selectedCode"><Var name="first" key="code"/></Var>
+                <Var name="bindData"><Set/></Var>
+                <Var name="bindData" key="class_code"><Var name="selectedCode"></Var></Var>
+                <Control method="bind" object="frmSearch">
+                  <Param><Var name="bindData"/></Param>
+                </Control>
+              </Then>
+              <Else>
+                <Var name="selectedCode"><Var name="POSTDATA" key="class_code"/></Var>
+              </Else>
+            </If>
+
+            <!-- Get the first, if postdata is empty -->
+            <Var name="records">
+              <Call library="framework,rm.aggregation,api" function="searchRecords">
+                <Param name="uuid_aggregation"><Var name="PARAMS" key="aggregation"/></Param>
+                <Param name="getChildren"><Int>1</Int></Param>
+                <Param name="classes"><ListToSet><Var name="selectedCode"/></ListToSet></Param>
+                <Param name="pageSize"><Control method="getPageSize" object="grdRecords"/></Param>
+                <Param name="pageNum"><Control method="getCurrentPage" object="grdRecords"/></Param>
+              </Call>
+            </Var>
+            <Control method="bind" object="grdRecords">
+              <Param><Var name="records"/></Param>
+            </Control>
+          </Then>
+        </If>
+
+      </Action>
+
+      <Action name="download">
+        <!-- Check if the record belongs to the aggregation and download it if so -->
+        <Call library="framework,rm.record,api" function="getContent">
+          <Param name="record_uuid"><ActionValue/></Param>
+          <Param name="aggregation_uuid"><Var name="PARAMS" key="aggregation"/></Param>
+        </Call>
+        <Action name="init"/>
+      </Action>
+
+      <Action name="back">
+        <RaiseEvent name="back" />
+      </Action>
+	</Actions>
+</Node>

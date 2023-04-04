@@ -9,7 +9,7 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
         {foreach $attributes as $field}
         {if $field['search'] == 1}
@@ -17,7 +17,7 @@
         {/if}
         {/foreach}
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
+          <Button name="search" type="search" label="search" action="search"/>
         </ButtonGroup>    
       </Form>
       
@@ -44,20 +44,20 @@
       </Grid>
     </Screen>
 
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
         {foreach $attributes as $field}
         {if $field['form'] == 1}
-        <Static id="{$field['name']}" label="{$field['label']}"/>
+        <Static name="{$field['name']}" label="{$field['label']}"/>
         {/if}
         {/foreach}
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>    
       </Form>
     </Screen>
     
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
         {foreach $attributes as $field}
         {if $field['form'] == 1}
@@ -65,8 +65,8 @@
         {/if}
         {/foreach}
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="cancel"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="cancel"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>    
       </Form>
     </Screen>        
@@ -91,7 +91,7 @@
       </Var>        
       <Control method="bind" object="grdSearchResult">
         <Param>
-          <Call library="{$apiApplication},{$apiProcess},api" function="search">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="search">
             {foreach $attributes as $field}
             {if $field['search'] == 1}
             <Param name="{$field['name']}"><Var name="currentData" key="{$field['name']}"/></Param>
@@ -114,7 +114,7 @@
       </Var>
       <Control method="bind" object="frmView">
         <Param>
-          <Call library="{$apiApplication},{$apiProcess},api" function="getById">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
             <Param name="id"><ActionValue/></Param>
           </Call>
         </Param>
@@ -134,7 +134,7 @@
       </If>
       <Control method="bind" object="frmEdit">
         <Param>
-          <Call library="{$apiApplication},{$apiProcess},api" function="getById">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="getById">
             <Param name="id"><Var name="selectedId" process="true"/></Param>
           </Call>
         </Param>
@@ -144,10 +144,10 @@
     <Action name="save">
       <If condition="@selectedId == ''">
         <Then>
-          <Call library="{$apiApplication},{$apiProcess},api" function="add" params="POSTDATA"/>
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="add" params="POSTDATA"/>
         </Then>
         <Else>
-          <Call library="{$apiApplication},{$apiProcess},api" function="update" params="POSTDATA">
+          <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="update" params="POSTDATA">
             <Param name="id"><Var name="selectedId" process="true"/></Param>
           </Call>    
         </Else>
@@ -156,7 +156,7 @@
     </Action>
     
     <Action name="delete">
-      <Call library="{$apiApplication},{$apiProcess},api" function="delete">
+      <Call library="{$apiApplication},{$apiProcess},{$apiNode}" function="delete">
         <Param name="id"><ActionValue/></Param>
       </Call>
       <Action name="search"/>

@@ -22,7 +22,7 @@
         </XFrom>
         <XWhere>
           <XCondition><![CDATA[
-            '{param->tree_path}' LIKE CONCAT(c.tree_path, '%') AND c.{param->field} IS NOT NULL
+            '{param->tree_path}' LIKE CONCAT(c.tree_path, '%') AND c.{@param->field} IS NOT NULL
           ]]></XCondition>
         </XWhere>
         <XOrderBy>

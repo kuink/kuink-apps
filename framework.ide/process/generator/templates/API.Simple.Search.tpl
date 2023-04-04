@@ -17,7 +17,7 @@
   </Return>    
   <Begin>
     <Return>
-      <DataAccess method="this,this,search">
+      <DataAccess method="this,this,{$apiSearchNodeName}">
         {foreach $attributes as $field}
           {if $field['search'] == 1 && $field['name'] != ''}
             <Param name="{$field['name']}" {if $field['type'] == 'Text'}wildcard="full"{/if}><Var name="PARAMS" key="{$field['name']}"/></Param>

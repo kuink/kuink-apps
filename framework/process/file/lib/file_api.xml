@@ -8,6 +8,7 @@
     <Use name="DateTimeLib" type="lib"/>
     <Use name="UtilsLib" type="lib"/>
     <Use name="FileLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
   </Libraries>
   <Configuration/>
   <Screens>
@@ -69,6 +70,42 @@
       </Begin>
     </Function>
 
+    <Function scope="public" name="update" doc="Updates a file record">
+    <Params>
+      <Param name="id" type="int" doc="the id file"/>
+      <Param name="path" type="string" doc="The file path"/>
+      <Param name="name" type="string" doc="The file name"/>
+      <Param name="original_name" type="string" doc="The original name"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="parsedParams"><Var name="PARAMS"/></Var>
+      
+      <!-- Compatibility -->
+      <If condition="$parsedParams->path != ''">
+        <Then>
+          <!-- Check if virtual upload dir is present, if not then add it -->
+          <Var name="contains">
+            <StringLib method="contains">
+              <Param><Var name="parsedParams" key="path"/></Param>
+              <Param><Var name="SYSTEM" key="baseUploadDirVirtualPrefix"/></Param>
+            </StringLib>
+          </Var>
+          <If condition="$contains == 0">
+            <Then>
+              <Var name="parsedParams" key="path"><String.parse>$SYSTEM['baseUploadDirVirtualPrefix']$parsedParams['path']</String.parse></Var>              
+            </Then>
+          </If>
+        </Then>
+      </If>
+      <DataAccess method="update" params="parsedParams">
+        <Param name="_entity">fw_file</Param>
+      </DataAccess>
+
+      <Return></Return>
+    </Begin>
+    </Function>
+
     <Function name="getFileGuidById" doc="Get a file guid">
       <Params>
         <Param name="id" type="string" required="true"/>
@@ -104,7 +141,7 @@
 			</Params>
 			<Return type="int"/>
 			<Begin>
-        <Var name="file">
+        <Var name="file" dump="true">
           <DataAccess method="load">
 						<Param name="_entity">fw_file</Param>
 						<Param name="id"><Var name="id_file"/></Param>
@@ -117,23 +154,94 @@
 					</Then>
 				</If>
 
-        <Var name="original" dump="true"><String.parse>$file->path/$file->name</String.parse></Var>
-        <Var name="destination" dump="true"><String.parse>$dest_path/$dest_filename</String.parse></Var>
+        <!-- Fix file path for compatibility -->
+        <Var name="filePath">
+          <String.replace>
+            <Param><Var name="SYSTEM" key="baseUploadDirVirtualPrefix"/></Param>
+            <Param><String/></Param>
+            <Param><Var name="file" key="path"/></Param>
+          </String.replace>
+        </Var>
+
+        <Var name="destPath">
+          <String.replace>
+            <Param><Var name="SYSTEM" key="baseUploadDirVirtualPrefix"/></Param>
+            <Param><String/></Param>
+            <Param><Var name="dest_path"/></Param>
+          </String.replace>
+        </Var>
+
+        <Var name="original"><String.parse>$filePath/$file->name</String.parse></Var>
+        <Var name="destination"><String.parse>$destPath/$dest_filename</String.parse></Var>
         <FileLib method="moveFiles">
           <Param name="originalPath"><Var name="original"/></Param>
           <Param name="destinationPath"><Var name="destination"/></Param>
         </FileLib>
-        <Var name="fullDestPath" dump="true"><String.parse>$SYSTEM->baseUploadDir/$dest_path</String.parse></Var>
-        <DataAccess method="update">
-					<Param name="_entity">fw_file</Param>
+        <Var name="baseUploadDir"><Var name="SYSTEM" key="baseUploadDir"/></Var>
+        <Var name="baseUploadDirVirtualPrefix"><Var name="SYSTEM" key="baseUploadDirVirtualPrefix"/></Var>
+        <!-- Compatibility -->
+        <Var name="baseUploadDir">
+          <String.replace>
+            <Param><Var name="baseUploadDirVirtualPrefix"/></Param>
+            <Param><String/></Param>
+            <Param><Var name="baseUploadDir"/></Param>
+          </String.replace>
+        </Var>
+        <Var name="fullDestPath" dump="true"><String.parse>$baseUploadDir/$dest_path</String.parse></Var>
+        <Var name="registerPath" dump="true">
+          <If condition="$baseUploadDirVirtualPrefix == ''">
+            <Then><String.parse>$baseUploadDir/$dest_path</String.parse></Then>
+            <Else><String.parse>$baseUploadDirVirtualPrefix/$dest_path</String.parse></Else>
+          </If>
+        </Var>
+       
+        <Call function="update">
 					<Param name="id"><Var name="id_file"/></Param>
-					<Param name="path"><Var name="dest_path"/></Param>
+					<Param name="path"><Var name="registerPath"/></Param>
 					<Param name="name"><Var name="dest_filename"/></Param>
 					<Param name="original_name"><Var name="dest_filename"/></Param>
-				</DataAccess>
+        </Call>
+
         <Return><Var name="id_file"/></Return>
 			</Begin>
 		</Function>
+
+    <Function scope="public" name="stream" doc="Stream a file to the client">
+    <Params>
+      <Param name="id" type="int" doc="The id file"/>
+    </Params>
+    <Return type="null"/>
+    <Begin>
+      <Var name="file">
+        <DataAccess method="load">
+          <Param name="_entity">fw_file</Param>
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </DataAccess>
+      </Var>
+
+      <FileLib method="download">
+          <Param><Var name="file" key="path"/></Param>
+          <Param><Var name="file" key="name"/></Param>
+      </FileLib>
+      <Return></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="getStreamUrl" doc="Get the url to stream the file">
+    <Params>
+      <Param name="id" type="int" doc=""/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="file">
+        <Call function="get">
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </Call>
+      </Var>
+      <Var name="url" dump="true"><String.parse>$SYSTEM['wwwRoot']/$SYSTEM['streamFileUrl']$file['guid']&amp;idcontext=$CONTEXT['idContext']</String.parse></Var>
+      <Return><Var name="url"/></Return>
+    </Begin>
+    </Function>
 
   </Library>
 </Node>

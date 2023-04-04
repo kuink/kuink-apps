@@ -11,8 +11,8 @@
     <Actions>
         <Action name="init"/>
     </Actions>
+    
     <Library>
-
         <Function name="prepare" doc="prepare">
             <Params/>
             <Return type="text" doc="Test documentation"/>
@@ -41,7 +41,8 @@
               <Error code="-1" doc="Test failed"/>
             </Errors>            
             <Begin>
-              <!--Permissions>
+             
+                         <!--Permissions>
                 <Allow>
                   <Capability name="framework/unitTest:run"/>
                 </Allow>
@@ -51,8 +52,8 @@
                 <Param name="fileName"><Resource.getPath object="framework.importExport,_unitTest,TextFileConnector.EX.01.txt"></Resource.getPath></Param>
                 <Param name="isFixed">true</Param>
                 <Param name="firstLineWithColumnNames">false</Param>
-                <Param name="separatorList"><String/></Param>
-                <Param name="stringDelimiter"><String/></Param>
+                <Param name="enclosure"><String/></Param>
+                <Param name="delimiter"><String/></Param>
                 <Param name="configuration">
                   <![CDATA[
                   {
@@ -85,8 +86,8 @@
                 <Param name="fileName"><Var name="tmpFileName"/></Param>
                 <Param name="isFixed">true</Param>
                 <Param name="firstLineWithColumnNames">false</Param>
-                <Param name="separatorList"><String/></Param>
-                <Param name="stringDelimiter"><String/></Param>
+                <Param name="enclosure"><String/></Param>
+                <Param name="delimiter"><String/></Param>
                 <Param name="configuration">
                   <![CDATA[
                   {
@@ -105,7 +106,7 @@
               <DataAccess method="flush" datasource="fileW01Tmp"/>
 
               <!-- Read the file to check if the data was written properly -->
-              <Var name="reload" dump="true">
+              <Var name="reload">
                 <DataAccess method="getAll"  datasource="fileW01Tmp"/>
               </Var>
               <Var name="test"><SetToJson><Var name="reload"/></SetToJson></Var>

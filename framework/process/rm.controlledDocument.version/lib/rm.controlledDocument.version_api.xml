@@ -75,5 +75,47 @@
         </Begin>
     </Function>
 
+    <Function scope="public" name="generateDeploymentFile" doc="Generates a pdf file based on the source file of this version">
+    <Params>
+      <Param name="id" required="false" type="int" doc="The controlled document version id"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="version">
+        <DataAccess method="load" >
+          <Param name="_entity">fw_rm_controlled_document_version</Param>
+          <Param name="id"><Var name="id"/></Param>
+        </DataAccess>
+      </Var>
+      <If condition="$version->id == ''">
+        <Then>
+            <Exception><String parse="true">framework/rm.controlledDocument.version::notExist ($PARAMS-id $PARAMS->code)</String></Exception>
+        </Then>
+      </If>
+      <If condition="$version->id_file == ''">
+        <Then>
+            <Exception><String parse="true">framework/rm.controlledDocument.version::fileNotExist ($PARAMS-id $PARAMS->code)</String></Exception>
+        </Then>
+      </If>
+      <!-- Convert the file -->
+      <DataSource name="documentConverter" connector="DocumentConverterConnector" bypass="false">
+        <Param name="command"><![CDATA[unoconv -vv -f %s -eSelectPdfVersion=1 '%s' -o '%s']]></Param>
+      </DataSource>
+      <Var name="newIdFile">
+        <DataAccess method="execute" datasource="documentConverter">
+          <Param name="id"><Var name="version" key="id_file"/></Param>
+          <Param name="format">pdf</Param>
+        </DataAccess>					
+      </Var>             
+      <!-- Update the id_deployment_file -->
+      <DataAccess method="update">
+        <Param name="_entity">fw_rm_controlled_document_version</Param>
+        <Param name="id"><Var name="id"/></Param>
+        <Param name="id_deployment_file"><Var name="newIdFile"/></Param>
+      </DataAccess>
+      <Return><Var name="newIdFile"/></Return>
+    </Begin>
+    </Function>
+
   </Library>
 </Node>

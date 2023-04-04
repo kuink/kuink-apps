@@ -8,15 +8,15 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="screen001" template="2x1col">
+		<Screen name="screen001" template="2x1col">
 
 			<Form name="searchForm" id="searchForm" persist="true" position="left">
-				<Text name="name" id="name" />
+				<Text name="name"/>
 				<Checkbox name="is_collaborator" id="is_collaborator" />
 				<Checkbox name="is_collaborator_active" id="is_collaborator_active" />
 				<Checkbox name="is_student" id="is_student" />
 				<ButtonGroup>
-					<Button type="search" id="search" name="search" action="search" />
+					<Button type="search" name="search" action="search" />
 				</ButtonGroup>
 			</Form>
 
@@ -257,4 +257,3 @@
 		</Function>
 	</Library>
 </Node>
-

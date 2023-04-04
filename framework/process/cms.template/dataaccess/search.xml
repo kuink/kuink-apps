@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+		Search all fw_cms_template
+	</Doc>
+	<Params>
+		<Param name="code" />
+		<Param name="name" />
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>
+						t.id,
+						t.uuid,
+						t.name,
+						t.code,
+						t.description
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						fw_cms_template t
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>1 = 1</XCondition>
+					<XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+					<XCondition optional="name">AND t.name like '{param->name}'</XCondition>
+				</XWhere>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>

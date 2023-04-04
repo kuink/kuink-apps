@@ -4,7 +4,7 @@
     returns the list of all columns of a given table
     </Doc>
     <Params>
-    	<Param name="table"/>
+    	<Param name="entity"/>
     	<Param name="schema"/>
     </Params>
     <Body>
@@ -23,7 +23,18 @@
 						WHEN 'int' then 'Int'
 						WHEN 'bigint' then 'Int'
 						WHEN 'tinyint' then 'Int'
+						WHEN 'double' then 'Text'
 					END as 'type',
+					CASE c.data_type 
+						WHEN 'varchar' then 'string'
+						WHEN 'text' then 'text'
+						WHEN 'longtext' then 'text'
+						WHEN 'mediumtext' then 'text'
+						WHEN 'int' then 'int'
+						WHEN 'bigint' then 'int'
+						WHEN 'tinyint' then 'bool'
+						WHEN 'double' then 'double'
+					END as 'attr_type',
  					c.data_type as 'type_o', 
  					IF(c.character_maximum_length IS NULL, c.numeric_precision, c.character_maximum_length) as length, 
  					c.column_key as 'key', 
@@ -31,12 +42,13 @@
  					# k.referenced_column_name as 'bindid',
  					NULL as datasource,
  					NULL as bindid,
+					c.column_comment as comment,
  					c.extra 
  				FROM 
  					INFORMATION_SCHEMA.COLUMNS c
  					LEFT JOIN information_schema.KEY_COLUMN_USAGE k ON (c.column_name = k.column_name AND c.table_name = k.table_name AND k.constraint_schema = c.table_schema) 
   				WHERE 
-  					c.table_name = '{param->_entity}' 
+  					c.table_name = '{param->entity}' 
   					AND c.table_schema = '{param->schema}'
             ]]>
         </Sql>

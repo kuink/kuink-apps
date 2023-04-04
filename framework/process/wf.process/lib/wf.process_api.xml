@@ -519,7 +519,11 @@
            <Param name="data"><Var name="data"/></Param>
          </Call>  
        </Var>
-       
+       <If condition="$configuration->due_date == ''">
+         <Then>
+          <Var name="configuration" key="due_date"><Null/></Var>
+         </Then>
+       </If>
        <Var name="id_task">
         <DataAccess method="insert">
 					<Param name="_entity">fw_wf_inbox_task</Param>

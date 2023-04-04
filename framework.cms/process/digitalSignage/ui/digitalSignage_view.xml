@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Params>
+    <Param name="channel" doc="The channel to retrieve contents"/>
+    <Param name="order" doc="The item order in the channel"/>
+  </Params>
+  <Screens>
+    <Screen name="playScreen" doc="">
+      <HtmlContainer name="contentHtml"/>
+		</Screen>
+  </Screens>
+
+  <Actions>
+
+    <Action name="init" screen="playScreen">
+      <Var name="html"><String/></Var>
+      <Var name="counter"><Int>0</Int></Var> <!-- To prevent  infinite loop -->
+      <While condition="$html == '' &amp;&amp; $counter &lt; 50">
+        <Var name="record">
+          <Call library="framework,cms.digitalSignage,api" function="getChannelItem">
+            <Param name="channel"><Var name="PARAMS" key="channel"/></Param>          
+            <Param name="order"><Var name="order" process="true"/></Param>
+          </Call>
+        </Var>
+        <Var name="total" process="true"><Var name="record" key="total"/></Var>
+
+        <Var name="records"><Var name="record" key="records"/></Var>
+        <Var name="currentItem"><Var name="records" key="__first"/></Var>
+
+        <Var name="currentItem" key="data" dump="true"/>
+        
+        <Var name="data"><Set/></Var>
+        <Var name="data" key="item"><Var name="currentItem"/></Var>
+        <Var name="data" key="actionUrl"><Action.getUrl>next</Action.getUrl></Var>
+        <Var name="data" key="device"><Var name="device" process="true"/></Var>
+        <Var name="data" key="channel"><Var name="currentChannel" process="true"/></Var>
+        <Var name="data" key="order"><Var name="order" process="true"/></Var>
+        <Var name="data" key="total"><Var name="total" process="true"/></Var>
+        <Var name="data" key="actionBackUrl"><Action.getUrl>back</Action.getUrl></Var>
+
+        <!-- <Var name="data" dump="true"/> -->
+        <Var name="idChannel">
+          <Call library="framework,cms.channel,api" function="getIdByCode">
+            <Param name="code"><Var name="currentChannel" process="true"/></Param>
+          </Call>
+        </Var>
+      
+        <Var name="html">
+          <Call library="framework,cms.channel,api" function="getHtml">
+            <Param name="id_channel"><Var name="idChannel"/></Param>
+            <Param name="data"><Var name="data"/></Param>
+          </Call>
+        </Var>
+        <If condition="$html == ''">
+          <Then>
+            <Var name="order"><Var name="order" process="true"/></Var>
+            <If condition="@order >= @total - 1">
+              <Then>
+                <Var name="order"><Int>0</Int></Var>          
+              </Then>
+              <Else>
+                <Var name="order"><Int.parse>$order+1</Int.parse></Var>          
+              </Else>
+            </If>
+            <Var name="order" process="true"><Var name="order"/></Var>
+            <Var name="data" key="order"><Var name="order"/></Var>
+          </Then>
+        </If>
+        <Var name="counter" sum="1"/>
+      </While>
+      <Var name="order" process="true" dump="true"/>
+      <Var name="counter" dump="true"/>
+      <Var name="html" dump="true"/>
+      <!-- Clean content -->
+      <Control method="bind" object="contentHtml">
+        <Param><Var name="html"/></Param>
+      </Control>
+    </Action>
+
+  </Actions>
+  <Library/>
+</Node>

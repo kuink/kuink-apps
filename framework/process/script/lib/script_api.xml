@@ -1,190 +1,222 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-    <Permissions/>
-    <Libraries>
-      <Use name="StringLib" type="lib"/>
-      <Use name="FormatterLib" type="lib"/>
-      <Use name="DateTimeLib" type="lib"/>
-      <Use name="UtilsLib" type="lib"/>
-      <Use name="MathLib" type="lib"/>
-      <Use name="TemplateLib" type="lib"/>
-      <Use name="ValidationLib" type="lib"/>
-      <Use name="SetLib" type="lib"/>
-      <Use name="ReflectionLib" type="lib"/>
-      <Use name="FileLib" type="lib"/>
-      <Use name="AsciiLib" type="lib"/>
-      <Use name="MessageLib" type="lib"/>
-    </Libraries>
-    <Configuration/>
-    <Screens/>
-    <Actions>
-        <Action name="init"/>
-    </Actions>
-    <Library>
-      
-          <Function name="add" scope="public" doc="Add a script in the system">
-            <Params>
-                <Param name="description" type="text" required="true" doc="Script Description."/>
-                <Param name="script" type="text" required="true" doc="Script body"/>
-            </Params>
-            <Return type="int" doc="The script id"/>
-            <Errors/>
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/script::manage"/>
-                </Allow>
-              </Permissions>
-              <Var name="result">0</Var>
-              <Var name="id">
-                <Execute method="framework,generic,insert" params="PARAMS">
-                  <Param name="table" >fw_script</Param>
-                  <Param name="_creation"><DateTimeLib method="Now"/></Param>
-                  <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
-                  <Param name="_modification"><DateTimeLib method="Now"/></Param>
-                  <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-                </Execute>
-              </Var>
-              <Var name="result"><Var name="id"/></Var>
-              <Return>
-                  <Var name="result"/>
-              </Return>
-            </Begin>
-        </Function> 
+	<Permissions />
+	<Libraries>
+		<Use name="StringLib" type="lib" />
+		<Use name="FormatterLib" type="lib" />
+		<Use name="DateTimeLib" type="lib" />
+		<Use name="UtilsLib" type="lib" />
+		<Use name="MathLib" type="lib" />
+		<Use name="TemplateLib" type="lib" />
+		<Use name="ValidationLib" type="lib" />
+		<Use name="SetLib" type="lib" />
+		<Use name="ReflectionLib" type="lib" />
+		<Use name="FileLib" type="lib" />
+		<Use name="AsciiLib" type="lib" />
+		<Use name="MessageLib" type="lib" />
+		<Use name="MetadataLib" type="lib" />
+	</Libraries>
+	<Configuration />
+	<Screens />
+	<Actions>
+		<Action name="init" />
+	</Actions>
+	<Library>
+		<!--
+			*
+			*  add  |  Add a new script to the system
+      * 
+		-->
+		<Function name="add" scope="public" doc="Add a new script to the system">
+			<Params>
+				<Param name="description" type="text" required="true" doc="The script description"/>
+				<Param name="script" type="text" required="true" doc="The script body"/>
+			</Params>
+			<Return type="int" doc="The script id"/>
+			<Errors/>
+			
+			<Begin>
+				<Permissions>
+					<Allow>
+						<Capability name="framework/script::manage"/>
+					</Allow>
+				</Permissions>
+				<Var name="result">0</Var>
+				<Var name="id">
+					<DataAccess method="insert" params="PARAMS">
+						<Param name="_entity">fw_script</Param>
+						<Param name="_creation"><DateTimeLib method="Now"/></Param>
+						<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+						<Param name="_modification"><DateTimeLib method="Now"/></Param>
+						<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+					</DataAccess>
+				</Var>
+				<Var name="result"><Var name="id"/></Var>
 
-        <Function name="delete" doc="Delete the script by id">
-          <Params>
-             <Param name="id" type="int" required="true" doc="script Id"/>
-          </Params>
-            <Return type="int" doc=""/>
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/script::manage"/>
-                </Allow>
-              </Permissions>
-              <Execute method="framework,generic,delete">
-                <Param name="table">fw_script</Param>
-                <Param name="id"><Var name="id"/></Param>
-              </Execute>
-               <Return>
-                   0
-               </Return>
-            </Begin>
-        </Function>  
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
 
+		<!--
+			*
+			*  delete  | Deletes the script with the given id
+      * 
+		-->
+		<Function name="delete" doc="Deletes the script with the given id">
+			<Params>
+				<Param name="id" type="int" required="true" doc="The script id"/>
+			</Params>
+			<Return type="int" doc=""/>
 
-        <Function name="update" scope="public" doc="Updates a script in the system">
-            <Params>
-                <Param name="id" type="int" required="true" doc="script Id"/>
-                <Param name="description" type="text" required="true" doc="Script Description."/>
-                <Param name="script" type="text" required="true" doc="Script body"/>
-            </Params>
-            <Return type="int" doc="the script id"/>
-            <Errors/>
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/script::manage"/>
-                </Allow>
-              </Permissions>
-              <Var name="result">0</Var>
-              <Execute method="framework,generic,update" params="PARAMS">
-                <Param name="table" >fw_script</Param>
-                <Param name="id" ><Var name="id"/></Param>
-                <Param name="description" ><Var name="description"/></Param>
-                <Param name="script" ><Var name="script"/></Param>
-                <Param name="_modification"><DateTimeLib method="Now"/></Param>
-                <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-              </Execute>
-              <Return>
-                  <Var name="result"/>
-              </Return>
-            </Begin>
-        </Function>               
-                                          
-        <Function name="execute" scope="public" doc="Executes a script in the system">
-            <Params>
-                <Param name="script" type="text" required="true" doc="Script body"/>
-            </Params>
-            <Return type="multiple" doc="result"/>
-            <Errors>
-              <Error code="-1" doc="Exception raised"/>
-            </Errors>            
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/script::manage"/>
-                </Allow>
-              </Permissions>
-              <Var name="result"><Null/></Var>
-              <Eval>
-                <Var name="script"/>
-              </Eval>
-              <Return>
-                  <Var name="result"/>
-              </Return>
-            </Begin>
-        </Function>    
+			<Begin>
+				<Permissions>
+					<Allow>
+						<Capability name="framework/script::manage"/>
+					</Allow>
+				</Permissions>
+				<DataAccess method="delete">
+					<Param name="_entity">fw_script</Param>
+					<Param name="id"><Var name="id"/></Param>
+				</DataAccess>
+				
+				<Return>
+					0
+				</Return>
+			</Begin>
+		</Function>
 
+		<!--
+			*
+			*  update  | Updates the script with the given id in the system
+      * 
+		-->
+		<Function name="update" scope="public" doc="Updates the script with the given id in the system">
+			<Params>
+				<Param name="id" type="int" required="true" doc="The script id"/>
+				<Param name="description" type="text" required="true" doc="The script description"/>
+				<Param name="script" type="text" required="true" doc="The script body"/>
+			</Params>
+			<Return type="int" doc="the script id"/>
+			<Errors/>
 
-        <Function name="list" doc="Get script list">
-            <Params/>
-            <Return type="multiple" doc="">
-              <External name="id" type="int" doc="Role Id"/>
-              <External name="description" type="text" doc="The scipt "/>
-              <External name="script" type="text" doc="The script body"/>
-              <External name="_creation" type="int" doc="Creation timestamp"/>
-              <External name="_creation_ip" type="text" doc="Creation ip address"/>
-              <External name="_modification" type="int" doc="Creation timestamp"/>
-              <External name="_modification_ip" type="text" doc="Modification ip address"/>
-            </Return>            
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/script::manage"/>
-                </Allow>
-              </Permissions>
-               <Var name="scripts">
-                   <Execute method="this,this,script.list"/>
-               </Var>
-               <Return>
-                   <Var name="scripts"/>
-               </Return>
-            </Begin>
-        </Function>        
+			<Begin>
+				<Permissions>
+					<Allow>
+						<Capability name="framework/script::manage"/>
+					</Allow>
+				</Permissions>
+				<Var name="result">0</Var>
+				<DataAccess method="update" params="PARAMS">
+					<Param name="_entity">fw_script</Param>
+					<Param name="id"><Var name="id"/></Param>
+					<Param name="description"><Var name="description"/></Param>
+					<Param name="script"><Var name="script"/></Param>
+					<Param name="_modification"><DateTimeLib method="Now"/></Param>
+					<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+				</DataAccess>
 
-        <Function name="getById" doc="Get script by id">
-          <Params>
-             <Param name="id" type="int" required="true" doc="script Id"/>
-          </Params>
-            <Return type="single" doc="">
-              <External name="id" type="int" doc="Script Id"/>
-              <External name="description" type="text" doc="The script description"/>
-              <External name="script" type="text" doc="The script body"/>
-              <External name="_creation" type="int" doc="Creation timestamp"/>
-              <External name="_creation_ip" type="text" doc="Creation ip address"/>
-              <External name="_modification" type="int" doc="Creation timestamp"/>
-              <External name="_modification_ip" type="text" doc="Modification ip address"/>
-            </Return>            
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/script::manage"/>
-                </Allow>
-              </Permissions>
-               <Var name="script">
-                 <Execute method="framework,generic,load">
-                   <Param name="table">fw_script</Param>
-                   <Param name="id"><Var name="id"/></Param>
-                 </Execute>
-               </Var>
-               <Return>
-                   <Var name="script"/>
-               </Return>
-            </Begin>
-        </Function>  
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
 
-    </Library>
+		<!--
+			*
+			*  execute  | Executes a script in the system
+      * 
+		-->
+		<Function name="execute" scope="public" doc="Executes a script in the system">
+			<Params>
+				<Param name="script" type="text" required="true" doc="The script body"/>
+			</Params>
+			<Return type="multiple" doc="result"/>
+			<Errors>
+				<Error code="-1" doc="Exception raised"/>
+			</Errors>
+
+			<Begin>
+				<Permissions>
+					<Allow>
+						<Capability name="framework/script::manage"/>
+					</Allow>
+				</Permissions>
+				<Var name="result"><Null/></Var>
+				<Eval><Var name="script"/></Eval>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<!--
+			*
+			*  list  | Gets a list of all the scripts in the system
+      * 
+		-->
+		<Function name="list" doc="Gets a list of all the scripts in the system">
+			<Params/>
+			<Return type="multiple" doc="">
+				<External name="id" type="int" doc="Role Id"/>
+				<External name="description" type="text" doc="The script description"/>
+				<External name="script" type="text" doc="The script body"/>
+				<External name="_creation" type="int" doc="Creation timestamp"/>
+				<External name="_creation_ip" type="text" doc="Creation ip address"/>
+				<External name="_modification" type="int" doc="Modification timestamp"/>
+				<External name="_modification_ip" type="text" doc="Modification ip address"/>
+			</Return>
+
+			<Begin>
+				<Permissions>
+					<Allow>
+						<Capability name="framework/script::manage"/>
+					</Allow>
+				</Permissions>
+				<Var name="scripts">
+					<DataAccess method="this,this,getList"/>
+				</Var>
+
+				<Return>
+					<Var name="scripts"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function name="getById" doc="Get script by id">
+			<Params>
+				<Param name="id" type="int" required="true" doc="script Id" />
+			</Params>
+			<Return type="single" doc="">
+				<External name="id" type="int" doc="Script Id" />
+				<External name="description" type="text" doc="The script description" />
+				<External name="script" type="text" doc="The script body" />
+				<External name="_creation" type="int" doc="Creation timestamp" />
+				<External name="_creation_ip" type="text" doc="Creation ip address" />
+				<External name="_modification" type="int" doc="Creation timestamp" />
+				<External name="_modification_ip" type="text" doc="Modification ip address" />
+			</Return>
+			<Begin>
+				<Permissions>
+					<Allow>
+						<Capability name="framework/script::manage" />
+					</Allow>
+				</Permissions>
+				<Var name="script">
+					<Execute method="framework,generic,load">
+						<Param name="table">fw_script</Param>
+						<Param name="id">
+							<Var name="id" />
+						</Param>
+					</Execute>
+				</Var>
+				<Return>
+					<Var name="script" />
+				</Return>
+			</Begin>
+		</Function>
+
+	</Library>
 </Node>
-

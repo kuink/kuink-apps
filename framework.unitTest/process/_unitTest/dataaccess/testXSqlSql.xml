@@ -16,7 +16,7 @@
                </XSelect>
                <XFrom>
                    <XTable>
-                       {param->tableName}
+                       {@param->tableName}
                    </XTable>
                </XFrom>
                <XWhere>

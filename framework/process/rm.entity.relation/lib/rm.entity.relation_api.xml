@@ -136,6 +136,55 @@
       </Begin>
     </Function>
 
+    <Function name="existByCode" doc="Verify if the entity relation already exists giving entity codes">
+      <Params>
+        <Param name="id_entity" type="int" required="true"/>
+        <Param name="entity_type" type="int" required="true"/>
+        <Param name="id_entity_type_relation" type="int" required="true"/>
+        <Param name="entity_relation" type="int" required="true"/>        
+      </Params>
+      <Exceptions>
+      </Exceptions>
+      <Return type="int" doc="id of the entity relation, 0 otherwise"/>
+      <Begin>
+        <Var name="entityType">
+          <DataAccess method="load">
+						<Param name="_entity">fw_rm_entity_type</Param>
+						<Param name="code"><Var name="entity_type"/></Param>
+					</DataAccess>
+        </Var>
+        <If condition="$entityType->__length == 0">
+					<Then><Exception><String parse="true">framework/rm.entity.relation::invalidRelationType $entity_type</String></Exception></Then>
+				</If>
+        <Var name="entityTypeRelation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_entity_type</Param>
+            <Param name="code"><Var name="entity_relation"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$entityTypeRelation->__length == 0">
+          <Then><Exception><String parse="true">framework/rm.entity.relation::invalidRelationType $entity_type_relation</String></Exception></Then>
+        </If>
+
+        <Var name="entityRelation">
+          <DataAccess method="this,this,getEntityRelation">
+            <Param name="id_entity"><Var name="id_entity"/></Param>
+            <Param name="id_entity_type"><Var name="entityType" key="id"/></Param>
+            <Param name="id_entity_relation"><Var name="id_entity_type_relation"/></Param>
+            <Param name="id_entity_type_relation"><Var name="entityTypeRelation" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$entityRelation->__length &lt;= 0">
+          <Then><Var name="entityRelation"><Int>0</Int></Var></Then>
+          <Else>
+            <Var name="first"><Var name="entityRelation" key="__first"/></Var>
+            <Var name="entityRelation"><Var name="first" key="id"/></Var>
+          </Else>
+        </If>
+        <Return><Var name="entityRelation"/></Return>
+      </Begin>
+    </Function>
+
     <Function name="delete" doc="delete a existing entity relation">
       <Params>
         <Param name="id_entity_relation" type="int" required="true"/>

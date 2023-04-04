@@ -24,7 +24,7 @@
                             fr.id_classification_item as frici
                             FROM fw_aggregation fa
                             inner join fw_record fr on (fr.id=fa.id_record) 
-                            where fa.guid in ({param->guids})
+                            where fa.guid in ({@param->guids})
                             GROUP BY fa.id_record
                         ) AS result
 
@@ -33,12 +33,12 @@
                 <XWhere>
                     <XCondition>
                         <![CDATA[
-                                agg {param->comparison} {param->amountOfRelations}
+                                agg {@param->comparison} {@param->amountOfRelations}
                         ]]>
                     </XCondition>
                     <XCondition optional="classificationItems">
                         <![CDATA[
-                            and frici in ({param->classificationItems})
+                            and frici in ({@param->classificationItems})
                         ]]>
                     </XCondition>
                 </XWhere>

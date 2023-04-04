@@ -37,6 +37,7 @@
     <Entity name="fw_state_machine_transition" doc="Defines the valid transitions on this machine">
       <Attributes>
         <Attribute name="id" domain="id" />
+        <Attribute name="id_state_machine" domain="foreign" required="true" refentity="fw_state_machine" refattr="id" doc="The state machine this state belongs"/>
         <Attribute name="uuid" domain="uuid" required="false"/>
         <Attribute name="id_start_state" domain="foreign" required="false" refentity="fw_state_machine_state" refattr="id" doc="The start state"/>        
         <Attribute name="id_end_state" domain="foreign" required="false" refentity="fw_state_machine_state" refattr="id" doc="The end state"/>

@@ -13,6 +13,168 @@
   <Actions>
   </Actions>
   <Library forceinterface="true">
+
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="uuid" type="text" required="true"/>
+        <Param name="code" type="text" required="true"/>
+				<Param name="name" type="text" required="true"/>
+				<Param name="description" type="text" required="true"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Var name="newUuid">
+          <If condition="$PARAMS->uuid == ''">
+            <Then><Uuid/></Then>
+            <Else><Var name="PARAMS" key="uuid"/></Else>
+          </If>
+        </Var>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_agreement_schema</Param>
+            <Param name="uuid"><Var name="newUuid"/></Param>
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+            <Param name="name"><Var name="PARAMS" key="name"/></Param>
+            <Param name="description"><Var name="PARAMS" key="description"/></Param>
+						<Param name="_multilang_fields" >name,description</Param>
+						<Param name="_base">true</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="delete" doc="Delete a record by id from table fw_agreement_schema">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_agreement_schema</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+            <Param name="_multilang">true</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="update" doc="Updates a record in table fw_agreement_schema">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="uuid" type="text" required="false"/>
+        <Param name="code" type="text" required="false"/>
+				<Param name="name" type="text" required="true"/>
+				<Param name="description" type="text" required="true"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_agreement_schema</Param>
+					<Param name="_multilang_fields" >name,description</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+    <Function name="search" doc="Search records from table fw_agreement_schema">
+      <Params>
+        <Param name="code" type="text"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,search">
+            <Param name="code" wildcard="full">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+						<Param name="_lang"><Var name="USER" key="lang"/></Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getAll" doc="Get all records from table fw_agreement_schema">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_agreement_schema</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+    <Function name="getById" doc="Get a record by id from table fw_agreement_schema">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+				<Param name="lang" type="string" required="false"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+				<External name="name" type="text" doc=""/>
+				<External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+				<Var name="selectedLanguage">
+					<If condition="$PARAMS->lang == ''">
+						<Then><Var name="USER" key="lang"/></Then>
+						<Else><Var name="PARAMS" key="lang"/></Else>
+					</If>
+				</Var>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_agreement_schema</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="_lang"><Var name="selectedLanguage"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
     <Function name="getIdByCode" doc="Get a record id by its code from entity fw_agreement_schema">
       <Params>
         <Param name="code" type="string" required="true"/>
@@ -74,7 +236,7 @@
 			</Var>
 			<Return><Var name="id"/></Return>		
 		</Begin>
-	</Function>
+		</Function>
 
     <Function scope="public" name="updateStatementByCode" doc="Updates a statement data in the schema giving the several codes">
 		<Params>
@@ -138,37 +300,142 @@
 			</Var>
 			<Return><Var name="id"/></Return>		
 		</Begin>
-	</Function>	
+		</Function>	
 	
-	<Function scope="public" name="getFields" doc="Get all fields given a schema code. These fields will build the form">
-	<Params>
-		<Param name="code" type="string" doc="The schema code"/>
-		<Param name="startDate" type="int" doc="Only get the fields that are active at this date"/>
-	</Params>
-	<Return type="multiple"/>
-	<Begin>
-		<!-- Validate the schema -->
-		<!--Var name="schema">
-			<DataAccess method="load">
-				<Param name="_entity">fw_agreement_schema</Param>
-				<Param name="code"><Var name="PARAMS" key="code"/></Param>
-			</DataAccess>
-		</Var>
-		<Exception name="framework/agreement.schema::invalidCode" condition="$schema->__length == 0">
-			<Param><Var name="PARAMS" key="code"/></Param>
-		</Exception-->
-		<Var name="codes"><ListToSet><Var name="PARAMS" key="code"/></ListToSet></Var>
-		<Var name="fields" dump="true">
-			<DataAccess method="this,this,schema.getFields">
-				<!--Param name="id_agreement_schema"><Var name="schema" key="id"/></Param-->
-				<Param name="schema_code_list"><Var name="codes"/></Param>
-				<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
-				<Param name="_lang"><Var name="USER" key="lang"/></Param>
-			</DataAccess>
-		</Var>
-		<Return><Var name="fields"/></Return>
-	</Begin>
-	</Function>	
-  
+		<Function scope="public" name="getFields" doc="Get all fields given a schema code. These fields will build the form">
+		<Params>
+			<Param name="code" type="string" doc="The schema code"/>
+			<Param name="startDate" type="int" doc="Only get the fields that are active at this date"/>
+		</Params>
+		<Return type="multiple"/>
+		<Begin>
+			<!-- Validate the schema -->
+			<!--Var name="schema">
+				<DataAccess method="load">
+					<Param name="_entity">fw_agreement_schema</Param>
+					<Param name="code"><Var name="PARAMS" key="code"/></Param>
+				</DataAccess>
+			</Var>
+			<Exception name="framework/agreement.schema::invalidCode" condition="$schema->__length == 0">
+				<Param><Var name="PARAMS" key="code"/></Param>
+			</Exception-->
+			<Var name="codes"><ListToSet><Var name="PARAMS" key="code"/></ListToSet></Var>
+			<Var name="fields" dump="true">
+				<DataAccess method="this,this,schema.getFields">
+					<!--Param name="id_agreement_schema"><Var name="schema" key="id"/></Param-->
+					<Param name="schema_code_list"><Var name="codes"/></Param>
+					<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
+					<Param name="_lang"><Var name="USER" key="lang"/></Param>
+				</DataAccess>
+			</Var>
+			<Return><Var name="fields"/></Return>
+		</Begin>
+		</Function>	
+
+		<Function scope="public" name="getStatements" doc="Get all statements given a schema id">
+			<Params>
+				<Param name="id" type="string" doc="The schema id"/>
+				<Param name="startDate" type="int" doc="Only get the fields that are active at this date"/>				
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="statements" dump="true">
+					<DataAccess method="this,this,schema.getStatements">
+						<Param name="id_agreement_schema"><Var name="PARAMS" key="id"/></Param>
+						<Param name="start_date"><Var name="PARAMS" key="startDate"/></Param>
+						<Param name="_lang"><Var name="USER" key="lang"/></Param>
+					</DataAccess>
+				</Var>
+				<Return><Var name="statements"/></Return>
+			</Begin>
+			</Function>	
+	
+    <Function scope="public" name="getStatement" doc="Get the data associated with the schema and statement">
+    <Params>
+      <Param name="id_agreement_schema_statement" type="int" doc="The id of the relation"/>
+    </Params>
+    <Return type="single"/>
+    <Begin>
+      <Var name="record">
+        <DataAccess method="load">
+          <Param name="_entity">fw_agreement_schema_statement</Param>
+          <Param name="id"><Var name="PARAMS" key="id_agreement_schema_statement"/></Param>
+        </DataAccess>
+      </Var>
+      <Return><Var name="record"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="updateStatement" doc="Update the data associated with the schema and statement">
+      <Params>
+        <Param name="id_agreement_schema_statement" type="int" doc="The id of the relation"/>
+        <Param name="start_date" type="int" required="true" doc="The start date of this statement in this schema"/>
+        <Param name="end_date" type="int" doc="The end date of this statement in this schema"/>
+        <Param name="order" type="int" doc="The order of this statement"/>
+      </Params>
+      <Return type="single"/>
+      <Begin>
+        <Var name="PARAMS" dump="true"/>
+        <Return>
+          <DataAccess method="update">
+            <Param name="_entity">fw_agreement_schema_statement</Param>
+            <Param name="id"><Var name="PARAMS" key="id_agreement_schema_statement"/></Param>
+            <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>
+            <Param name="end_date">
+              <If condition="($PARAMS->end_date == 0) || ($PARAMS->end_date == '')">
+                <Then><Null/></Then>
+                <Else><Var name="PARAMS" key="end_date"/></Else>
+              </If>
+            </Param>
+            <Param name="order"><Var name="PARAMS" key="order"/></Param>          
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="insertStatement" doc="Insert a statement in a schema">
+      <Params>
+        <Param name="id_agreement_schema" type="int" doc="The id of the schema"/>
+        <Param name="id_agreement_statement" type="int" doc="The id of the statement"/>
+        <Param name="start_date" type="int" required="true" doc="The start date of this statement in this schema"/>
+        <Param name="end_date" type="int" doc="The end date of this statement in this schema"/>
+        <Param name="order" type="int" doc="The order of this statement in this schema"/>
+      </Params>
+      <Return type="single"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_agreement_schema_statement</Param>
+            <Param name="id_agreement_schema"><Var name="PARAMS" key="id_agreement_schema"/></Param>
+            <Param name="id_agreement_statement"><Var name="PARAMS" key="id_agreement_statement"/></Param>
+            <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>
+            <Param name="end_date">
+              <If condition="($PARAMS->end_date == 0) || ($PARAMS->end_date == '')">
+                <Then><Null/></Then>
+                <Else><Var name="PARAMS" key="end_date"/></Else>
+              </If>
+            </Param>
+            <Param name="order"><Var name="PARAMS" key="order"/></Param>          
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>    
+
+    <Function scope="public" name="deleteStatement" doc="Insert a statement in a schema">
+      <Params>
+        <Param name="id_agreement_schema_statement" type="int" doc="The id of the schema"/>
+      </Params>
+      <Return type="single"/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_agreement_schema_statement</Param>
+            <Param name="id"><Var name="PARAMS" key="id_agreement_schema_statement"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>    
+   
+
   </Library>
 </Node>

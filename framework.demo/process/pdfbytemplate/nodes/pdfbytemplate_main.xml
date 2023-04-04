@@ -10,7 +10,7 @@
     </Libraries>
     <Configuration/>
     <Screens>
-    	<Screen id="mainScreen">
+    	<Screen name="mainScreen">
     		
     	</Screen>
     </Screens>

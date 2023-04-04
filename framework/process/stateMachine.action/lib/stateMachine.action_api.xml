@@ -24,6 +24,8 @@
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
+        <Trace label="Add Action"/>
+        <Var name="PARAMS" dump="true"/>
         <Return>
           <DataAccess method="insert">
             <Param name="_entity">fw_state_machine_action</Param>
@@ -74,7 +76,7 @@
         <Param name="description" type="text" required="false"/>
       </Params>
       <Begin>
-        <Var name="paramData">
+        <Var name="paramData" dump="true">
           <UtilsLib method="filterNotNull">
             <Param>
               <Var name="PARAMS"/>

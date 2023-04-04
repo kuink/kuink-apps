@@ -13,7 +13,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-		<Screen id="screen002">
+		<Screen name="screen002">
 			<Grid name="grid001">
 				<Template>
 					<Columns>
@@ -25,21 +25,21 @@
 				</Template>
 			</Grid>
 			<Form name="record">
-				<Text id="name" label="name"/>
-				<Text id="quantity" label="quantity"/>
-				<Text id="price" label="price"/>
-				<Text id="desc" label="desc"/>
-				<Button id="save" label="save" action="save"/>
+				<Text name="name" label="name"/>
+				<Text name="quantity" label="quantity"/>
+				<Text name="price" label="price"/>
+				<Text name="desc" label="desc"/>
+				<Button name="save" label="save" action="save"/>
 			</Form>
 		</Screen>
 	</Screens>
 	<Actions>
 		<Action name="init" screen="screen002">
-			<GridControl method="bind" object="grid001">
+			<Control method="bind" object="grid001">
 				<Param>
 					<Execute method="this,this,mongo.getPrices"/>
 				</Param>
-			</GridControl>
+			</Control>
 		</Action>
 		<Action name="save">
 			<Execute method="framework,generic,mongoInsert" params="POSTDATA">
@@ -52,4 +52,3 @@
 		</Action>
 	</Actions>
 </Node>
-

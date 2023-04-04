@@ -12,12 +12,12 @@
   <Configuration>
   </Configuration>
   <Screens>
-    <Screen id="mainScreen">
+    <Screen name="mainScreen">
       <Form name="changePasswordForm" title="changePassword">
-        <Password id="userPassword" label="userPassword"
+        <Password name="userPassword" label="userPassword"
           required="true" />
         <ButtonGroup>
-          <Button id="deployAll" type="execute" label="deployAll" action="deployAll" />
+          <Button name="deployAll" type="execute" label="deployAll" action="deployAll" />
         </ButtonGroup>
       </Form>
       <Grid name="outputGrid" infer="true"/>
@@ -38,4 +38,3 @@
 
   </Actions>
 </Node>
-

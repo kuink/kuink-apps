@@ -24,7 +24,7 @@
                 <XWhere>
                     <XCondition>a.id_aggregation_type='{param->id_aggregation_type}'</XCondition>
                     <XCondition>AND a.guid='{param->guid}'</XCondition>
-                    <XCondition optional="classification_item_code">AND ci.code like '%{param->classification_item_code}'</XCondition>
+                    <XCondition optional="classification_item_code">AND ci.code like '%{@param->classification_item_code}'</XCondition>
                 </XWhere>
                 <XGroupBy>
                     <XCondition><![CDATA[ ci.id ]]></XCondition>

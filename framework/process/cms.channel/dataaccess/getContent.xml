@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>Search all fw_cms_channel</Doc>
+	<Params>
+		<Param name="id_channel" />
+		<Param name="is_published" />
+		<Param name="now" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+            *
+          </XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+            fw_cms_channel_content cc
+						INNER JOIN fw_cms_content c ON (c.id = cc.id_content)
+          </XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>cc.id_channel = '{param->id_channel}'</XCondition>
+					<!--<XCondition condition="$is_published === '' || $is_published === 1">-->
+					<XCondition condition="$is_published === 1">
+						<![CDATA[
+						AND cc.is_published = 1
+						AND (cc.end_date IS NULL OR cc.end_date=0 OR cc.end_date > {param->now})
+						AND (cc.start_date IS NULL OR cc.start_date=0 OR cc.start_date < {param->now})
+						]]>
+					</XCondition>
+					<XCondition condition="$is_published === 0">AND cc.is_published = 0</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder>cc.rank ASC</XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

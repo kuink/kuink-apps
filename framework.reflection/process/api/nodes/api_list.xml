@@ -14,10 +14,11 @@
     <Config key="application" value="framework"/>
     <Config key="process" value="user"/>
   </Configuration>
+
   <Screens>
-    <Screen id="listApiScreen">
+    <Screen name="listApiScreen">
       <Form name="search" persist="true">
-        <Select id="api" label="api" inputsize="xlarge" searchable="dynamic" datasource="call:framework,ide,api,searchLibrary" bindid="id" bindvalue="name" bindresults="id" bindimage="" datasource-params="library,pagenum"  datasource-initial="call:framework,ide,api,searchLibrary" action="search"/>
+        <Select name="api" label="api" inputsize="xlarge" searchable="dynamic" datasource="call:framework,ide,api,searchLibrary" bindid="id" bindvalue="name" bindresults="id" bindimage="" datasource-params="library,pagenum"  datasource-initial="call:framework,ide,api,searchLibrary" action="search"/>
       </Form>
       <Grid name="apiGrid" title="api">
         <Template>
@@ -52,7 +53,7 @@
             <Column name="errorsSignature" inline="true">
               <Formatter name="Separator" method="newline" affix="prefix"/>
             </Column>
-            <Column name="permissions"/>
+            <!-- Column name="permissions"/ -->
             <Column name="callFw"/>
             <Column name="library" action="test" actionvalue="fullQualifiedName"/>
           </Columns>
@@ -63,14 +64,14 @@
       </Grid>
     </Screen>
 
-    <Screen id="callFunctionScreen">
+    <Screen name="callFunctionScreen">
       <Form name="callForm">
-        <Text id="wslibrary" required="true"/>
-        <Container id="fields" />
-        <Checkbox id="_debug_" label="debug"/>
+        <Text name="wslibrary" required="true"/>
+        <Container name="fields" />
+        <Checkbox name="_debug_" label="debug"/>
         <ButtonGroup>
-          <Button id="call" type="save" action="test"/>        
-          <Button id="back" type="back" action="search"/>
+          <Button name="call" type="save" action="test"/>        
+          <Button name="back" type="back" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="resultGrid" infer="true" title="result"/>
@@ -91,14 +92,14 @@
           <Param><Var name="api" process="true"/></Param>
         </IsNull>
       </Var>
-      <Var name="api" process="true" dump="true"/>
-      <Var name="explodedApi" dump="true">
+      <!--Var name="api" process="true" dump="true"/-->
+      <Var name="explodedApi">
         <ListToSet><Var name="api" process="true"/></ListToSet>
       </Var>
 
       <If condition="$explodedApi->__length == 3">
         <Then>
-          <Var name="api" dump="true">
+          <Var name="api">
             <ReflectionLib method="getApi">
               <Param name="application">
                 <Var name="explodedApi" key="0"/>
@@ -159,7 +160,7 @@
               </Var>
             </ForEach>
             <!-- Get Roles with those capabilities-->
-            <Var name="allowedRoles">
+            <!--Var name="allowedRoles">
               <Call library="framework,user.role,api" function="getRoles">
                 <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
                 <Param name="capabilities"><Var name="fxCapabilities"/></Param>
@@ -193,8 +194,8 @@
                 <Param><Var name="capabilitiesSignature"/></Param>
                 <Param><Var name="allowedRolesSignatures"/></Param>
               </StringLib>
-            </Var>
-            <Var name="call" dump="true"/>
+            </Var-->
+            <!--Var name="call" dump="true"/-->
             <Var name="callFw">
               <IsNull>
                 <Param><Var name="call" key="fw"/></Param>
@@ -219,7 +220,6 @@
     </Action>
 
     <Action name="test" screen="callFunctionScreen">
-
       <Var name="postWslibrary">
         <Var name="POSTDATA" key="wslibrary"/>
       </Var>
@@ -261,6 +261,16 @@
         <If condition="$param->type == 'bool'">
           <Then>
             <Var name="fieldType">Checkbox</Var>
+          </Then>
+        </If>
+        <If condition="$param->type == 'datetime'">
+          <Then>
+            <Var name="fieldType">DateTime</Var>
+          </Then>
+        </If>
+        <If condition="$param->type == 'date'">
+          <Then>
+            <Var name="fieldType">Date</Var>
           </Then>
         </If>
         
@@ -309,6 +319,9 @@
             </Var>
             <Var name="name">
               <Var name="param" key="name"/>
+            </Var>
+            <Var name="output">
+              <Var name="param" key="output"/>
             </Var>
             <Var name="callParams" key="$name">
               <If condition="$type == 'array'">

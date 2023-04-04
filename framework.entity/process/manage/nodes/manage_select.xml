@@ -11,18 +11,33 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scr001">
+    <Screen name="scr001">
       <Form name="frmTest" persist="true">
-        <Text id="application" required="true" />
-        <Text id="node" required="true" />
-        <Checkbox id="createForeignIndexes"/>
-        <Checkbox id="createForeignKeys"/>
-        <Checkbox id="dropTablesBeforeCreate"/>
+        <Text name="application" required="true" />
+        <Text name="node" required="true" />
+        <Checkbox name="createForeignIndexes"/>
+        <Checkbox name="removeExistingIndexes" inline="true"/>
+        <Checkbox name="createForeignKeys"/>
+        <Checkbox name="removeExistingForeignKeys" inline="true"/>
+        <Checkbox name="dropTablesBeforeCreate"/>
         <ButtonGroup>
-          <Button id="search" type="search" action="process" />
+          <Button name="analyse" type="search" action="process" />
+          <Button name="diagram" type="submit" action="showDiagram" />
         </ButtonGroup>
       </Form>
     </Screen>
+    <Screen name="scrDiagram" doc="Diagram">
+      <Form name="frmOptions" persist="true">
+        <Text name="application" required="true" />
+        <Text name="node" required="true" inline="true"/>
+        <Select name="template" datasource="templateOptions" bindid="id" bindvalue="value"/>
+        <ButtonGroup>
+          <Button name="back" type="back" action="init" />
+          <Button name="diagram" type="submit" action="showDiagram" />
+        </ButtonGroup>
+      </Form>      
+      <Uml name="umlViewer" format="svg" title="diagram"/>
+    </Screen>    
   </Screens>
   <Actions>
 
@@ -39,8 +54,20 @@
            <Else>false</Else>
           </If>
         </Param>
+        <Param name="removeExistingIndexes">
+          <If condition="$POSTDATA->removeExistingIndexes == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
         <Param name="createForeignKeys">
           <If condition="$POSTDATA->createForeignKeys == '1'">
+           <Then>true</Then>
+           <Else>false</Else>
+          </If>
+        </Param>
+        <Param name="removeExistingForeignKeys">
+          <If condition="$POSTDATA->removeExistingForeignKeys == '1'">
            <Then>true</Then>
            <Else>false</Else>
           </If>
@@ -54,6 +81,49 @@
       </RaiseEvent>
     </Action>
 
+    <Action name="showDiagram" screen="scrDiagram">
+      <Var name="templateOptions" dump="true">
+        <Set>
+          <Element><Set><Element name="id">compact</Element><Element name="value"><Lang key="compact"/></Element></Set></Element>
+          <Element><Set><Element name="id">medium</Element><Element name="value"><Lang key="medium"/></Element></Set></Element>
+          <Element><Set><Element name="id">complete</Element><Element name="value"><Lang key="complete"/></Element></Set></Element>
+        </Set>
+      </Var>
+      <Control method="setDefaultData" object="frmOptions">
+        <Param>
+          <Set>
+            <Element name="template">medium</Element>
+            <Element name="application"><Var name="POSTDATA" key="application"/></Element>
+            <Element name="node"><Var name="POSTDATA" key="node"/></Element>
+          </Set>
+        </Param>
+      </Control>      
+      <Control method="addDataSource" object="frmOptions">
+        <Param>templateOptions</Param>
+        <Param><Var name="templateOptions"/></Param>
+      </Control>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmOptions"/>        
+      </Var>
+      <Var name="uml">
+        <DataAccess method="getLogicalEntitiesUml">
+          <Param name="application"><Var name="currentData" key="application"/></Param>
+          <Param name="node"><Var name="currentData" key="node"/></Param>
+          <Param name="template"><Var name="currentData" key="template"/></Param>
+        </DataAccess>
+      </Var>
+      <Print><Var name="uml"/></Print>
+      <Control method="bind" object="umlViewer">
+        <Param><Var name="uml"/></Param>
+      </Control>        
+      <Var name="logicalEntities" dump="true">
+        <DataAccess method="getLogicalEntities">
+          <Param name="application"><Var name="POSTDATA" key="application"/></Param>
+          <Param name="node"><Var name="POSTDATA" key="node"/></Param>
+          <Param name="template"><Var name="POSTDATA" key="template"/></Param>
+        </DataAccess>
+      </Var>
+    </Action>
+
   </Actions>
 </Node>
-

@@ -11,7 +11,7 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scr001">
+    <Screen name="scr001">
       <Grid name="grdResults" infer="true"/>
       <Form name="frmResult" infer="true" freeze="true"/>
     </Screen>
@@ -67,4 +67,3 @@
     </Action>
   </Actions>
 </Node>
-

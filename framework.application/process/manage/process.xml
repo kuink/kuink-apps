@@ -2,5 +2,6 @@
 	<Transitions>
 		<Flow role='Teacher' startnode='' event='init' endnode='manage' />
 		<Flow role='Teacher' startnode='' event='prerequisites' endnode='prerequisites' />
+		<Flow role='Teacher' startnode='' event='icons' endnode='checkIcons' />
   </Transitions>
 </Process>

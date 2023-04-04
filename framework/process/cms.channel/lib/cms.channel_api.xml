@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FormatterLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+  </Screens>
+  <Actions>
+  </Actions>
+  <Library forceinterface="true">
+    <Function name="add" doc="Adds a record in table ">
+      <Params>
+        <Param name="id_template" type="int" required="true"/>
+        <Param name="id_theme" type="int" required="true"/>
+        <Param name="code" type="text" required="true"/>
+        <Param name="name" type="text" required="true"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Return type="int" doc="The inserted record id"/>
+      <Begin>
+        <Return>
+          <DataAccess method="insert">
+            <Param name="_entity">fw_cms_channel</Param>
+            <Param name="id_template">
+              <Var name="PARAMS" key="id_template"/>
+            </Param>
+            <Param name="id_theme">
+              <Var name="PARAMS" key="id_theme"/>
+            </Param>
+            <Param name="uuid"><Uuid/></Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="name">
+              <Var name="PARAMS" key="name"/>
+            </Param>
+            <Param name="description">
+              <Var name="PARAMS" key="description"/>
+            </Param>
+            <Param name="_base">true</Param>            
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="delete" doc="Delete a record by id from table fw_cms_channel">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="int" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_cms_channel</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="update" doc="Updates a record in table fw_cms_channel">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+        <Param name="id_template" type="int" required="false"/>
+        <Param name="code" type="text" required="false"/>
+        <Param name="name" type="text" required="false"/>
+        <Param name="description" type="text" required="false"/>
+      </Params>
+      <Begin>
+        <Var name="paramData">
+          <UtilsLib method="filterNotNull">
+            <Param>
+              <Var name="PARAMS"/>
+            </Param>
+          </UtilsLib>
+        </Var>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_cms_channel</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+
+    <Function name="search" doc="Search records from table fw_cms_channel">
+      <Params>
+        <Param name="uuid" type="text"/>
+        <Param name="code" type="text"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_template" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,search">
+            <Param name="uuid" wildcard="full">
+              <Var name="PARAMS" key="uuid"/>
+            </Param>
+            <Param name="code" wildcard="full">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getAll" doc="Get all records from table fw_cms_channel">
+      <Params/>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_template" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_cms_channel</Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getById" doc="Get a record by id from table fw_cms_channel">
+      <Params>
+        <Param name="id" type="int" required="true"/>
+      </Params>
+      <Return type="single" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="id_template" type="int" doc=""/>
+        <External name="uuid" type="text" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+        <External name="_id_creator" type="int" doc=""/>
+        <External name="_id_updater" type="int" doc=""/>
+        <External name="_creation" type="int" doc=""/>
+        <External name="_creation_ip" type="text" doc=""/>
+        <External name="_modification" type="int" doc=""/>
+        <External name="_modification_ip" type="text" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="load">
+            <Param name="_entity">fw_cms_channel</Param>
+            <Param name="id">
+              <Var name="PARAMS" key="id"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getIdByCode" doc="Get a record id by its code from entity fw_cms_channel">
+      <Params>
+        <Param name="code" type="string" required="true"/>
+      </Params>
+      <Return type="int" doc="">
+  </Return>
+      <Begin>
+        <Var name="record">
+          <DataAccess method="load">
+            <Param name="_entity">fw_cms_channel</Param>
+            <Param name="code">
+              <Var name="PARAMS" key="code"/>
+            </Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="record" key="id"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function scope="public" name="getContent" doc="Get the content of the channel">
+    <Params>
+      <Param name="id_channel" type="int" doc="The channel to get the content"/>
+      <Param name="is_published" type="int" doc="The content is published on the channel"/>
+    </Params>
+    <Return type="multiple"/>
+    <Begin>
+      <Var name="records">
+        <DataAccess method="this,this,getContent">
+          <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+          <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
+          <Param name="now"><Now/></Param>
+        </DataAccess>
+      </Var>
+      <!-- Format the records -->
+      <Var name="formatted"><Set/></Var>
+      <ForEach var="records" item="record">
+        <Var name="record" key="_formatted">
+          <Call library="framework,cms.content,api" function="formatter">
+            <Param name="value"><Var name="record" key="id"/></Param>
+          </Call>
+        </Var>
+        <Var name="record" key="_formatted"><String.parse>$record->_formatted ($record['is_published'])</String.parse></Var>
+        <Var name="formatted" key=""><Var name="record"/></Var>
+      </ForEach>
+      <Return><Var name="formatted"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="getHtml" doc="Get the html">
+    <Params>
+      <Param name="id_channel" type="int" doc=""/>
+      <Param name="data" type="array" doc=""/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="channel">
+        <Call library="framework,cms.channel,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="id_channel"/></Param>
+        </Call>
+      </Var>
+      <Var name="content"><Var name="data" key="item"/></Var>
+      <Var name="content" key="_html">
+        <Call library="framework,cms.content,api" function="getContentHtml">
+          <Param name="id"><Var name="content" key="id"/></Param>
+        </Call>
+      </Var>
+      <Var name="content" key="_html">
+        <String.stripslashes>
+          <Param><Var name="content" key="_html"/></Param>						
+        </String.stripslashes>        
+      </Var>
+      <Var name="data" key="item"><Var name="content"/></Var> 
+
+      <Var name="template">
+        <Call library="framework,cms.template,api" function="getById">
+          <Param name="id"><Var name="channel" key="id_template"/></Param>
+        </Call>
+      </Var>
+      <Var name="templateSource">
+        <String.stripslashes>
+          <Param><Var name="template" key="source"/></Param>						
+        </String.stripslashes>        
+      </Var>
+      <Var name="templateSource">
+        <String.stripslashes>
+          <Param><Var name="templateSource"/></Param>						
+        </String.stripslashes>        
+      </Var>
+      <Var name="data" key="appFileStreamUrl"><String.parse><![CDATA[$SYSTEM['wwwRoot']/$SYSTEM['streamUrl']?idcontext=$CONTEXT['idContext']&type=app_file&guid=]]></String.parse></Var>
+
+      <!-- Get the theme -->
+      <Var name="themeTemplate">
+        <Call library="framework,cms.template,api" function="getById">
+          <Param name="id"><Var name="channel" key="id_theme"/></Param>
+        </Call>
+      </Var>
+      <Var name="data" key="theme">
+        <TemplateLib method="ExecuteTemplate">
+          <Param>framework</Param>
+          <Param>cms.template</Param>
+          <Param>generic</Param>
+          <Param><Var name="data"/></Param>
+          <Param><Var name="themeTemplate" key="source"/></Param>
+        </TemplateLib>
+      </Var>
+      <Var name="html"><String/></Var>
+      <If condition="$content->_html != ''">
+        <Then>
+          <Var name="html">
+            <TemplateLib method="ExecuteTemplate">
+              <Param>framework</Param>
+              <Param>cms.template</Param>
+              <Param>generic</Param>
+              <Param><Var name="data"/></Param>
+              <Param><Var name="templateSource"/></Param>
+            </TemplateLib>
+          </Var>   
+          <Var name="html">
+            <String.stripslashes>
+              <Param><Var name="html"/></Param>						
+            </String.stripslashes>        
+          </Var>
+        </Then>
+      </If>
+
+      <Return><Var name="html"/></Return>
+      <!-- <Return> <Var name="content" key="_html"/></Return> -->
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="getPreviewHtml" doc="doc">
+    <Params>
+      <Param name="id_channel" type="int" doc="The channel to get the theme and template"/>
+      <Param name="id_content" type="int" doc="The content to get the html"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="content">
+        <Call library="framework,cms.content,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
+        </Call>
+      </Var>
+      <Var name="data"><Set/></Var>
+      <Var name="data" key="item"><Var name="content"/></Var>
+      <Var name="html">
+        <Call function="getHtml">
+          <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+          <Param name="data"><Var name="data"/></Param>
+        </Call>
+      </Var>
+      <Return><Var name="html"/></Return>
+    </Begin>
+    </Function>
+
+    <Function scope="public" name="rebuildContentOrder" doc="Rebuilds the content order from a channel">
+    <Params>
+      <Param name="id_channel" type="int" doc="The channel to reorder the content"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <!-- Get all the content order by the rank -->
+      <Var name="allContent">
+        <DataAccess method="getAll">
+          <Param name="_entity">fw_cms_channel_content</Param>
+          <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+          <Param name="_sort">rank ASC</Param>
+        </DataAccess>
+      </Var>
+
+      <!-- Rebuild the content rank -->
+      <Var name="currentRank"><String/></Var>
+      <ForEach var="allContent" item="content">
+        <Var name="content" dump="true"/>
+        <Var name="currentRank" dump="true"/>
+        <Var name="newRank" dump="true">
+          <Rank>
+            <Param><Var name="currentRank"/></Param>
+            <Param><String/></Param>
+          </Rank>
+        </Var>
+        <DataAccess method="update">
+          <Param name="_entity">fw_cms_channel_content</Param>
+          <Param name="id" pk="true"><Var name="content" key="id"/></Param>
+          <Param name="rank"><Var name="newRank"/></Param>
+        </DataAccess>
+        <Var name="currentRank"><Var name="newRank"/></Var>
+      </ForEach>
+
+      <Return></Return>
+    </Begin>
+    </Function>
+
+  </Library>
+</Node>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen name="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Text name="name"/>
+        <ButtonGroup>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
+        <Template>
+          <Columns>
+            <Column name="id" label="id"/>
+            <Column name="uuid" label="uuid"/>
+            <Column name="code" label="code"/>
+            <Column name="name" label="name"/>
+            <Column name="description" label="description"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" actionvalue="id"/>
+            <Action name="edit" actionvalue="id"/>
+            <Action name="delete" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    <Screen name="scrView" doc="View Screen">
+      <Form name="frmView">
+        <Static name="id"/>
+        <Static name="uuid"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
+        <ButtonGroup>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+    <Screen name="scrEdit" doc="Edit Screen">
+      <Form name="frmEdit">
+        <Static name="id" label="id" required="true"/>
+        <Text name="uuid" label="uuid" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="description" label="description" required="false"/>
+        <ButtonGroup>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+    <Action name="search" screen="scrSearch">
+      <If condition="$defaultData-&gt;__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param>
+              <Var name="defaultData"/>
+            </Param>
+          </Control>
+        </Then>
+      </If>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Call library="framework,cms.template.type,api" function="search">
+            <Param name="name">
+              <Var name="currentData" key="name"/>
+            </Param>
+            <Param name="pagesize">
+              <Control method="getPageSize" object="grdSearchResult"/>
+            </Param>
+            <Param name="pagenum">
+              <Control method="getCurrentPage" object="grdSearchResult"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="view" screen="scrView">
+      <Var name="selectedId" process="true">
+        <ActionValue/>
+      </Var>
+      <Control method="bind" object="frmView">
+        <Param>
+          <Call library="framework,cms.template.type,api" function="getById">
+            <Param name="id">
+              <ActionValue/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+    <Action name="save">
+      <If condition="@selectedId == ''">
+        <Then>
+          <Call library="framework,cms.template.type,api" function="add" params="POSTDATA"/>
+        </Then>
+        <Else>
+          <Call library="framework,cms.template.type,api" function="update" params="POSTDATA">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Else>
+      </If>
+      <Action name="search"/>
+    </Action>
+    <Action name="insert" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <Null/>
+      </Var>
+    </Action>
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Call library="framework,cms.template.type,api" function="delete">
+        <Param name="id">
+          <Var name="selectedId" process="true"/>
+        </Param>
+      </Call>
+      <Action name="search"/>
+    </Action>
+    <Action name="edit" screen="scrEdit">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param>
+            <ActionValue/>
+          </Param>
+          <Param>
+            <Var name="selectedId" process="true"/>
+          </Param>
+        </IsNull>
+      </Var>
+      <Control method="bind" object="frmEdit">
+        <Param>
+          <Call library="framework,cms.template.type,api" function="getById">
+            <Param name="id">
+              <Var name="selectedId" process="true"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

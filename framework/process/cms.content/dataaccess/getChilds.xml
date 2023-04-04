@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    Search all fw_cms_content
+  </Doc>
+	<Params>
+		<Param name="id" />
+		<Param name="filter" />
+		<Param name="sort" />
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>*</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+            fw_cms_content t
+          </XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>t.id_parent = {param->id}</XCondition>
+					<XCondition optional="filter">{@param->filter}</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder optional="sort">{@param->sort}</XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

@@ -12,7 +12,7 @@
   </Libraries>
   
   <Screens>
-    <Screen id="searchRecords">
+    <Screen name="searchRecords">
       <Grid name="searchResult">
         <Template>
           <Columns>
@@ -35,7 +35,7 @@
   <Actions>
     <Action name="init" screen="searchRecords">
     <Var name="PARAMS" />
-      <GridControl method="bind" object="searchResult">
+      <Control method="bind" object="searchResult">
         <Param>
           <Execute method="this,this,log.search">
             <Param name="application"><Var name="PARAMS" key="application"/></Param>
@@ -46,8 +46,7 @@
             <Param name="type" wildcard="fullSplit"><Var name="PARAMS" key="type"/></Param>
           </Execute>
         </Param>
-      </GridControl>
+      </Control>
     </Action>
   </Actions>
 </Node>
-

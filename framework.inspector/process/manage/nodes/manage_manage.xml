@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="StringLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="ReflectionLib" type="lib"/>    
+  </Libraries>
+  <Configuration/>
+  <Params>
+  </Params>
+  <Screens>
+    <Screen name="scrDiagram" doc="Diagram">
+      <Uml name="umlViewer" format="svg" title="diagram"/>
+    </Screen>
+	</Screens>
+
+  <Actions>
+    <Action name="init" screen="scrDiagram">
+      <Var name="PARAMS" dump="true"/>
+      <Var name="application" dump="true"><QueryString.get param="application"/></Var>
+      <Var name="process" dump="true"><QueryString.get param="process"/></Var>
+      <Var name="node" dump="true"><QueryString.get param="node"/></Var>
+      <Var name="type"><QueryString.get param="type"/></Var>
+      <Var name="uml">
+        <ReflectionLib method="getUml">
+          <Param><Var name="application"/></Param>
+          <Param><Var name="process"/></Param>
+          <Param><Var name="node"/></Param>
+          <Param><Var name="type"/></Param>
+        </ReflectionLib>
+      </Var>
+      <!-- <Print><Var name="uml"/></Print> -->
+      <Control method="bind" object="umlViewer">
+        <Param><Var name="uml"/></Param>
+      </Control>         
+    </Action>
+
+    <Action name="processAction">
+
+    </Action>
+        
+  </Actions>
+  <Library forceinterface="true">
+  </Library>
+</Node>

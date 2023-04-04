@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Libraries />
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen name="scr01">
+      <Form name="form01">
+      	<Text name="f1" label="Test default value" default="test"/>
+        <Information id="h1" label="declaration" value="Declaro que..."/>
+
+        <ButtonGroup>
+          <Button type="submit" label="save" name="submitusername"
+            action="process" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scr01">
+    </Action>
+
+    <Action name="process">
+      <Var name="POSTDATA" dump="true" />
+    </Action>
+  </Actions>
+  <Library />
+</Node>

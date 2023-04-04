@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search
+  </Doc>
+  <Params>
+    <Param name="_lang" />
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+          <XField>
+            st.*,
+            CONCAT(st.code, ' | ', stl.name) as name_extended
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_agreement_statement st
+            INNER JOIN fw_agreement_statement_lang stl ON (stl.id = st.id AND stl.lang='{param->_lang}')
+          </XTable>
+        </XFrom>
+        <XWhere>
+        </XWhere>
+        <XOrderBy>
+        	<XOrder>st.code</XOrder>
+        </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

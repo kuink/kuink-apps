@@ -11,28 +11,29 @@
     <Param name="code"/>
   </Params>
   <Screens>
-    <Screen id="scrMain" doc="Main screen">
-      <Repeatable name="items" template="menuBox" cols="4" type="type" icon="icon" label="name" url="url" tooltip="description"/>
+    <Screen name="scrMain" doc="Main screen">
+      <Repeatable name="rptItems" template="menuBox" cols="4" type="type" icon="icon" label="name" url="url" tooltip="description"/>
     </Screen>
   </Screens>
   <Actions>
     <Action name="init" screen="scrMain">
-      <Var name="personData" dump="true">
+      <Var name="personData">
         <Call library="gecol.core,person,api" function="get">
           <Param name="id"><Var name="USER" key="id" /></Param>
         </Call>
       </Var>      
-      <Var name="menuItems" dump="true">
+      <Var name="code">
+        <IsNull>
+          <Param><Var name="PARAMS" key="code"/></Param>
+          <Param><Var name="personData" key="person_type_code"/></Param>
+        </IsNull>
+      </Var>
+      <Var name="menuItems">
         <Call library="framework,menu,api" function="getItemsByMenuCode">
-          <Param name="code">
-            <IsNull>
-              <Param><Var name="PARAMS" key="code"/></Param>
-              <Param><Var name="personData" key="person_type_code"/></Param>
-            </IsNull>
-          </Param>
+          <Param name="code"><Var name="code"/></Param>
         </Call>
       </Var>
-      <Control method="bind" object="items">
+      <Control method="bind" object="rptItems">
         <Param><Var name="menuItems"/></Param>
       </Control>
     </Action>

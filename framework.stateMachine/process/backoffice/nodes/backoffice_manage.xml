@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions></Permissions>
+	<Doc lang="en"></Doc>
+	<Libraries>
+		<Use name="FileLib" type="lib"/>
+		<Use name="ValidationLib" type="lib"/>
+		<Use name="DateTimeLib" type="lib"/>
+		<Use name="FormatterLib" type="lib"/>
+		<Use name="UtilsLib" type="lib"/>
+		<Use name="TemplateLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Params>
+		<Param name="stateMachineCode" type="string" doc="The state machine code to manage"/>
+		<Param name="context" type="string" doc="The record context"/>
+		<Param name="uploadRoot" type="string" doc="The folder where to upload event files"/>
+		<Param name="managementGroup" type="string" doc="The group code of the persons who will manage the state machine"/>
+		<Param name="apiGetPrimaryGroup" type="string" doc="The api call that will return this object details. We need id_state_machine_instance to be there!"/>
+		<Param name="apiGetObjectData" type="string" doc="The api call to get the data to execute the actions and process the event"/>
+		<Param name="apiGenerateReport" type="string" doc="The api call to generate a report based on search result"/>
+		<Param name="uiSearch" type="string" doc="The kid for the custom control that is able to show the object search form"/>
+		<Param name="uiSearchResults" type="string" doc="The kid for the custom control that is able to show the object search result"/>
+		<Param name="uiDetails" type="string" doc="The kid for the custom control that is able to show the object details"/>
+	</Params>
+	<Screens>
+		<Screen name="manageScreen">
+			<Form name="searchForm" title="search" persist="true" visible="false" doc="Only show this form if the user doesn't supply one">
+				<Column id="col1"/>
+				<Header name="statesHead" collapsible="true" collapsed="true"/>
+				<CheckBoxList name="states" datasource="states" bindid="id" bindvalue="name" help="false"/>
+				<Column id="col2"/>
+				<Select name="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
+				<Text name="id"/>
+				<ButtonGroup>
+					<Button type="search" name="search" label="search" action="search"/>
+					<Button type="submit" icon="bar-chart" name="stats" label="stats" action="stats"/>
+				</ButtonGroup>
+			</Form>
+			<!-- Add the custom searchResults -->
+		</Screen>
+
+		<Screen name="detailScreen" template="1x2col">
+			<Form name="optionsFormTop" position="left">
+				<ButtonGroup>
+					<Button type="back" name="back" label="back" action="search"/>
+				</ButtonGroup>
+			</Form>
+			<!-- Placeholder for the custom details control -->
+			<Form name="eventsForm" title="actions" position="right">
+				<Static name="state_name">
+					<Formatter name="Badge" min="0" max="0" field="$state_code" showvalue="true" pallete="success"/>
+				</Static>				
+				<Select name="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
+				<Container name="container"/>
+				<ButtonGroup>
+					<Button type="continue" name="execute" label="execute" action="doActionSingle"/>
+				</ButtonGroup>
+			</Form>
+			<Grid name="historyGrid" title="history" position="right">
+				<Template>
+					<Columns>
+						<Column name="_creation">
+							<Formatter name="DateTime" method="shortDateTime"/>
+						</Column>
+						<Column name="_modification">
+							<Formatter name="DateTime" method="shortDateTime"/>
+						</Column>
+						<Column name="photo">
+							<Formatter name="Image" ext="jpg" path="photo"/>
+						</Column>
+						<Column name="event_description">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="obs_private">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="obs_public">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="display_name" inline="true"/>
+					</Columns>
+				</Template>
+			</Grid>
+			<Grid name="emailsSentGrid" title="emailsSent" position="right">
+				<Template>
+					<Columns>
+						<!--Column name="guid"/-->
+						<Column name="from_email" label="from">
+							<Formatter name="Separator" method="newLine"/>
+						</Column>
+						<Column name="from_name" inline="true">
+							<Formatter name="Separator" method="newLine"/>							
+						</Column>
+						<Column name="from" inline="true"/>
+						<Column name="to_email" label="to">
+							<Formatter name="Separator" method="newLine"/>														
+						</Column>
+						<Column name="to_name" inline="true">
+							<Formatter name="Separator" method="newLine"/>							
+						</Column>
+						<Column name="to" inline="true"/>
+						<Column name="subject">
+							<Formatter name="Style" method="nl2br"/>
+						</Column>
+						<Column name="content">
+							<Formatter name="Style" method="nl2br"/>
+							<Formatter name="Style" method="collapsible">
+								<Param name="collapsed">true</Param>
+							</Formatter>							
+						</Column>
+						<Column name="message_status"/>
+					</Columns>
+				</Template>
+			</Grid>
+		</Screen>
+
+		<Screen name="chooseBulkScreen">
+			<Form name="eventsForm" title="actions">
+				<Select name="event" label="nextAction" datasource="events" bindid="event" bindvalue="description"/>
+				<Container name="container"/>
+				<ButtonGroup>
+					<Button type="back" name="back" label="back" action="search"/>
+					<Button type="continue" name="execute" label="execute" action="doActionBulk"/>
+				</ButtonGroup>
+			</Form>
+		</Screen>
+	</Screens>
+
+	<Actions>
+		<Action name="init">
+			<Var name="useStateMachineTransitions" process="true"><Int>1</Int></Var>
+			<Var name="primaryGroup"><Call library="$PARAMS->apiGetPrimaryGroup"/></Var>
+			<Var name="group" process="true">
+				<Var name="primaryGroup" key="group"/>
+			</Var>
+			<Var name="isMaster" process="true">
+				<Var name="primaryGroup" key="isMaster"/>
+			</Var>
+			<If condition="@idRecord != ''">
+				<Then>
+					<Action name="details"/>
+					<Exit/>
+				</Then>
+			</If>
+			<!-- getting the state machine and cache in process -->
+			<Var name="idStateMachine" process="true">
+				<Call library="framework,stateMachine,api" function="getIdByCode">
+					<Param name="code"><Var name="PARAMS" key="stateMachineCode"/></Param>
+				</Call>
+			</Var>
+			<Action name="search"/>
+		</Action>
+
+		<Action name="search" screen="manageScreen">
+			<Exception name="framework/access:noPermission" condition="@group == 'GRD'"/>
+
+			<If condition="$PARAMS->uiSearch != ''">
+				<Then>
+					<!-- Use the custom search control -->
+					<AddControl control-type="Custom" name="searchControl" control="$PARAMS->uiSearch"/>
+					<Control method="bind" object="searchControl">
+						<Param name="stateMachineCode"><Var name="PARAMS" key="stateMachineCode"/></Param>
+						<Param name="role"><Var name="group" process="true"/></Param>
+					</Control>					
+				</Then>
+				<Else>
+					<!-- Use the standard search control-->
+					<Control method="setProperty" object="searchForm">
+						<Param>visible</Param>
+						<Param>true</Param>
+					</Control>
+				</Else>
+			</If>
+
+			<!-- Add the default data -->
+			<Var name="defaultData" key="states">
+				<Call library="framework,stateMachine,api" function="getAllStatesDefault">
+					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>
+			<Control method="setDefaultData" object="searchForm">
+				<Param><Var name="defaultData"/></Param>
+			</Control>
+			<Var name="currentData">
+				<Control method="getCurrentData" object="searchForm"/>
+			</Var>
+			<Var name="states">
+				<Call library="framework,stateMachine,api" function="getAllStatesWithDefault">
+					<Param name="code"><String><Var name="PARAMS" key="stateMachineCode"/></String></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>			
+			<Control method="addDataSource" object="searchForm">
+				<Param><String>states</String></Param>
+				<Param><Var name="states"/></Param>
+			</Control>	
+
+			
+			<!-- Custom search results control -->
+			<AddControl control-type="Custom" name="searchResultsControl" control="$PARAMS->uiSearchResults"/>
+			<Control method="bind" object="searchResultsControl">
+				<Param name="stateMachineCode"><Var name="PARAMS" key="stateMachineCode"/></Param>
+				<Param name="group"><Var name="group" process="true"/></Param>
+				<Param name="post"><Var name="currentData"/></Param>
+			</Control>
+		</Action>
+
+		<Action name="details" screen="detailScreen">
+			<Var name="idRecord" process="true">
+				<IsNull>
+					<Param><ActionValue/></Param>
+					<Param><Var name="idRecord" process="true"/></Param>
+				</IsNull>
+			</Var>
+
+			<Var name="data">
+				<Call library="$PARAMS->apiGetObjectData">
+					<Param name="id"><Var name="idRecord" process="true"/></Param>
+				</Call>
+			</Var>
+			<Var name="record"><Var name="data" key="record"/></Var>
+
+			<Var name="bulkRecord" process="true" clear="true"/>			
+			<Var name="recordHistory">
+				<Call library="framework,stateMachine.instance,api" function="getHistory">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+					<Param name="useStateMachineTransitions"><Var name="useStateMachineTransitions" process="true"/></Param>
+				</Call>
+			</Var>
+			<Control method="bind" object="historyGrid">
+				<Param><Var name="recordHistory"/></Param>
+			</Control>
+			<!-- Set actions/events -->
+
+			<Var name="events">
+				<Call library="framework,stateMachine.instance,api" function="getNextEvents">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>
+			<Var name="processed"><Set/></Var>
+			<ForEach var="events" item="event">
+				<Var name="event" key="field_list"><String.parse><Var name="event" key="field_list"/></String.parse></Var>
+				<Var name="processed" key=""><Var name="event"/></Var>
+			</ForEach>			
+			<Control method="addDatasource" object="eventsForm">
+				<Param>events</Param>
+				<Param><Var name="processed"/></Param>
+			</Control>
+			<Call function="visibleFieldsRules">
+				<Param name="frmEdit" var="eventsForm"><Var name="eventsForm"/></Param>
+				<Param name="events"><Var name="events"/></Param>
+				<Param name="record"><Var name="record"/></Param>
+			</Call>
+
+			<!-- Get the current state name to show in form -->
+			<Var name="currentState">
+				<Call library="framework,stateMachine.instance,api" function="getCurrentState">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+				</Call>
+			</Var>
+			<Var name="defaultData"><Set/></Var>
+			<Var name="defaultData" key="event"><Null/></Var>
+			<Var name="defaultData" key="state_name"><Var name="currentState" key="name"/></Var>
+			<Control method="bind" object="eventsForm">
+				<Param><Var name="defaultData"/></Param>
+			</Control>
+			<!-- Check if there is a control to show the process details and add it -->
+			<If condition="$PARAMS->uiDetails != ''">
+				<Then>
+					<AddControl control-type="Custom" name="detailsControl" control="$PARAMS->uiDetails" position="left"/>
+					<Control method="bind" object="detailsControl">
+						<Param name="id"><Var name="idRecord" process="true"/></Param>
+					</Control>
+				</Then>
+			</If>
+
+			<!-- Emails sent -->
+			<Var name="guidObject">
+				<IsNull>
+					<Param><Var name="record" key="uuid"/></Param>
+					<Param><Var name="record" key="guid"/></Param>
+					<Param><Var name="record" key="id"/></Param>
+				</IsNull>
+			</Var>
+			<Var name="messagesSent">
+				<Call library="gecol.core,message,api" function="getEmailsSentByGuid">
+					<Param name="guid"><Var name="guidObject"/></Param>
+					<!--Param name="id_to"><Var name="record" key="id_person"/></Param-->
+				</Call>
+			</Var>
+
+			<Control method="bind" object="emailsSentGrid">
+				<Param><Var name="messagesSent"/></Param>
+			</Control>
+		</Action>
+
+		<Action name="doActionSingle" doc="Do action from details screen where only one record is selected">
+			<Var name="data">
+				<Call library="$PARAMS->apiGetObjectData">
+					<Param name="id"><Var name="idRecord" process="true"/></Param>
+				</Call>
+			</Var>
+			<Var name="record"><Var name="data" key="record"/></Var>
+			<Var name="events">
+				<Call library="framework,stateMachine.instance,api" function="getNextEvents">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>			
+
+			<!-- Build the bulk request based on a sigle record -->
+			<Var name="eventDataSet">
+				<Call function="getPostData">
+					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
+					<Param name="events"><Var name="events"/></Param>
+					<Param name="bulkPreEnrolls"><Var name="bulkPreEnrolls"/></Param>
+					<Param name="uploadRoot"><Var name="PARAMS" key="uploadRoot"/></Param>		
+					<Param name="record"><Var name="record"/></Param>			
+				</Call>
+			</Var>
+
+			<RaiseEvent name="actions">
+				<Param name="bulkRecords"><Var name="idRecord" process="true"/></Param>
+				<Param name="event"><Var name="POSTDATA" key="event"/></Param>
+				<Param name="eventDataSet"><Var name="eventDataSet"/></Param>
+				<Param name="role"><Var name="group" process="true"/></Param>
+				<Param name="apiGetObjectData"><Var name="PARAMS" key="apiGetObjectData"/></Param>
+				<Param name="context"><Var name="PARAMS" key="context"/></Param>
+			</RaiseEvent>
+		</Action>
+
+		<Action name="chooseEventBulk" screen="chooseBulkScreen" doc="Get the events in common to apply to the selected records">
+			<Var name="selectedIds">
+				<UtilsLib method="filterSelected">
+					<Param><Var name="POSTDATA"/></Param>
+				</UtilsLib>
+			</Var>
+			<If condition="$selectedIds->__length == 0">
+				<Then>
+					<Action name="search"/>
+					<Exit/>
+				</Then>
+			</If>
+			<Var name="bulkSMIIds"><Set/></Var>
+			<Var name="bulkIds"><Set/></Var>
+			<ForEach var="selectedIds" item="selectedId">
+				<Var name="data">
+					<Call library="$PARAMS->apiGetObjectData">
+						<Param name="id"><Var name="selectedId" key="id"/></Param>
+					</Call>
+				</Var>
+				<Var name="record"><Var name="data" key="record"/></Var>				
+				<Var name="bulkSMIIds" key=""><String.parse>'$record->id_state_machine_instance'</String.parse></Var>
+				<Var name="bulkIds" key=""><Var name="selectedId" key="id"/></Var>
+			</ForEach>
+			<Var name="bulkSMIIdsList"><SetToList><Var name="bulkSMIIds"/></SetToList></Var>
+			<Var name="events" dump="true">
+				<Call library="framework,stateMachine.instance,api" function="getNextEventsInCommon">
+					<Param name="ids"><Var name="bulkSMIIdsList"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>
+			<Control method="addDatasource" object="eventsForm">
+				<Param>events</Param>
+				<Param><Var name="events"/></Param>
+			</Control>
+			<Call function="visibleFieldsRules">
+				<Param name="frmEdit" var="eventsForm"><Var name="eventsForm"/></Param>
+				<Param name="events"><Var name="events"/></Param>
+			</Call>
+			<Var name="bulkIds" process="true"><Var name="bulkIds"/></Var>
+		</Action>
+
+		<Action name="doActionBulk" doc="Do action from search screen where several records can be selected">
+			<!-- Clear the selected record -->
+			<Var name="idRecord" process="true"><Null/></Var>
+			<Var name="bulkIds"><Var name="bulkIds" process="true"/></Var>
+			<!-- Get the fisrt selected record to retrieve the event list -->
+			<Var name="idRecord"><Var name="bulkIds" key="__first"/></Var>
+			<Var name="data">
+				<Call library="$PARAMS->apiGetObjectData">
+					<Param name="id"><Var name="idRecord"/></Param>
+				</Call>
+			</Var>
+			<Var name="record"><Var name="data" key="record"/></Var>
+			
+			<Var name="events">
+				<Call library="framework,stateMachine.instance,api" function="getNextEvents">
+					<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+					<Param name="role"><Var name="group" process="true"/></Param>
+				</Call>
+			</Var>			
+
+			<Var name="eventDataSet">
+				<Call function="getPostData">
+					<Param name="eventName"><Var name="POSTDATA" key="event"/></Param>
+					<Param name="events"><Var name="events"/></Param>
+					<Param name="bulkPreEnrolls"><Var name="bulkPreEnrolls"/></Param>
+					<Param name="uploadRoot"><Var name="PARAMS" key="uploadRoot"/></Param>
+					<Param name="record"><Var name="record"/></Param>
+				</Call>
+			</Var>
+
+			<RaiseEvent name="actions">
+				<Param name="bulkRecords"><SetToList><Var name="bulkIds" process="true"/></SetToList></Param>
+				<Param name="event"><Var name="POSTDATA" key="event"/></Param>
+				<Param name="eventDataSet"><Var name="eventDataSet"/></Param>
+				<Param name="role"><Var name="group" process="true"/></Param>
+				<Param name="apiGetObjectData"><Var name="PARAMS" key="apiGetObjectData"/></Param>				
+			</RaiseEvent>
+		</Action>
+
+		<Action name="generateReport">
+			<If condition="$PARAMS->apiGenerateReport != ''">
+				<Then>
+					<Call library="$PARAMS->apiGenerateReport">
+						<Param name="post"><Var name="POSTDATA"/></Param>
+					</Call>
+				</Then>
+				<Else>
+					<UserMessage type="warning"><Lang key="noReportFound"/></UserMessage>
+				</Else>
+			</If>
+			<If condition="@idRecord != ''">
+				<Then>
+					<Action name="details"/>					
+				</Then>
+				<Else>
+					<Action name="search"/>					
+				</Else>
+			</If>
+		</Action>
+	</Actions>
+	
+	<Library>
+		<Function scope="public" name="visibleFieldsRules">
+			<Doc><![CDATA[
+			 This function will add the visibility rules based on hidden field list
+			]]></Doc>
+			<Params>
+			 <Param name="frmEdit" output="true"/>
+			 <Param name="events"/>
+			 <Param name="record"/>
+			</Params>
+			<Return type=""/>
+			<Begin>
+				 <ForEach var="events" item="event">
+					<Var name="eventVisibleFields">
+						<JsonToSet><Var name="event" key="field_list"/></JsonToSet>
+					</Var>
+					<Var name="event" />
+					<ForEach var="eventVisibleFields" item="eventVisibleField">
+						<Var name="fieldId">
+							<String.concatenate>
+								<Param><Var name="event" key="event"/></Param>
+								<Param><String></String></Param>
+								<Param><Var name="eventVisibleField" key="id"/></Param>
+							</String.concatenate>
+						</Var>
+					 <Control method="addField" object="frmEdit">
+						<Param>
+							<Set>
+								<Element name="container">container</Element>
+								<Element name="id"><Var name="fieldId"/></Element>
+								<Element name="type"><Var name="eventVisibleField" key="type"/></Element>
+								<Element name="label"><Var name="eventVisibleField" key="label"/></Element>
+								<Element name="required"><Var name="eventVisibleField" key="required"/></Element>
+								<Element name="maxlength"><Var name="eventVisibleField" key="maxlength"/></Element>
+								<Element name="datasource"><String.parse><Var name="eventVisibleField" key="datasource"/></String.parse></Element>
+								<Element name="bindid"><Var name="eventVisibleField" key="bindid"/></Element>
+								<Element name="bindvalue"><Var name="eventVisibleField" key="bindvalue"/></Element>
+								<Element name="bindimage"><Var name="eventVisibleField" key="bindimage"/></Element>
+								<Element name="bindresults"><Var name="eventVisibleField" key="bindresults"/></Element>
+								<Element name="searchable"><Var name="eventVisibleField" key="searchable"/></Element>
+								<Element name="datasource-params"><Var name="eventVisibleField" key="datasource-params"/></Element>
+								<Element name="datasource-initial"><Var name="eventVisibleField" key="datasource-initial"/></Element>
+							</Set>
+						</Param> <!-- Field Properties -->
+					 </Control>
+					 <Var name="condition" >
+							<String.concatenate>
+								<Param><String>$event</String></Param>
+								<Param><String.parse> == '$event->event'</String.parse></Param>
+							</String.concatenate>
+					 </Var>
+					 <Control method="addRule" object="frmEdit">
+						 <Param><Var name="fieldId"/></Param> <!-- field -->
+						 <Param>visible</Param>	<!-- attribute -->
+						 <Param><Var name="condition"/></Param> <!-- condition -->
+						 <Param>client</Param> <!-- runat -->
+						 <Param>true</Param> <!-- value if condition is true -->
+						 <Param>false</Param> <!-- value if condition is false -->
+					 </Control>
+					</ForEach>
+				 </ForEach>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="getPostData" doc="Get POSTDATA and set the event Data based on the event field_list">
+			<Params>
+				<Param name="eventName" type="string" doc="The event to execute"/>
+				<Param name="events" type="array" doc="List of events"/>
+				<Param name="uploadRoot" type="string" doc="Where to upload the files"/>
+				<Param name="record" type="array" doc="The record data"/>
+			</Params>
+			<Return type="array"/>
+			<Begin>
+				<!-- Get the object data-->
+				 <Var name="eventData"><Set/></Var>
+				 <Var name="selectedEvent"><Set/></Var>
+				 <ForEach var="events" item="event">
+						<If condition="$event->event == $eventName">
+							<Then>
+								<Var name="selectedEvent"><Var name="event"/></Var>
+							</Then>
+						</If>
+				 </ForEach>
+				 <Var name="eventVisibleFields">
+					 <JsonToSet><Var name="selectedEvent" key="field_list"/></JsonToSet>
+				 </Var>
+					 <ForEach var="eventVisibleFields" item="eventVisibleField">
+						<Var name="fieldId">
+							<String.concatenate>
+								<Param><Var name="eventName"/></Param>
+								<Param><String></String></Param>
+								<Param><Var name="eventVisibleField" key="id"/></Param>
+							</String.concatenate>
+						</Var>
+						<Var name="fieldValue"><Var name="POSTDATA" key="$fieldId"/></Var>
+						<If condition="$eventVisibleField->type == 'File'">
+							<Then>
+								<If condition="$count == 0">
+									<Then>
+										<Exception name="framework/stateMachine::uploadRootParamNotDefined" condition="$PARAMS->uploadRoot == ''"/>
+										<!-- First upload -->
+										<Var name="fieldValue">
+											<FileLib method="Upload">
+													<Param name="UploadFolder"><String.parse><String.parse>$PARAMS->uploadRoot</String.parse></String.parse></Param>
+													<Param name="Filename"><Guid/></Param>
+													<Param name="id_user"><Var name="USER" key="id"/></Param>
+											</FileLib>
+										</Var>
+										<Var name="files" key="$fieldId"><Var name="fieldValue"/></Var>
+									</Then>
+									<Else>
+										<!-- The file allready been uploaded - so copy it-->
+										<Var name="fileValue"><Var name="files" key="$fieldId"/></Var>
+										<If condition="$fileValue !== null &amp;&amp; $fileValue !== ''">
+											<Then>
+												<Var name="fieldValue">
+														<FileLib method="copyFile">
+																<Param name="id"><Var name="files" key="$fieldId"/></Param>
+																<Param name="path"><String.parse><String.parse>$PARAMS->uploadRoot</String.parse></String.parse></Param>
+														</FileLib>
+												</Var>
+											</Then>
+										</If>
+									</Else>
+								</If>
+							</Then>
+						</If>
+
+						<If condition="$eventVisibleField->formatter != ''">
+							<Then>
+								<Var name="formattedFieldId">
+									<String.concatenate>
+										<Param><Var name="eventVisibleField" key="id"/></Param>
+										<Param><String>_formatted</String></Param>
+									</String.concatenate>
+								</Var>
+								<Var name="formattedField">
+									<FormatterLib method="format">
+										<Param><Var name="eventVisibleField" key="formatter"/></Param>
+										<Param><Var name="eventVisibleField" key="formatterMethod"/></Param>
+										<Param><Var name="fieldValue"/></Param>
+										<Param><Var name="eventVisibleField" key="formatterParams"/></Param>
+									</FormatterLib>
+								</Var>
+								<If condition="$eventVisibleField->formatterAddSlashes == 'true'">
+									<Then>
+										<Var name="formattedField">
+											<String.addslashes><Var name="formattedField"/></String.addslashes>
+										</Var>
+									</Then>
+								</If>
+								<Var name="eventData" key="$formattedFieldId">
+									<Var name="formattedField"/>
+								</Var>
+							</Then>
+						</If>
+						<Var name="eventData" key="$eventVisibleField->id"><Var name="fieldValue"/></Var>
+					</ForEach>
+				 <Return><Var name="eventData"/></Return>
+			</Begin>
+		</Function>
+
+	</Library>
+</Node>

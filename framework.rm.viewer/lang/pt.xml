@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<Lang>
+    <Strings>
+ 
+    <String key="framework.rm" value="Gestão Documental"/>
+    <String key="class_code" value="Classificação"/>
+    <String key="recordName" value="Documento"/>
+    <String key="recordDescription" value="Descrição"/>
+     
+   </Strings>
+   <HelpStrings>
+     
+   </HelpStrings>
+</Lang>

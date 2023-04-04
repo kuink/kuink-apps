@@ -1,0 +1,11 @@
+<?xml version='1.0'?>
+<Application name="framework.base" version="1.0.0">
+    <Config>
+        <!-- Global configuration... -->
+        <!-- Key name="test" value="1" /-->
+    </Config>
+    <Databases>
+    </Databases>
+    <Menus>
+    </Menus>
+</Application>

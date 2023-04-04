@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="DateTimeLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+      <Function scope="public" name="getDeviceChannel" doc="Gives the current channel of a device">
+      <Params>
+        <Param name="device" type="string" doc="The device to get the current channel"/>
+      </Params>
+      <Return type="string"/>
+      <Begin>
+        <Var name="idDevice">
+          <Call library="framework,cms.device,api" function="getIdByCode">
+            <Param name="code"><Var name="PARAMS" key="device"/></Param>
+          </Call>
+        </Var>
+        <Exception name="framework/digitalSignage::invalidDevice" condition="$idDevice == ''">
+          <Param><Var name="PARAMS" key="device"/></Param>
+          <Param><Var name="SYSTEM" key="ip"/></Param>
+        </Exception>        
+        <Var name="deviceRecord">
+          <Call library="framework,cms.device,api" function="getById">
+            <Param name="id"><Var name="idDevice"/></Param>
+          </Call>          
+        </Var>
+        <Var name="channelRecord">
+          <Call library="framework,cms.channel,api" function="getById">
+            <Param name="id"><Var name="deviceRecord" key="id_channel"/></Param>
+          </Call>          
+        </Var>
+        <Exception name="framework/digitalSignage::invalidChannel" condition="$channelRecord->__length == 0"/>        
+
+        <Return><Var name="channelRecord" key="code"/></Return>
+      </Begin>
+      </Function>
+
+      <Function scope="public" name="getChannelItem" doc="Get a channel content">
+      <Params>
+        <Param name="channel" type="string" doc="Channel to get the content"/>
+        <Param name="order" type="int" doc="Order of the item in the channel"/>
+      </Params>
+      <Return type="single"/>
+      <Begin>
+        <Var name="idChannel">
+          <Call library="framework,cms.channel,api" function="getIdByCode">
+            <Param name="code"><Var name="PARAMS" key="channel"/></Param>
+          </Call>
+        </Var>
+
+        <Var name="contentItems">
+          <Call library="framework,cms.channel,api" function="getContent">
+            <Param name="id_channel"><Var name="idChannel"/></Param>
+            <Param name="is_published"><Int>1</Int></Param>
+          </Call>
+        </Var>
+
+        <Var name="records" key=""><Var name="contentItems" key="$order"/></Var>
+
+        <Var name="data"><Set/></Var>
+        <Var name="data" key="records"><Var name="records"/></Var>
+        <Var name="data" key="total"><Var name="contentItems" key="__length"/></Var>
+
+        <Return><Var name="data"/></Return>
+      </Begin>
+      </Function>
+
+    </Library>
+</Node>

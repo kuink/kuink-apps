@@ -10,13 +10,13 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Text id="code"/>
-        <Text id="name"/>
+        <Text name="code"/>
+        <Text name="name"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -41,37 +41,37 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="code"/>
-        <Static id="name"/>
-        <Static id="description"/>
-        <Static id="is_active"/>
+        <Static name="id"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
+        <Static name="is_active"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Text id="code" label="code" required="true"/>
-        <Text id="name" label="name" required="true"/>
-        <Text id="description" label="description" required="true"/>
-        <Checkbox id="is_active" label="is_active" required="true"/>
+        <Static name="id" label="id" required="true"/>
+        <Text name="code" label="code" required="true"/>
+        <Text name="name" label="name" required="true"/>
+        <Text name="description" label="description" required="true"/>
+        <Checkbox name="is_active" label="is_active" required="true"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrUml" doc="Uml Screen">
+    <Screen name="scrUml" doc="Uml Screen">
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
+          <Button name="back" type="back" label="back" action="search"/>
         </ButtonGroup>
       </Form>
       <Uml name="umlViewer" format="svg" title="diagram"/>

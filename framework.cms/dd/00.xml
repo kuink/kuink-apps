@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw" doc="sale entities">
+	<Domains/>
+	<Templates/>
+	<Entities>
+
+		<Entity name="fw_cms_channel" doc="Define a channel in the cms system">
+			<Attributes>
+				<Attribute name="id" domain="id" />
+				<Attribute name="id_template" domain="foreign" refentity="fw_cms_template" refattr="id" required="true" doc="Defines the base template for this channel"/>
+				<Attribute name="id_theme" domain="foreign" refentity="fw_cms_template" refattr="id" required="false" doc="Defines the theme to use in this channel"/>
+				<Template name="fw.identity"/>
+				<Template name="fw.base"/>
+			</Attributes>
+		</Entity>
+
+    <Entity name="fw_cms_device" doc="Defines a device in the cms system">
+			<Attributes>
+				<Attribute name="id" domain="id" />
+				<Attribute name="id_channel" domain="foreign" refentity="fw_cms_channel" refattr="id" required="true" doc="The default channel for this device"/>
+				<Attribute name="ip_address" domain="ip" required="false"/>
+				<Template name="fw.identity"/>
+				<Template name="fw.base"/>
+			</Attributes>
+		</Entity>
+
+    <Entity name="fw_cms_template_type" doc="Defines a template type int the cms system, channel | contentType | theme">
+			<Attributes>
+				<Attribute name="id" domain="id" />
+				<Template name="fw.identity"/>
+				<Template name="fw.base"/>
+			</Attributes>
+		</Entity>
+
+    <Entity name="fw_cms_template" doc="Defines a generic template entity to use in th system">
+			<Attributes>
+				<Attribute name="id" domain="id" />
+				<Attribute name="id_template_type" domain="foreign" refentity="fw_cms_template" refattr="id" required="false" doc="Defines the type of this template"/>
+				<Attribute name="source" domain="json" required="true" doc="The template source"/>
+				<Template name="fw.identity"/>
+				<Template name="fw.base"/>
+			</Attributes>
+		</Entity>
+
+    <Entity name="fw_cms_content_type" doc="Defines a device in the cms system">
+			<Attributes>
+				<Attribute name="id" domain="id" />
+				<Attribute name="id_template" domain="foreign" refentity="fw_cms_template" refattr="id" required="true" doc="Defines the template used for this type of content"/>
+				<Attribute name="fields" domain="json" doc="The template source"/>
+				<Attribute name="allowed_extensions" domain="string" doc="The allowed extensions"/>
+				<Attribute name="id_child_type" domain="foreign" refentity="fw_cms_content_type" refattr="id" required="false" doc="The content type of childs"/>
+				<Attribute name="allow_zero_duration" domain="bool" required="true" default="0" doc="If 1 then duration can be set to zero"/>
+				<Template name="fw.identity"/>
+				<Template name="fw.base"/>
+			</Attributes>
+		</Entity>
+
+    <Entity name="fw_cms_content" doc="Defines a content item in the cms system">
+			<Attributes>
+				<Attribute name="id" domain="id" />
+				<Attribute name="id_parent" domain="foreign" refentity="fw_cms_content" refattr="id" required="false" doc="The conten data if stored in a file like an image or video"/>				
+				<Attribute name="id_content_type" domain="foreign" refentity="fw_cms_content_type" refattr="id" required="true" doc="Defines the sontent type of this content item"/>				
+				<Attribute name="id_template_override" domain="foreign" refentity="fw_cms_template" refattr="id" required="false" doc="Defines a specific template used to override the content type template"/>
+				<Attribute name="data" domain="xml" required="false" doc="The content data"/>
+				<Attribute name="id_file" domain="foreign" refentity="fw_file" refattr="id" required="false" doc="The conten data if stored in a file like an image or video"/>
+				<Template name="fw.base"/>
+			</Attributes>
+		</Entity>
+
+    <Entity name="fw_cms_channel_content" doc="Content publish information">
+			<Attributes>
+				<Attribute name="id" domain="id" />
+				<Attribute name="id_channel" domain="foreign" refentity="fw_cms_channel" refattr="id" required="true" doc="The channel"/>
+				<Attribute name="id_content" domain="foreign" refentity="fw_cms_content" refattr="id" required="true" doc="The content item"/>
+				<Attribute name="start_date" domain="timestamp" doc="The date in which the content is published"/>
+				<Attribute name="end_date" domain="timestamp" doc="The date in which the content will stop being published"/>
+				<Attribute name="seconds_duration" domain="int" doc="The content duration in seconds. If a video has a content duration of 0 the full lvideo length will be used"/>
+				<Attribute name="is_published" domain="bool" doc="If 1 then the dates will be used. If 0 then it will not be published"/>
+				<Attribute name="rank" domain="string" doc="The running order of appearence"/>
+				<Template name="fw.base"/>
+			</Attributes>
+		</Entity>
+		
+	</Entities>
+</Node>

@@ -29,7 +29,6 @@
                 <Param name="aggregations" type="array" />
             </Params>
             <Begin>
-
                 <!-- Save Aggregations -->
                 <Var name="aggregations">
                     <Var name="PARAMS" key="aggregations" />
@@ -245,7 +244,7 @@
                 </If>
 
 
-                <Var name="path" >
+                <Var name="path">
                     <StringLib method="concatenate">
                         <Param>records/</Param>
                         <Param>

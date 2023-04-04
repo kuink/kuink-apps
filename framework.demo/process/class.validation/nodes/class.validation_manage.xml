@@ -9,20 +9,20 @@
   </Libraries>
   <Configuration/>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true">
-        <Int id="id"/>
-        <Int id="id_class"/>
-        <Int id="id_validator"/>
-        <Int id="validation_level"/>
-        <Int id="is_active"/>
-        <Text id="name"/>
-        <Text id="short_name"/>
-        <Text id="code"/>
-        <Int id="order"/>
+        <Int name="id"/>
+        <Int name="id_class"/>
+        <Int name="id_validator"/>
+        <Int name="validation_level"/>
+        <Int name="is_active"/>
+        <Text name="name"/>
+        <Text name="short_name"/>
+        <Text name="code"/>
+        <Int name="order"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
-          <Button id="insert" type="add" label="insert" action="insert"/>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="insert"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -46,38 +46,38 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrView" doc="View Screen">
+    <Screen name="scrView" doc="View Screen">
       <Form name="frmView">
-        <Static id="id"/>
-        <Static id="id_class"/>
-        <Static id="id_validator"/>
-        <Static id="validation_level"/>
-        <Static id="is_active"/>
-        <Static id="name"/>
-        <Static id="short_name"/>
-        <Static id="code"/>
-        <Static id="order"/>
+        <Static name="id"/>
+        <Static name="id_class"/>
+        <Static name="id_validator"/>
+        <Static name="validation_level"/>
+        <Static name="is_active"/>
+        <Static name="name"/>
+        <Static name="short_name"/>
+        <Static name="code"/>
+        <Static name="order"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="search"/>
-          <Button id="edit" type="update" label="edit" action="edit"/>
-          <Button id="delete" type="delete" label="delete" action="delete" confirm="true"/>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
         </ButtonGroup>
       </Form>
     </Screen>
-    <Screen id="scrEdit" doc="Edit Screen">
+    <Screen name="scrEdit" doc="Edit Screen">
       <Form name="frmEdit">
-        <Static id="id" label="id" required="true"/>
-        <Int id="id_class" label="id_class" required="true"/>
-        <Int id="id_validator" label="id_validator" required="false"/>
-        <Int id="validation_level" label="validation_level" required="false"/>
-        <Int id="is_active" label="is_active" required="false"/>
-        <Text id="name" label="name" required="false"/>
-        <Text id="short_name" label="short_name" required="false"/>
-        <Text id="code" label="code" required="false"/>
-        <Int id="order" label="order" required="false"/>
+        <Static name="id" label="id" required="true"/>
+        <Int name="id_class" label="id_class" required="true"/>
+        <Int name="id_validator" label="id_validator" required="false"/>
+        <Int name="validation_level" label="validation_level" required="false"/>
+        <Int name="is_active" label="is_active" required="false"/>
+        <Text name="name" label="name" required="false"/>
+        <Text name="short_name" label="short_name" required="false"/>
+        <Text name="code" label="code" required="false"/>
+        <Int name="order" label="order" required="false"/>
         <ButtonGroup>
-          <Button id="cancel" type="cancel" label="cancel" action="search"/>
-          <Button id="save" type="update" label="save" action="save"/>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
         </ButtonGroup>
       </Form>
     </Screen>

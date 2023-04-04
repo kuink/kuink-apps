@@ -9,8 +9,9 @@
     <Entity name="fw_application" doc="All applications mustbe registered here">
       <Attributes>
         <Attribute name="id" domain="id" />
-        <Attribute name="name" domain="name" required="true" doc="The application name" />
+        <Attribute name="name" domain="name" doc="The application name" />
         <Attribute name="code" domain="string" required="true" doc="The application code" />
+        <Attribute name="theme" domain="string" required="true" default="adminlte" doc="The application theme" />
         <Attribute name="version" domain="string" doc="Application version" />
         <Attribute name="app_base" domain="string" doc="Application base" />        
         <Attribute name="in_maintenance" domain="bool" default="0" doc="Is this application in maintenance?" />

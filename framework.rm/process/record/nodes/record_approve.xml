@@ -7,17 +7,17 @@
     <Libraries>
     </Libraries>
     <Screens>
-        <Screen id="scrShow">
+        <Screen name="scrShow">
             <Form name="frmDocData" title="components">
-              <Header id="id" label="id"/>
-              <Static id="uuid" title="uuid"/>
-              <Static id="name" title="name"/>
-              <Static id="description" title="description"/>
+              <Header name="id" label="id"/>
+              <Static name="uuid" title="uuid"/>
+              <Static name="name" title="name"/>
+              <Static name="description" title="description"/>
               <ButtonGroup>
-                <Button type="back" id="back" action="back"/>
-                <Button type="download" id="download" action="download" actionvalue="id"/>
-                <Button type="execute" id="approve" action="approve"/>
-                <Button type="delete" id="reject" action="reject"/>
+                <Button type="back" name="back" action="back"/>
+                <Button type="download" name="download" action="download" actionvalue="id"/>
+                <Button type="execute" name="approve" action="approve"/>
+                <Button type="delete" name="reject" action="reject"/>
               </ButtonGroup>
             </Form>
         </Screen>

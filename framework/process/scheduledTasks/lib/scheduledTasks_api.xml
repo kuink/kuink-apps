@@ -691,9 +691,7 @@
                 </Var>
 
                 <!-- Execute the function -->
-                <Var name="LOG">
-                    <Null/>
-                </Var>
+                <Var name="LOG"><Set/></Var>
                 <Var name="result">
                     <Call library="$library" function="execute" params="params">
                         <Param name="LOG" var="LOG"/>
@@ -717,7 +715,7 @@
 
                 <!-- Getting the message to log given the logLevel -->
                 <Var name="taskLog">
-                    <Null/>
+                    <Set/>
                 </Var>
                 <ForEach var="LOG" item="logItem">
                     <Var name="logItemLogLevel">
@@ -918,4 +916,3 @@
 
     </Library>
 </Node>
-

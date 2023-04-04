@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+  </Libraries>
+  <Configuration/>
+  <Screens>
+    <Screen name="scrSearch" doc="Search Screen">
+      <Form name="frmSearch" persist="true" title="search">
+        <Text name="data"/>
+        <Select name="id_content_type" label="contentType" searchable="true" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name"/>
+        <ButtonGroup>
+          <Button name="search" type="search" label="search" action="search"/>
+          <Button name="insert" type="add" label="insert" action="fill"/>
+        </ButtonGroup>
+      </Form>
+      <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="contentItems">
+        <Template>
+          <Columns>
+            <Column name="id" label="id" action="selectContent" actionvalue="id">
+              <Formatter name="Call" library="framework,cms.content,api" function="formatter"/>
+            </Column>
+            <Column name="id_content_type" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name"/>            
+            <Column name="channels"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="selectContent" label="view" actionvalue="id"/>
+            <Action name="edit" actionvalue="id"/>
+            <Action name="duplicate" actionvalue="id"/>
+            <Action name="delete" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+    <Screen name="scrView" doc="View Screen" template="1x2x1col">
+      <Form name="frmView" position="left">
+        <Static name="id"/>
+        <Static name="id_template_override"/>
+        <Container name="contentTypeFields"/>
+        <Static name="id_file">
+          <Formatter name="FileDownload" method="preview" width="100" center="0"/>
+        </Static>
+        <Static name="data"/>
+        <ButtonGroup>
+          <Button name="back" type="back" label="back" action="search"/>
+          <Button name="edit" type="update" label="edit" action="edit"/>
+          <Button name="delete" type="delete" label="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+      <!--
+      <Form name="frmPreview" position="left" title="preview">
+        <Select name="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name" action="preview"/>
+      </Form>            
+      -->
+      <Form name="frmChannels" title="publishNewChannel" position="right">
+        <Select name="id_channel" required="true" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
+        <Select name="change_position" required="true">
+          <Options>
+            <Option id="0">no</Option>
+            <Option id="1">yes</Option>
+          </Options>
+        </Select>        
+        <!--<Select name="id_content_before" help="false" datasource="call:framework,cms.channel,api,getContent" datasource-params="id_channel=$id_channel;is_published=1" bindid="id" bindvalue="_formatted">-->
+        <Select name="id_content_before" help="false" datasource="call:framework,cms.channel,api,getContent" datasource-params="id_channel=$id_channel;is_published=''" bindid="id" bindvalue="_formatted">
+          <Rule runat="client" attr="visible" condition="$change_position == 0" value="false"/>	
+          <!--<Rule runat="client" attr="value" datasource="framework,cms.channel,api,getContent" datasourceparams="id_channel=$id_channel&amp;is_published=1"/>-->
+          <Rule runat="client" attr="value" datasource="framework,cms.channel,api,getContent" datasourceparams="id_channel=$id_channel&amp;is_published=''"/>
+        </Select>        
+        <Date name="start_date" required="true" />
+        <Date name="end_date" now="false"/>
+        <Int name="seconds_duration" required="true"/>
+        <Checkbox name="is_published" required="true"/>
+        <ButtonGroup>
+          <Button name="addToChannel" type="add" action="addToChannel"/>
+        </ButtonGroup>
+      </Form>
+        <Grid name="grdChannels" collapsible="false" pagesize="10" title="channels" position="bottom">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="id_channel" datasource="call:framework,cms.channel,api,getAll" bindid="id" bindvalue="name"/>
+            <Column name="start_date" >
+              <Formatter name="DateTime" method="shortDate"/>
+            </Column>
+            <Column name="end_date" >
+              <Formatter name="DateTime" method="shortDate"/>
+            </Column>
+            <Column name="seconds_duration" />
+            <Column name="is_published" />
+            <Column name="rank" />
+          </Columns>
+          <Actions separator="true">
+            <Action name="selectPublication" label="selectPublish" icon="pencil" actionvalue="id"/>
+            <Action name="removeFromChannel" icon="times" actionvalue="id_channel"/>
+          </Actions>
+        </Template>
+      </Grid>
+      <Form name="frmNewChild" position="bottom" title="addChild">
+        <Select name="id_content_type" required="true" datasource="childContentTypes" bindid="id" bindvalue="name" action="addChild"/>
+      </Form>
+
+      <Grid name="grdChilds" title="childs">
+        <Template>
+          <Columns>
+            <Column name="id" label="id" action="selectContent" actionvalue="id">
+              <Formatter name="Call" library="framework,cms.content,api" function="formatter"/>
+            </Column>
+            <Column name="id_file">
+              <Formatter name="FileDownload" method="preview" width="100"/>
+            </Column>
+          </Columns>
+          <Actions separator="true">
+            <Action name="selectContent" label="view" actionvalue="id"/>
+            <Action name="editChild" actionvalue="id"/>
+            <Action name="deleteChild" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+      <!--Custom name="contentCtrl" control="framework.cms,content,view" position="right"/-->
+    </Screen>
+
+    <Screen name="scrFill" doc="Screen fill">
+      <Form name="frmInsert">
+        <Select name="id_content_type" label="contentType" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <ButtonGroup>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="continue" type="continue" label="continue" action="insert"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+    <Screen name="scrEdit" doc="Edit Screen">
+      <Form name="frmEdit">
+        <Select name="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <Container name="contentTypeFields"/>
+        <ButtonGroup>
+          <Button name="cancel" type="cancel" label="cancel" action="search"/>
+          <Button name="save" type="update" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+    <Screen name="scrPreview">
+      <Form name="frmGlobalOptions">
+        <ButtonGroup>
+          <Button name="back" type="back" label="back" action="search"/>
+        </ButtonGroup>
+      </Form>
+      <HtmlContainer name="previewHtml"/>
+    </Screen>
+  </Screens>
+  <Actions>
+
+    <Action name="init">
+      <If condition="@selectedId == ''">
+        <Then><Action name="search"/></Then>
+        <Else><Action name="view"/></Else>
+      </If>
+    </Action>
+
+    <Action name="search" screen="scrSearch">
+      <If condition="$defaultData-&gt;__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="frmSearch">
+            <Param>
+              <Var name="defaultData"/>
+            </Param>
+          </Control>
+        </Then>
+      </If>
+      <Var name="currentData">
+        <Control method="getCurrentData" object="frmSearch"/>
+      </Var>
+      <Control method="bind" object="grdSearchResult">
+        <Param>
+          <Call library="framework,cms.content,api" function="search">
+            <Param name="data"><Var name="currentData" key="data"/></Param>
+            <Param name="id_content_type"><Var name="currentData" key="id_content_type"/></Param>
+            <Param name="pagesize">
+              <Control method="getPageSize" object="grdSearchResult"/>
+            </Param>
+            <Param name="pagenum">
+              <Control method="getCurrentPage" object="grdSearchResult"/>
+            </Param>
+          </Call>
+        </Param>
+      </Control>
+    </Action>
+
+    <Action name="selectContent">
+      <Var name="selectedId" process="true"><ActionValue/></Var>          
+      <Var name="selectedPublication" process="true"><Null/></Var>          
+      <Action name="view"/>
+    </Action>
+
+    <Action name="selectPublication">
+      <Var name="selectedPublication" process="true"><ActionValue/></Var>          
+      <Action name="view"/>
+    </Action>
+
+    <Action name="view" screen="scrView">
+      <Var name="content">
+        <Call library="framework,cms.content,api" function="getById">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Var name="contentType" process="true">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="content" key="id_content_type"/></Param>
+        </Call>
+      </Var>
+      <Call function="buildContentForm">
+        <Param name="fields"><Var name="contentType" key="fields" process="true"/></Param>
+        <Param name="static"><Int>1</Int></Param>
+        <Param name="form" var="frmView"/>
+      </Call>
+      <Var name="data">
+        <XmlToSet><Var name="content" key="data"/></XmlToSet>
+      </Var>
+      
+      <Control method="bind" object="frmView">
+        <Param><Var name="content"/></Param>
+      </Control>
+      <Control method="bind" object="frmView">
+        <Param><Var name="data"/></Param>
+      </Control>
+
+      <!-- Channels -->
+      <Var name="channels" dump="true">
+        <Call library="framework,cms.content,api" function="getChannels">
+          <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="grdChannels">
+        <Param><Var name="channels"/></Param>
+      </Control>
+      <!-- If this is an edit of a publication -->
+      <If condition="@selectedPublication != ''">
+        <Then>
+          <Var name="publication">
+            <DataAccess method="load">
+              <Param name="_entity">fw_cms_channel_content</Param>
+              <Param name="id"><Var name="selectedPublication" process="true"/>
+              </Param>
+            </DataAccess>
+          </Var>
+          <Var name="publication" key="change_position">0</Var>
+          <Control method="bind" object="frmChannels">
+            <Param><Var name="publication"/></Param>
+          </Control>
+        </Then>
+        <Else>
+          <Var name="defaultData"><Set/></Var>
+          <Var name="defaultData" key="change_position">1</Var>
+          <Control method="setDefaultData" object="frmChannels">
+            <Param><Var name="defaultData"/></Param>
+          </Control>
+        </Else>
+      </If>
+      <!-- Childs -->
+      <Var name="childContentTypes">
+        <Call library="framework,cms.content,api" function="getChildContentTypes">
+          <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="addDataSource" object="frmNewChild">
+        <Param>childContentTypes</Param>
+        <Param><Var name="childContentTypes"/></Param>
+      </Control>
+
+      <Var name="childs">
+        <Call library="framework,cms.content,api" function="getAllChild">
+          <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="grdChilds">
+        <Param><Var name="childs"/></Param>
+      </Control>
+      <!--
+      <Control method="bind" object="frmPreview">
+        <Param><Set>
+          <Element name="id_channel"><Null/></Element>
+        </Set></Param>
+      </Control>
+      -->
+    </Action>
+
+    <Action name="addChild">
+      <RaiseEvent name="edit">
+        <Param name="id"><String/></Param>
+        <Param name="id_content_type"><Var name="POSTDATA" key="id_content_type"/></Param>
+        <Param name="id_parent"><Var name="selectedId" process="true"/></Param>
+      </RaiseEvent>        
+    </Action>
+
+    <Action name="save">
+      <!-- Upload the file if any -->
+      <Var name="filename"><Guid/></Var>
+      <Var name="idFile" dump="true">
+        <FileLib method="Upload">
+          <Param name="UploadFolder"><String><![CDATA[app_files/framework.cms/content]]></String></Param>
+          <Param name="Filename"><Var name="filename"/></Param>
+          <Param name="MaxUploadFileSize">15000000</Param>
+          <Param name="AllowedExtensions"><Var name="contentType" key="allowed_extensions" process="true"/></Param>
+          <Param name="id_user"><Var name="USER" key="id"/></Param>
+        </FileLib>
+      </Var>      
+
+      <!-- Build the data object and remove the id_template_override field-->
+      <Var name="data"><Var name="POSTDATA"/></Var>
+      <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+        <Then>
+          <Var name="data" key="id_file"><Var name="idFile"/></Var>          
+        </Then>
+      </If>
+      
+      <Var name="data" key="id_template_override" clear="true"/>
+      <Var name="dataXml" dump="true"><SetToXml><Var name="data"/></SetToXml></Var>
+      <Var name="errors" dump="true"><Errors/></Var>
+      <If condition="$errors == 0">
+        <Then>
+          <If condition="@selectedId == ''">
+            <Then>
+              <Var name="selectedId" process="true">
+                <Call library="framework,cms.content,api" function="add">
+                  <Param name="id_template_override">
+                    <If condition="$POSTDATA->id_template_override != ''">
+                      <Then><Var name="POSTDATA" key="id_template_override"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                  <Param name="id_content_type"><Var name="contentType" key="id" process="true"/></Param>
+                  <Param name="data"><Var name="dataXml"/></Param>
+                  <Param name="id_file">
+                    <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+                      <Then><Var name="idFile"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                </Call>
+              </Var>
+            </Then>
+            <Else>
+              <!-- Get the content record and unlink the old file if there's one -->
+              <Var name="content" dump="true">
+                <Call library="framework,cms.content,api" function="getById">
+                  <Param name="id"><Var name="selectedId" process="true"/></Param>
+                </Call>                
+              </Var>
+              <Trace><String.parse>Setting: $idFile</String.parse></Trace>
+              <If condition="($idFile != '') &amp;&amp; ($idFile != 0) &amp;&amp; ($content->id_file != '') &amp;&amp; ($content->id_file != 0) ">
+                <Then>
+                  <Trace><String.parse>Unlinking: $content->id_file | Setting: $idFile</String.parse></Trace>
+                  <FileLib method="unlink">
+                    <Param><Var name="content" key="id_file" /></Param>
+                  </FileLib>                  
+                </Then>
+              </If>
+
+              <!-- Update the content -->
+              <Var name="optionalParams"><Set/></Var>
+              <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+                <Then>
+                  <Var name="optionalParams" key="id_file"><Var name="idFile"/></Var>
+                </Then>
+              </If>
+              <Call library="framework,cms.content,api" function="update" params="optionalParams">
+                <Param name="id"><Var name="selectedId" process="true"/></Param>
+                <Param name="id_template_override">
+                  <If condition="$POSTDATA->id_template_override != ''">
+                    <Then><Var name="POSTDATA" key="id_template_override"/></Then>
+                    <Else><Null/></Else>
+                  </If>
+                </Param>
+                <Param name="data"><Var name="dataXml"/></Param>
+            </Call>
+            </Else>
+          </If>
+        </Then>
+      </If>
+      <If condition="@selectedId == ''">
+        <Then>
+          <If condition="$errors == 0">
+            <Then><Action name="search"/></Then>
+            <Else><Action name="insert"/></Else>
+          </If>
+        </Then>
+        <Else>
+          <If condition="$errors == 0">
+            <Then><Action name="search"/></Then>
+            <Else><Action name="edit"/></Else>
+          </If>
+        </Else>
+      </If>
+    </Action>
+
+    <Action name="fill" screen="scrFill">
+      <Var name="selectedId" process="true">
+        <Null/>
+      </Var>
+    </Action>
+
+    <Action name="insert">
+      <RaiseEvent name="edit">
+        <Param name="id"><String/></Param>
+        <Param name="id_content_type"><Var name="POSTDATA" key="id_content_type"/></Param>
+      </RaiseEvent>      
+    </Action>
+
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+      <Call library="framework,cms.content,api" function="delete">
+        <Param name="id">
+          <Var name="selectedId" process="true"/>
+        </Param>
+      </Call>
+      <Action name="search"/>
+    </Action>
+
+    <Action name="deleteChild">
+      <Call library="framework,cms.content,api" function="delete">
+        <Param name="id"><ActionValue/></Param>
+      </Call>
+      <Action name="view"/>
+    </Action>
+
+
+    <Action name="duplicate">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+      <!-- Setting the id to the duplicated one-->
+      <Var name="selectedId" process="true">
+        <Call library="framework,cms.content,api" function="duplicate">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Action name="editSelected"/>
+    </Action>
+
+    <Action name="edit">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+      <Action name="editSelected"/>
+    </Action>
+
+    <Action name="editSelected">
+      <RaiseEvent name="edit">
+        <Param name="id"><Var name="selectedId" process="true"/></Param>
+      </RaiseEvent>
+    </Action>
+
+    <Action name="editChild">
+      <RaiseEvent name="edit">
+        <Param name="id"><ActionValue/></Param>
+      </RaiseEvent>
+    </Action>
+
+
+    <Action name="addToChannel">
+      <Var name="error">
+        <Call library="framework,cms.content,api" function="addToChannel" params="POSTDATA">
+          <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <If condition="$error == -1">
+        <Then>
+          <UserMessage type="error"><Lang key="zeroDurationNotAllowed"/></UserMessage>
+        </Then>
+      </If>
+      <Action name="view"/>
+    </Action>
+
+    <Action name="removeFromChannel">
+      <Call library="framework,cms.content,api" function="removeFromChannel" params="POSTDATA">
+        <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        <Param name="id_channel"><ActionValue/></Param>
+      </Call>
+      <Action name="view"/>
+    </Action>
+
+    <Action name="preview" screen="scrPreview">
+      <Var name="POSTDATA" dump="true"/>
+      <Var name="htmlPreview">
+        <Call library="framework,cms.channel,api" function="getPreviewHtml">
+          <Param name="id_channel"><Var name="POSTDATA" key="id_channel"/></Param>
+          <Param name="id_content"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="previewHtml">
+        <Param><Var name="htmlPreview"/></Param>
+      </Control>
+    </Action>
+
+  </Actions>
+  <Library forceinterface="true">
+    <Function scope="public" name="buildContentForm" doc="doc">
+    <Params>
+      <Param name="fields" type="text" doc="Json content type fields"/>
+      <Param name="static" type="int" doc="Static Form?"/>
+      <Param name="form" output="true" type="text" doc="The output form"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="fieldsSet"><JsonToSet><Var name="PARAMS" key="fields"/></JsonToSet></Var>
+      <Var name="defaultData"><Set/></Var>
+      <ForEach var="fieldsSet" item="field">
+        <Control method="addField" object="form">
+          <Param>
+            <Set>
+              <Element name="container">contentTypeFields</Element>
+              <Element name="id"><Var name="field" key="id"/></Element>
+              <Element name="type">
+                <If condition="$PARAMS->static == 1">
+                  <Then>Static</Then>
+                  <Else><Var name="field" key="type"/></Else>
+                </If>
+              </Element>
+              <Element name="label"><Var name="field" key="label"/></Element>
+              <Element name="help">false</Element>
+              <Element name="datasource"><Var name="field" key="datasource"/></Element>
+              <Element name="bindid"><Var name="field" key="bindid"/></Element>
+              <Element name="bindvalue"><Var name="field" key="bindvalue"/></Element>
+              <Element name="required"><Var name="field" key="required"/></Element>
+              <Element name="maxlength"><Var name="field" key="maxlength"/></Element>
+            </Set>
+          </Param> <!-- Field Properties -->
+        </Control>
+        <If condition="$field->default != ''">
+          <Then>
+            <Var name="defaultData" key="$field->id"><Int>1</Int></Var>
+          </Then>
+        </If>
+        <Var name="options"><Var name="field" key="options"/></Var>
+        <If condition="$options->__length != 0">
+          <Then>
+            <!-- Add a datasource to the form-->
+            <Control method="addDatasource" object="form">
+              <Param><String.parse>$field['id']Options</String.parse></Param>
+              <Param><Var name="options"/></Param>
+            </Control>
+          </Then>
+        </If>
+      </ForEach>
+      <If condition="$defaultData->__length != 0">
+        <Then>
+          <Control method="setDefaultData" object="form">
+            <Param><Var name="defaultData"/></Param>
+          </Control>
+        </Then>
+      </If>
+      <Return></Return>
+    </Begin>
+    </Function>
+  </Library>
+</Node>

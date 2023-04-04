@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Libraries />
+	<Configuration />
+	<Params />
+	<Screens >
+		<Screen id="scrMain">
+			<Form name="frmMain"  title="New File">
+				<File name="file"/>
+				<ButtonGroup >
+					<Button type="submit" label="save" name="submitusername" action="insert"/>
+				</ButtonGroup>
+			</Form>
+
+			<Grid name="appFilesGrid" title="Application Files" infer="false">
+				<Template>
+					<Columns>
+						<Column name="id" label="photo">
+							<Formatter name="AppFileDownload" application="gecol.store" height="100px"/>
+						</Column>
+						<Column name="dirname"/>
+						<Column name="basename"/>
+						<Column name="extension"/>
+						<Column name="size"/>
+					</Columns>
+					<Actions separator="true">
+						<Action name="delete" icon="trash-alt" actionvalue="basename" confirm="true"></Action>
+					</Actions>
+				</Template>
+			</Grid>
+		</Screen>
+	</Screens>
+
+	<Actions>
+		<Action name="init" screen="scrMain">
+			<DataSource name="sampleDataSource" connector="AppFileConnector">
+				<Param name="type">SampleType</Param>
+			</DataSource>
+
+			<Var name="records" dump="true">
+				<DataAccess method="getAll" datasource="sampleDataSource">
+					<Param name="_entity">gecol.store</Param>
+				</DataAccess>
+			</Var>
+
+			<Control method="bind" object="appFilesGrid">
+				<Param><Var name="records"/></Param>
+			</Control>
+		</Action>
+
+		<Action name="insert">
+			<DataSource name="sampleDataSource" connector="AppFileConnector">
+				<Param name="type">SampleType</Param>
+			</DataSource>
+
+			<Var name="records" dump="true">
+				<DataAccess method="insert" datasource="sampleDataSource">
+					<Param name="_entity">gecol.store</Param>
+				</DataAccess>
+			</Var>
+
+			<Action name="init"/>
+		</Action>
+
+		<Action name="delete">
+			<DataSource name="sampleDataSource" connector="AppFileConnector">
+				<Param name="type">SampleType</Param>
+			</DataSource>
+
+			<Var name="records" dump="true">
+				<DataAccess method="delete" datasource="sampleDataSource">
+					<Param name="_entity">gecol.store</Param>
+					<Param name="id"><ActionValue/></Param>
+				</DataAccess>
+			</Var>
+
+			<Action name="init"/>
+		</Action>
+	</Actions>
+	<Library/>
+</Node>

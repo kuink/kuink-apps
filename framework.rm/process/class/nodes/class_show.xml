@@ -11,28 +11,28 @@
       <Param name="code" doc="The class code to view"/>
   </Params>
   <Screens>
-    <Screen id="scrView">
+    <Screen name="scrView">
       <Form name="frmView" title="viewClass">
         <Column id="c1"/>
-        <Header id="baseData"/>
-        <Static id="id" label="id" hidden="true"/>
-        <Static id="ref_pgd_mec"/>
-        <Static id="code" label="code">
+        <Header name="baseData"/>
+        <Static name="id" label="id" hidden="true"/>
+        <Static name="ref_pgd_mec"/>
+        <Static name="code" label="code">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="name" label="name" maxlength="128" help="class_name"/>
-        <Static id="description" label="description" />
-        <Static id="business_process"/>
+        <Static name="name" label="name" maxlength="128" help="class_name"/>
+        <Static name="description" label="description" />
+        <Static name="business_process"/>
         
-        <Static id="disposal_duration">
+        <Static name="disposal_duration">
           <Formatter name="Style" method="bold"/>
         </Static>
-        <Static id="final_destination">
+        <Static name="final_destination">
           <Formatter name="Style" method="bold"/>
         </Static>
                 
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
+          <Button name="back" type="back" label="back" action="back"/>
         </ButtonGroup>
       </Form>
     </Screen>

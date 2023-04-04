@@ -21,7 +21,8 @@
         <Attribute name="is_active" domain="bool" required="true" default="1" doc="Is this agreement statement active?" />
         <Attribute name="statement" domain="text" required="true"  multilang="true" doc="The statement text" />
 				<Attribute name="mandatory_response_value" domain="int" required="false" doc="Dont let save a response unless this statement has this value" />
-				<Attribute name="expire_date_expression" domain="string" required="false" doc="Expression that define the expire date of the agreement statement response. A NULL value means that the agreement statement response never expires" />
+        <Attribute name="expire_date_expression" domain="string" required="false" doc="Expression that define the expire date of the agreement statement response. A NULL value means that the agreement statement response never expires" />
+        <Attribute name="id_controlled_document" domain="foreign" required="false" refentity="fw_rm_controlled_document" refattr="id"  doc="This statement referes to a controlled document?" />
         <Template name="fw.identity.multilang.long"/>
         <Template name="fw.base"/>
       </Attributes>
@@ -72,6 +73,8 @@
         <Attribute name="agreement_statement_response" domain="int" required="true" doc="The value of the response"/>
         <Attribute name="agreement_statement_context" domain="text" required="false" doc="json: The context of the statement. Some statements can have variables with values to expand. If this attribute is filled then it should be expanded in the statement"/>
         <Attribute name="expire_date" domain="timestamp" required="false" doc="Commitment expire date. If null never expires. Based on the statement expire_date_expression" />
+        <Attribute name="id_controlled_document_version" domain="foreign" refentity="fw_rm_controlled_document_version" required="false"  doc="The version of this document accepted if it refers to an external document" />
+        <Attribute name="order" domain="int" required="false" doc="The order of the statement inside type. Will override the order defined in agreement statement type"/>             
         <Template name="fw.base"/>
       </Attributes>
     </Entity>

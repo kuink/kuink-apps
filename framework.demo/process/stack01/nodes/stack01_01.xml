@@ -11,21 +11,21 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-      <Screen id="screen001" >
+      <Screen name="screen001" >
           <Form name="changePasswordForm" title="changePassword">
-            <Password id="oldPassword" label="oldPassword" required="true"/>
-            <Password id="newPassword" label="newPassword" required="true"/>
-            <Password id="confirmNewPassword" label="confirmNewPassword" required="true"/>
+            <Password name="oldPassword" label="oldPassword" required="true"/>
+            <Password name="newPassword" label="newPassword" required="true"/>
+            <Password name="confirmNewPassword" label="confirmNewPassword" required="true"/>
           </Form>
           <Grid name="resultGrid" infer="true" title="result"/>
           <Form name="resultForm" infer="true" title="result"/>          
        </Screen>    
-      <Screen id="soapList" >
+      <Screen name="soapList" >
           <Grid name="resultGrid" infer="true" title="result"/>
        </Screen>    
-      <Screen id="soapCall" >
+      <Screen name="soapCall" >
           <Form name="callFrm" title="call">
-            <Container id="container"/>
+            <Container name="container"/>
             <ButtonGroup>
               <Buttton id="back" label="back" action="soapBack"/>
               <Buttton id="execute" label="execute" action="soapExecute"/>
@@ -34,7 +34,7 @@
        </Screen>           
   
   
-		<Screen id="screen001b" >
+		<Screen name="screen001b" >
           <Grid name="resultGrid" infer="true" title="result"/>    
           <!--Grid name="absenceResume" title="absenceResume" pivot="true" pivotlines="id_person,display_name" pivotcols="subject_code" pivotdata="count_unjustified,max_absences">
               <Template>
@@ -75,31 +75,31 @@
           
           <!--Custom name="logEntries" control="framework,log,search"/-->
           <Form name="test" title="01.01" tabs="top" >
-            <Tab id="first" name="first" label="first"/>
-            <Select id="state" label="state" decoration="info">
+            <Tab name="first" label="first"/>
+            <Select name="state" label="state" decoration="info">
               <Options>
                 <Option id="1">AAAA</Option>
                 <Option id="2">BBBB</Option>
               </Options>
             </Select>
-            <Text id="txt11" name="txt11" label="txt11" decoration="success"/>
-            <Text id="txt12" name="txt12" label="txt12" visible="true" required="true" >
+            <Text name="txt11" label="txt11" decoration="success"/>
+            <Text name="txt12" label="txt12" visible="true" required="true" >
                 <Rule attr="visible" condition="$state == '2'" value="false" runat="client"/>
             </Text>
             
-            <Tab id="second" name="second" label="second"/>
-            <Text id="txt21" name="txt21" label="txt21" >
+            <Tab name="second" label="second"/>
+            <Text name="txt21" label="txt21" >
               <Rule attr="visible" condition="$state == '1'" value="false" runat="client"/>
             </Text>
-            <Text id="txt22" name="txt22" label="txt22" required="false"/>
-            <Tab id="third" name="third" label="third"/>
-            <Text id="txt31" name="txt31" label="txt31" required="false"/>
+            <Text name="txt22" label="txt22" required="false"/>
+            <Tab name="third" label="third"/>
+            <Text name="txt31"  label="txt31" required="false"/>
             <ButtonGroup>
-              <Button type="cancel" id="prev" label="prev" action="prev"/>  
-              <Button type="submit" id="next" label="next" action="next">
+              <Button type="cancel" name="prev" label="prev" action="prev"/>  
+              <Button type="submit" name="next" label="next" action="next">
                 <Rule attr="visible" condition="$state == '2'" value="false" runat="client"/>
               </Button>
-              <Button type="submit" id="something" label="something" action="doSomething" newcontext="true"/>
+              <Button type="submit" name="something" label="something" action="doSomething" newcontext="true"/>
             </ButtonGroup>
         </Form>
       </Screen>
@@ -356,4 +356,3 @@
 	 </Function>
 	</Library>
 </Node>
-

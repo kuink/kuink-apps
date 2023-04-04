@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>Search all users data</Doc>
+  <Params>
+	  <Param name="text" required="true"/>
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+        	<XField>
+	            u.*
+	        </XField>
+	    </XSelect>
+	    <XFrom>
+	        <XTable>
+	            fw_user u
+	        </XTable>
+	    </XFrom>
+	    <XWhere>
+            <XCondition>
+              1=1 AND '{param->text}' != ''
+            </XCondition>
+	        <XCondition optional="text">
+	          <![CDATA[
+							AND ( u.username like '{param->text}'
+								OR u.email like '{param->text}'
+								OR u.display_name like '{param->text}'
+							)  
+						]]>
+	        </XCondition>
+	    </XWhere>
+	    <XOrderBy>
+	        <XOrder><![CDATA[u.username asc]]></XOrder>
+	    </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

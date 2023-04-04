@@ -284,6 +284,7 @@
         <Permissions>
           <Allow>
             <Capability name="framework/authentication.password::change.all"/>
+            <Capability name="framework/authentication.password::change.std"/>            
           </Allow>
         </Permissions>
         <Var name="PARAMS"/>
@@ -468,12 +469,24 @@
             </ForEach>
           
             <!-- Try to change password in google Apps -->
-            <Var name="googleAppsSuccess">
-              <DataAccess method="update" datasource="googleAPIAdminSDK">
+            <Var name="googleUser" dump="true">
+              <DataAccess method="load" datasource="googleAPIAdminSDK">
+                <Param name="_entity">user</Param>
                 <Param name="uid"><Var name="request"/></Param>
-                <Param name="password"><Var name="PARAMS" key="newPassword" /></Param>
               </DataAccess>
             </Var>
+
+            <If condition="$googleUser->__length != 0">
+              <Then>
+                <Var name="googleAppsSuccess">
+                  <DataAccess method="update" datasource="googleAPIAdminSDK">
+                    <Param name="_entity">user</Param>
+                    <Param name="uid"><Var name="request"/></Param>
+                    <Param name="password"><Var name="PARAMS" key="newPassword" /></Param>
+                  </DataAccess>
+                </Var>
+              </Then>
+            </If>
             
             <Var name="ldapResult" >
               <If condition="$ldapErrors == 0">
@@ -483,7 +496,7 @@
             </Var>
 
             <Var name="googleResult">
-              <If condition="$googleAppsSuccess == 1">
+              <If condition="$googleAppsSuccess == 0">
                 <Then>OK</Then>
                 <Else>ERROR</Else>
               </If>
@@ -922,4 +935,3 @@
     </Function>
   </Library>
 </Node>
-

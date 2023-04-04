@@ -40,7 +40,6 @@
       </Params>
       <Return type="string" doc="The request Guid"/>
       <Begin>
-      	<Transaction>
       		<Var name="PARAMS" dump="true"/>
 	        <!-- Get category by code -->
 	        <Var name="requestCategory">
@@ -53,9 +52,9 @@
 	            <Exception><String parse="true">Invalid category code: $PARAMS->request_category_code</String></Exception>
 	          </Then>
 	        </If>
-	        
+
 	        <!-- Get status by code -->
-	        <Var name="requestStatus">
+	        <Var name="requestStatus" dump="true">
 	          <Call library="framework,request.status,api" function="get">
 	            <Param name="code"><String>new</String></Param>
 	          </Call>
@@ -65,15 +64,14 @@
 	            <Exception><String parse="true">Invalid status code: new</String></Exception>
 	          </Then>
 	        </If>
-	
 	        <Var name="canAddRequest">1</Var>        
 	        <If condition="$allowDuplicates == 0">
 						<Then>
 			        <Var name="duplicateRequests" dump="true">
 			          <DataAccess method="getAll">
 			            <Param name="_entity">fw_request</Param>
-			            <Param name="data"><Var name="data"/></Param>
 			            <Param name="id_request_status">1</Param>
+			            <Param name="data"><Var name="data"/></Param>                  
 			          </DataAccess>
 			        </Var>
 		          <If condition="$duplicateRequests->__length &gt; 0">
@@ -83,38 +81,41 @@
 		          </If>
 						</Then>
 					</If>
+          <!--Return>AAA</Return-->
 	        
 					<If condition="$canAddRequest == 1">
 						<Then>
-					    <Var name="requestGuid"><Guid/></Var>
-					    <Var name="requestId">
-						    <DataAccess method="insert">
-						      <Param name="_entity">fw_request</Param>
-						      <Param name="guid"><Var name="requestGuid"/></Param>
-						      <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
-						      <Param name="id_request_category"><Var name="requestCategory" key="id"/></Param>
-						      <Param name="id_request_status"><Var name="requestStatus" key="id"/></Param>
-						      <Param name="ttl"><Var name="requestCategory" key="ttl"/></Param>
-						      <Param name="data"><Var name="PARAMS" key="data"/></Param>
-						      <Param name="attempts">0</Param>
-						      <Param name="_base">true</Param>
-						    </DataAccess>		
-					    </Var>
-					    <If condition="$requestCategory->assync == 0 &amp;&amp; $PARAMS->assyncProcess == 1">
-								<Then>
-									<!-- Process imediately -->
-									<Call library="framework,request,api" function="process">
-										<Param name="guid"><Var name="requestGuid"/></Param>
-									</Call>								
-								</Then>
-							</If>
-					    
+              <!--Transaction-->
+                <Var name="requestGuid"><Guid/></Var>
+                <Var name="requestId">
+                  <DataAccess method="insert">
+                    <Param name="_entity">fw_request</Param>
+                    <Param name="guid"><Var name="requestGuid"/></Param>
+                    <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+                    <Param name="id_request_category"><Var name="requestCategory" key="id"/></Param>
+                    <Param name="id_request_status"><Var name="requestStatus" key="id"/></Param>
+                    <Param name="ttl"><Var name="requestCategory" key="ttl"/></Param>
+                    <Param name="data"><Var name="PARAMS" key="data"/></Param>
+                    <Param name="attempts">0</Param>
+                    <Param name="_base">true</Param>
+                  </DataAccess>		
+                </Var>
+                <If condition="$requestCategory->assync == 0 &amp;&amp; $PARAMS->assyncProcess == 1">
+                  <Then>
+                    <!-- Process imediately -->
+                    <Trace><String.parse>Processing request... $requestGuid</String.parse></Trace>
+                    <Call library="framework,request,api" function="process">
+                      <Param name="guid"><Var name="requestGuid"/></Param>
+                    </Call>
+                  </Then>
+                </If>
+              <!--/Transaction-->
 						</Then>
 						<Else>
 						 <Var name="requestGuid"><Null/></Var>
 						</Else>
 					</If>
-        </Transaction>
+        
         <Return>
           <Var name="requestGuid"/>
         </Return>

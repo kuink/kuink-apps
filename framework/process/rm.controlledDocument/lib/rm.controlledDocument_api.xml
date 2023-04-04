@@ -13,14 +13,14 @@
     <Use name="TemplateLib" type="lib" />
   </Libraries>
   <Configuration>
-    <Config key="approvalFolder" value="neon/files/controlled_docs/approval"/>
-    <Config key="obsoleteFolder" value="neon/files/controlled_docs/obsolete"/>
-    <Config key="currentFolder" value="neon/files/controlled_docs/current"/>
-    <Config key="rejectedFolder" value="neon/files/controlled_docs/rejected"/>
+    <Config key="approvalFolder" value="controlled_docs/approval"/>
+    <Config key="obsoleteFolder" value="controlled_docs/obsolete"/>
+    <Config key="currentFolder" value="controlled_docs/current"/>
+    <Config key="rejectedFolder" value="controlled_docs/rejected"/>
 
-    <Config key="maxUploadFileSize" value="4000000"/>
+    <Config key="maxUploadFileSize" value="15000000"/>
     <Config key="allowedExtensions" value="ott,odt,ots,ods,otp,odp,pdf,odg"/>
-    <Config key="tmpFolder" value="neon/files/controlled_docs/tmp"/>
+    <Config key="tmpFolder" value="controlled_docs/tmp"/>
 
     <!--Config key="approvalFolder" value="controlled_docs/approval"/>
     <Config key="obsoleteFolder" value="controlled_docs/obsolete"/>
@@ -42,6 +42,11 @@
         <Param name="code_name" type="text" required="false"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="true"/>
+        <Param name="keywords" type="text" required="false"/>        
+        <Param name="uri_external" type="text" required="false"/>
+        <Param name="is_public" type="int" required="false"/>
+        <Param name="deployment_file_format" type="text" required="false"/>
+        <Param name="id_class_template" type="text" required="true"/>
       </Params>
       <Exceptions>
         <Exception name="framework/rm.controlleddocument::duplicate" doc="There is already a document with that code"/>
@@ -70,25 +75,22 @@
             <Param name="name">
               <Var name="PARAMS" key="name"/>
             </Param>
+            <Param name="keywords">
+              <Var name="PARAMS" key="keywords"/>
+            </Param>            
+            <Param name="uri_external">
+              <Var name="PARAMS" key="uri_external"/>
+            </Param>
+            <Param name="is_public">
+              <Var name="PARAMS" key="is_public"/>
+            </Param>
+            <Param name="deployment_file_format">
+              <Var name="PARAMS" key="deployment_file_format"/>
+            </Param>
             <Param name="description">
               <Var name="PARAMS" key="description"/>
             </Param>
             <Param name="_base">true</Param>            
-            <!--Param name="id_company">
-              <Var name="USER" key="idCompany"/>
-            </Param>
-            <Param name="_creation">
-              <DateTimeLib method="Now"/>
-            </Param>
-            <Param name="_creation_ip">
-              <Var name="USER" key="ip"/>
-            </Param>
-            <Param name="_modification">
-              <DateTimeLib method="Now"/>
-            </Param>
-            <Param name="_modification_ip">
-              <Var name="USER" key="ip"/>
-            </Param-->
           </DataAccess>
         </Var>
         <If condition="$PARAMS->id_class_template != ''">
@@ -100,17 +102,17 @@
 	            </Call>             
             </Var>					 
             <!-- Allow multiple documents in class -->
-					  <!--If condition="$templates->__length == 0">
+					  <If condition="$templates->__length == 0">
 							<Then>
 		            <Call library="framework,rm.controlledDocument,api" function="addToClass">
 		              <Param name="id"><Var name="id"/></Param>
-		              <Param name="id_class"><Var name="PARAMS" key="id_class"/></Param>
+		              <Param name="id_class"><Var name="PARAMS" key="id_class_template"/></Param>
 		            </Call>             
 							</Then>
 							<Else>
 							 <Exception>framework/rm.controlleddocument::classAllreadyHasTemplate</Exception>
 							</Else>
-						</If-->
+						</If>
 					</Then>
 				</If>
         <Return>
@@ -144,7 +146,11 @@
         <Param name="code_name" type="text" required="false"/>
         <Param name="name" type="text" required="true"/>
         <Param name="description" type="text" required="true"/>
+        <Param name="keywords" type="text" required="false"/>
+        <Param name="uri_external" type="text" required="false"/>
+        <Param name="deployment_file_format" type="text" required="false"/>
         <Param name="is_active" type="int" required="true"/>        
+        <Param name="is_public" type="int" required="true"/>        
         <Param name="id_class" type="int" doc="The class where this doc belongs in a classification tree"/>
         <Param name="id_class_template" type="int" doc="The class where this doc is a template"/>
       </Params>
@@ -159,7 +165,8 @@
 						</Then>
 					</If>
         </ForEach>
-        <Var name="PARAMS"/>
+        <Var name="PARAMS" dump="true"/>
+        <Var name="paramData" dump="true"/>
         <DataAccess method="update" params="paramData">
           <Param name="_entity">fw_rm_controlled_document</Param>
           <Param name="_modification">
@@ -192,6 +199,7 @@
       <Params>
         <Param name="id_controlled_document_type" type="int"/>
         <Param name="text" type="string"/>
+        <Param name="is_active" type="string"/>
         <Param name="isManager" type="int" doc="Can view doctype 0"/>
         <Param name="pagenum" type="int"/>
         <Param name="pagesize" type="int"/>
@@ -216,6 +224,7 @@
             <Param name="text" wildcard="fullSplit">
               <Var name="PARAMS" key="text"/>
             </Param>
+            <Param name="is_active"><Var name="is_active"/></Param>
             <Param name="isManager"><Var name="isManager"/></Param>
             <Param name="id_person"><Var name="USER" key="id"/></Param>
             <Param name="_pageNum">
@@ -228,7 +237,50 @@
         </Return>
       </Begin>
     </Function>
-    
+
+    <Function name="searchForSimplified" doc="Search records from table fw_rm_controlled_document for manage simple generic node, copied from search for performance issues on version approval subquery">
+      <Params>
+        <Param name="id_controlled_document_type" type="int"/>
+        <Param name="text" type="string"/>
+        <Param name="is_active" type="string"/>
+        <Param name="isManager" type="int" doc="Can view doctype 0"/>
+        <Param name="pagenum" type="int"/>
+        <Param name="pagesize" type="int"/>
+      </Params>
+      <Return type="multiple" doc="">
+        <External name="id" type="int" doc=""/>
+        <External name="code" type="text" doc=""/>
+        <External name="id_current_version" type="int" doc=""/>
+        <External name="id_controlled_document_type" type="int" doc=""/>
+        <External name="current_version_number" type="int" doc=""/>
+        <External name="code_name" type="text" doc=""/>
+        <External name="name" type="text" doc=""/>
+        <External name="description" type="text" doc=""/>
+        <External name="id_company" type="int" doc=""/>
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,controlledDocument.searchForSimplified">
+            <Param name="id_controlled_document_type">
+              <Var name="PARAMS" key="id_controlled_document_type"/>
+            </Param>
+            <Param name="text" wildcard="fullSplit">
+              <Var name="PARAMS" key="text"/>
+            </Param>
+            <Param name="is_active"><Var name="is_active"/></Param>
+            <Param name="isManager"><Var name="isManager"/></Param>
+            <Param name="id_person"><Var name="USER" key="id"/></Param>
+            <Param name="_pageNum">
+              <Var name="PARAMS" key="pagenum"/>
+            </Param>
+            <Param name="_pageSize">
+              <Var name="PARAMS" key="pagesize"/>
+            </Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
     <Function name="getAll" doc="Get all records from table fw_rm_controlled_document">
       <Params/>
       <Return type="multiple" doc="">
@@ -240,7 +292,10 @@
         <External name="code_name" type="text" doc=""/>
         <External name="name" type="text" doc=""/>
         <External name="description" type="text" doc=""/>
+        <External name="external_uri" type="text" doc=""/>
+        <External name="deployment_file_format" type="text" doc=""/>
         <External name="is_active" type="int" doc=""/>
+        <External name="is_public" type="int" doc=""/>
         <External name="id_company" type="int" doc=""/>
         <External name="_creation" type="int" doc=""/>
         <External name="_creation_ip" type="text" doc=""/>
@@ -269,7 +324,10 @@
         <External name="code_name" type="text" doc=""/>
         <External name="name" type="text" doc=""/>
         <External name="description" type="text" doc=""/>
+        <External name="external_uri" type="text" doc=""/>
+        <External name="deployment_file_format" type="text" doc=""/>
         <External name="is_active" type="int" doc=""/>
+        <External name="is_public" type="int" doc=""/>
         <External name="id_company" type="int" doc=""/>
         <External name="_creation" type="int" doc=""/>
         <External name="_creation_ip" type="text" doc=""/>
@@ -478,7 +536,8 @@
         <Param name="id_controlled_document" type="int" required="true" doc="The controlled document to inser the version"/>
         <Param name="reason" type="string" required="true" doc="The reason for this version"/>
         <Param name="id_file" type="int" required="false" doc="The file must exist and created first in the fw_file entity"/>
-        <Param name="template_src" type="text" required="false" doc="If the template src is in not in a file, then this will old the source"/>
+        <Param name="template_src" type="text" required="false" doc="If the template src is in not in a file, then this will hold the source"/>
+        <Param name="template_config" type="text" required="false" doc="If the template src is in not in a file, then this will hold the template configuration"/>
         <Param name="test_data" type="text" required="false" doc="If the src is present then this is a data to test the template and to preview it"/>
       </Params>
       <Exceptions>
@@ -508,6 +567,7 @@
               <Param name="reason"><Var name="reason"/></Param>
               <Param name="id_file"><Var name="id_file"/></Param>
               <Param name="template_src"><Var name="template_src"/></Param>
+              <Param name="template_config"><Var name="template_config"/></Param>
               <Param name="test_data"><Var name="test_data"/></Param>
               <Param name="is_finished"><Int>0</Int></Param>
               <Param name="is_active">0</Param>
@@ -658,7 +718,8 @@
         <!-- Create a tmp file to put the content -->
         <Var name="fileName"><Guid/></Var>
         <Var name="id_file">
-	        <DoPDF_v2 register="$registerFile" filename="$fileName" download="false" override="true" marginleft="$templateConfig->marginleft" margintop="$templateConfig->margintop" marginbottom="$templateConfig->marginbottom" marginright="$templateConfig->marginright" header="$templateConfig->header" footer="$templateConfig->footer" orientation="$templateConfig->orientation" background="$templateConfig->background">
+          <!--DoPDF_v2 register="$registerFile" filename="$fileName" download="false" override="true" marginleft="10" margintop="10" marginbottom="10" marginright="10" orientation="portrait"-->
+          <DoPDF_v2 register="$registerFile" filename="$fileName" download="false" override="true" marginleft="$templateConfig->marginleft" margintop="$templateConfig->margintop" marginbottom="$templateConfig->marginbottom" marginright="$templateConfig->marginright" header="$templateConfig->header" footer="$templateConfig->footer" orientation="$templateConfig->orientation" background="$templateConfig->background">
 	          <Param name="content"><Var name="content" /></Param>
 	          <Meta name="creator">controlledDocument</Meta>
 	          <Meta name="author">controlledDocument</Meta>
@@ -671,7 +732,7 @@
         <If condition="$download == 1">
 					<Then>
 		        <!-- Stream the file -->
-		        <Var name="fileNameComplete"><String.parse>$fileName.pdf</String.parse></Var>        
+		        <Var name="fileNameComplete" dump="true"><String.parse>$fileName.pdf</String.parse></Var>        
 		        <FileLib method="downloadTmp">
 		            <Param><Var name="fileNameComplete"/></Param>
 		        </FileLib>
@@ -760,6 +821,7 @@
         <Param name="reason" type="string" required="true" doc="The reason for this version"/>
         <Param name="id_file" type="int" required="false" doc="The file must exist and created first in the fw_file entity"/>
         <Param name="template_src" type="text" required="false" doc="If the template src is in not in a file, then this will old the source"/>
+        <Param name="template_config" type="text" required="false" doc="If the template src is in not in a file, then this will hold the template configuration"/>
         <Param name="test_data" type="text" required="false" doc="If the src is present then this is a data to test the template and to preview it"/>
       </Params>
       <Exceptions>
@@ -778,7 +840,8 @@
 	              <Param name="id"><Var name="id_version"/></Param>
 	              <Param name="reason"><Var name="reason"/></Param>
 	              <Param name="id_file"><Var name="id_file"/></Param>
-	              <Param name="template_src"><Var name="template_src"/></Param>
+                <Param name="template_src"><Var name="template_src"/></Param>
+                <Param name="template_config"><Var name="template_config"/></Param>
 	              <Param name="test_data"><Var name="test_data"/></Param>
 	              <Param name="is_active">0</Param>
 	              <Param name="_base">true</Param>
@@ -792,6 +855,7 @@
                 <Param name="id"><Var name="id_version"/></Param>
                 <Param name="reason"><Var name="reason"/></Param>
                 <Param name="template_src"><Var name="template_src"/></Param>
+                <Param name="template_config"><Var name="template_config"/></Param>
                 <Param name="test_data"><Var name="test_data"/></Param>
                 <Param name="is_active">0</Param>
                 <Param name="_base">true</Param>
@@ -876,7 +940,7 @@
     </Begin>
     </Function>
 
-
+    <!-- Workflows.begin -->
     <Function scope="public" name="startVersionApprovalWorkflow" doc="Starts a workflow on a given version">
 			<Params>
 			 <Param name="id_version" type="int" required="true" doc="The version to approve"/>
@@ -1008,7 +1072,7 @@
                   <Param name="controlled_document_code"><Var name="cd" key="code"/></Param>
                   <Param name="controlled_document_code_name"><Var name="cd" key="code_name"/></Param>
                   <Param name="new_version_code"><Var name="new_version_code"/></Param>
-                </Call>           
+                </Call>
               </Then>
             </If>    
             
@@ -1062,64 +1126,6 @@
          <Return><Var name="wfProcessInstance"/></Return>
 			</Begin>
 		</Function>
-
-    <Function name="getVersions" doc="Get all versions of a controlled document">
-      <Params>
-        <Param name="id" type="int" doc="The controlled document id"/>
-      </Params>
-      <Return type="multiple" doc="">
-      </Return>
-      <Begin>
-        <Return>
-          <DataAccess method="this,this,controlledDocument.getVersions">
-            <Param name="id_controlled_document"><Var name="PARAMS" key="id"/></Param>
-          </DataAccess>
-        </Return>
-      </Begin>
-    </Function>
-
-    <Function name="getVersionProcessInstanceId" doc="Get a given version process instance id">
-      <Params>
-        <Param name="id_version" type="int" doc="The controlled document version"/>
-      </Params>
-      <Return type="int" doc="The process instance id">
-      </Return>
-      <Begin>
-        <Var name="version">
-          <DataAccess method="load">
-            <Param name="_entity">fw_rm_controlled_document_version</Param>
-            <Param name="id"><Var name="id_version"/></Param>
-          </DataAccess>
-        </Var>
-        <Return>
-          <Var name="version" key="id_wf_instance"/>
-        </Return>
-      </Begin>
-    </Function>
-
-    <Function name="getVersionHistory" doc="Get version workflow history">
-      <Params>
-        <Param name="id_version" type="int" doc="The controlled document version id"/>
-      </Params>
-      <Return type="multiple" doc="">
-      </Return>
-      <Begin>
-        <Var name="version">
-          <DataAccess method="load">
-            <Param name="_entity">fw_rm_controlled_document_version</Param>
-            <Param name="id"><Var name="id_version"/></Param>
-          </DataAccess>
-        </Var>
-        <Var name="history">
-          <Call library="framework,wf.process,api" function="getProcessInstanceHistory">
-            <Param name="id_process_instance"><Var name="version" key="id_wf_instance"/></Param>
-          </Call>
-        </Var>
-        <Return>
-          <Var name="history"/>
-        </Return>
-      </Begin>
-    </Function>
 
 		<Function scope="public" name="processWorkflowResult" doc="Process the workflow result">
 			<Params>
@@ -1259,6 +1265,14 @@
                             <Param name="id_file"><Var name="obsoleteVersion" key="id_file"/></Param>
                             <Param name="dest_path"><Var name="obsoleteFolder"/></Param>
                           </Call>
+                          <If condition="$obsoleteVersion->id_deployment_file != null">
+                            <Then>
+                              <Call library="framework,file,api" function="move">
+                                <Param name="id_file"><Var name="obsoleteVersion" key="id_deployment_file"/></Param>
+                                <Param name="dest_path"><Var name="obsoleteFolder"/></Param>
+                              </Call>
+                            </Then>
+                          </If>
                         </Then>
                       </If>
                       <!-- Move the approved version to the cuurent folder -->
@@ -1279,7 +1293,7 @@
             </Transaction>
           </Then>
           <Else>
-            <!-- The version was rejected... move the file to rejected folder -->
+            <!-- The version was rejected... move the file and deployment_file to rejected folder -->
             <Var name="version">
               <DataAccess method="load">
                 <Param name="_entity">fw_rm_controlled_document_version</Param>
@@ -1301,10 +1315,79 @@
                 </Call>
               </Then>
             </If>
+            <If condition="$version->id_deployment_file != null">
+              <Then>              
+                <Call library="framework,file,api" function="move">
+                  <Param name="id_file"><Var name="version" key="id_deployment_file"/></Param>
+                  <Param name="dest_path"><Var name="rejectedFolder"/></Param>
+                </Call>
+              </Then>
+            </If>
+
           </Else>
         </If>
 			</Begin>
 		</Function>
+    <!-- Workflows.end -->
+
+    <Function name="getVersions" doc="Get all versions of a controlled document">
+      <Params>
+        <Param name="id" type="int" doc="The controlled document id"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Return>
+          <DataAccess method="this,this,controlledDocument.getVersions">
+            <Param name="id_controlled_document"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getVersionProcessInstanceId" doc="Get a given version process instance id">
+      <Params>
+        <Param name="id_version" type="int" doc="The controlled document version"/>
+      </Params>
+      <Return type="int" doc="The process instance id">
+      </Return>
+      <Begin>
+        <Var name="version">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document_version</Param>
+            <Param name="id"><Var name="id_version"/></Param>
+          </DataAccess>
+        </Var>
+        <Return>
+          <Var name="version" key="id_wf_instance"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    <Function name="getVersionHistory" doc="Get version workflow history">
+      <Params>
+        <Param name="id_version" type="int" doc="The controlled document version id"/>
+      </Params>
+      <Return type="multiple" doc="">
+      </Return>
+      <Begin>
+        <Var name="version">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document_version</Param>
+            <Param name="id"><Var name="id_version"/></Param>
+          </DataAccess>
+        </Var>
+        <Var name="history">
+          <Call library="framework,wf.process,api" function="getProcessInstanceHistory">
+            <Param name="id_process_instance"><Var name="version" key="id_wf_instance"/></Param>
+          </Call>
+        </Var>
+        <Return>
+          <Var name="history"/>
+        </Return>
+      </Begin>
+    </Function>
+
 
     <Function scope="public" name="createRecord" doc="Creates a record for the current document version. Converts it if it has to.">
     <Params>
@@ -1504,12 +1587,28 @@
                 <Exception><String parse="true">framework/rm.controlledDocument::notExist ($PARAMS-id $PARAMS->code)</String></Exception>
             </Then>
           </If>
-          <Var name="version">
-            <DataAccess method="load">
-              <Param name="_entity">fw_rm_controlled_document_version</Param>
-              <Param name="id"><Var name="cd" key="id_current_version"/></Param>
-            </DataAccess>
-          </Var>
+          
+          <!-- Check if the document has a current version and get it. If not get the latest version -->
+          <If condition="$cd->id_current_version != 0">
+            <Then>
+              <Var name="version">
+                <DataAccess method="load">
+                  <Param name="_entity">fw_rm_controlled_document_version</Param>
+                  <Param name="id"><Var name="cd" key="id_current_version"/></Param>
+                </DataAccess>
+              </Var>
+            </Then>
+            <Else>
+              <Var name="version">
+                <DataAccess method="load">
+                  <Param name="_entity">fw_rm_controlled_document_version</Param>
+                  <Param name="id_controlled_document"><Var name="cd" key="id"/></Param>
+                  <Param name="_sort"><String>id desc</String>></Param>
+                </DataAccess>
+              </Var>
+            </Else>
+          </If>
+
           <If condition="$version->id_file == ''">
             <Then>
                 <Exception><String parse="true">framework/rm.controlledDocument::fileNotExist ($PARAMS-id $PARAMS->code)</String></Exception>
@@ -1653,6 +1752,40 @@
         </Var> 
 
         <Return><Var name="data"/></Return>
+      </Begin>
+    </Function>
+
+    <Function name="getTemplateClassData" doc="Get the controlled document template class data. The class where this document is a template!">
+      <Params>
+        <Param name="id" type="int" doc="The controlled document id"/>
+      </Params>
+      <Exceptions>
+        <Exception name="framework/rm.controlledDocument::classNotExist" doc="The rm class does not exist"/>
+      </Exceptions>
+      <Return type="single" doc="Class data"/>
+      <Begin>
+        <!-- Check if the controlled Document exists -->
+        <Var name="cd">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document</Param>
+            <Param name="id"><Var name="id"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$cd->__length == 0">
+          <Then>
+              <Exception><String parse="true">framework/rm.controlledDocument::notExist ($PARAMS->id)</String></Exception>
+          </Then>
+        </If>
+
+        <!-- Check if it is a template in a class -->
+        <Var name="templateClass">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document_class_template</Param>
+            <Param name="id_controlled_document"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return><Var name="templateClass"/></Return>
       </Begin>
     </Function>
 
@@ -1839,6 +1972,7 @@
             <Param name="reason"><String/></Param>
             <Param name="id_file"><Var name="idFile"/></Param>
             <Param name="template_src"><Null/></Param>
+            <Param name="template_config"><Null/></Param>            
             <Param name="test_data"><Null/></Param>
           </Call>
         </Var>
@@ -1855,6 +1989,91 @@
       </Begin>
     </Function>
 
+    <Function scope="public" name="uploadDeploymentFile" doc="Upload a deployment file">
+    <Params>
+      <Param name="id_version" type="int" doc="The version to upload the file"/>
+      <Param name="id_deployment_file" type="int" doc="The id of the uploaded file in the tmp folder"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+			<!-- The file is uploaded in the tmp folder so move i to the current folder -->
+
+			<!-- Check if the version is approved or not -->
+			<Var name="version" dump="true">
+				<DataAccess method="load">
+					<Param name="_entity">fw_rm_controlled_document_version</Param>
+					<Param name="id"><Var name="PARAMS" key="id_version"/></Param>
+				</DataAccess>
+			</Var>
+			<If condition="$version->id_file == ''">
+				<Then>
+						<Exception name="framework/rm.controlledDocument::fileNotExist">
+							<Param><String parse="true">($version->id $version->id_file)</String></Param>
+						</Exception>
+				</Then>
+			</If>
+
+			<Var name="controlledDocument">
+				<DataAccess method="load">
+					<Param name="_entity">fw_rm_controlled_document</Param>
+					<Param name="id"><Var name="version" key="id_controlled_document"/></Param>
+				</DataAccess>
+			</Var>
+
+			<!-- Load the source file -->
+			<Var name="file">
+				<DataAccess method="load">
+					<Param name="_entity">fw_file</Param>
+					<Param name="id"><Var name="version" key="id_file"/></Param>
+				</DataAccess>
+			</Var>
+
+			<!-- Load the deployment file -->
+			<Var name="deploymentFile">
+				<DataAccess method="load">
+					<Param name="_entity">fw_file</Param>
+					<Param name="id"><Var name="PARAMS" key="id_deployment_file"/></Param>
+				</DataAccess>
+			</Var>
+
+			<If condition="$version->is_active == 0">
+				<Then>
+					<Exception name="framework/rm.controlledDocument::versionNotActive"/>
+				</Then>
+			</If>
+			
+			<If condition="$deploymentFile->ext != $controlledDocument->deployment_file_format">
+				<Then>
+					<Exception name="framework/rm.controlledDocument::invalidDeploymentFileFormat">
+						<Param><String.parse>$controlledDocument->deployment_file_format allowed and $deploymentFile->ext was uploaded</String.parse></Param>
+					</Exception>
+				</Then>
+			</If>
+			<Var name="newFileName" dump="true">
+				<String.replace>
+					<Param><String.parse>.$file['ext']</String.parse></Param>
+					<Param><String.parse>.$deploymentFile['ext']</String.parse></Param>
+					<Param><Var name="file" key="name"/></Param>
+				</String.replace>
+			</Var>
+
+			<!-- Move the file -->
+			<Call library="framework,file,api" function="move">
+				<Param name="id_file"><Var name="deploymentFile" key="id"/></Param>
+				<Param name="dest_path"><Var name="file" key="path"/></Param>
+				<Param name="dest_filename"><String.parse>$newFileName</String.parse></Param>
+			</Call>
+
+			<!-- Update the version -->
+			<DataAccess method="update">
+				<Param name="_entity">fw_rm_controlled_document_version</Param>
+				<Param name="id"><Var name="version" key="id"/></Param>
+				<Param name="id_deployment_file"><Var name="deploymentFile" key="id"/></Param>
+			</DataAccess>
+
+      <Return></Return>
+    </Begin>
+    </Function>
+
   </Library>
 </Node>
-

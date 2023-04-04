@@ -11,26 +11,26 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-      <Screen id="screen001" >
+      <Screen name="screen001" >
           <Form name="form01" title="changePassword" persist="true">
-            <Text id="id" label="id"/>
-            <Text id="name" label="name"/>
-            <Date id="date"/>
-            <DateTime id="datetime"/>
-            <Int id="int"/>
-            <Real id="real"/>
-            <Static id="st" label="st"/>
-            <Checkbox id="check"/>
+            <Text name="id" label="id"/>
+            <Text name="name" label="name"/>
+            <Date name="date"/>
+            <DateTime name="datetime"/>
+            <Int name="int"/>
+            <Real name="real"/>
+            <Static name="st" label="st"/>
+            <Checkbox name="check"/>
             <ButtonGroup>
-              <Button id="search" type="search" action="search" confirm="confirm"/>
-              <Button id="next" type="submit" action="next" confirm="true"/>
+              <Button name="search" type="search" action="search" confirm="confirm"/>
+              <Button name="next" type="submit" action="next" confirm="true"/>
             </ButtonGroup>
           </Form>
        </Screen>
-       <Screen id="screen002" >
+       <Screen name="screen002" >
           <Form name="form02" title="changePassword" >
             <ButtonGroup>
-              <Button id="back" type="cancel" action="search"/>
+              <Button name="back" type="cancel" action="search"/>
             </ButtonGroup>
           </Form>
        </Screen>    
@@ -62,4 +62,3 @@
       
 	</Actions>
 </Node>
-

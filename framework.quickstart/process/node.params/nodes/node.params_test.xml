@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node showsource="true">
+    <Libraries />
+    <Configuration />
+    <Params>
+      <Param name="param3"/>
+      <Param name="param4"/>
+    </Params>
+    <Screens >
+      <Screen name="scr02" >
+                
+      </Screen>
+    </Screens>
+    <Actions >
+        <Action name="init" screen="scr02">
+            <Var name="PARAMS" dump="true"/>
+        </Action>        
+    </Actions>
+    <Library />
+</Node>

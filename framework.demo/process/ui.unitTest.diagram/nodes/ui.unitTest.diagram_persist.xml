@@ -11,7 +11,7 @@
 	</Libraries>
 	<Configuration />
 	<Screens>
-      <Screen id="screen001" >
+      <Screen name="screen001" >
           <Diagram name="diagram1" title="sample">
           </Diagram>
        </Screen>
@@ -22,4 +22,3 @@
       </Action>      
 	</Actions>
 </Node>
-

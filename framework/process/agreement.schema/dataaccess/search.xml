@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+        Search all fw_agreement_schema
+    </Doc>
+  <Params>
+    <Param name="code" />
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>t.*, sl.name, sl.description, GROUP_CONCAT(l.name ORDER BY l.order) as levels</XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_agreement_schema t
+            LEFT OUTER JOIN fw_agreement_schema_lang sl ON (sl.id = t.id AND sl.lang='{param->_lang}')
+            LEFT OUTER JOIN level l ON (l.auth_schema = t.code)
+            </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>1 = 1</XCondition>
+          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
+        </XWhere>
+        <XGroupBy>
+          <XCondition>t.id</XCondition>
+        </XGroupBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

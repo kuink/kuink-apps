@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Permissions></Permissions>
+	<Doc lang="en"></Doc>
+	<Libraries>
+		<Use name="FileLib" type="lib"/>
+		<Use name="ValidationLib" type="lib"/>
+	</Libraries>
+	<Configuration />
+	<Params>
+		<Param name="bulkRecords" type="array" doc="The records to handle"/>
+		<Param name="event" type="string" doc="The event"/>
+		<Param name="eventDataSet" type="array" doc="The event data set for each bulkPreEnroll"/>
+		<Param name="role" type="string" doc="The role"/>
+		<Param name="apiGetObjectData" type="array" doc="The api call to get the data to execute the actions and process the event"/>
+		<Param name="context" type="string" doc="The record context"/>
+	</Params>
+	<Screens>
+		<Screen name="previewScreen">
+			<Form name="actionsForm" >
+				<Container name="messages"/>
+				<ButtonGroup>
+					<Button type="back" name="back" label="back" action="back"/>
+					<Button type="continue" name="continue" label="confirm" action="confirm" confirm="true"/>
+				</ButtonGroup>
+			</Form>
+		</Screen>
+	</Screens>
+
+	<Actions>
+		<Action name="init">
+			<Var name="postdata" process="true" clear="true"/>
+			<Action name="actions"/>
+		</Action>
+		
+		<Action name="actions" screen="previewScreen">
+			<!-- Build the data -->
+			<Var name="bulkRecords"><ListToSet><Var name="PARAMS" key="bulkRecords"/></ListToSet></Var>
+			<Var name="previewsSet"><Set/></Var>
+
+			<ForEach var="bulkRecords" item="idRecord">
+				<Var name="data">
+					<Call library="$PARAMS->apiGetObjectData">
+						<Param name="id"><Var name="idRecord"/></Param>
+					</Call>
+				</Var>
+				<Var name="record"><Var name="data" key="record"/></Var>
+				<Var name="data" key="eventData"><Var name="PARAMS" key="eventDataSet"/></Var>
+				<Var name="previews">
+					<Call library="framework,stateMachine.instance,api" function="getTransitionActionsPreview">
+						<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
+						<Param name="event"><Var name="PARAMS" key="event"/></Param>
+						<Param name="role"><Var name="PARAMS" key="role"/></Param>
+						<Param name="data"><Var name="data"/></Param>
+						<Param name="messageData"><Null/></Param>
+						<Param name="expandTemplate"><Int>1</Int></Param>
+					</Call>						
+				</Var>
+				<ForEach var="previews" item="preview">
+					<Var name="previewsSet" key=""><Var name="preview"/></Var>
+				</ForEach>
+			</ForEach>
+			<If condition="$previewsSet->__length == 0">
+				<Then>
+					<Action name="confirm"/>
+					<Exit/>
+				</Then>
+			</If>
+			
+			<!-- Build the previews screen -->
+			<Var name="count"><Int>1</Int></Var>
+			<Var name="bind"><Set/></Var>
+			<ForEach var="previewsSet" item="preview">
+				<Var name="preview"/>
+				<Var name="key"><String.parse>title_$count</String.parse></Var>
+				<Var name="bind" key="$key"><Var name="preview" key="Subject"/></Var>
+				<Var name="key"><String.parse>msg_$count</String.parse></Var>
+				<Var name="bind" key="$key"><Var name="preview" key="Content"/></Var>
+        <Control method="addField" object="actionsForm">
+          <Param>
+            <Set>
+              <Element name="container"><String>messages</String></Element>
+              <Element name="id"><String.parse>header_$count</String.parse></Element>
+              <Element name="type">Header</Element>
+              <Element name="label"><Var name="preview" key="name"/></Element>
+              <Element name="help">false</Element>
+            </Set>
+          </Param> <!-- Field Properties -->        
+        </Control>        
+        <Control method="addField" object="actionsForm">
+          <Param>
+            <Set>
+              <Element name="container"><String>messages</String></Element>
+              <Element name="id"><String.parse>msg_$count</String.parse></Element>
+              <Element name="type">Static</Element>
+              <Element name="label"><Lang key="message"/></Element>
+              <Element name="value"><Var name="preview" key="message"/></Element>
+              <Element name="help">false</Element>
+            </Set>
+          </Param> <!-- Field Properties -->        
+        </Control>
+        <Var name="count" sum="1"/>								
+			</ForEach>
+			<Var name="bind"/>
+			<Control method="bind" object="actionsForm">
+				<Param><Var name="bind"/></Param>
+			</Control>
+		</Action>
+		
+		<Action name="back">
+			<RaiseEvent name="back"/>
+		</Action>
+			
+		<Action name="confirm">
+			<!-- Process the event -->
+			<If condition="$PARAMS->event != ''">
+				<Then>
+					<Var name="bulkRecords"><ListToSet><Var name="PARAMS" key="bulkRecords"/></ListToSet></Var>
+
+					<Var name="bulk"><Set/></Var>
+					<ForEach var="bulkRecords" item="idRecord">
+						<Var name="data">
+							<Call library="$PARAMS->apiGetObjectData">
+								<Param name="id"><Var name="idRecord"/></Param>
+							</Call>
+						</Var>
+						<Var name="data" key="bulkRecords"><Var name="PARAMS" key="bulkRecords"/></Var>
+						<Var name="data" key="eventData"><Var name="PARAMS" key="eventDataSet"/></Var>						
+						<Var name="record"><Var name="data" key="record"/></Var>
+
+						<!-- Determine the best cancidate to guidObject with the following order: uuid, guid, id-->
+						<Var name="guidObject">
+							<IsNull>
+								<Param><Var name="record" key="uuid"/></Param>
+								<Param><Var name="record" key="guid"/></Param>
+								<Param><Var name="record" key="id"/></Param>
+							</IsNull>
+						</Var>
+						
+						<Var name="bulkItem"><Set/></Var>
+						<!--Var name="bulkItem" key="id"><Var name="idRecord"/></Var-->
+						<Var name="bulkItem" key="id"><Var name="record" key="id_state_machine_instance"/></Var>
+						<Var name="bulkItem" key="data"><Var name="data"/></Var>						
+						<Var name="bulkItem" key="guidObject"><Var name="guidObject"/></Var>
+						<Var name="bulk" key="$idRecord"><Var name="bulkItem"/></Var>
+					</ForEach>		
+					<Var name="log">
+						<Call library="framework,stateMachine.instance,api" function="executeTransitionActionsAndProcessEvent">
+							<Param name="bulk"><Var name="bulk"/></Param>
+							<Param name="event"><Var name="PARAMS" key="event"/></Param>
+							<Param name="role"><Var name="PARAMS" key="role"/></Param>
+							<Param name="context"><Var name="PARAMS" key="context"/></Param>
+						</Call>						
+					</Var>
+				</Then>
+				<Else>
+					<UserMessage type="error"><Lang key="noEventSelected"/></UserMessage>
+				</Else>
+			</If>			
+			<Var name="postdata" process="true" clear="true"/>
+			<RaiseEvent name="success"/>
+		</Action>		
+	</Actions>
+	<Library>
+	</Library>
+</Node>

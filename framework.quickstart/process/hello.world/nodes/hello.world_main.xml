@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Libraries />
+    <Configuration />
+    <Params />
+    <Screens >
+        <Screen name="screenbita" >
+            <Form name="formbita" >
+                <Text name="username"/>
+                <ButtonGroup >
+                    <Button type="submit" label="save" name="submitusername" action="processusername"/>
+                </ButtonGroup>
+            </Form>
+        </Screen>
+    </Screens>
+    <Actions >
+        <Action name="init" screen="screenbita">
+            <Var name="varvar" dump="true">André</Var>
+        </Action>
+        
+        <Action name="processusername" >
+
+            <If condition="$POSTDATA->username == 'AA'">
+                <Then>
+                    
+                </Then>
+            </If>
+            <Action name="init"/>
+        </Action>
+    </Actions>
+    <Library />
+</Node>

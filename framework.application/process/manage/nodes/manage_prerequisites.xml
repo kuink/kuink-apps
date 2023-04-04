@@ -15,7 +15,7 @@
   </Params>
   <Screens>
 
-    <Screen id="scrPrerequisites" doc="Show the prerequisites">
+    <Screen name="scrPrerequisites" doc="Show the prerequisites">
       <Grid name="grdExtensions" pageable="false" collapsible="false" title="extensions">
         <Template>
           <Columns>

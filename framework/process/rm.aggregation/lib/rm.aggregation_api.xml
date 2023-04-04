@@ -194,9 +194,10 @@
             <Param name="uuid"><Var name="uuid_aggregation"/></Param>
           </DataAccess>
         </Var>
+        <Exception name="framework/rm.aggregation::notFound" condition="$topAggregation->__length == 0"/>
 
         <!-- Get the list of records for the tree path filtering by classes -->
-        <Var name="records">
+        <Var name="records" dump="true">
           <DataAccess method="this,this,getRecords">
             <Param name="tree_path"><Var name="topAggregation" key="tree_path"/></Param>
             <Param name="getChildren"><Var name="getChildren"/></Param>
@@ -208,6 +209,44 @@
         <Return><Var name="records"/></Return>
       </Begin>
     </Function>
+
+    <Function name="searchRecords" doc="Get records paginated related to an aggregation or aggregation and classes">
+      <Params>
+        <Param name="uuid_aggregation" required="true" type="int" doc="The uuid of the aggregation"/>
+        <Param name="getChildren" required="true" type="int" doc="0 to return only the given aggregation's list of records, 1 to return the list of records from the entire child tree"/>
+        <Param name="classes" type="array" doc="Array of classes to filter the records with"/>
+        <Param name="pageNum" type="int" doc="Page number to get"/>
+        <Param name="pageSize" type="int" doc="Page size to get"/>
+      </Params>
+      <Exceptions/>
+      <Return type="multiple" doc="The list of records related to the tree of aggregations"/>
+      <Begin>
+        <Var name="PARAMS" dump="true"/>
+        <!-- Get the top aggregation -->
+        <Var name="topAggregation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_aggregation</Param>
+            <Param name="uuid"><Var name="uuid_aggregation"/></Param>
+          </DataAccess>
+        </Var>
+        <Exception name="framework/rm.aggregation::notFound" condition="$topAggregation->__length == 0"/>
+
+        <!-- Get the list of records for the tree path filtering by classes -->
+        <Var name="records" dump="true">
+          <DataAccess method="this,this,searchRecords">
+            <Param name="tree_path"><Var name="topAggregation" key="tree_path"/></Param>
+            <Param name="getChildren"><Var name="getChildren"/></Param>
+            <Param name="classes"><Var name="classes"/></Param>
+            <Param name="_pageNum"><Var name="PARAMS" key="pageNum"/></Param>
+            <Param name="_pageSize"><Var name="PARAMS" key="pageSize"/></Param>
+          </DataAccess>
+        </Var>
+
+        <!-- Return the records related to the aggregation -->
+        <Return><Var name="records"/></Return>
+      </Begin>
+    </Function>
+
 
   </Library>
 </Node>

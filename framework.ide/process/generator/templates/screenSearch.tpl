@@ -1,18 +1,18 @@
 {nocache}
-<Screen id="scrSearch" doc="Search Screen">
+<Screen name="scrSearch" doc="Search Screen">
   <Form name="frmSearch" persist="true" title="search">
     {foreach $attributes as $field}
     {if $field['search'] == 1}
       {if $field['datasource'] != ''}
-        <Select id="{$field['name']}" datasource="{$field['datasource']}" bindid="{$field['bindid']}" bindvalue="{$field['bindvalue']}"/>
+        <Select name="{$field['name']}" datasource="{$field['datasource']}" bindid="{$field['bindid']}" bindvalue="{$field['bindvalue']}"/>
       {else}
-        <{$field['type']} id="{$field['name']}"/>
+        <{$field['type']} name="{$field['name']}"/>
       {/if}
     {/if}
     {/foreach}
     <ButtonGroup>
-      <Button id="search" type="search" label="search" action="search"/>
-      <Button id="insert" type="add" label="insert" action="insert"/>
+      <Button name="search" type="search" label="search" action="search"/>
+      <Button name="insert" type="add" label="insert" action="insert"/>
     </ButtonGroup>
   </Form>
 

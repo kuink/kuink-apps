@@ -268,27 +268,28 @@
 					</Then>
 				</If-->
 
-				<!-- Create the person in google: STD -->
+				<!-- Create the person in google -->
 				<Var name="inGoogle" dump="true">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>google</Param>
 					</SetLib>
 				</Var>
+				<Trace><String.parse>Creating google ($inGoogle) user $object->uid</String.parse></Trace>
 				<If condition="$inGoogle == 1 || $all == 1">
 					<Then>
 						<Var name="statusGoogle" dump="true">
 							<DataAccess method="insert" datasource="googleAPIAdminSDK">
 								<Param name="_entity">user</Param>
+								<Param name="uid"><Var name="object" key="uid"/></Param>								
 								<Param name="given_name"><Var name="object" key="given_name"/></Param>
 								<Param name="surname"><Var name="object" key="surname"/></Param>
 								<Param name="password"><Var name="password"/></Param>
-								<Param name="email"><Var name="object" key="email"/></Param>
 							</DataAccess>
 						</Var>
 						<Var name="logEntry" key="action"><String.parse>Creating person in google status:$statusGoogle</String.parse></Var>						            
 						<Var name="logEntry" key="result">
-							<If condition="$statusGoogle == 1 ">
+							<If condition="$statusGoogle == 0 ">
 								<Then>OK</Then>
 								<Else>ERROR</Else>
 							</If>
@@ -296,6 +297,36 @@
 						<Var name="log" key=""><Var name="logEntry"/></Var>
 					</Then>
 				</If>
+
+				<!-- Create the person in microsoft -->
+				<Var name="inMicrosoft" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>microsoft</Param>
+					</SetLib>
+				</Var>
+				<Trace><String.parse>Creating microsoft ($inMicrosoft) user $object->uid</String.parse></Trace>
+				<If condition="$inMicrosoft == 1 || $all == 1">
+					<Then>
+						<Var name="statusMicrosoft" dump="true">
+							<DataAccess method="insert" datasource="microsoftAPIAdminSDK">
+								<Param name="_entity">user</Param>
+								<Param name="uid"><Var name="object" key="uid"/></Param>								
+								<Param name="given_name"><Var name="object" key="given_name"/></Param>
+								<Param name="surname"><Var name="object" key="surname"/></Param>
+								<Param name="password"><Var name="password"/></Param>
+							</DataAccess>
+						</Var>
+						<Var name="logEntry" key="action"><String.parse>Creating user in microsoft status:$statusMicrosoft</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$statusMicrosoft == 0 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>				
 
 				<!-- Create the person in access control -->
 				<Var name="inAccessControl" dump="true">
@@ -592,7 +623,7 @@
 					</Then>
 				</If>
 
-				<!-- Get the person in google: STD -->
+				<!-- Get the person in google -->
 				<Var name="inGoogle" dump="true"><Int>
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
@@ -605,6 +636,8 @@
 							<Instructions>
 								<Var name="googleUser" dump="true">
 										<DataAccess method="load" datasource="googleAPIAdminSDK">
+											<Param name="_entity">user</Param>
+											<Param name="_attributes">id,email,given_name,surname,suspended</Param>											
 											<Param name="uid"><Var name="object" key="uid"/></Param>
 										</DataAccess>
 								</Var>
@@ -613,21 +646,13 @@
 								<Var name="googleUser"><Null/></Var>
 							</Catch>
 						</Try>
-						<Var name="googleUser" dump="true">
-								<DataAccess method="load" datasource="googleAPIAdminSDK">
-									<Param name="uid"><Var name="object" key="uid"/></Param>
-								</DataAccess>
-						</Var>
+						<Var name="object" dump="true"/>						
             <Var name="entry"><Set/></Var>
             <Var name="entry" key="datasource">google</Var>
             <Var name="entry" key="exists">
-            	<If condition="$googleUser->uid == ''">
-								<Then>
-									<Int>0</Int>
-								</Then>
-								<Else>
-									<Int>1</Int>
-								</Else>
+            	<If condition="$googleUser->email == ''">
+								<Then><Int>0</Int></Then>
+								<Else><Int>1</Int></Else>
 							</If>
             </Var>
             <Var name="entry" key="uid"><Var name="googleUser" key="uid"/></Var>
@@ -647,6 +672,54 @@
 					</Then>
 				</If>
 
+				<!-- Get the person in microsoft -->
+				<Var name="inMicrosoft" dump="true"><Int>
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>microsoft</Param>
+					</SetLib></Int>
+				</Var>
+				<If condition="($inMicrosoft == 1) || ($all == 1)">
+					<Then>
+						<Try>
+							<Instructions>
+								<Var name="microsoftUser" dump="true">
+										<DataAccess method="load" datasource="microsoftAPIAdminSDK">
+											<Param name="_entity">user</Param>
+											<Param name="uid"><Var name="object" key="uid"/></Param>
+										</DataAccess>
+								</Var>
+							</Instructions>
+							<Catch>
+								<Var name="microsoftUser"><Null/></Var>
+							</Catch>
+						</Try>
+            <Var name="entry"><Set/></Var>
+            <Var name="entry" key="datasource">microsoft</Var>
+            <Var name="entry" key="exists">
+            	<If condition="$microsoftUser->email == ''">
+								<Then><Int>0</Int></Then>
+								<Else><Int>1</Int></Else>
+							</If>
+            </Var>
+            <Var name="entry" key="uid"><Var name="microsoftUser" key="uid"/></Var>
+            <Var name="entry" key="givenname"><Var name="microsoftUser" key="givenname"/></Var>
+            <Var name="entry" key="surname"><Var name="microsoftUser" key="surname"/></Var>
+            <Var name="entry" key="email"><Var name="microsoftUser" key="email"/></Var>
+						<Var name="entry" key="specificKey">id</Var>
+            <Var name="entry" key="specificValue"><Var name="microsoftUser" key="id"/></Var>
+						<Var name="entry" key="allData">
+							<FormatterLib method="format">
+								<Param>ArraySet</Param>
+								<Param>format</Param>
+								<Param><Var name="microsoftUser"/></Param>
+							</FormatterLib>
+						</Var>							
+            <Var name="result" key=""><Var name="entry"/></Var>
+					</Then>
+				</If>
+
+				<!-- Get person in AccessControl -->
 				<Var name="inAccessControl" dump="true">
 					<Int>
 						<SetLib method="ValueIn">
@@ -1033,6 +1106,15 @@
 				<If condition="$inGoogle == 1 || $all == 1">
 					<Then>
 						<!-- Update the Google account -->
+						<Var name="statusGoogle" dump="true">
+							<DataAccess method="update" datasource="googleAPIAdminSDK">
+								<Param name="_entity">user</Param>
+								<Param name="uid"><Var name="object" key="uid"/></Param>								
+								<Param name="given_name"><Var name="object" key="given_name"/></Param>
+								<Param name="surname"><Var name="object" key="surname"/></Param>
+							</DataAccess>
+						</Var>
+
 						<Var name="logEntry" key="action"><String.parse>Updating person in google</String.parse></Var>						            
 						<Var name="logEntry" key="result">
 							<If condition="$statusGoogle !== 0 ">
@@ -1043,6 +1125,35 @@
 						<Var name="log" key=""><Var name="logEntry"/></Var>
 					</Then>
 				</If>
+
+				<!-- Create the person in microsoft -->
+				<Var name="inMicrosoft" dump="true">
+					<SetLib method="ValueIn">
+					  <Param><Var name="tasks"/></Param>
+					  <Param>microsoft</Param>
+					</SetLib>
+				</Var>
+				<Trace><String.parse>Updating microsoft ($inMicrosoft) user $object->uid</String.parse></Trace>
+				<If condition="$inMicrosoft == 1 || $all == 1">
+					<Then>
+						<Var name="statusMicrosoft" dump="true">
+							<DataAccess method="update" datasource="microsoftAPIAdminSDK">
+								<Param name="_entity">user</Param>
+								<Param name="uid"><Var name="object" key="uid"/></Param>								
+								<Param name="given_name"><Var name="object" key="given_name"/></Param>
+								<Param name="surname"><Var name="object" key="surname"/></Param>
+							</DataAccess>
+						</Var>
+						<Var name="logEntry" key="action"><String.parse>Updating user in microsoft status:$statusMicrosoft</String.parse></Var>						            
+						<Var name="logEntry" key="result">
+							<If condition="$statusMicrosoft == 0 ">
+								<Then>OK</Then>
+								<Else>ERROR</Else>
+							</If>
+						</Var>
+						<Var name="log" key=""><Var name="logEntry"/></Var>
+					</Then>
+				</If>	
 
 				<!-- Update the person in access control -->
 				<Var name="inAccessControl" dump="true">

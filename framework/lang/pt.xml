@@ -15,9 +15,11 @@
         <String key="add" value="Adicionar"/>
         <String key="insert" value="Inserir"/>
         <String key="search" value="Pesquisar"/>
+        <String key="filter" value="Filtrar"/>
         <String key="edit" value="Editar"/>
         <String key="view" value="Ver"/>
         <String key="save" value="Gravar"/>
+        <String key="download" value="Descarregar"/>
         <String key="proceed" value="Continuar"/>
         <String key="print" value="Imprimir"/>
         <String key="delete" value="Apagar"/>
@@ -30,12 +32,17 @@
         <String key="key" value="Chave"/>
         <String key="message" value="Mensagem"/>
         <String key="home" value="Home"/>
+        <String key="file" value="Ficheiro"/>
+        <String key="help" value="Ajuda"/>
+        <String key="is_active" value="Ativo"/>
 
         <String key="_creation" value="Criação"/>
         <String key="_creation_ip" value="IP Criação"/>
         <String key="_modification" value="Modificação"/>
         <String key="_modification_ip" value="IP Modificação"/>
+        <String key="_submission" value="Submissão"/>
 
+        <String key="result" value="Resultado"/>
         <String key="first" value="Primeiro"/>
         <String key="last" value="Último"/>
         <String key="previous" value="Anterior"/>
@@ -52,6 +59,11 @@
         <String key="email" value="e-Mail"/>
         <String key="bugArea" value="Área"/>
 
+        <String key="start_date" value="Início"/>
+        <String key="startDate" value="Início"/>
+        <String key="end_date" value="Fim"/>
+        <String key="endDate" value="Fim"/>
+
 
         <String key="actions" value="Ações"/>
         <String key="action" value="Ação"/>
@@ -62,8 +74,10 @@
         <String key="toggleMenu" value="Alternar Menu" />
 
         <String key="id" value="Id"/>
+        <String key="uuid" value="Id Único"/>
         <String key="ficheiro" value="Ficheiro"/>
         <String key="name" value="Nome"/>
+        <String key="code" value="Código"/>
         <String key="order" value="Ordem"/>
         <String key="default" value="Omissão"/>
         <String key="active" value="Ativo"/>
@@ -73,6 +87,7 @@
         <String key="realField" value="Este campo apenas aceita valores numéricos reais"/>
         <String key="requiredFiledsNotFilled" value="Tem de preencher todos os campos obrigatórios"/>
         <String key="invalidEmail" value="O e-Mail é inválido"/>
+        <String key="remainingChars" value="Caracteres disponíveis"/>
 
         <!-- Date names -->
 				<String key="january" value="janeiro"/>
@@ -114,6 +129,19 @@
                 <String key="month_11" value="novembro"/>
                 <String key="month_12" value="dezembro"/>
 
+                <String key="Month_01" value="Janeiro"/>
+                <String key="Month_02" value="Fevereiro"/>
+                <String key="Month_03" value="Março"/>
+                <String key="Month_04" value="Abril"/>
+                <String key="Month_05" value="Maio"/>
+                <String key="Month_06" value="Junho"/>
+                <String key="Month_07" value="Julho"/>
+                <String key="Month_08" value="Agosto"/>
+                <String key="Month_09" value="Setembro"/>
+                <String key="Month_10" value="Outubro"/>
+                <String key="Month_11" value="Novembro"/>
+                <String key="Month_12" value="Dezembro"/>
+
                 <String key="month_01_short" value="jan"/>
                 <String key="month_02_short" value="fev"/>
                 <String key="month_03_short" value="mar"/>
@@ -142,6 +170,14 @@
         <String key="weekday_5" value="sexta" />
         <String key="weekday_6" value="sábado" />
         <String key="weekday_7" value="domingo" />
+
+        <String key="weekDay_1" value="Segunda" />
+        <String key="weekDay_2" value="Terça" />
+        <String key="weekDay_3" value="Quarta" />
+        <String key="weekDay_4" value="Quinta" />
+        <String key="weekDay_5" value="Sexta" />
+        <String key="weekDay_6" value="Sábado" />
+        <String key="weekDay_7" value="Domingo" />        
 
         <String key="sundayShort" value="dom"/>
         <String key="mondayShort" value="seg"/>
@@ -223,8 +259,11 @@
         <String key="invalid_pt_tax_number">
         	O nº de identificação fiscal (NIF) é inválido
         </String>
+        <String key="invalid_pt_ss_number">
+        	O nº de Segurança Social (NISS) é inválido
+        </String>
         <String key="invalid_health_number">
-        	O nº de saúde é inválido
+        	O nº de utente é inválido
         </String>
         <String key="invalid_social_sec_number">
         	O nº de Seg. Social é inválido
@@ -297,11 +336,14 @@
       <String key="ext:curl:doc"><![CDATA[Permite que o KuinkFramework efetur chamadas http a servidores remotos. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]></String>
 
       <!--Ini configs -->
-	    <String key="ini:error"><![CDATA[A configuração {0} tem o valor {1} e deveria ter o valor {2}. ]]></String>
+	  <String key="ini:error"><![CDATA[A configuração {0} tem o valor {1} e deveria ter o valor {2}. ]]></String>
       <String key="ini:success">Ok</String>
 
       <String key="ini:allow_url_fopen:doc"><![CDATA[Permite que o KuinkFramework consiga abrir ficheiros remotamente através de url. Necessário, por exemplo para abrir o WSDL de webservices SOAP. <a href="https://www.php.net/manual/pt_BR/filesystem.configuration.php">Manual PHP</a> ]]></String>
-	        
+      
+      <!-- Permissions -->
+      <String key="noPermission">Não tem permissão para executar a ação.</String>
+
    </Strings>
    <ExceptionStrings>
 	   <!-- EXCEPTIONS -->

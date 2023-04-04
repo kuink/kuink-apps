@@ -5,7 +5,6 @@
     <Databases>
     </Databases>
     <Menus>
-        <Menu role='Student,Teacher' startuc='backoffice' startnode='' event='init'
-            label='Backoffice' default='true' />
+      <Menu role="Student,Teacher" startuc="backoffice" startnode='' event='init' label='Backoffice' default='true' />
     </Menus>
 </Application>

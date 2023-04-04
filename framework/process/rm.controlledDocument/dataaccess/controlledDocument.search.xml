@@ -33,22 +33,6 @@
                       GROUP_CONCAT(CONCAT(c.code,' - ', c.name) SEPARATOR ',') as class_full_name,
                       (
                         SELECT 
-                            IF( COUNT(cdviii.id) = 0, 1, IF (cdviii.is_approved = 0, -1, IF(cdviii.is_approved IS NULL, 0, 1) ) )
-                        FROM 
-                            fw_rm_controlled_document_version cdviii
-                        WHERE
-                        cdviii.id IN (
-                        SELECT 
-                            MAX(cdvii.id)
-                        FROM 
-                            fw_rm_controlled_document_version cdvii
-                            INNER JOIN fw_rm_controlled_document cdii ON (cdii.id = cdvii.id_controlled_document)
-                        WHERE 
-                        cdvii.id > cdii.id_current_version
-                        AND cdvii.id_controlled_document = cd.id)
-                      ) as version_approval_status,
-                      (
-                        SELECT 
                             count(wfpio.id)
                         FROM 
                             fw_rm_controlled_document_version cdvii
@@ -76,10 +60,13 @@
                     <XCondition>1 = 1</XCondition>
                     <XCondition optional="id_controlled_document_type">AND id_controlled_document_type = {param->id_controlled_document_type}</XCondition>
                     <XCondition optional="text">
-                      AND ( cd.name like '{param->text}' OR cd.description like '{param->text}' OR cdv.reason like '{param->text}' OR cdt.name like '{param->text}' OR cd.code like '{param->text}' OR cd.guid_object like '{param->text}') 
+                      AND ( cd.name like '{param->text}' OR cd.description like '{param->text}' OR cdt.name like '{param->text}' OR cd.code like '{param->text}' OR cd.guid_object like '{param->text}' OR cd.keywords like '{param->text}') 
                     </XCondition>
                     <XCondition condition="$isManager == 0">
                         AND cd.id_controlled_document_type != 0
+                    </XCondition>
+                    <XCondition optional="is_active">
+                        AND cd.is_active = {param->is_active}
                     </XCondition>
                 </XWhere>
                 <XGroupBy>

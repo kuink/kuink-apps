@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    Search
+  </Doc>
+  <Params>
+    <Param name="id_agreement_schema" />
+    <Param name="start_date" />
+    <Param name="_lang" />
+  </Params>
+  <Body>
+    <Sql>
+      <XSql>
+        <XSelect>
+          <XField>
+            scst.id, 
+            st.uuid,  
+            st.code as code, 
+						st.field as field,
+            st.id_agreement_statement_type,
+						stl.statement as statement,
+            stl.name as name, 
+            stl.description as description,
+            stt.code as statement_type_code,
+            scst.start_date as start_date,
+            scst.end_date as end_date,
+            scst.order as 'order',
+            sttl.name as statement_type_name,
+            sttl.description as statement_type_description,
+            st.expire_date_expression,
+            cd.code as controlled_document_code,
+            cd.name as controlled_document_name,
+            cd.uri_external as controlled_document_uri_external,
+            COALESCE(cdv.code, '') as controlled_document_version_current_code,
+            cdv.id as id_controlled_document_version
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            fw_agreement_statement st
+            INNER JOIN fw_agreement_statement_lang stl ON (stl.id = st.id AND stl.lang='{param->_lang}')
+						INNER JOIN fw_agreement_statement_type stt ON (stt.id = st.id_agreement_statement_type)
+            INNER JOIN fw_agreement_statement_type_lang sttl ON (sttl.id = stt.id AND sttl.lang='{param->_lang}')
+            INNER JOIN fw_agreement_schema_statement scst ON (scst.id_agreement_statement = st.id)
+            INNER JOIN fw_agreement_schema sc ON (sc.id = scst.id_agreement_schema)
+            LEFT OUTER JOIN fw_rm_controlled_document cd ON (cd.id = st.id_controlled_document)
+            LEFT OUTER JOIN fw_rm_controlled_document_version cdv ON (cdv.id = cd.id_current_version)
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>1 = 1</XCondition>          
+          <XCondition optional="id_agreement_schema">  
+            AND sc.id = {param->id_agreement_schema}
+          </XCondition>
+          <XCondition optional="start_date">  
+            <![CDATA[
+              AND (scst.end_date IS NULL OR (scst.end_date > {param->start_date} AND scst.start_date < {param->start_date}))
+            ]]>
+          </XCondition>
+        </XWhere>
+        <XOrderBy>
+        	<XOrder>stt.order, scst.order</XOrder>
+        </XOrderBy>
+      </XSql>
+    </Sql>
+  </Body>
+</Method>

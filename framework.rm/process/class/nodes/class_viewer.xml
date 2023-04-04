@@ -15,11 +15,11 @@
       <Param name="code" doc="The class code to view"/>
   </Params>
   <Screens>
-    <Screen id="scrSearch" doc="Search Screen">
+    <Screen name="scrSearch" doc="Search Screen">
       <Form name="frmSearch" persist="true" title="search">
-        <Select id="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="search"/>
+        <Select name="class_code" datasource="call:framework,rm.class,api,searchFullText" bindid="code" bindvalue="codename" bindresults="codename"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,rm.class,api,get" action="search"/>
         <ButtonGroup>
-          <Button id="search" type="search" label="search" action="search"/>
+          <Button name="search" type="search" label="search" action="search"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdSearchResult" collapsible="false" pagesize="10" title="result" freeze="false">

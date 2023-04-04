@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Libraries />
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen name="scr01">
+      <Form name="form01" title="inlineFields">
+        <Tab name="tab1"/>
+        <Header name="h0" label="Test Inline and Cols"/>
+				<Select name="f01" label="Field 01" help="helpTest"/>
+        <Text name="f02" label="Field 02" inline="true"/>
+        <Text name="f03" label="Field 03" inline="true"/>
+        <Text name="f04" label="Field 04" />
+        <Text name="f05" label="Field 05" inline="true"/>
+
+        <Column id="col1"/>
+        <Header name="h1" label="Test Inline"/>
+				<Text name="f1" label="Field 1"/>
+				<Text name="f21" label="Field 21"/>
+				<Text name="f22" label="Field 22" inline="true"/>
+				<Text name="f23" label="Field 23" inline="true"/>
+        <Text name="f24" label="Teste 24" inline="true"/>
+				<DateTime name="f31" label="Field 31"/>
+				<TextArea name="f32" inline="true" label="-" help="false"/>
+        
+        <Column id="col2"/>
+        <Header name="h2" label="Test Cols"/>
+				<Text name="f41" label="Field 41"/>
+				<Text name="f42" label="Field 42" inline="true"/>
+        <Text name="f5" label="Field 5"/>
+
+        <Column id="col5" close="true"/>
+        <Header name="h5" label="Test Close Column"/>
+        <Text name="f8" label="Field 8"/>
+        
+        <Tab name="tab2"/>
+        <Column id="col3"/>
+        <Header name="h3" label="Test Close Column"/>
+        <Text name="f6" label="Field 6"/>
+
+        <Column id="col4"/>
+        <Header name="h4" label="Test Close Column"/>
+        <Text name="f7" label="Field 7"/>
+        
+        <ButtonGroup>
+          <Button type="submit" label="save" name="submit" action="process" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  <Actions>
+    <Action name="init" screen="scr01">
+    </Action>
+
+    <Action name="process">
+      <Var name="POSTDATA" dump="true" />
+    </Action>
+  </Actions>
+  <Library />
+</Node>

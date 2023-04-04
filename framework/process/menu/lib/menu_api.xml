@@ -220,7 +220,7 @@
       <Return type="multiple" doc="">
       </Return>
       <Begin>
-        <Var name="menu" dump="true">
+        <Var name="menu">
           <DataAccess method="load">
             <Param name="_entity">fw_menu</Param>
             <Param name="code"><Var name="PARAMS" key="code"/></Param>

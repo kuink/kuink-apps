@@ -19,7 +19,7 @@
           <XTable>
             fw_user fu 
             INNER JOIN fw_user_company fuc ON (fuc.id_user = fu.id)
-            INNER JOIN person fp ON (fp.id = fuc.id_person)
+            INNER JOIN fw_person fp ON (fp.id = fuc.id_person)
           </XTable>
         </XFrom>
         <XWhere>

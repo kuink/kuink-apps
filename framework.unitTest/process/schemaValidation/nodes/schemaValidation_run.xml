@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Node validate="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xsi:noNamespaceSchemaLocation="/opt/cscm-dev/code/kuink/kuink-apps/framework/schema/nodes.xsd"><!-- Force the schema xsd validation in this node -->
+<Node validate="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:minVersion="1.1" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" xsi:noNamespaceSchemaLocation="../../../../framework/schema/nodes.xsd">
+  <!-- Force the schema xsd validation in this node -->
   <!--Permissions>
     <Allow>
         <Capability name="framework/unitTests:run"/>
@@ -14,7 +15,7 @@
     <Config key="application" value="gecol.core"/>
   </Configuration-->
   <Screens>
-    <Screen id="sc01">
+    <Screen name="sc01">
     </Screen>
   </Screens>
   <Actions>
@@ -29,4 +30,3 @@
   </Actions>
   <!--Library/-->
 </Node>
-

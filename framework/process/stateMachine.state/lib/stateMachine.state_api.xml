@@ -31,6 +31,7 @@
       </Params>
       <Return type="int" doc="The inserted record id"/>
       <Begin>
+        <Var name="PARAMS" dump="true"/>
         <Return>
           <DataAccess method="insert">
             <Param name="_entity">fw_state_machine_state</Param>
@@ -170,7 +171,9 @@
       </Begin>
     </Function>
     <Function name="getAll" doc="Get all records from table fw_state_machine_state">
-      <Params/>
+      <Params>
+        <Param name="id_state_machine"/>
+      </Params>
       <Return type="multiple" doc="">
         <External name="id" type="int" doc=""/>
         <External name="id_state_machine" type="int" doc=""/>
@@ -194,9 +197,11 @@
         <External name="visible_to_roles" type="text" doc=""/>
       </Return>
       <Begin>
+        <Var name="PARAMS" dump="true"/>
         <Return>
           <DataAccess method="getAll">
             <Param name="_entity">fw_state_machine_state</Param>
+            <Param name="id_state_machine"><Var name="PARAMS" key="id_state_machine"/></Param>
           </DataAccess>
         </Return>
       </Begin>
@@ -260,4 +265,3 @@
     </Function>
   </Library>
 </Node>
-

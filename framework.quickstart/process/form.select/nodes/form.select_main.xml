@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node showsource="true">
+  <Libraries />
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen name="scr01">
+      <Form name="form01">
+        <Header name="h1" label="Select Searchable=Dynamic"/>
+        <!--
+          The atributes are optional:
+            bindimage, bindresults
+            The bindimage is to display an image on search
+              bindimage="public_key"
+            The bindresults is the text to show on results which can be diferente than the bindname
+              bindresults="_person_type_description"
+         -->
+        <Select name="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
+          datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
+
+        <Header name="h2" label="Select Searchable=static"/>
+        <Select name="id_department" datasource="call:gecol.core,department,api,getAll" bindid="id" bindvalue="name" searchable="static"/>
+
+        <Header name="h3" label="Select Searchable=true same as static"/>
+        <Select name="id_department" datasource="call:gecol.core,department,api,getAll" bindid="id" bindvalue="name" searchable="true"/>
+
+        <Header name="h4" label="Grouped Selects, the first will change the second"/>
+        <Select name="id_school_year" datasource="call:gecol.core,schoolYear,api,getAll" bindid="id" bindvalue="name" />
+        <Select name="id_class" datasource="call:gecol.core,class,api,getAll" bindid="id" bindvalue="name">
+            <Rule runat="client" attr="value" datasourceparams="id_school_year=$id_school_year" datasource="gecol.core,class,api,search" />
+        </Select>
+
+        <Header name="h5" label="Select with hard coded options"/>
+        <Select name="id_test">
+          <Options>
+            <Option id="1">Test 1</Option>
+            <Option id="2">Test 3</Option>
+          </Options>
+        </Select>
+
+        <ButtonGroup>
+          <Button type="submit" label="save" name="submitusername"
+            action="process" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scr01">
+      <!--Var name="data" key="id_person">2460</Var>
+      <Control method="bind" object="form01">
+        <Param>
+          <Var name="data" />
+        </Param>
+      </Control-->
+    </Action>
+
+    <Action name="process">
+      <Var name="POSTDATA" dump="true" />
+      <Action name="init"/>
+    </Action>
+  </Actions>
+  <Library />
+</Node>

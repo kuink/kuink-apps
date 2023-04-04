@@ -1,8 +1,17 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <Lang>
    <Strings>
-   
-    <String key="apply">Aplicar</String>
+      <String key="entity" value="Entidade"/>
+      <String key="definition" value="Definição Kml"/>
+      <String key="diagram" value="Diagrama ER Uml"/>
+      <String key="analyse" value="Analisar"/>
+
+      <String key="createForeignIndexes" value="Criar índices nas FKs"/>
+      <String key="createForeignKeys" value="Criar FKs"/>
+      <String key="removeExistingIndexes" value="Remover índices existentes"/>
+      <String key="removeExistingForeignKeys" value="Remover FKs existentes"/>
+      <String key="dropTablesBeforeCreate" value="Eliminar tabelas antes de criar"/>
+      
    </Strings>
    <HelpStrings/>
 </Lang>

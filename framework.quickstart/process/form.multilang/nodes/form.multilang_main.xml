@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node showsource="true">
+  <Libraries />
+  <Configuration />
+  <Params />
+  <Screens>
+    <Screen name="scr01">
+      <Form name="form01">
+        <Header name="h1" label="Multilang input fields"/>
+        <Text name="name" label="name" multilang="true"/>
+        <TextArea name="description" label="description" multilang="true"/>
+        <Text name="current_value" label="single value"/>
+        <ButtonGroup>
+          <Button type="submit" label="save" name="submitusername"
+            action="process" />
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+    <Action name="init" screen="scr01">
+      <Var name="multilangDataNew" dump="true">
+        <DataAccess method="load">
+          <Param name="_entity">fw_test_multilang_entity</Param>
+          <Param name="_lang">*</Param>
+          <!--Param name="_lang_inline">false</Param-->
+          <Param name="id">1</Param>
+        </DataAccess>
+      </Var>
+      <Control method="bind" object="form01">
+        <Param><Var name="multilangDataNew"/></Param>
+      </Control>
+
+      <!-- Example of getting all from one language -->
+      <Var name="multilangDataGetAll" dump="true">
+        <DataAccess method="getAll">
+          <Param name="_entity">fw_test_multilang_entity</Param>
+          <Param name="_attributes">e.id, e.current_value, l.name, l.description</Param>
+          <Param name="_lang">en</Param>
+        </DataAccess>
+      </Var>      
+      
+    </Action>
+
+    <Action name="process">
+      <Var name="POSTDATA" dump="true" />
+      <Var name="newId" dump="true">
+        <DataAccess method="save">
+          <Param name="_entity">fw_test_multilang_entity</Param>
+          <Param name="id">1</Param>
+          <Param name="current_value"><Var name="POSTDATA" key="current_value"/></Param>
+          <Param name="name"><Var name="POSTDATA" key="name"/></Param>
+          <Param name="description"><Var name="POSTDATA" key="description"/></Param>
+          <Param name="_multilang_fields">name, description</Param>
+        </DataAccess>
+      </Var>
+      <Action name="init"/>
+    </Action>
+  </Actions>
+  <Library />
+</Node>

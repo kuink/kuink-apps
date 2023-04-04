@@ -23,7 +23,8 @@
       </Exceptions>
       <Return type="multiple" doc="The update state"/>
       <Begin>
-        <Var name="application">
+		  <Var name="PARAMS" dump="true"/>
+        <Var name="application" dump="true">
           <DataAccess method="load">
 						<Param name="_entity">fw_application</Param>
 						<Param name="id"><Var name="id"/></Param>
@@ -250,6 +251,7 @@
 									<Param name="code"><Var name="application"/></Param>
 									<Param name="is_active"><Int>1</Int></Param>
 									<Param name="in_maintenance"><Int>0</Int></Param>
+									<Param name="theme">adminlte</Param>
 									<Param name="version"><String>1.0.0</String></Param>
 									<Param name="_base"><String>true</String></Param>
 							</DataAccess>
@@ -371,7 +373,9 @@
 		            <Param name="application"><Var name="application"/></Param>
 		            <Param name="node"><Var name="update"/></Param>
 		            <Param name="createForeignIndexes"><Config key="update.createForeignIndexes"/></Param>
+					<Param name="removeExistingIndexes"><Config key="update.removeExistingIndexes"/></Param>
 		            <Param name="createForeignKeys"><Config key="update.createForeignKeys"/></Param>          
+					<Param name="removeExistingForeignKeys"><Config key="update.removeExistingForeignKeys"/></Param>       
 		            <Param name="dropTablesBeforeCreate"><Config key="update.dropTablesBeforeCreate"/></Param>          
 		          </DataAccess>
 		        </Var>

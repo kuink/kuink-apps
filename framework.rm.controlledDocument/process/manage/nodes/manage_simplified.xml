@@ -17,13 +17,13 @@
       <Param name="workflowAgents" type="string" doc="The workflow agents to inject in workflow"/>
   </Params>
   <Screens>
-    <Screen id="scrAddDocumentAndVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
+    <Screen name="scrAddDocumentAndVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
       <Form name="frmNewVersion" title="newVersion">
-        <Header id="h1" label="controlledDocument"/>>
+        <Header name="h1" label="controlledDocument"/>>
         <File id="file" required="true"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
-          <Button id="save" type="update" label="submitToApproval" action="createDocAndSaveVersion"/>
+          <Button name="back" type="cancel" label="back" action="back"/>
+          <Button name="save" type="update" label="submitToApproval" action="createDocAndSaveVersion"/>
         </ButtonGroup>
       </Form>  
       <Grid name="grdSearchResult" pageable="true" collapsible="false" pagesize="10" pagingaction="search" title="result">
@@ -54,16 +54,16 @@
         </Template>
       </Grid>
     </Screen>
-    <Screen id="scrAddVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
+    <Screen name="scrAddVersionSimplified" doc="Add controlled document and manage versions in a simplified way">
       <Form name="frmNewVersion" title="newVersion">
-        <Header id="h1" label="controlledDocument"/>>
-        <Static id="code" label="code"/>
-        <Static id="description" label="description"/>                
-        <Header id="h2" label="newVersion"/>
+        <Header name="h1" label="controlledDocument"/>>
+        <Static name="code" label="code"/>
+        <Static name="description" label="description"/>                
+        <Header name="h2" label="newVersion"/>
         <File id="file" required="true"/>
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
-          <Button id="save" type="update" label="submitToApproval" action="saveVersion"/>
+          <Button name="back" type="back" label="back" action="back"/>
+          <Button name="save" type="update" label="submitToApproval" action="saveVersion"/>
         </ButtonGroup>
       </Form>      
       <Grid name="grdVersions" title="versions">
@@ -95,10 +95,10 @@
         </Template>
       </Grid>      
     </Screen>
-    <Screen id="scrObservations" doc="Version observations">
+    <Screen name="scrObservations" doc="Version observations">
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="init"/>
+          <Button name="back" type="back" label="back" action="init"/>
         </ButtonGroup>
       </Form>    
       <Grid name="grdObservations" title="obs">
@@ -124,7 +124,7 @@
       <!-- Check to see if there is allready a guid object created. If so then list all the documents with thah guid_object -->
       <!-- Setting is Manager to 1 to view document_types 0. There's no problem since the user can only see the guid_object documents -->
       <Var name="documents">
-        <Call library="framework,rm.controlledDocument,api" function="search">
+        <Call library="framework,rm.controlledDocument,api" function="searchForSimplified">
           <Param name="text">
             <Var name="PARAMS" key="guid_object"/>
           </Param>
@@ -198,7 +198,7 @@
         </Call>
       </Var>
       <Var name="selectedId" process="true"><Var name="result" key="selectedId"/></Var>
-      <Var name="idVersion" process="true"><Var name="resuklt" key="idVersion"/></Var>
+      <Var name="idVersion" process="true"><Var name="result" key="idVersion"/></Var>
 
       <UserMessage type="success"><Lang key="newVersionSuccess"/></UserMessage>
       <!--Action name="startWorkflow"/-->

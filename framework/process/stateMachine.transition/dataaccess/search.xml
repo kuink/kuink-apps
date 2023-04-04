@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
-    <Doc>
+	<Doc>
         Search all fw_state_machine_transition
-    </Doc>
-    <Params>
-                      <Param name="id_start_state"/>
-                  <Param name="id_end_state"/>
-                  <Param name="event"/>
-                                                                                                                                        
-    </Params>
-    <Body>
-        <SqlPaginated>
-            <XSql>
-                <XSelect>
-                    <XField >
-                        *
-                    </XField>
-                </XSelect>
-                <XFrom>
-                    <XTable>
-                        fw_state_machine_transition t
-                    </XTable>
-                </XFrom>
-                <XWhere>
-                  <XCondition>1 = 1</XCondition>
-                                                                                                                                                                                                        <XCondition optional="id_start_state">AND t.id_start_state = {param->id_start_state}</XCondition>
-                                                                                                                                <XCondition optional="id_end_state">AND t.id_end_state = {param->id_end_state}</XCondition>
-                                                                                                                                                                                          <XCondition optional="event">AND t.event like '{param->event}'</XCondition>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
-                </XWhere>
-            </XSql>
-        </SqlPaginated>
-    </Body>
+	</Doc>
+	<Params>
+		<Param name="id_state_machine"/>
+		<Param name="id_start_state"/>
+		<Param name="id_end_state"/>
+		<Param name="event"/>
+
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField >
+            		t.*,
+					ss.code
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+            			fw_state_machine_transition t
+						INNER JOIN fw_state_machine_state ss ON (ss.id = t.id_start_state)
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>1 = 1</XCondition>
+					<XCondition optional="id_state_machine">AND t.id_state_machine = {param->id_state_machine}</XCondition>
+					<XCondition optional="id_start_state">AND t.id_start_state = {param->id_start_state}</XCondition>
+					<XCondition optional="id_end_state">AND t.id_end_state = {param->id_end_state}</XCondition>
+					<XCondition optional="event">AND t.event like '{param->event}'</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder>ss.code ASC</XOrder>
+				</XOrderBy>
+			</XSql>
+		</SqlPaginated>
+	</Body>
 </Method>

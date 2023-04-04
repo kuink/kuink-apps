@@ -68,7 +68,58 @@
           </DataAccess>
         </Return>
       </Begin>
-    </Function>
+	</Function>
+
+    <Function name="copy" doc="Copy a form to a new one">
+	<Params>
+		<Param name="id_form" type="int" required="true" doc="The original form"/>
+		<Param name="newCode" type="text" required="true" doc="Code for the copy"/>
+		<Param name="newName" type="text" required="true" doc="Name for the copy"/>
+		<Param name="newDescription" type="text" required="true" doc="Description for the copy"/>
+	</Params>
+	<Return type="int" doc="The inserted record id"/>
+	<Begin>
+		<!-- Copy the form -->
+		<Var name="form">
+			<DataAccess method="load">
+				<Param name="_entity">fw_form</Param>
+				<Param name="id"><Var name="PARAMS" key="id_form"/></Param>
+			</DataAccess>
+		</Var>
+		<Exception name="framework/form::invalidForm" condition="$form->__length == 0"/>
+		
+		<Var name="form" key="id" clear="true"/>
+		<Var name="form" key="code"><Var name="PARAMS" key="newCode"/></Var>
+		<Var name="form" key="name"><Var name="PARAMS" key="newName"/></Var>
+		<Var name="form" key="description"><Var name="PARAMS" key="newDescription"/></Var>
+		<Var name="form" key="uuid"><Uuid/></Var>
+		<Var name="newIdForm">
+			<DataAccess method="insert" params="form">
+				<Param name="_entity">fw_form</Param>
+				<Param name="_base">true</Param>
+			</DataAccess>
+		</Var>
+
+		<!-- Copy the fields -->
+		<Var name="fields">
+			<DataAccess method="getAll">
+				<Param name="_entity">fw_form_field</Param>
+				<Param name="id_form"><Var name="PARAMS" key="id_form"/></Param>
+			</DataAccess>
+		</Var>
+		<ForEach var="fields" item="field">				
+			<Var name="field" key="id" clear="true"/>
+			<Var name="field" key="id_form"><Var name="newIdForm"/></Var>
+			<Var name="field" key="uuid"><Uuid/></Var>
+			<DataAccess method="insert" params="field">
+				<Param name="_entity">fw_form_field</Param>
+				<Param name="_base">true</Param>
+			</DataAccess>
+		</ForEach>
+		<Return><Var name="newIdForm"/></Return>
+	</Begin>
+	</Function>	
+	
     <Function name="delete" doc="Delete a record by id from table fw_form">
       <Params>
         <Param name="id" type="int" required="true"/>
@@ -84,7 +135,8 @@
           </DataAccess>
         </Return>
       </Begin>
-    </Function>
+	</Function>
+	
     <Function name="update" doc="Updates a record in table fw_form">
       <Params>
         <Param name="id" type="int" required="true"/>
@@ -111,7 +163,8 @@
           <Param name="_base">true</Param>
         </DataAccess>
       </Begin>
-    </Function>
+	</Function>
+	
     <Function name="search" doc="Search records from table fw_form">
       <Params>
         <Param name="code" type="text"/>
@@ -156,7 +209,8 @@
           </DataAccess>
         </Return>
       </Begin>
-    </Function>
+	</Function>
+	
     <Function name="getAll" doc="Get all records from table fw_form">
       <Params/>
       <Return type="multiple" doc="">
@@ -185,7 +239,8 @@
           </DataAccess>
         </Return>
       </Begin>
-    </Function>
+	</Function>
+	
     <Function name="getById" doc="Get a record by id from table fw_form">
       <Params>
         <Param name="id" type="int"/>
@@ -284,7 +339,7 @@
       </Begin>
     </Function>
     
-		<Function name="getFields" doc="Get fields of a form, if a page is given then give only the fields on that page">
+	<Function name="getFields" doc="Get fields of a form, if a page is given then give only the fields on that page">
       <Params>
       	<Param name="id" type="int" required="true" doc="The form id"/>
       	<Param name="page" type="int" required="false" doc="The page number"/>
@@ -310,7 +365,7 @@
       </Begin>
     </Function>
 
-		<Function name="getFieldsHtml" doc="Get fields of a form in html string, if a page is given then give only the fields on that page">
+	<Function name="getFieldsHtml" doc="Get fields of a form in html string, if a page is given then give only the fields on that page">
       <Params>
       	<Param name="id" type="int" required="false" doc="The form id"/>
       	<Param name="page" type="int" required="false" doc="The page number"/>
@@ -457,7 +512,7 @@
       </Begin>
     </Function>
 
-		<Function name="getFieldsSet" doc="Get a response and the fields name and type inan array. Used, for example to generate a pdf based on a tpl...">
+	<Function name="getFieldsSet" doc="Get a response and the fields name and type inan array. Used, for example to generate a pdf based on a tpl...">
       <Params>
 				<Param name="idFormResponse" type="int" required="false" doc="If supplied, then the form will be filled with this response instead of [_______] marks"/>
 				<Param name="guidObject" type="int" required="false" doc="The response guidObject to be used with idFormResponse"/>
@@ -596,7 +651,7 @@
       </Begin>
     </Function>
 
-		<Function name="getResponsePdf" doc="Streams a PDF file with the form result.">
+	<Function name="getResponsePdf" doc="Streams a PDF file with the form result.">
       <Params>
 				<Param name="idFormResponse" type="int" required="false" doc="If supplied, then the form will be filled with this response instead of [_______] marks"/>
 				<Param name="guidObject" type="int" required="false" doc="The response guidObject to be used with idFormResponse"/>
@@ -604,80 +659,79 @@
       </Params>
       <Return type="multiple" doc=""/>
       <Begin>
-				<Var name="formData">
-					<Call library="framework,form,api" function="getFieldsSet">
-						<Param name="idFormResponse"><Var name="PARAMS" key="idFormResponse"/></Param>
-						<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
-					</Call>				
-				</Var>
-				<Var name="response" dump="true">
-					<DataAccess method="load">
-						<Param name="_entity">fw_form_response</Param>
-						<Param name="id"><Var name="PARAMS" key="idFormResponse"/></Param>
-					</DataAccess>
-				</Var>
-				<Var name="documentInfo"><Var name="PARAMS" key="documentInfo"/></Var>
-				<Var name="documentInfo" key="date">
-					<FormatterLib method="format">
-						<Param>DateTime</Param>
-						<Param>shortDateTime</Param>
-						<Param><Var name="response" key="end"/></Param>
-					</FormatterLib>
-				</Var>				
+			<Var name="formData">
+				<Call library="framework,form,api" function="getFieldsSet">
+					<Param name="idFormResponse"><Var name="PARAMS" key="idFormResponse"/></Param>
+					<Param name="guidObject"><Var name="PARAMS" key="guidObject"/></Param>
+				</Call>				
+			</Var>
+			<Var name="response" dump="true">
+				<DataAccess method="load">
+					<Param name="_entity">fw_form_response</Param>
+					<Param name="id"><Var name="PARAMS" key="idFormResponse"/></Param>
+				</DataAccess>
+			</Var>
+			<Var name="documentInfo"><Var name="PARAMS" key="documentInfo"/></Var>
+			<Var name="documentInfo" key="date">
+				<FormatterLib method="format">
+					<Param>DateTime</Param>
+					<Param>shortDateTime</Param>
+					<Param><Var name="response" key="end"/></Param>
+				</FormatterLib>
+			</Var>				
 
-				<!-- Inj name="PARAMS"ect the data into a tpl to generate the PDF, throw it to the browser -->
-				<Var name="data"><Set/></Var>
-				<Var name="data" key="documentInfo"><Var name="documentInfo"/></Var>
-				<Var name="data" key="formData"><Var name="formData"/></Var>
-				<Var name="data" key="now">
-					<FormatterLib method="format">
-						<Param>DateTime</Param>
-						<Param>shortDateTimeSec</Param>
-						<Param>
-							<DateTimeLib method="now" />
-						</Param>
-					</FormatterLib>
-				</Var>
-				<Var name="contentToPdf">
-					<TemplateLib method="ExecuteTemplate">
-						<Param>framework</Param>
-						<Param>form</Param>
-						<Param>formPdf</Param>
-						<Param><Var name="data"/></Param>
-					</TemplateLib>
-				</Var>
+			<!-- Inj name="PARAMS"ect the data into a tpl to generate the PDF, throw it to the browser -->
+			<Var name="data"><Set/></Var>
+			<Var name="data" key="documentInfo"><Var name="documentInfo"/></Var>
+			<Var name="data" key="formData"><Var name="formData"/></Var>
+			<Var name="data" key="now">
+				<FormatterLib method="format">
+					<Param>DateTime</Param>
+					<Param>shortDateTimeSec</Param>
+					<Param>
+						<DateTimeLib method="now" />
+					</Param>
+				</FormatterLib>
+			</Var>
+			<Var name="contentToPdf">
+				<TemplateLib method="ExecuteTemplate">
+					<Param>framework</Param>
+					<Param>form</Param>
+					<Param>formPdf</Param>
+					<Param><Var name="data"/></Param>
+				</TemplateLib>
+			</Var>
 
-				<!-- PDF THINGS -->
-				<Var name="pdfData" key="author">
-					<IsNull>
-						<Param>
-							<Call library="gecol.core,system.config,api" function="getSysConfig">
-								<Param name="code">pdfAuthor</Param>
-							</Call>
-						</Param>
-						<Param></Param>
-					</IsNull>
-				</Var>
-				<Var name="pdfData" key="creator">
-					<Var name="data" key="author" />
-				</Var>
-				<Var name="fileName" dump="true">
-					<UtilsLib method="GuidClean" />
-				</Var>
+			<!-- PDF THINGS -->
+			<Var name="pdfData" key="author">
+				<IsNull>
+					<Param>
+						<Call library="gecol.core,system.config,api" function="getSysConfig">
+							<Param name="code">pdfAuthor</Param>
+						</Call>
+					</Param>
+					<Param></Param>
+				</IsNull>
+			</Var>
+			<Var name="pdfData" key="creator">
+				<Var name="data" key="author" />
+			</Var>
+			<Var name="fileName" dump="true">
+				<UtilsLib method="GuidClean" />
+			</Var>
 
-				<Var name="id_file" dump="true">
-					<DoPDF_v2 register="false" filename="$fileName" download="true" override="true" marginleft="20" marginTop="10" marginright="15" >
-						<Param name="content"><Var name="contentToPdf"/></Param>
-						<Meta name="creator"><Var name="pdfData" key="creator"/></Meta>
-					</DoPDF_v2>
-				</Var>
+			<Var name="id_file" dump="true">
+				<DoPDF_v2 register="false" filename="$fileName" download="true" override="true" marginleft="20" marginTop="10" marginright="15" >
+					<Param name="content"><Var name="contentToPdf"/></Param>
+					<Meta name="creator"><Var name="pdfData" key="creator"/></Meta>
+				</DoPDF_v2>
+			</Var>
 
-				<Return><Var name="data"/></Return>
-			</Begin>
-		</Function>
+			<Return><Var name="data"/></Return>
+		</Begin>
+	</Function>
 
-
-		<Function name="getEditFormFieldsXml" doc="Get fields of a form, if a page is given then give only the fields on that page">
+	<Function name="getEditFormFieldsXml" doc="Get fields of a form, if a page is given then give only the fields on that page">
       <Params>
       	<Param name="id" type="int" required="true" doc="The form id"/>
       	<Param name="formName" type="string" required="true" doc="The name of the form"/>
@@ -752,7 +806,17 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="back" type="back" label="Voltar" action="previousPage"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="back" type="back" label="Voltar" action="previousPage"/>]]></String></Param>
+							</String.concatenate>
+						</Var>
+					</Then>
+				</If>
+				<If condition="$PARAMS->page == 1">
+					<Then>
+						<Var name="formXml"> 
+							<String.concatenate>
+								<Param><Var name="formXml"/></Param>
+								<Param><String><![CDATA[<Button name="back" type="back" label="Voltar" action="back"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -763,7 +827,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="Continue" type="continue" action="nextPage"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="Continue" type="continue" action="nextPage"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -774,7 +838,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="back" type="back" action="back"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="back" type="back" action="back"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -786,7 +850,7 @@
 						<Var name="formXml"> 
 							<String.concatenate>
 								<Param><Var name="formXml"/></Param>
-								<Param><String><![CDATA[<Button id="Submeter" type="save" action="submit"/>]]></String></Param>
+								<Param><String><![CDATA[<Button name="Submeter" type="save" action="submit"/>]]></String></Param>
 							</String.concatenate>
 						</Var>
 					</Then>
@@ -806,7 +870,7 @@
       </Begin>
     </Function>
 
-		<Function name="getSubmitedData" doc="Get all fields of a form grouped by page">
+	<Function name="getSubmitedData" doc="Get all fields of a form grouped by page">
       <Params>
       	<Param name="id" type="int" doc="The formId"/>      
       	<Param name="id_form_response" type="int" doc="The response id it takes precedence over id param"/>
@@ -815,100 +879,99 @@
       </Params>
       <Return type="string" doc=""/>
       <Begin>
-				<!-- Try to get the form id from the response -->
-				<If condition="$guid_object->__hasValue">
-					<Then>
-						<Var name="response">
-							<DataAccess method="load">
-								<Param name="_entity">fw_form_response</Param>
-								<Param name="id"><Var name="PARAMS" key="id_form_response"/></Param>
-								<Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>
-							</DataAccess>
-						</Var>
-					</Then>
-					<Else>
-						<Var name="response">
-							<DataAccess method="load">
-								<Param name="_entity">fw_form_response</Param>
-								<Param name="id"><Var name="PARAMS" key="id_form_response"/></Param>
-								<Param name="id_person"><Var name="USER" key="id"/></Param>
-							</DataAccess>
-						</Var>
-					</Else>
-				</If>
-				<If condition="!($id_form_response->__hasValue)">
-					<Then>
-						<Var name="response">
-							<DataAccess method="load">
-								<Param name="_entity">fw_form_response</Param>
-								<Param name="id_form"><Var name="PARAMS" key="id"/></Param>
-								<Param name="id_person"><Var name="USER" key="id"/></Param>
-							</DataAccess>
-						</Var>
-					</Then>
-				</If>
-				<Exception name="framework/form::InvalidResponseIdOrGuidObject" condition="$response->__length == 0"/>
-				<Var name="idForm"><Var name="response" key="id_form"/></Var>
-				<Var name="fields">
-					<DataAccess method="getAll" params="filteredParams">
-            <Param name="_entity">fw_form_field</Param>
-            <Param name="id_form"><Var name="idForm"/></Param>
-            <Param name="is_active"><Int>1</Int></Param>
-            <Param name="_sort"><String>page</String></Param>
-          </DataAccess>
+		<!-- Try to get the form id from the response -->
+		<If condition="$guid_object->__hasValue">
+			<Then>
+				<Var name="response">
+					<DataAccess method="load">
+						<Param name="_entity">fw_form_response</Param>
+						<Param name="id"><Var name="PARAMS" key="id_form_response"/></Param>
+						<Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>
+					</DataAccess>
+				</Var>
+			</Then>
+			<Else>
+				<Var name="response">
+					<DataAccess method="load">
+						<Param name="_entity">fw_form_response</Param>
+						<Param name="id"><Var name="PARAMS" key="id_form_response"/></Param>
+						<Param name="id_person"><Var name="USER" key="id"/></Param>
+					</DataAccess>
+				</Var>
+			</Else>
+		</If>
+		<If condition="!($id_form_response->__hasValue) &amp;&amp; !($guid_object->__hasValue)">
+			<Then>
+				<Var name="response">
+					<DataAccess method="load">
+						<Param name="_entity">fw_form_response</Param>
+						<Param name="id_form"><Var name="PARAMS" key="id"/></Param>
+						<Param name="id_person"><Var name="USER" key="id"/></Param>
+					</DataAccess>
+				</Var>
+			</Then>
+		</If>
+		<Exception name="framework/form::InvalidResponseIdOrGuidObject" condition="$response->__length == 0"/>
+		<Var name="idForm"><Var name="response" key="id_form"/></Var>
+		<Var name="fields">
+			<DataAccess method="getAll" params="filteredParams">
+				<Param name="_entity">fw_form_field</Param>
+				<Param name="id_form"><Var name="idForm"/></Param>
+				<Param name="is_active"><Int>1</Int></Param>
+				<Param name="_sort"><String>page</String></Param>
+          	</DataAccess>
       	</Var>
       	<Var name="formXml"><String.parse><![CDATA[<Form name="$formName" freeze="true">]]></String.parse></Var>
       	<Var name="currentPage"><Int>0</Int></Var>
-				<ForEach var="fields" item="field">
-					<If condition="$field->page != $currentPage">
-						<Then>
-							<!--Open a new tab -->
-							<Var name="currentPage"><Var name="field" key="page"/></Var>
-							<Trace><String.parse>Tab: $currentPage</String.parse></Trace>							
-							<Var name="formXml">
-								<String.concatenate>
-									<Param><Var name="formXml"/></Param>
-									<Param><String.parse><![CDATA[<Tab id="tab_$currentPage" label="Página $currentPage"/>]]></String.parse></Param>
-								</String.concatenate>
-							</Var>
-						</Then>
-					</If>
-					
-					<!-- Turn all fields visible due to client side rules in the form -->
-					<Var name="xmlDefinition">
-						<String.replace>
-							<Param><![CDATA[visible="false"]]></Param>
-							<Param><![CDATA[visible="true"]]></Param>
-							<Param><Var name="field" key="xml_definition"/></Param>
-						</String.replace>
-					</Var>
+		<ForEach var="fields" item="field">
+			<If condition="$field->page != $currentPage">
+				<Then>
+					<!--Open a new tab -->
+					<Var name="currentPage"><Var name="field" key="page"/></Var>
+					<Trace><String.parse>Tab: $currentPage</String.parse></Trace>							
 					<Var name="formXml">
 						<String.concatenate>
 							<Param><Var name="formXml"/></Param>
-							<Param><Var name="xmlDefinition"/></Param>
+							<Param><String.parse><![CDATA[<Tab name="tab_$currentPage" label="Página $currentPage"/>]]></String.parse></Param>
 						</String.concatenate>
 					</Var>
-				</ForEach>
-				<Var name="maxPages" >
-					<Call function="getMaxPages">
-						<Param name="id"><Var name="PARAMS" key="id"/></Param>
-					</Call>				
-				</Var>
-				<Var name="formXml">
-					<String.concatenate>
-						<Param><Var name="formXml"/></Param>
-						<Param><String><![CDATA[<ButtonGroup><Button id="back" type="back" label="Voltar" action="previousPage"/></ButtonGroup></Form>]]></String></Param>
-					</String.concatenate>
-				</Var>
-				<Var name="data"><Set/></Var>
-				<Var name="data" key="formXml"><Var name="formXml"/></Var>
-				<Var name="data" key="data"><UtilsLib method="xmlToSet"><Param><Var name="response" key="response_data"/></Param></UtilsLib></Var>
+				</Then>
+			</If>
+			
+			<!-- Turn all fields visible due to client side rules in the form -->
+			<Var name="xmlDefinition">
+				<String.replace>
+					<Param><![CDATA[visible="false"]]></Param>
+					<Param><![CDATA[visible="true"]]></Param>
+					<Param><Var name="field" key="xml_definition"/></Param>
+				</String.replace>
+			</Var>
+			<Var name="formXml">
+				<String.concatenate>
+					<Param><Var name="formXml"/></Param>
+					<Param><Var name="xmlDefinition"/></Param>
+				</String.concatenate>
+			</Var>
+		</ForEach>
+		<Var name="maxPages" >
+			<Call function="getMaxPages">
+				<Param name="id"><Var name="PARAMS" key="id"/></Param>
+			</Call>				
+		</Var>
+		<Var name="formXml">
+			<String.concatenate>
+				<Param><Var name="formXml"/></Param>
+				<Param><String><![CDATA[<ButtonGroup><Button name="back" type="back" label="Voltar" action="previousPage"/></ButtonGroup></Form>]]></String></Param>
+			</String.concatenate>
+		</Var>
+		<Var name="data"><Set/></Var>
+		<Var name="data" key="formXml"><Var name="formXml"/></Var>
+		<Var name="data" key="data"><UtilsLib method="xmlToSet"><Param><Var name="response" key="response_data"/></Param></UtilsLib></Var>
         <Return><Var name="data"/></Return>
       </Begin>
     </Function>
-
     
-		<Function name="getMaxPages" doc="Get the maximum number of pages in this form">
+	<Function name="getMaxPages" doc="Get the maximum number of pages in this form">
       <Params>
       	<Param name="id" type="int" required="true" doc="The form id"/>
       </Params>
@@ -923,73 +986,75 @@
       </Begin>
     </Function>
 
-		<Function name="submitData" doc="Get the data to submit to the form">
+	<Function name="submitData" doc="Get the data to submit to the form">
       <Params>
       	<Param name="id" type="int" required="true" doc="The form id"/>
       	<Param name="id_form_response" type="int" doc="The id of the response will override the form"/>
       	<Param name="id_person" type="int" required="true" doc="The id of the person filling the form"/>
-				<Param name="guid_object" doc="object associated with this person"/>
+		<Param name="guid_object" doc="object associated with this person"/>
       	<Param name="formName" type="string" required="true" doc="The form name to include in formXml"/>
       	<Param name="page" type="int" required="true" doc="The page to where this data is submitted"><Int>1</Int></Param>
       	<Param name="data" type="array" required="true" doc="The data to submit in this page"/>
       </Params>
       <Return type="multiple" doc=""/>
       <Begin>
+		<Var name="PARAMS" dump="true"/>
       	<Transaction>
 	      	<!-- Check if there is an active response to this form for this user -->
 	      	<If condition="$PARAMS->id_form_response !== '' &amp;&amp;  $PARAMS->id_form_response !== null">
-						<Then>
+				<Then>
 			      	<Var name="response">
 			      		<DataAccess method="load">
-									<Param name="_entity">fw_form_response</Param>
-									<Param name="id"><Var name="PARAMS" key="id_form_response"/></Param>
-									<Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>									
-								</DataAccess>
+							<Param name="_entity">fw_form_response</Param>
+							<Param name="id"><Var name="PARAMS" key="id_form_response"/></Param>
+							<Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>									
+						</DataAccess>
 			      	</Var>
 			      	<If condition="$response->__length == 0">
-								<Then>
-									<Exception name="framework/form::invalidResponse"/>
-								</Then>
-							</If>
-			      	<Var name="idForm"><Var name="response" key="id_form"/></Var>
+						<Then>
+							<Exception name="framework/form::invalidResponse"/>
 						</Then>
-						<Else>
-							<Var name="idForm"><Var name="PARAMS" key="id"/></Var>
-			      	<Var name="response">
-			      		<DataAccess method="load">
-									<Param name="_entity">fw_form_response</Param>
-									<Param name="id_form"><Var name="idForm"/></Param>
-									<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
-									<Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>
-								</DataAccess>
-			      	</Var>
-						</Else>
 					</If>
+			      	<Var name="idForm"><Var name="response" key="id_form"/></Var>
+				</Then>
+				<Else>
+					<Var name="idForm"><Var name="PARAMS" key="id"/></Var>
+			      	<Var name="response">
+						<DataAccess method="load">
+							<Param name="_entity">fw_form_response</Param>
+							<Param name="id_form"><Var name="idForm"/></Param>
+							<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+							<Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>
+						</DataAccess>
+			      	</Var>
+				</Else>
+			</If>
 	      	
 	      	<If condition="$response->__length == 0">
-						<Then>
-							<!-- If not, create a response to this form -->
+				<Then>
+					<!-- If not, create a response to this form -->
 			      	<!-- Load the response data -->
 			      	<Var name="idResponse">
 			      		<DataAccess method="insert">
-									<Param name="_entity">fw_form_response</Param>
-									<Param name="id_form"><Var name="idForm"/></Param>
-									<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
-									<Param name="start"><Now/></Param>
-									<Param name="current_page"><Int>1</Int></Param>
-									<Param name="_base">true</Param>
-								</DataAccess>
+							<Param name="_entity">fw_form_response</Param>
+							<Param name="id_form"><Var name="idForm"/></Param>
+							<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+							<Param name="guid_object"><Var name="PARAMS" key="guid_object"/></Param>
+							<Param name="start"><Now/></Param>
+							<Param name="current_page"><Int>1</Int></Param>
+							<Param name="_base">true</Param>
+						</DataAccess>
 			      	</Var>
 			      	<Var name="response">
 				      	<DataAccess method="load">
-									<Param name="_entity">fw_form_response</Param>
-									<Param name="id"><Var name="idResponse"/></Param>
-								</DataAccess>
+							<Param name="_entity">fw_form_response</Param>
+							<Param name="id"><Var name="idResponse"/></Param>
+						</DataAccess>
 			      	</Var>
 						</Then>
 					</If>
-	      	<Var name="bindData"><UtilsLib method="XmlToSet"><Param><Var name="response" key="response_data"/></Param></UtilsLib></Var>
-	      	<Var name="is_completed"><Var name="response" key="is_completed"/></Var>
+					<Var name="bindData"><UtilsLib method="XmlToSet"><Param><Var name="response" key="response_data"/></Param></UtilsLib></Var>
+					<Var name="is_completed"><Var name="response" key="is_completed"/></Var>
 					
 					<!-- Load the form -->
 					<Var name="form">
@@ -1014,40 +1079,39 @@
 			      	<Var name="nextPage"><Var name="response" key="current_page"/></Var>
 			      	
 			      	<If condition="$conditions->__length == 0">
+						<Then>
+							<!--If there is no condition then automatically decrement the page -->
+							<Var name="nextPage" value="$nextPage - 1"/>
+						</Then>
+						<Else>
+							<!--set the data equals to response_data-->
+							
+							<Var name="data"><UtilsLib method="XmlToSet"><Param><Var name="response" key="response_data"/></Param></UtilsLib></Var>
+							
+							<!-- Else process the conditions to determine the next page-->
+					      	<Var name="found"><Int>0</Int></Var>
+					      	<ForEach var="conditions" item="condition">
+						      	<If condition="$found == 0">
+									<Then>
+							      		<Var name="result"><EvalCondition><Var name="condition" key="condition"/></EvalCondition></Var>
+							      		<If condition="$result == 1">
+											<Then>
+												<Var name="nextPage"><Var name="condition" key="page_from"/></Var>
+												<Var name="found"><Int>1</Int></Var>
+											</Then>
+										</If>
+									</Then>
+								</If>
+							</ForEach>
+					      	<If condition="$found == 0">
 								<Then>
 									<!--If there is no condition then automatically decrement the page -->
 									<Var name="nextPage" value="$nextPage - 1"/>
 								</Then>
-								<Else>
-									<!--set the data equals to response_data-->
-									
-									<Var name="data"><UtilsLib method="XmlToSet"><Param><Var name="response" key="response_data"/></Param></UtilsLib></Var>
-									
-									<!-- Else process the conditions to determine the next page-->
-					      	<Var name="found"><Int>0</Int></Var>
-					      	<ForEach var="conditions" item="condition">
-						      	<If condition="$found == 0">
-											<Then>
-							      		<Var name="result"><EvalCondition><Var name="condition" key="condition"/></EvalCondition></Var>
-							      		<If condition="$result == 1">
-													<Then>
-														<Var name="nextPage"><Var name="condition" key="page_from"/></Var>
-														<Var name="found"><Int>1</Int></Var>
-														
-													</Then>
-												</If>
-											</Then>
-										</If>
-									</ForEach>
-					      	<If condition="$found == 0">
-										<Then>
-											<!--If there is no condition then automatically decrement the page -->
-											<Var name="nextPage" value="$nextPage - 1"/>
-										</Then>
-									</If>
-								</Else>
 							</If>
-							<!-- Save the data -->
+						</Else>
+					</If>
+					<!-- Save the data -->
 			      	<Var name="oldData"><UtilsLib method="xmlToSet"><Param><Var name="response" key="response_data"/></Param></UtilsLib></Var>
 			      	<Var name="mergeData"><Var name="PARAMS" key="data"/></Var>
 			      	<Var name="newData">	
@@ -1059,14 +1123,14 @@
 							
 			      	<!-- Update the response -->
 			      	<DataAccess method="update">
-								<Param name="_entity">fw_form_response</Param>
-								<Param name="id"><Var name="response" key="id"/></Param>
-								<Param name="current_page"><Var name="nextPage"/></Param>
-								<Param name="response_data"><UtilsLib method="SetToXml"><Param><Var name="newData"/></Param></UtilsLib></Param>
-								<Param name="_base">true</Param>
-							</DataAccess>							
-						</Then>
-						<Else>
+						<Param name="_entity">fw_form_response</Param>
+						<Param name="id"><Var name="response" key="id"/></Param>
+						<Param name="current_page"><Var name="nextPage"/></Param>
+						<Param name="response_data"><UtilsLib method="SetToXml"><Param><Var name="newData"/></Param></UtilsLib></Param>
+						<Param name="_base">true</Param>
+					</DataAccess>							
+				</Then>
+				<Else>
 		      		<If condition="($PARAMS->page === 0 || $PARAMS->page === '' || $PARAMS->page === null)">
 								<Then>
 									<!-- If This is a not a new submission got to the current page -->
@@ -1262,7 +1326,7 @@
       	</Var>
 				<Return><Var name="idResponse"/></Return>			
 			</Begin>
-		</Function>
+	</Function>
 		
     <Function scope="public" name="getTermsConditions" doc="Get the terms and conditions for this form">
 			<Params>
@@ -1289,7 +1353,7 @@
 								
 				<Return><Var name="termsConditions"/></Return>			
 			</Begin>
-		</Function>
+	</Function>
 		
   </Library>
 </Node>

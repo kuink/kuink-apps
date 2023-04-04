@@ -42,8 +42,8 @@
         <If condition="$result == 0">
           <Then>
             <Var name="id">
-              <Execute method="framework,generic,insert" params="PARAMS">
-                <Param name="table">fw_capability</Param>
+              <DataAccess method="insert" params="PARAMS">
+                <Param name="_entity">fw_capability</Param>
                 <Param name="_creation">
                   <DateTimeLib method="Now"/>
                 </Param>
@@ -56,7 +56,7 @@
                 <Param name="_modification_ip">
                   <Var name="USER" key="ip"/>
                 </Param>
-              </Execute>
+              </DataAccess>
             </Var>
             <Var name="result">
               <Var name="id"/>
@@ -89,12 +89,10 @@
           </Allow>
         </Permissions>
         <Var name="record">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_capability</Param>
-            <Param name="id">
-              <Var name="id"/>
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="id"><Var name="id"/></Param>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="record"/>
@@ -123,12 +121,10 @@
         </Permissions>
         <!-- Set default values -->
         <Var name="record">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_capability</Param>
-            <Param name="code">
-              <Var name="code"/>
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="code"><Var name="code"/></Param>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="record"/>
@@ -148,12 +144,10 @@
         </Permissions>
         <Var name="result">0</Var>
         <Var name="record">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_capability</Param>
-            <Param name="id">
-              <Var name="id"/>
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="id"><Var name="id"/></Param>
+          </DataAccess>
         </Var>
         <Var name="rid">
           <Var name="record" key="id"/>
@@ -181,12 +175,10 @@
         </Permissions>
         <Var name="result">0</Var>
         <Var name="record">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_capability</Param>
-            <Param name="code">
-              <Var name="code"/>
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="code"><Var name="code"/></Param>
+          </DataAccess>
         </Var>
         <Var name="rid">
           <Var name="record" key="id"/>
@@ -201,39 +193,7 @@
         </Return>
       </Begin>
     </Function>
-    <Function name="add" doc="Updates a record in table ">
-      <Params>
-        <Param name="name" type="text" required="true"/>
-        <Param name="code" type="text" required="true"/>
-        <Param name="is_global" type="checkbox" required="false"/>
-      </Params>
-      <Begin>
-        <Execute method="framework,generic,insert">
-          <Param name="table">fw_capability</Param>
-          <Param name="name">
-            <Var name="PARAMS" key="name"/>
-          </Param>
-          <Param name="code">
-            <Var name="PARAMS" key="code"/>
-          </Param>
-          <Param name="is_global">
-            <Var name="PARAMS" key="is_global"/>
-          </Param>
-          <Param name="_creation">
-            <DateTimeLib method="Now"/>
-          </Param>
-          <Param name="_creation_ip">
-            <Var name="USER" key="ip"/>
-          </Param>
-          <Param name="_modification">
-            <DateTimeLib method="Now"/>
-          </Param>
-          <Param name="_modification_ip">
-            <Var name="USER" key="ip"/>
-          </Param>
-        </Execute>
-      </Begin>
-    </Function>
+
     <Function name="delete" doc="Delete a record by id from table fw_capability">
       <Params>
         <Param name="id" type="int" required="true"/>
@@ -241,12 +201,10 @@
       <Return type="int" doc=""/>
       <Begin>
         <Return>
-          <Execute method="framework,generic,delete">
-            <Param name="table">fw_capability</Param>
-            <Param name="id">
-              <Var name="PARAMS" key="id"/>
-            </Param>
-          </Execute>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -265,8 +223,8 @@
             </Param>
           </UtilsLib>
         </Var>
-        <Execute method="framework,generic,update" params="paramData">
-          <Param name="table">fw_capability</Param>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_capability</Param>
           <Param name="_creation">
             <DateTimeLib method="Now"/>
           </Param>
@@ -279,7 +237,7 @@
           <Param name="_modification_ip">
             <Var name="USER" key="ip"/>
           </Param>
-        </Execute>
+        </DataAccess>
       </Begin>
     </Function>
     <Function name="search" doc="Search records from table fw_capability">
@@ -303,7 +261,7 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="this,this,search">
+          <DataAccess method="this,this,search">
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
@@ -322,7 +280,7 @@
             <Param name="pagesize">
               <Var name="PARAMS" key="pagesize"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -340,10 +298,10 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,getAll">
-            <Param name="table">fw_capability</Param>
-            <Param name="fields">*</Param>
-          </Execute>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="_attributes">*</Param>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -363,12 +321,12 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_capability</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
             <Param name="id">
               <Var name="PARAMS" key="id"/>
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>

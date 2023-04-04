@@ -10,7 +10,7 @@
   <Configuration/>
 
   <Screens>
-    <Screen id="sc01">
+    <Screen name="sc01">
       <Ide name="ide"/>
     </Screen>
   </Screens>

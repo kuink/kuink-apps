@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->              
+              <Var name="context" key="message">Testing an output param in a function</Var>
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>        
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              
+              <Var name="num"><Int>5</Int></Var>
+              <Call function="testOutput">
+                <Param name="test" var="num"/>
+              </Call>
+
+              <Var name="result" key="code">
+                <If condition="$num == 10">
+                  <Then>0</Then>
+                  <Else>-1</Else>
+                </If>
+              </Var>
+              <Var name="result" key="data"><String parse="true">$num == 10</String></Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            </Begin>
+        </Function>
+        
+        <Function scope="private" name="testOutput" doc="Aux function for the test">
+            <Params>
+              <Param name="test" output="true"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+              <Var name="test"><Int.parse>$test*2</Int.parse></Var>
+              <Return>
+              </Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>

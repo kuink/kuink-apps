@@ -6,37 +6,37 @@
     <Libraries>
     </Libraries>
     <Screens>
-        <Screen id="scrShow" template="2x1col">
+        <Screen name="scrShow" template="2x1col">
             <DocViewer name="dcPreview" title="preview" position="left"/>
             <Form name="frmDocData" position="right" title="documentDetails">
-			        <Header id="baseData" label="baseData"/>
+			        <Header name="baseData" label="baseData"/>
 			        <!--Static id="id"/-->
-			        <Static id="full_name">
+			        <Static name="full_name">
 			         <Formatter name="Style" method="bold"/>
 			        </Static>
-			        <Static id="description"/>
-			        <Static id="is_active">
+			        <Static name="description"/>
+			        <Static name="is_active">
 			          <Formatter name="YesNo"/>
 			        </Static>      			        
-			        <Header id="currentVersion" label="currentVersion"/>
-			        <Static id="version_code">
+			        <Header name="currentVersion" label="currentVersion"/>
+			        <Static name="version_code">
 			         <Formatter name="Style" method="bold"/>
 			        </Static>
-			        <Static id="version_reason"/>
-              <Static id="version_approval_date">
+			        <Static name="version_reason"/>
+              <Static name="version_approval_date">
 			          <Formatter name="DateTime"/>
 			        </Static>
-              <Header id="classification"/>
-              <Static id="class"/>
-              <Static id="disposal_info">
+              <Header name="classification"/>
+              <Static name="class"/>
+              <Static name="disposal_info">
                 <Formatter name="Style" method="bold"/>
               </Static>
-              <Static id="obs_private"/>
-              <Static id="location"/>
+              <Static name="obs_private"/>
+              <Static name="location"/>
 			        
               <ButtonGroup>
-                <Button type="back" id="back" action="back"/>
-                <Button type="download" id="download" action="download"/>
+                <Button type="back" name="back" action="back"/>
+                <Button type="download" name="download" action="download"/>
               </ButtonGroup>
             </Form>
         </Screen>

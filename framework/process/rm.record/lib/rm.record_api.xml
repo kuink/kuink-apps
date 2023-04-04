@@ -19,6 +19,8 @@
   </Actions>
   <Library forceinterface="true">
 
+
+
     <Function name="add" doc="Add a record in the rm system">
       <Params>
         <Param name="class_code" type="string" required="true" doc="The code of the class the record belongs to" />
@@ -26,6 +28,8 @@
         <Param name="data" type="array" required="true" doc="The data needed to produce the record metadata" />
         <Param name="componentArray" type="array" required="false" doc="The array containing the components" />
         <Param name="aggregationArray" type="array" required="false" doc="The aggregations where to put the record in"/>
+        <Param name="nameMetadataKey" type="string" required="false" doc="The metadata key that contains the name of the record"/>
+        <Param name="descriptionMetadataKey" type="string" required="false" doc="The metadata key that contains the description of the record"/>
         <!--Param name="creator_code" type="string" required="true" doc="Who produced the record" /-->
       </Params>
       <Exceptions>
@@ -61,11 +65,16 @@
               </FormatterLib>	        
 	        </Var>
           <Var name="system" key="lang"><Var name="USER" key="lang"/></Var>	        
+          <Var name="_record"><Set/></Var>
+          <Var name="_record" key="uuid"><Uuid/></Var>
+
 	        <Var name="data" key="_class"><Var name="class"/></Var>
 
-	        <Var name="data" key="_system"><Var name="system"/></Var>
+          <Var name="data" key="_system"><Var name="system"/></Var>
+
+          <Var name="data" key="_record"><Var name="_record"/></Var>
 	        
-	        <Var name="data" dump="true"/>
+	        <!--Var name="data" dump="true"/-->
 	        	
 	        <!-- if class was not found, throw an exception -->
 	        <If condition="$class->__length &lt;= 0">
@@ -133,10 +142,7 @@
 	              <Param name="id"><Var name="class" key="id_disposal_hold" /></Param>
 	            </DataAccess>
 	        </Var>
-	
-
-	
-	
+		
 	        <!-- calculate disposal schedule's action due date -->
 	        <If condition="$classDisposalSchedule->id_action_interval_code != ''">
 	          <Then>
@@ -172,15 +178,17 @@
 	            </Var>
 	          </Then>
 	        </If>
-	
-	
+    
+          <Var name="recordName"><Var name="class" key="name"/></Var>
+          <Var name="recorDescription"><Var name="class" key="description"/></Var>
+
 	        <!-- create and get the record's id -->
 	        <Var name="id_record">
 	            <DataAccess method="insert">
 	                <Param name="_entity">fw_rm_record</Param>
-	                <Param name="uuid"><UtilsLib method="Uuid" /></Param>
-	                <Param name="name"><Var name="class" key="name" /></Param>
-	                <Param name="description"><Var name="class" key="description" /></Param>
+	                <Param name="uuid"><Var name="_record" key="uuid"/></Param>
+	                <Param name="name"><Var name="recordName"/></Param>
+	                <Param name="description"><Var name="recordDescription"/></Param>
 	                <Param name="id_class"><Var name="class" key="id" /></Param>
 	                <Param name="id_disposal_schedule"><Var name="classDisposalSchedule" key="id" /></Param>
 	                <Param name="id_access_level_classification">
@@ -385,10 +393,34 @@
               </If>
           </Var>
   
+          <!-- Check to see if the record name and description is to retrieve from metadata -->
+          <If condition="$PARAMS->nameMetadataKey != ''">
+            <Then>
+              <Var name="recordName">
+                <MetadataLib method="getMetadataValue">
+                  <Param name="metadata"><Var name="expandedMetadata"></Var></Param>
+                  <Param name="key"><Var name="PARAMS" key="nameMetadataKey"/></Param>
+                </MetadataLib>                
+              </Var>
+            </Then>
+          </If>
+          <If condition="$PARAMS->descriptionMetadataKey != ''">
+            <Then>
+              <Var name="recordDescription">
+                <MetadataLib method="getMetadataValue">
+                  <Param name="metadata"><Var name="expandedMetadata"></Var></Param>
+                  <Param name="key"><Var name="PARAMS" key="descriptionMetadataKey"/></Param>
+                </MetadataLib>                
+              </Var>
+            </Then>
+          </If>
+
           <!-- update class last_xml -->
           <DataAccess method="update">
             <Param name="_entity">fw_rm_record</Param>
             <Param name="id"><Var name="record" key="id" /></Param>
+            <Param name="name"><Var name="recordName"/></Param>
+            <Param name="description"><Var name="recordDescription"/></Param>
             <Param name="last_xml"><Var name="expandedMetadata" /></Param>
           </DataAccess>
 
@@ -439,6 +471,48 @@
         <Return><Var name="id_record" /></Return>
       </Begin>
     </Function>
+
+    <Function name="generateFileAndAdd" doc="Generates a file from the class template using data and then Add the record in the rm system. Instead of creating seperatly the file and then the record, this step takes care of everything.">
+      <Params>
+        <Param name="class_code" type="string" required="true" doc="The code of the class the record belongs to" />
+        <Param name="is_final" type="bool" doc="Flag that indicates whether or not a record is final" />
+        <Param name="data" type="array" required="true" doc="The data needed to produce the record metadata" />
+        <Param name="aggregationArray" type="array" required="false" doc="The aggregations where to put the record in"/>
+        <Param name="nameMetadataKey" type="string" required="false" doc="The metadata key that contains the name of the record"/>
+        <Param name="descriptionMetadataKey" type="string" required="false" doc="The metadata key that contains the description of the record"/>
+      </Params>
+      <Begin>
+        <!-- Check if this class has a template. If not throw an exception-->
+        <!-- Generates the file, based in the class template -->
+        <Var name="idFile">
+          <Call library="framework,rm.controlledDocument,api" function="getClassAutoContentFile">
+            <Param name="class_code"><Var name="PARAMS" key="class_code"/></Param>
+            <Param name="data"><Var name="PARAMS" key="data"/></Param>
+          </Call>
+        </Var>
+
+        <!-- Building the component array -->
+        <Var name="rm_settings" key="id_file"><Var name="idFile"/></Var>
+        <Var name="rm_settings" key="duplicate"><Int>0</Int></Var>
+        <Var name="rm_component" key="settings"><Var name="rm_settings"/></Var>
+        <Var name="rm_component" key="plugin"><String>localfile</String></Var>        
+        <Var name="rm_componentArray" key=""><Var name="rm_component"/></Var>
+
+        <!-- Finally add the record -->
+        <Return>
+          <Call function="add">
+            <Param name="class_code"><Var name="PARAMS" key="class_code"/></Param>
+            <Param name="is_final"><Var name="PARAMS" key="is_final"/></Param>
+            <Param name="data"><Var name="PARAMS" key="data"/></Param>
+            <Param name="componentArray"><Var name="rm_componentArray"/></Param>
+            <Param name="aggregationArray"><Var name="aggregationArray"/></Param>
+            <Param name="nameMetadataKey"><Var name="nameMetadataKey"/></Param>
+            <Param name="descriptionMetadataKey"><Var name="descriptionMetadataKey"/></Param>
+          </Call>
+        </Return>
+      </Begin>
+    </Function>
+
 
     <!--Function name="addToAggregation" doc="Adds the record to an aggregation">
       <Params>
@@ -657,8 +731,7 @@
       <Return type="multiple" doc="">
       </Return>
       <Begin>
-      <Var name="PARAMS" dump="true"/>
-        <Var name="result" dump="true">
+        <Var name="result">
 					<Call library="framework,rm.entity.relation,api" function="getRelations">
 						<Param name="id_entity"><Var name="id_record"/></Param>
 						<Param name="entity_type"><String>record</String></Param>
@@ -757,15 +830,46 @@
 
     <Function name="getContent" doc="If there's only one component, get the content. TODO: Else get a zip will all content">
       <Params>
-        <Param name="id_record" type="int" />
+        <Param name="id_record" type="int" required="false" doc="Get by id, if uuid is not supplied"/>
+        <Param name="record_uuid" type="string" required="false" doc="Get by uuid, if id is not supplied" />
+        <Param name="aggregation_uuid" type="string" required="false" doc="Protection to see if this record really belongs to this aggregation"/>
       </Params>
       <Return type="multiple" doc="">
       </Return>
       <Begin>
+          <!-- Load the record by id or uuid -->
+          <Var name="record">
+            <DataAccess method="load">
+              <Param name="_entity">fw_rm_record</Param>
+              <Param name="id"><Var name="PARAMS" key="id_record"/></Param>
+              <Param name="uuid"><Var name="PARAMS" key="record_uuid"/></Param>
+            </DataAccess>
+          </Var>
+          <Var name="aggregation"><Set/></Var>
+          <If condition="$PARAMS->aggregation_uuid != ''">
+            <Then>
+              <Var name="aggregation">
+                <DataAccess method="load">
+                  <Param name="_entity">fw_rm_aggregation</Param>
+                  <Param name="uuid"><Var name="PARAMS" key="aggregation_uuid"/></Param>
+                </DataAccess>
+              </Var>
+              <!-- Check the relation -->
+              <Var name="exists" dump="true">
+                <Call library="framework,rm.entity.relation,api" function="existByCode">
+                  <Param name="id_entity"><Var name="aggregation" key="id"/></Param>
+                  <Param name="entity_type">aggregation</Param>
+                  <Param name="id_entity_type_relation"><Var name="record" key="id"/></Param>
+                  <Param name="entity_relation">record</Param>
+                </Call>
+              </Var>
+              <Exception name="framework/aggregation::relationDoesNotExist" condition="$exists == 0"/>
+            </Then>
+          </If>
           <Var name="component">
             <DataAccess method="load">
               <Param name="_entity">fw_rm_component</Param>
-              <Param name="id_record"><Var name="id_record" /></Param>
+              <Param name="id_record"><Var name="record" key="id"/></Param>
             </DataAccess>
           </Var>
           <If condition="$component->__length != 0">

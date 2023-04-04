@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Permissions>
+  </Permissions>
+  <Doc lang="pt-PT">
+  </Doc>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+  </Libraries>
+  <Params>
+    <Param name="id" doc="The id content to edit. If empty, then this is a add instead of an edit"/>
+    <Param name="id_content_type" doc="The content type of the item to be added"/>
+    <Param name="id_parent" doc="Add this econtent as a child of this id_parent"/>
+  </Params>
+  <Configuration/>
+  <Screens>
+    <Screen name="scrEdit" doc="Edit Screen">
+      <Form name="frmEdit">
+        <Static name="id"/>
+        <Select name="id_template_override" label="templateOverride" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <Container name="contentTypeFields"/>
+        <ButtonGroup>
+          <Button name="cancel" type="cancel" label="cancel" action="back"/>
+          <Button name="save" type="update" label="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <Actions>
+
+    <Action name="init">
+      <If condition="$PARAMS->id == ''">
+        <Then><Action name="insert"/></Then>
+        <Else><Action name="edit"/></Else>
+      </If>
+    </Action>
+
+    <Action name="save">
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id">
+            <IsNull>
+              <Param><Var name="POSTDATA" key="id_content_type"/></Param>
+              <Param><Var name="PARAMS" key="id_content_type"/></Param>
+            </IsNull>
+          </Param>
+        </Call>
+      </Var>
+
+      <!-- Upload the file if any -->
+      <Var name="filename"><Guid/></Var>
+      <Var name="idFile">
+        <FileLib method="Upload">
+          <Param name="UploadFolder"><String><![CDATA[app_files/framework.cms/content]]></String></Param>
+          <Param name="Filename"><Var name="filename"/></Param>
+          <Param name="MaxUploadFileSize">15000000</Param>
+          <Param name="AllowedExtensions"><Var name="contentType" key="allowed_extensions"/></Param>
+          <Param name="id_user"><Var name="USER" key="id"/></Param>
+        </FileLib>
+      </Var>      
+
+      <!-- Build the data object and remove the id_template_override field-->
+      <Var name="data"><Var name="POSTDATA"/></Var>
+      <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+        <Then>
+          <Var name="data" key="id_file"><Var name="idFile"/></Var>          
+        </Then>
+      </If>
+      
+      <Var name="data" key="id_template_override" clear="true"/>
+      <Var name="dataXml" dump="true"><SetToXml><Var name="data"/></SetToXml></Var>
+      <Var name="errors" dump="true"><Errors/></Var>
+      <If condition="$errors == 0">
+        <Then>
+          <If condition="$PARAMS->id == ''">
+            <Then>
+              <!-- Insert the record -->
+              <Var name="errors">
+                <Call library="framework,cms.content,api" function="add">
+                  <Param name="id_template_override">
+                    <If condition="$POSTDATA->id_template_override != ''">
+                      <Then><Var name="POSTDATA" key="id_template_override"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                  <Param name="id_content_type"><Var name="contentType" key="id"/></Param>
+                  <Param name="data"><Var name="dataXml"/></Param>
+                  <Param name="id_parent"><Var name="PARAMS" key="id_parent"/></Param>
+                  <Param name="id_file">
+                    <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+                      <Then><Var name="idFile"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                </Call>
+              </Var>
+            </Then>
+            <Else>
+              <!-- Get the content record and unlink the old file if there's one -->
+              <Var name="content">
+                <Call library="framework,cms.content,api" function="getById">
+                  <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                </Call>                
+              </Var>
+              <Trace><String.parse>Setting: $idFile</String.parse></Trace>
+              <If condition="($idFile != '') &amp;&amp; ($idFile != 0) &amp;&amp; ($content->id_file != '') &amp;&amp; ($content->id_file != 0) ">
+                <Then>
+                  <Trace><String.parse>Unlinking: $content->id_file | Setting: $idFile</String.parse></Trace>
+                  <FileLib method="unlink">
+                    <Param><Var name="content" key="id_file" /></Param>
+                  </FileLib>                  
+                </Then>
+              </If>
+
+              <!-- Update the content -->
+              <Var name="optionalParams"><Set/></Var>
+              <If condition="($idFile != '') &amp;&amp; ($idFile != 0)">
+                <Then>
+                  <Var name="optionalParams" key="id_file"><Var name="idFile"/></Var>
+                </Then>
+              </If>
+              <Var name="errors">
+                <Call library="framework,cms.content,api" function="update" params="optionalParams">
+                  <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                  <Param name="id_template_override">
+                    <If condition="$POSTDATA->id_template_override != ''">
+                      <Then><Var name="POSTDATA" key="id_template_override"/></Then>
+                      <Else><Null/></Else>
+                    </If>
+                  </Param>
+                  <Param name="data"><Var name="dataXml"/></Param>
+                </Call>
+              </Var>
+            </Else>
+          </If>
+        </Then>
+      </If>
+      <If condition="$errors->__length != 0">
+        <Then>
+          <ForEach var="errors" item="error">
+            <UserMessage type="error">
+              <String.parse>$error->label | $error->message</String.parse>
+            </UserMessage>
+          </ForEach>
+          <Action name="init"/>
+        </Then>
+        <Else>
+          <Action name="back"/>          
+        </Else>
+      </If>
+
+    </Action>
+
+    <Action name="insert" screen="scrEdit">
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="id_content_type"/></Param>
+        </Call>
+      </Var>
+      <Call function="buildContentForm">
+        <Param name="fields"><Var name="contentType" key="fields"/></Param>
+        <Param name="form" var="frmEdit"/>
+      </Call>
+    </Action>
+
+    <Action name="edit" screen="scrEdit">
+      <Var name="content">
+        <Call library="framework,cms.content,api" function="getById">
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </Call>
+      </Var>
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="content" key="id_content_type"/></Param>
+        </Call>
+      </Var>
+      <Call function="buildContentForm">
+        <Param name="fields"><Var name="contentType" key="fields"/></Param>
+        <Param name="form" var="frmEdit"/>
+      </Call>
+      <Var name="data">
+        <XmlToSet><Var name="content" key="data"/></XmlToSet>
+      </Var>
+      
+      <Control method="bind" object="frmEdit">
+        <Param><Var name="content"/></Param>
+      </Control>
+      <Control method="bind" object="frmEdit">
+        <Param><Var name="data"/></Param>
+      </Control>
+    </Action>
+
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+  </Actions>
+  <Library forceinterface="true">
+    <Function scope="public" name="buildContentForm" doc="doc">
+    <Params>
+      <Param name="fields" type="text" doc="Json content type fields"/>
+      <Param name="static" type="int" doc="Static Form?"/>
+      <Param name="form" output="true" type="text" doc="The output form"/>
+    </Params>
+    <Return type=""/>
+    <Begin>
+      <Var name="fieldsSet"><JsonToSet><Var name="PARAMS" key="fields"/></JsonToSet></Var>
+      <Var name="defaultData"><Set/></Var>
+      <ForEach var="fieldsSet" item="field">
+        <Control method="addField" object="form">
+          <Param>
+            <Set>
+              <Element name="container">contentTypeFields</Element>
+              <Element name="id"><Var name="field" key="id"/></Element>
+              <Element name="type">
+                <If condition="$PARAMS->static == 1">
+                  <Then>Static</Then>
+                  <Else><Var name="field" key="type"/></Else>
+                </If>
+              </Element>
+              <Element name="label"><Var name="field" key="label"/></Element>
+              <Element name="help">false</Element>
+              <Element name="datasource"><Var name="field" key="datasource"/></Element>
+              <Element name="bindid"><Var name="field" key="bindid"/></Element>
+              <Element name="bindvalue"><Var name="field" key="bindvalue"/></Element>
+              <Element name="required"><Var name="field" key="required"/></Element>
+              <Element name="maxlength"><Var name="field" key="maxlength"/></Element>
+            </Set>
+          </Param> <!-- Field Properties -->
+        </Control>
+        <If condition="$field->default != ''">
+          <Then>
+            <Var name="defaultData" key="$field->id"><Var name="field" key="default"/></Var>
+          </Then>
+        </If>
+        <Var name="options"><Var name="field" key="options"/></Var>
+        <If condition="$options->__length != 0">
+          <Then>
+            <!-- Add a datasource to the form-->
+            <Control method="addDatasource" object="form">
+              <Param><String.parse>$field['id']Options</String.parse></Param>
+              <Param><Var name="options"/></Param>
+            </Control>
+          </Then>
+        </If>
+      </ForEach>
+      <If condition="$defaultData->__length != 0">
+        <Then>
+          <Control method="setDefaultData" object="form">
+            <Param><Var name="defaultData"/></Param>
+          </Control>
+        </Then>
+      </If>
+      <Return></Return>
+    </Begin>
+    </Function>
+  </Library>
+</Node>

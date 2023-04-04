@@ -5,7 +5,9 @@
     <Param name="application"/>
     <Param name="node"/>
     <Param name="createForeignIndexes"/>
+    <Param name="removeExistingIndexes"/>
     <Param name="createForeignKeys"/>
+    <Param name="removeExistingForeignKeys"/>
     <Param name="dropTablesBeforeCreate"/>
   </Params>
   <Doc></Doc>
@@ -14,7 +16,7 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scr002">
+    <Screen name="scr002">
       <Grid name="changesGrid" title="result">
         <Template>
           <Columns>
@@ -28,17 +30,17 @@
       </Grid>    
       <Form name="actions">
         <ButtonGroup>
-          <Button id="back" type="back" action="back" />
-          <Button id="apply" type="add" action="applyChanges" />
+          <Button name="back" type="back" action="back" />
+          <Button name="apply" type="add" action="applyChanges" />
         </ButtonGroup>
       </Form>
     </Screen>
 
-    <Screen id="scr003">
+    <Screen name="scr003">
       <Grid name="logGrid" infer="true" title="log"/>      
       <Form name="actions">
         <ButtonGroup>
-          <Button id="back" type="back" action="back" />
+          <Button name="back" type="back" action="back" />
         </ButtonGroup>
       </Form>
     </Screen>
@@ -73,7 +75,9 @@
           <Param name="application"><Var name="PARAMS" key="application"/></Param>
           <Param name="node"><Var name="PARAMS" key="node"/></Param>
           <Param name="createForeignIndexes"><Var name="PARAMS" key="createForeignIndexes"/></Param>
+          <Param name="removeExistingIndexes"><Var name="PARAMS" key="removeExistingIndexes"/></Param>
           <Param name="createForeignKeys"><Var name="PARAMS" key="createForeignKeys"/></Param>          
+          <Param name="removeExistingForeignKeys"><Var name="PARAMS" key="removeExistingForeignKeys"/></Param>
           <Param name="dropTablesBeforeCreate"><Var name="PARAMS" key="dropTablesBeforeCreate"/></Param>          
         </DataAccess>
       </Var>
@@ -89,4 +93,3 @@
 
   </Actions>
 </Node>
-

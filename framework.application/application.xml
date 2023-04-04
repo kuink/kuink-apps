@@ -6,5 +6,6 @@
     <Menus>
         <Menu role="Teacher" startuc="manage" startnode="" event="init" label="manage" default="true"/>
         <Menu role="Teacher" startuc="manage" startnode="" event="prerequisites" label="prerequisites"/>
+        <Menu role="Teacher" startuc="manage" startnode="" event="icons" label="icons"/>
     </Menus>
 </Application>

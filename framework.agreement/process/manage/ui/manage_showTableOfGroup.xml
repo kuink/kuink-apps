@@ -22,7 +22,7 @@
 			<Param name="startDate" type="json" doc=""/>
 	  </Params>
     <Screens>
-    	<Screen id="showScreen">
+    	<Screen name="showScreen">
 				<!-- This grid is not dynamic because the columns and formatters must be here-->
 				<Grid name="agreementsPivot" exportable="true" infer="true">
 					<Template>
@@ -51,6 +51,7 @@
     </Screens>
     <Actions>
       <Action name="init" screen="showScreen">
+				<Var name="PARAMS" dump="	true"/>
 				<If condition="$PARAMS->guidObjectList == ''">
 					<Then>
 						<!-- Do nothing... -->
@@ -75,6 +76,14 @@
 						<Param><Var name="PARAMS" key="entityAttributeList"/></Param>
 					</String.replace>
 				</Var>
+				<Var name="entityAttributeListClean">
+					<String.replace>
+						<Param><String>g.</String></Param>
+						<Param><String/></Param>
+						<Param><Var name="entityAttributeListClean"/></Param>
+					</String.replace>
+				</Var>
+
 				<Var name="splitedAttributeList" dump="true">
 					<String.explode>
 						<Param>,</Param>

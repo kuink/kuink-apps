@@ -84,8 +84,8 @@
         </Var>
         <If condition="$uid == 1">
           <Then>
-            <Execute method="framework,generic,update" params="PARAMS">
-              <Param name="table">fw_user</Param>
+            <DataAccess method="update" params="PARAMS">
+              <Param name="_entity">fw_user</Param>
               <Param name="_creation">
                 <DateTimeLib method="Now" />
               </Param>
@@ -98,7 +98,7 @@
               <Param name="_modification_ip">
                 <Var name="USER" key="ip" />
               </Param>
-            </Execute>
+            </DataAccess>
             <Var name="result">
               <Var name="id" />
             </Var>
@@ -154,15 +154,15 @@
           </Then>
         </If>
         <Var name="contract" dump="true">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_user_company</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_user_company</Param>
             <Param name="id_user">
               <Var name="id" />
             </Param>
             <Param name="id_company">
               <Var name="id_company" />
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Var name="aid">
           <Var name="contract" key="id" />
@@ -173,15 +173,15 @@
             <Trace>Creating user in company</Trace>
             <If condition="$is_default == 1">
               <Then>
-                <Execute method="this,this,user.clearDefaultCompany">
+                <DataAccess method="this,this,user.clearDefaultCompany">
                   <Param name="id">
                     <Var name="id" />
                   </Param>
-                </Execute>
+                </DataAccess>
               </Then>
             </If>
-            <Execute method="framework,generic,insert">
-              <Param name="table">fw_user_company</Param>
+            <DataAccess method="insert">
+              <Param name="_entity">fw_user_company</Param>
               <Param name="id_user">
                 <Var name="id" />
               </Param>
@@ -207,7 +207,7 @@
               <Param name="_modification_ip">
                 <Var name="USER" key="ip" />
               </Param>
-            </Execute>
+            </DataAccess>
           </Then>
         </If>
         <Return>
@@ -233,17 +233,16 @@
         <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
           </Allow> </Permissions -->
         <Var name="companies">
-          <Execute method="this,this,user.getCompanies">
-            <Param name="id">
-              <Var name="id" />
-            </Param>
-          </Execute>
+          <DataAccess method="this,this,user.getCompanies">
+            <Param name="id"><Var name="id" /></Param>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="companies" />
         </Return>
       </Begin>
     </Function>
+    
     <Function name="addRole" doc="Adds a role to user in a company">
       <Params>
         <Param name="id" type="int" required="true" doc="User Id." />
@@ -287,8 +286,8 @@
           </Then>
         </If>
         <Var name="allocation">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_allocation</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_allocation</Param>
             <Param name="id_user">
               <Var name="id" />
             </Param>
@@ -298,15 +297,15 @@
             <Param name="id_company">
               <Var name="id_company" />
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Var name="aid">
           <Var name="allocation" key="id" />
         </Var>
         <If condition="$error == 0 &amp;&amp; $aid == ''">
           <Then>
-            <Execute method="framework,generic,insert">
-              <Param name="table">fw_allocation</Param>
+            <DataAccess method="insert">
+              <Param name="_entity">fw_allocation</Param>
               <Param name="id_user">
                 <Var name="id" />
               </Param>
@@ -325,11 +324,10 @@
               <Param name="_modification">
                 <DateTimeLib method="Now" />
               </Param>
-              gecol/docRecord::manage
               <Param name="_modification_ip">
                 <Var name="USER" key="ip" />
               </Param>
-            </Execute>
+            </DataAccess>
           </Then>
         </If>
         <Return>
@@ -337,6 +335,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="removeRole" doc="Removes a role from user in a company">
       <Params>
         <Param name="id" type="int" required="true" doc="User Id." />
@@ -380,8 +379,8 @@
           </Then>
         </If>
         <Var name="allocation">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_allocation</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_allocation</Param>
             <Param name="id_user">
               <Var name="id" />
             </Param>
@@ -391,19 +390,17 @@
             <Param name="id_company">
               <Var name="id_company" />
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Var name="aid">
           <Var name="allocation" key="id" />
         </Var>
         <If condition="$error == 0 &amp;&amp; $aid != ''">
           <Then>
-            <Execute method="framework,generic,delete">
-              <Param name="table">fw_allocation</Param>
-              <Param name="id">
-                <Var name="aid" />
-              </Param>
-            </Execute>
+            <DataAccess method="delete">
+              <Param name="_entity">fw_allocation</Param>
+              <Param name="id"><Var name="aid" /></Param>
+            </DataAccess>
           </Then>
         </If>
         <Return>
@@ -411,6 +408,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="getRoles" doc="Get the user roles in a company">
       <Params>
         <Param name="id" type="int" required="true" doc="User Id." />
@@ -424,18 +422,18 @@
       <Begin>
         <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
           </Allow> </Permissions -->
-        <Var name="companies">
-          <Execute method="this,this,user.getRoles">
-            <Param name="id_user">
-              <Var name="id" />
-            </Param>
-          </Execute>
+        <Var name="companies" dump="true">
+          <DataAccess method="this,this,user.getRoles">
+            <Param name="id_person"><Var name="PARAMS" key="id"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="companies" />
         </Return>
       </Begin>
     </Function>
+
     <Function name="getCapabilities" doc="Get the user capabilities">
       <Params>
         <Param name="id" type="int" required="true" doc="User Id." />
@@ -450,20 +448,21 @@
         <!--Permissions> <Allow> <Capability name="framework/role:manage"/> 
           </Allow> </Permissions -->
         <Var name="capabilities">
-          <Execute method="this,this,user.getCapabilities">
+          <DataAccess method="this,this,user.getCapabilities">
             <Param name="id_user">
               <Var name="id" />
             </Param>
             <Param name="id_company">
               <Var name="id_company" />
             </Param>
-          </Execute>
+          </DataAccess>
         </Var>
         <Return>
           <Var name="capabilities" />
         </Return>
       </Begin>
     </Function>
+
     <Function name="removeRoles"
       doc="Removes all roles from user ina given company.">
       <Params>
@@ -492,15 +491,11 @@
         </If>
         <If condition="$error == 0">
           <Then>
-            <Execute method="framework,generic,delete">
-              <Param name="table">fw_allocation</Param>
-              <Param name="id_user">
-                <Var name="id" />
-              </Param>
-              <Param name="id_company">
-                <Var name="id_company" />
-              </Param>
-            </Execute>
+            <DataAccess method="delete">
+              <Param name="_entity">fw_allocation</Param>
+              <Param name="id_user"><Var name="id" /></Param>
+              <Param name="id_company"><Var name="id_company" /></Param>
+            </DataAccess>
           </Then>
         </If>
         <Return>
@@ -508,6 +503,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="existsById" doc="Check if the user exists">
       <Params>
         <Param name="id" type="int" required="true" doc="User Id." />
@@ -518,12 +514,10 @@
           </Allow> </Permissions -->
         <Var name="result">0</Var>
         <Var name="user">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_user</Param>
-            <Param name="id">
-              <Var name="id" />
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_user</Param>
+            <Param name="id"><Var name="id" /></Param>
+          </DataAccess>
         </Var>
         <Var name="uid">
           <Var name="user" key="id" />
@@ -538,6 +532,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="setCompany" doc="Set the company to the current user">
       <Params>
         <Param name="id" type="int" required="true" doc="Company Id." />
@@ -551,16 +546,11 @@
           </Allow> </Permissions -->
         <Var name="result">-1</Var>
         <Var name="company">
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_user_company</Param>
-            <Param name="id_company">
-              <Var name="id" />
-            </Param>
-            gecol/docRecord::manage
-            <Param name="id_user">
-              <Var name="USER" key="id" />
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_user_company</Param>
+            <Param name="id_company"><Var name="id" /></Param>
+            <Param name="id_user"><Var name="USER" key="id" /></Param>
+          </DataAccess>
         </Var>
         <Var name="cid">
           <Var name="company" key="id" />
@@ -585,6 +575,7 @@
         </Return>
       </Begin>
     </Function>
+
     <Function name="add" doc="Updates a record in table ">
       <Params>
         <Param name="username" type="text" required="false" />
@@ -592,8 +583,8 @@
         <Param name="display_name" type="text" required="false" />
       </Params>
       <Begin>
-        <Execute method="framework,generic,insert">
-          <Param name="table">fw_user</Param>
+        <DataAccess method="insert">
+          <Param name="_entity">fw_user</Param>
           <Param name="username">
             <Var name="PARAMS" key="username" />
           </Param>
@@ -615,9 +606,10 @@
           <Param name="_modification_ip">
             <Var name="USER" key="ip" />
           </Param>
-        </Execute>
+        </DataAccess>
       </Begin>
     </Function>
+
     <Function name="delete" doc="Delete a record by id from table fw_user">
       <Params>
         <Param name="id" type="int" required="true" />
@@ -625,15 +617,14 @@
       <Return type="int" doc="" />
       <Begin>
         <Return>
-          <Execute method="framework,generic,delete">
-            <Param name="table">fw_user</Param>
-            <Param name="id">
-              <Var name="PARAMS" key="id" />
-            </Param>
-          </Execute>
+          <DataAccess method="delete">
+            <Param name="_entity">fw_user</Param>
+            <Param name="id"><Var name="PARAMS" key="id" /></Param>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
+
     <Function name="update" doc="Updates a record in table fw_user">
       <Params>
         <Param name="id" type="int" required="true" />
@@ -649,8 +640,8 @@
             </Param>
           </UtilsLib>
         </Var>
-        <Execute method="framework,generic,update" params="paramData">
-          <Param name="table">fw_user</Param>
+        <DataAccess method="update" params="paramData">
+          <Param name="_entity">fw_user</Param>
           <Param name="_creation">
             <DateTimeLib method="Now" />
           </Param>
@@ -663,9 +654,10 @@
           <Param name="_modification_ip">
             <Var name="USER" key="ip" />
           </Param>
-        </Execute>
+        </DataAccess>
       </Begin>
     </Function>
+
     <Function name="search" doc="Search records from table fw_user">
       <Params>
         <Param name="id" type="int" />
@@ -687,7 +679,7 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="this,this,search">
+          <DataAccess method="this,this,search">
             <Param name="id">
               <Var name="PARAMS" key="id" />
             </Param>
@@ -706,10 +698,30 @@
             <Param name="pagesize">
               <Var name="PARAMS" key="pagesize" />
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
+
+    <Function name="searchFullText" doc="Search users by text">
+      <Params>
+          <Param name="text"/>
+          <Param name="pagesize"/>
+          <Param name="pagenum"/>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+          <Var name="returnValue">
+          <DataAccess method="this,this,user.searchFullText">
+            <Param name="text" wildcard="fullSplit"><Var name="PARAMS" key="text"/></Param>
+            <Param name="_pageSize"><Var name="PARAMS" key="pagesize"/></Param>
+            <Param name="_pageNum"><Var name="PARAMS" key="pagenum"/></Param>
+          </DataAccess>
+          </Var>
+          <Return><Var name="returnValue"/></Return>
+      </Begin>
+  </Function>
+
     <Function name="getAll" doc="Get all records from table fw_user">
       <Params />
       <Return type="multiple" doc="">
@@ -723,11 +735,13 @@
         <External name="_modification_ip" type="text" doc="" />
       </Return>
       <Begin>
+        <Var name="users" dump="true">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_user</Param>
+          </DataAccess>          
+        </Var>
         <Return>
-          <Execute method="framework,generic,getAll">
-            <Param name="table">fw_user</Param>
-            <Param name="fields">*</Param>
-          </Execute>
+          <Var name="users"/>
         </Return>
       </Begin>
     </Function>
@@ -748,12 +762,10 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_user</Param>
-            <Param name="id">
-              <Var name="PARAMS" key="id" />
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_user</Param>
+            <Param name="id"><Var name="PARAMS" key="id" /></Param>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -830,7 +842,6 @@
       </Begin>
     </Function>
 
-
     <Function name="getByEmail" doc="Get a record by email fw_user">
       <Params>
         <Param name="email" type="text" />
@@ -847,12 +858,12 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_user</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_user</Param>
             <Param name="email">
               <Var name="PARAMS" key="email" />
             </Param>
-          </Execute>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -873,12 +884,10 @@
       </Return>
       <Begin>
         <Return>
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_user</Param>
-            <Param name="username">
-              <Var name="PARAMS" key="username" />
-            </Param>
-          </Execute>
+          <DataAccess method="load">
+            <Param name="_entity">fw_user</Param>
+            <Param name="username"><Var name="PARAMS" key="username" /></Param>
+          </DataAccess>
         </Return>
       </Begin>
     </Function>
@@ -920,16 +929,40 @@
         <External name="_modification_ip" type="text" doc="" />
       </Return>
       <Begin>
-        <Return>
+        <Var name="users" dump="true">
           <DataAccess method="this,this,user.getByCapability">
             <Param name="capability_code">
               <Var name="PARAMS" key="capability_code" />
             </Param>
           </DataAccess>
+        </Var>
+        <Return>
+          <Var name="users"/>
         </Return>
       </Begin>
     </Function>
 
-
+    <Function name="isRole" doc="A given user is a determined role.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="The id person." />
+        <Param name="code" type="String" required="true" doc="The code role to test." />
+      </Params>
+      <Return type="int" doc="1 if it is the given role"/>
+      
+      <Begin>
+        <Var name="records" dump="true">
+          <Execute method="this,this,isRole">
+            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </Execute>
+        </Var>
+        <Return>
+          <If condition="$records->__length &gt; 0">
+            <Then>1</Then>
+            <Else>0</Else>
+          </If>
+        </Return>
+      </Begin>
+    </Function>
   </Library>
 </Node>

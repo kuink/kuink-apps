@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+      <Use name="StringLib" type="lib"/>
+      <Use name="UtilsLib" type="lib"/>
+      <Use name="FileLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library> 
+    
+        <Function name="prepare" doc="prepare">
+            <Params/>
+            <Return type="text" doc="Test documentation"/>
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->              
+              <Var name="context" key="message">TextFileConnector::Write::CSV::header in first line</Var>
+              <Return>
+                  <Var name="context"/>
+              </Return>
+            </Begin>
+        </Function>      
+       
+
+        <Function name="run" doc="Run the test">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="single" doc="The result">
+              <External name="code" type="int" doc="The result code"/>
+              <External name="data" type="text" doc="Data returned by the function"/>
+            </Return>
+            <Errors>
+              <Error code="-1" doc="Test failed"/>
+            </Errors>            
+            <Begin>
+              <!--Permissions>
+                <Allow>
+                  <Capability name="framework/unitTest:run"/>
+                </Allow>
+              </Permissions-->
+              <!-- Load the reference File -->
+              <DataSource name="resourceFileW01" connector="TextFileConnector">
+                <Param name="fileName"><Resource.getPath object="framework.importExport,_unitTest,TextFileConnector.CSV.01.csv"></Resource.getPath></Param>
+                <Param name="isFixed">false</Param>
+                <Param name="firstLineWithColumnNames">true</Param>
+                <Param name="enclosure"><String>"</String></Param>
+                <Param name="delimiter"><String>;</String></Param>
+                <Param name="configuration">
+                  <![CDATA[
+                  {                    
+                    "campo0":{"start":0, "length":1},
+                    "campo1":{"start":1, "length":14},
+                    "campo2":{"start":15, "length":1},
+                    "campo3":{"start":16, "length":1},
+                    "campo4":{"start":17, "length":1},
+                    "campo5":{"start":18, "length":1},
+                    "campo6":{"start":19, "length":9},
+                    "campo7":{"start":28, "length":4, "padl":0}
+                  }
+                  ]]>
+                </Param>
+              </DataSource>
+              <Var name="result" dump="true">
+                <DataAccess method="getAll" datasource="resourceFileW01"/>
+              </Var>
+              <Var name="expectedResult"><SetToJson><Var name="result"/></SetToJson></Var>
+
+
+              <!--Prepare the tmp file -->
+              <Var name="guid"><Guid/></Var>
+              <Var name="tmpFileName" dump="true">
+                <String.concatenate>
+                  <Param><FileLib method="getTmpPath"/></Param>
+                  <Param><Var name="guid"/></Param>
+                  <Param><String>.</String></Param>
+                  <Param><String>csv</String></Param>
+                </String.concatenate>
+              </Var>
+
+              <!-- Create the datasource to the new file for write -->
+              <DataSource name="fileW01Tmp" connector="TextFileConnector">
+                <Param name="fileName"><Var name="tmpFileName"/></Param>
+                <Param name="isFixed">false</Param>
+                <Param name="firstLineWithColumnNames">true</Param>
+                <Param name="enclosure"><String>"</String></Param>
+                <Param name="delimiter"><String>;</String></Param>
+                <Param name="configuration">
+                  <![CDATA[
+                  {
+                    "campo0":{"start":0, "length":1},
+                    "campo1":{"start":1, "length":14},
+                    "campo2":{"start":15, "length":1},
+                    "campo3":{"start":16, "length":1},
+                    "campo4":{"start":17, "length":1},
+                    "campo5":{"start":18, "length":1},
+                    "campo6":{"start":19, "length":9},
+                    "campo7":{"start":28, "length":4, "padl":0}
+                  }
+                  ]]>
+                </Param>
+              </DataSource>
+              <ForEach var="result" item="record">
+                <!-- Insert each record of the array -->
+                <DataAccess method="insert" params="record"  datasource="fileW01Tmp"/>
+              </ForEach>
+              <!-- Flush the data to the file -->
+              <DataAccess method="flush" datasource="fileW01Tmp"/>
+
+              <!-- Read the file to check if the data was written properly -->
+              <Var name="reload" dump="true">
+                <DataAccess method="getAll"  datasource="fileW01Tmp"/>
+              </Var>
+              <Var name="test"><SetToJson><Var name="reload"/></SetToJson></Var>
+              
+              <!-- Compare the written file with the original one -->
+              <If condition="$test == $expectedResult">
+                <Then><Var name="code">0</Var></Then>
+                <Else><Var name="code">-1</Var></Else>
+              </If>
+
+              <!-- Record the result of this test -->
+              <Var name="result" key="code"><Var name="code"/></Var>
+              <Var name="result" key="data">
+                <StringLib method="concatenate">
+                  <Param><Var name="test"/></Param>
+                  <Param>::</Param>
+                  <Param><Var name="expectedResult"/></Param>
+                </StringLib>
+              </Var>
+              <Return>
+                  <Var name="result"/>
+              </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="clean" doc="Removes the data added">
+            <Params>
+              <Param name="context" doc="Context data"/>
+            </Params>
+            <Return type="int" doc=""/>
+            <Begin>
+            </Begin>
+        </Function>
+    </Library>
+</Node>

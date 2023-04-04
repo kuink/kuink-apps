@@ -9,7 +9,7 @@
     <Libraries />
     <Configuration/>
     <Screens>
-    	<Screen id="mainScreen">
+    	<Screen name="mainScreen">
     		<Form name="chooseMenu">
     			<Header label="chooseAction" />
     			<ActionGroup id="dates" label="">

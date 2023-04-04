@@ -6,7 +6,7 @@
     <Libraries>
     </Libraries>
     <Screens>
-        <Screen id="scrPage">
+        <Screen name="scrPage">
         </Screen>
     </Screens>
     <Actions>

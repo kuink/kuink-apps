@@ -13,7 +13,7 @@
       <Param name="id_process_instance" doc="The process instance to get the history"/>
   </Params>
   <Screens>
-    <Screen id="scrHistory" doc="Token history">
+    <Screen name="scrHistory" doc="Token history">
       <Grid name="grdHistory" title="history">
         <Template>
           <Columns>
@@ -51,7 +51,7 @@
 
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="back"/>
+          <Button name="back" type="back" label="back" action="back"/>
         </ButtonGroup>
       </Form>
       <Image name="imgDiagram" title="bpmnProcess"/>

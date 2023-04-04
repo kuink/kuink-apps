@@ -11,7 +11,7 @@
   </Libraries>
   <Configuration />
   <Screens>
-    <Screen id="scr001">
+    <Screen name="scr001">
       <Grid name="grid01" id="grid01" visible="!($CAPABILITY['gecol/accessControl.student.viewLogs'])">
           <Template>
               <Columns>
@@ -32,4 +32,3 @@
     
   </Actions>
 </Node>
-

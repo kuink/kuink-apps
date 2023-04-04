@@ -15,21 +15,21 @@
         <Config key="masterTable" value="fw_demo_composite"/>
     </Configuration>
     <Screens>
-    	<Screen id="showLog">
+    	<Screen name="showLog">
     		<Custom name="logList" control="framework,log,search"/>
     	</Screen>
-        <Screen id="editRecord">
+        <Screen name="editRecord">
             <Form name="editRecordForm">
             	<Header/>           
-                <Header id="head1" label="edit"/>
-				<Int id="id" label="id" required="true"/>                
-				<Select id="id_key1" label="implication" required="true" datasource="table:pe_evaluation_level" bindid="id" bindvalue="name"/>
-                <Int id="id_key2" label="id_key2" required="true"/>
+                <Header name="head1" label="edit"/>
+				<Int name="id" label="id" required="true"/>                
+				<Select name="id_key1" label="implication" required="true" datasource="table:pe_evaluation_level" bindid="id" bindvalue="name"/>
+                <Int name="id_key2" label="id_key2" required="true"/>
                 <Name id="name" label="name" />
                 <ButtonGroup label="actions">
-                    <Button type="cancel" id="back" label="back" action="cancel"/>
-                    <Button type="submit" id="save" label="save" action="save"/>
-                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                    <Button type="cancel" name="back" label="back" action="cancel"/>
+                    <Button type="submit" name="save" label="save" action="save"/>
+                    <Button type="submit" name="delete" label="delete" action="delete" confirm="ask_proceed"/>
                 </ButtonGroup>
             </Form>
             <Grid name="searchResultGrid">
@@ -45,18 +45,18 @@
                 </Template>
             </Grid>            
         </Screen>
-        <Screen id="viewRecord">
+        <Screen name="viewRecord">
             <Form name="viewRecordForm">
             	<Header/>           
-                <Header id="head1" label="edit"/>
-				<Int id="id" label="id" required="true"/>                
-				<Select id="id_key1" label="implication" required="true" datasource="table:pe_evaluation_level" bindid="id" bindvalue="name"/>
-                <Int id="id_key2" label="id_key2" required="true"/>
+                <Header name="head1" label="edit"/>
+				<Int name="id" label="id" required="true"/>                
+				<Select name="id_key1" label="implication" required="true" datasource="table:pe_evaluation_level" bindid="id" bindvalue="name"/>
+                <Int name="id_key2" label="id_key2" required="true"/>
                 <Name id="name" label="name" />
                 <ButtonGroup label="actions">
-                    <Button type="cancel" id="back" label="back" action="cancel"/>
-                    <Button type="submit" id="save" label="save" action="save"/>
-                    <Button type="submit" id="delete" label="delete" action="delete" confirm="ask_proceed"/>
+                    <Button type="cancel" name="back" label="back" action="cancel"/>
+                    <Button type="submit" name="save" label="save" action="save"/>
+                    <Button type="submit" name="delete" label="delete" action="delete" confirm="ask_proceed"/>
                 </ButtonGroup>
             </Form>
         </Screen>        
@@ -91,18 +91,18 @@
         	<Action name="bind"/>
         </Action>
         <Action name="bind" screen="viewRecord">
-        	<FormControl method="setProperty" object="viewRecordForm">
+        	<Control method="setProperty" object="viewRecordForm">
         		<Param>freeze_</Param>
         		<Param>true</Param>
-        	</FormControl>        
-        	<FormControl method="bind" object="viewRecordForm">
+        	</Control>        
+        	<Control method="bind" object="viewRecordForm">
         		<Param>
         			<Execute method="framework,generic,load">
         				<Param name="table"><Config key="masterTable"/></Param>
         				<Param name="id">1</Param>
         			</Execute>
         		</Param>
-        	</FormControl>
+        	</Control>
 
         </Action>
         <Action name="delete">
@@ -112,4 +112,3 @@
         </Action>
     </Actions>
 </Node>
-

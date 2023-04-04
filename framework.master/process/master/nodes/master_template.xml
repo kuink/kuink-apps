@@ -5,7 +5,7 @@
     <Libraries>
     </Libraries>
     <Screens>
-        <Screen id="masterScreen">
+        <Screen name="masterScreen">
         </Screen>
     </Screens>
     <Actions>
@@ -13,4 +13,3 @@
         </Action>
 	</Actions>
 </Node>
-

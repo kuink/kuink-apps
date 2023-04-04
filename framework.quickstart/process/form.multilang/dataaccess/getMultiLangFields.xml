@@ -1,0 +1,29 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Gets a record multilang
+    </Doc>
+    <Params>
+        <Param name="id_ref"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField >
+                        *
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        {table_prefix}fw_test_multilang_entity_lang
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1=1</XCondition>
+                    <XCondition optional="id_ref">AND id_ref = {param->id_ref}</XCondition>
+                </XWhere>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

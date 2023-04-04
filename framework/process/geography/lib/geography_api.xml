@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+		<Doc/>
+		<Permissions/>
+		<Libraries>
+			<Use name="DateTimeLib" type="lib"/>
+			<Use name="UtilsLib" type="lib"/>
+			<Use name="ValidationLib" type="lib"/>
+			<Use name="StringLib" type="lib"/>
+			<Use name="MathLib" type="lib"/>
+		</Libraries>
+		<Configuration/>
+		<Screens/>
+		<Actions>
+			<Action name="init"/>
+		</Actions>
+		<Library>
+			<!--
+				*		getCountry  |  Gets a country given the id.
+				*
+				*		PARAMS
+				*    - (int) id  ::  The 'fw_country' id;
+				*
+				*		RETURN
+				*	   - (single) country  ::  Returns the corresponding 'fw_country' record. 
+			-->
+			<Function name="getCountry" doc="Gets a country given the id.">
+				<Params>
+					<Param name="id" type="int" required="true" doc="Country id"/>
+				</Params>
+				<Return type="single" doc="The 'fw_country' record"/>
+	
+				<Begin>
+					<Var name="country">
+						<DataAccess method="load">
+							<Param name="_entity">fw_country</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+					</Var>
+	
+					<Return>
+						<Var name="country"/>
+					</Return>
+				</Begin>
+			</Function>
+
+
+			<!--
+				*  getDistrictById  |  Gets a district given the id.
+				*
+				*  PARAMS
+				*    - (int) id  ::  The 'fw_district' id;
+				*
+				*  RETURN
+				*	   - (single) district  ::  Returns the corresponding 'fw_district' record. 
+			-->
+			<Function name="getDistrictById" doc="Gets a district given the id.">
+				<Params>
+					<Param name="id" type="int" required="true" doc="District id"/>
+				</Params>
+				<Return type="single" doc="The 'fw_district' record"/>
+
+				<Begin>
+					<Var name="district">
+						<DataAccess method="load">
+							<Param name="_entity">fw_district</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="district"/>
+					</Return>
+				</Begin>
+			</Function>
+
+
+			<!--
+				*		getCountyById  |  Gets a county given the id.
+				*
+				*		PARAMS
+				*    - (int) id  ::  The 'fw_county' id;
+				*
+				*		RETURN
+				*	   - (single) country  ::  Returns the corresponding 'fw_county' record. 
+			-->
+			<Function name="getCountyById" doc="Gets a county given the id.">
+				<Params>
+					<Param name="id" type="int" required="true" doc="County id"/>
+				</Params>
+				<Return type="single" doc="The 'fw_county' record"/>
+
+				<Begin>
+					<Var name="county">
+						<DataAccess method="load">
+							<Param name="_entity">fw_county</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="county"/>
+					</Return>
+				</Begin>
+			</Function>
+			
+			
+			<!--
+				*		getCivilParishById  |  Gets a civil parish given the id.
+				*
+				*		PARAMS
+				*    - (int) id  ::  The 'fw_civil_parish' id;
+				*
+				*		RETURN
+				*	   - (single) civil parish  ::  Returns the corresponding 'fw_civil_parish' record. 
+			-->
+			<Function name="getCivilParishById" doc="Gets a civil parish given the id.">
+				<Params>
+					<Param name="id" type="int" required="true" doc="Civil parish id"/>
+				</Params>
+				<Return type="single" doc="The 'fw_civil_parish' record"/>
+
+				<Begin>
+					<Var name="civilParish">
+						<DataAccess method="load">
+							<Param name="_entity">fw_civil_parish</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="civilParish"/>
+					</Return>
+				</Begin>
+			</Function>
+
+
+			<!--
+				*  getPostalCodeByCode  |  Gets a postal code given the code.
+				*
+				*  PARAMS
+				*    - (int) code  ::  The 'fw_postal_code' code;
+				*
+				*  RETURN
+				*	   - (single) postal code  ::  Returns the corresponding 'fw_postal_code' record. 
+			-->
+			<Function name="getPostalCodeByCode" doc="Gets a postal code given the code.">
+				<Params>
+					<Param name="code" type="string" required="true" doc="Postal code"/>
+				</Params>
+				<Return type="single" doc="The 'fw_postal_code' record"/>
+
+				<Begin>
+					<Var name="postalCode">
+						<DataAccess method="load">
+							<Param name="_entity">fw_postal_code</Param>
+							<Param name="code"><Var name="PARAMS" key="code"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Var name="postalCode" key="postal_address">
+						<StringLib method="Concatenate">
+							<Param><Var name="postalCode" key="code"/></Param>
+							<Param> </Param>
+							<Param><Var name="postalCode" key="name"/></Param>
+						</StringLib>
+					</Var>
+
+					<Return>
+						<Var name="postalCode"/>
+					</Return>
+				</Begin>
+			</Function>
+
+
+			<!--
+				*		getCountries  |  Gets a list of countries (active or not) with the local country in the first place.
+				*
+				*		PARAMS
+				*		 - (int) is_active  ::  1 to filter by just the active countries;		
+				*
+				*		RETURN
+				*	   - (multiple) country  ::  Returns a set of 'fw_country' records, according to the params.
+			-->
+			<Function name="getCountries" doc="Gets a list of countries (active or not) with the local country in the first place.">
+				<Params>
+					<Param name="is_active" type="int" required="false" doc="Filter by the active countries"/>
+				</Params>
+				<Return type="multiple" doc="Set of 'fw_country' records"/>
+				<Begin>
+					<Var name="countries">
+						<DataAccess method="this,this,getCountries">
+							<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="countries"/>
+					</Return>
+				</Begin>
+			</Function>
+
+
+			<!--
+				*		getDistrictsByCountry  |  Gets a list of districts (active or not) of the given country.
+				*
+				*		PARAMS
+				*		 - (int) id_country  ::  The 'fw_country' id;
+				*    - (int) is_active   ::  1 to filter by just the active districts;
+				*
+				*		RETURN
+				*	   - (multiple) district  ::  Returns a set of 'fw_district' records, according to the params.
+			-->
+			<Function name="getDistrictsByCountry" doc="Gets a list of districts (active or not) of the given country.">
+				<Params>
+					<Param name="id_country" type="int" required="true" doc="Country id"/>
+					<Param name="is_active" type="int" required="false" doc="Filter by the active districts"/>
+				</Params>
+				<Return type="multiple" doc="Set of 'fw_district' records."/>
+				<Begin>
+					<Var name="districts">
+						<DataAccess method="this,this,getDistrictsByCountry">
+							<Param name="id_country"><Var name="PARAMS" key="id_country"/></Param>
+							<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="districts"/>
+					</Return>
+				</Begin>
+			</Function>
+
+
+			<!--
+				*		getCountiesByDistrict  |  Gets a list of counties (active or not) of the given district.
+				*
+				*		PARAMS
+				*		 - (string) code_district  ::  The 'fw_district' code;
+				*    - (int) is_active   			 ::  1 to filter by just the active counties;
+				*
+				*		RETURN
+				*	   - (multiple) county  ::  Returns a set of 'fw_county' records, according to the params.
+			-->
+			<Function name="getCountiesByDistrict" doc="Gets a list of counties (active or not) of the given district.">
+				<Params>
+					<Param name="code_district" type="string" required="true" doc="District code"/>
+					<Param name="is_active" type="int" required="false" doc="Filter by the active counties"/>
+				</Params>
+				<Return type="multiple" doc="Set of 'fw_county' records."/>
+				<Begin>
+					<Var name="counties">
+						<DataAccess method="this,this,getCountiesByDistrict">
+							<Param name="code_district"><Var name="PARAMS" key="code_district"/></Param>
+							<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="counties"/>
+					</Return>
+				</Begin>
+			</Function>
+
+
+			<!--
+				*		getCivilParishesByCounty  |  Gets a list of civil parishes (active or not) of the given county.
+				*
+				*		PARAMS
+				*		 - (string) code_county    ::  The 'fw_county' code;
+				*		 - (string) code_district  ::  The 'fw_district' code;
+				*    - (int) is_active   			 ::  1 to filter by just the active civil parishes;
+				*
+				*		RETURN
+				*	   - (multiple) civil parish  ::  Returns a set of 'fw_civil_parish' records, according to the params.
+			-->
+			<Function name="getCivilParishesByCounty" doc="Gets a list of civil parishes (active or not) of the given county.">
+				<Params>
+					<Param name="code_county" type="string" required="true" doc="County code"/>
+					<Param name="code_district" type="string" required="true" doc="District code"/>
+					<Param name="is_active" type="int" required="false" doc="Filter by the active civil parishes"/>
+				</Params>
+				<Return type="multiple" doc="Set of 'fw_civil_parish' records."/>
+				<Begin>
+					<Var name="civilParishes">
+						<DataAccess method="this,this,getCivilParishesByCounty">
+							<Param name="code_county"><Var name="PARAMS" key="code_county"/></Param>
+							<Param name="code_district"><Var name="PARAMS" key="code_district"/></Param>
+							<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="civilParishes"/>
+					</Return>
+				</Begin>
+			</Function>
+
+			<!--
+				*  searchPostalCode  |  Searchs for a specific postal code by the code or the name.
+				*
+				*  PARAMS
+				*    - (string) text   ::  The search text - could be the postal code or the postal address (name);
+				*		 - (int) pagesize  ::  The current page size;
+				*		 - (int) pagenum   ::  The current page number;
+				*
+				*  RETURN
+				*	   - (single) postal code  ::  Returns the corresponding 'fw_postal_code' record.
+			-->
+			<Function name="searchPostalCode" doc="Searchs for a specific postal code by the code or the name.">
+				<Params>
+					<Param name="text" type="string" required="true" doc="Search text: postal code or name"/>
+					<Param name="pagesize" type="int" required="false" doc="Current page size"/>
+					<Param name="pagenum" type="int" required="false" doc="Current page number"/>
+				</Params>
+				<Return type="single" doc="The 'fw_postal_code' record"/>
+				<Begin>
+					<Var name="postalCode">
+						<DataAccess method="this,this,searchPostalCode">
+							<Param name="text" wildcard="fullSplit"><Var name="PARAMS" key="text"/></Param>
+							<Param name="_pageSize"><Var name="PARAMS" key="pagesize"/></Param>
+							<Param name="_pageNum"><Var name="PARAMS" key="pagenum"/></Param>
+						</DataAccess>
+					</Var>
+
+					<Return>
+						<Var name="postalCode"/>
+					</Return>
+				</Begin>
+			</Function>
+	</Library>
+</Node>

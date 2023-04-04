@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Libraries />
+	<Configuration />
+	<Params>
+		<Param name="application"/> <!-- The current application -->
+	</Params>
+	<Screens>
+		<Screen name="mainScreen" template="2x1col">
+
+			<!-- Form to change the directory -->
+			<Form name="directoryForm" title="directory" position="left">
+				<Static name="currentDir" label="currentDirectory"/>
+				<Select name="directory" label="goTo" datasource="subDirectories" bindid="id" bindvalue="id" action="selectDirectory"/>
+				<ButtonGroup>
+					<Button name="back"	label="back" type="back" action="back"/>
+				</ButtonGroup>
+			</Form>
+
+			<!-- Form to upload a new file -->
+			<Form name="uploadForm"  title="newFile" visible="false" position="right">
+				<File name="file"/>
+				<ButtonGroup>
+					<Button name="uploadFile" label="submit" type="submit" icon="upload" action="uploadFile"/>
+				</ButtonGroup>
+			</Form>
+
+			<!-- Grid that shows all the files and sub-dirs of the current directory -->
+			<Grid name="filesGrid" title="files" infer="false" visible="false" pageable="true" pagesize="10" pagingaction="setupMainScreen">
+				<Template>
+					<Columns>
+						<Column name="id" label="preview">
+							<Formatter name="AppFileDownload" application="$entity" height="350px"/>
+						</Column>
+						<Column name="dirname" visible="false"/>
+						<Column name="basename"/>
+						<Column name="extension" visible="false"/>
+						<Column name="size"/>
+					</Columns>
+					<Actions>
+						<Action name="deleteFile" icon="trash-alt" actionvalue="basename" confirm="true"/>
+					</Actions>
+				</Template>
+			</Grid>			
+		</Screen>
+	</Screens>
+
+	<Actions>
+		<!-- initialization -->
+		<Action name="init">
+			<Var name="PARAMS" dump="true"/>
+			<If condition="$PARAMS->application != ''">
+				<Then>
+					<Var name="currentDirectory" process="true"><Var name="PARAMS" key="application"/></Var>
+					<Action name="selectDirectory"/>
+					<Exit/>
+				</Then>
+			</If>
+
+			<Action name="selectApplication"/>
+		</Action>
+
+		<!-- select application -->
+		<Action name="selectApplication" screen="mainScreen">
+			<Var name="currentDirectory" process="true"><Null/></Var>
+
+			<Call function="setupDataSource"/>
+			<Var name="subDirectories">
+				<DataAccess method="getEntities" datasource="sampleDataSource"/>
+			</Var>
+			<Control method="addDataSource" object="directoryForm">
+				<Param>subDirectories</Param>
+				<Param><Var name="subDirectories"/></Param>
+			</Control>
+		</Action>
+
+		<!-- goes to the selected directory -->
+		<Action name="selectDirectory">
+			<If condition="@currentDirectory == ''">
+				<Then>
+					<Var name="currentDirectory" process="true">
+						<Var name="POSTDATA" key="directory"/>
+					</Var>
+				</Then>
+				<Else>
+					<If condition="$POSTDATA->__length != 0">
+						<Then>
+							<Var name="currentDirectory" process="true" dump="true">
+								<String.parse>@currentDirectory/$POSTDATA->directory</String.parse>
+							</Var>
+						</Then>
+					</If>
+				</Else>
+			</If>
+			
+			<Action name="setupMainScreen"/>
+		</Action>
+
+		<!-- main screen configuration -->
+		<Action name="setupMainScreen" screen="mainScreen">
+			<Control method="bind" object="directoryForm">
+				<Param>
+					<Set>
+						<Element name="currentDir"><Var name="currentDirectory" process="true"/></Element>
+					</Set>
+				</Param>
+			</Control>
+
+			<Call function="setupDataSource"/>
+			<Var name="records" dump="true">
+				<DataAccess method="getAll" datasource="sampleDataSource">
+					<Param name="_entity"><Var name="currentDirectory" process="true"/></Param>
+					<Param name="mime" op="!=">directory</Param>
+					<Param name="extension">png</Param>
+				</DataAccess>
+			</Var>
+			<Control method="bind" object="filesGrid">
+				<Param><Var name="records"/></Param>
+			</Control>
+
+			<Var name="subDirectories" dump="true">
+				<DataAccess method="getEntities" datasource="sampleDataSource">
+					<Param name="_entity"><Var name="currentDirectory" process="true"/></Param>
+				</DataAccess>
+			</Var>
+			<Control method="addDataSource" object="directoryForm">
+				<Param>subDirectories</Param>
+				<Param><Var name="subDirectories"/></Param>
+			</Control>
+
+			<Control method="setProperty" object="uploadForm">
+				<Param>visible</Param>
+				<Param>true</Param>
+			</Control>
+			<Control method="setProperty" object="filesGrid">
+				<Param>visible</Param>
+				<Param>true</Param>
+			</Control>
+		</Action>	
+
+		<!-- uploads a new file to the current directory -->
+		<Action name="uploadFile" >
+			<Call function="setupDataSource"/>
+			<Var name="records" dump="true">
+				<DataAccess method="insert" datasource="sampleDataSource">
+					<Param name="_entity"><Var name="currentDirectory" process="true"/></Param>
+				</DataAccess>
+			</Var>
+
+			<Action name="setupMainScreen"/>
+		</Action>
+
+		<!-- deletes the selected file from the current dir -->
+		<Action name="deleteFile">
+			<Call function="setupDataSource"/>
+			<Var name="records" dump="true">
+				<DataAccess method="delete" datasource="sampleDataSource">
+					<Param name="_entity"><Var name="currentDirectory" process="true"/></Param>
+					<Param name="id"><ActionValue/></Param>
+				</DataAccess>
+			</Var>
+
+			<Action name="setupMainScreen"/>
+		</Action>
+
+		<!-- goes to the previous dir -->
+		<Action name="back">
+			<Var name="subDirs" dump="true">
+				<String.explode>
+					<Param>/</Param>
+					<Param><Var name="currentDirectory" process="true"/></Param>
+				</String.explode>
+			</Var>
+
+			<Var name="count"><Var name="subDirs" key="__length"/></Var>
+			<Var name="previousDir"><String/></Var>
+
+			<ForEach var="subDirs" item="dir">
+				<If condition="$count != 1">
+					<Then>
+						<Var name="count" dump="true"/>
+						<If condition="$previousDir == ''">
+							<Then>
+								<Var name="previousDir">
+									<String.concatenate>
+										<Param><Var name="dir"/></Param>
+									</String.concatenate>
+								</Var>
+							</Then>
+							<Else>
+								<Var name="previousDir">
+									<String.concatenate>
+										<Param><Var name="previousDir"/></Param>
+										<Param>/</Param>
+										<Param><Var name="dir"/></Param>
+									</String.concatenate>
+								</Var>
+							</Else>
+						</If>
+						<Var name="count" value="$count - 1"/>
+					</Then>
+				</If>
+			</ForEach>
+
+			<Var name="currentDirectory" process="true"><Var name="previousDir"/></Var>
+
+			<Action name="setupMainScreen"/>
+		</Action>
+
+	</Actions>
+	
+	<Library>
+		<Function scope="public" name="setupDataSource" doc="doc">
+			<Params/>
+			<Return type=""/>
+			<Begin>
+				<DataSource name="sampleDataSource" connector="AppFileConnector">
+					<Param name="type">SampleType</Param>
+				</DataSource>
+				<Return/>
+			</Begin>
+		</Function>
+	</Library>
+</Node>

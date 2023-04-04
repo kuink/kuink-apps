@@ -10,63 +10,70 @@
   <Configuration/>
 
   <Screens>
-    <Screen id="sc01">
+    <Screen name="sc01">
       <Form name="frmTables">
-        <Header id="hdEntity" label="entity"/>
-        <Select id="entity" required="true" searchable="true" datasource="dsTables"
+        <Header name="hdEntity" label="entity"/>
+        <Select name="entity" required="true" searchable="true" datasource="dsTables"
           bindid="table" bindvalue="table"/>
-        <Header id="api" label="api"/>
-        <Select id="apiTemplate" required="false" datasource="dsAPITemplates" bindid="id" bindvalue="name"/>
-        <Text id="apiBase" visible="true" required="true">
+        <Header name="api" label="api"/>
+        <Select name="apiTemplate" required="false" datasource="dsAPITemplates" bindid="id" bindvalue="name"/>
+        <Text name="apiBase" visible="true" required="true">
           <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="apiApplication" visible="true" required="true">
+        <Text name="apiApplication" visible="true" required="true">
           <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="apiProcess" required="true">
+        <Text name="apiProcess" required="true">
           <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Header id="nodes" label="nodes"/>
-        <Select id="nodeTemplate" required="false" datasource="dsNodeTemplates" bindid="id" bindvalue="name"/>
-        <Text id="nodeBase" required="true">
+        <Text name="apiNode" required="true">
+          <Rule attr="visible" condition="$apiTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$apiTemplate == ''" value="false" runat="client"/>
+        </Text>
+        <Header name="nodes" label="nodes"/>
+        <Select name="nodeTemplate" required="false" datasource="dsNodeTemplates" bindid="id" bindvalue="name"/>
+        <Text name="nodeBase" required="true">
           <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="nodeApplication" required="true">
+        <Text name="nodeApplication" required="true">
           <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="nodeProcess" required="true">
+        <Text name="nodeProcess" required="true">
           <Rule attr="visible" condition="$nodeTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$nodeTemplate == ''" value="false" runat="client"/>
         </Text>
         
-        <Header id="unit" label="unitTests"/>
-        <Select id="unitTemplate" required="false" datasource="dsUnitTemplates" bindid="id" bindvalue="name"/>
-        <Text id="unitBase" required="true">
+        <Header name="unit" label="unitTests"/>
+        <Select name="unitTemplate" required="false" datasource="dsUnitTemplates" bindid="id" bindvalue="name"/>
+        <Text name="unitBase" required="true">
           <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="unitApplication" required="true">
+        <Text name="unitApplication" required="true">
           <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
         </Text>
-        <Text id="unitProcess" required="true">
+        <Text name="unitProcess" required="true">
           <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
           <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
         </Text>
-        
+        <Text name="unitNode" required="true">
+          <Rule attr="visible" condition="$unitTemplate == ''" value="false" runat="client"/>
+          <Rule attr="required" condition="$unitTemplate == ''" value="false" runat="client"/>
+        </Text>
         
         <ButtonGroup>
-          <Button type="submit" id="next" action="step02"/>
+          <Button type="submit" name="next" action="step02"/>
         </ButtonGroup>
       </Form>
     </Screen>
 
-    <Screen id="sc02">
+    <Screen name="sc02">
       <Grid name="grdColumns" title="tableColumns" freeze="false">
         <Template>
           <Columns>
@@ -97,13 +104,13 @@
       </Grid>
     </Screen>
 
-    <Screen id="sc03">
+    <Screen name="sc03">
       <Form name="frmOptions">
         <!--Checkbox id="gAPI" label="generateAPI" required="true"/>
-        <Checkbox id="gProcess" label="generateProcess" required="true"/-->
+        <Checkbox name="gProcess" label="generateProcess" required="true"/-->
         <ButtonGroup>
-          <Button id="previous" type="cancel" label="previous" action="step02"/>
-          <Button id="next" type="submit" label="next" action="step04"/>
+          <Button name="previous" type="cancel" label="previous" action="step02"/>
+          <Button name="next" type="submit" label="next" action="step04"/>
         </ButtonGroup>
       </Form>
       <Grid name="grdFunctions" title="Functions" freeze="false">
@@ -126,19 +133,19 @@
       </Grid>
     </Screen>
 
-    <Screen id="sc04">
+    <Screen name="sc04">
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="back" type="back" label="back" action="init"/>
+          <Button name="back" type="back" label="back" action="init"/>
         </ButtonGroup>
       </Form>
     </Screen>
 
-    <Screen id="scResume">
+    <Screen name="scResume">
       <Form name="frmOptions">
         <ButtonGroup>
-          <Button id="previous" type="submit" label="previous" action="step02"/>
-          <Button id="next" type="submit" label="next" action="step03"/>
+          <Button name="previous" type="submit" label="previous" action="step02"/>
+          <Button name="next" type="submit" label="next" action="step03"/>
         </ButtonGroup>
       </Form>
     </Screen>
@@ -152,7 +159,7 @@
 
     <Action name="step01" screen="sc01">
       <Var name="tablesRaw">
-        <Execute method="this,this,table.list"/>
+        <DataAccess method="this,this,table.list"/>
       </Var>
       <Var name="tablesParsed"><Set/></Var>
       <ForEach var="tablesRaw" item="item">
@@ -161,6 +168,13 @@
         <Var name="table" key="table"><Var name="first"/></Var>
         <Var name="tablesParsed" key=""><Var name="table"/></Var>
       </ForEach>
+
+      <Var name="defaultData"><Set/></Var>
+      <Var name="defaultData" key="apiNode"><String>api</String></Var>
+      <Var name="defaultData" key="unitProcess"><String>_unitTest</String></Var>
+      <Control method="setDefaultData" object="frmTables">
+        <Param><Var name="defaultData"/></Param>
+      </Control>
 
       <Control method="addDataSource" object="frmTables">
         <Param>dsTables</Param>
@@ -196,13 +210,12 @@
     </Action>
 
     <Action name="step02" screen="sc02">
-      <Var name="POSTDATA" />
       <Var name="general" process="true">
         <Var name="POSTDATA"/>
       </Var>
-      <Var name="columns">
+      <Var name="columns" dump="true">
         <DataAccess method="this,this,table.listColumns">
-          <Param name="table">
+          <Param name="entity">
             <Var name="POSTDATA" key="entity"/>
           </Param>
           <Param name="schema"><DataAccess method="getSchemaName"/></Param>
@@ -383,6 +396,9 @@
       <Var name="data" key="apiProcess">
         <Var name="general" key="apiProcess" process="true"/>
       </Var>
+      <Var name="data" key="apiNode">
+        <Var name="general" key="apiNode" process="true"/>
+      </Var>
       <Var name="data" key="nodeBase">
         <Var name="general" key="nodeBase" process="true"/>
       </Var>
@@ -401,11 +417,22 @@
       <Var name="data" key="unitProcess">
         <Var name="general" key="unitProcess" process="true"/>
       </Var>
+      <Var name="data" key="unitNode">
+        <Var name="general" key="unitNode" process="true"/>
+      </Var>      
       <Var name="data" key="attributes">
         <Var name="model" process="true"/>
       </Var>
       <Var name="data" key="functions"><Var name="POSTDATA"/></Var>
-
+      <Var name="searchNodeName"><String>search</String></Var>
+      <If condition="@general->apiNode != 'api'">
+        <Then>
+          <Var name="searchNodeName">
+            <String.parse>@general['apiNode'].$searchNodeName</String.parse>
+          </Var>
+        </Then>
+      </If>
+      <Var name="data" key="apiSearchNodeName"><Var name="searchNodeName"/></Var>
       <If condition="@general->apiTemplate != ''">
         <Then>
         <Var name="general" process="true" dump="true"/>
@@ -431,7 +458,7 @@
             <Param name="application"><Var name="general" key="apiApplication" process="true"/></Param>
             <Param name="process"><Var name="general" key="apiProcess" process="true"/></Param>
             <Param name="type">lib</Param>
-            <Param name="node">api</Param>
+            <Param name="node"><Var name="general" key="apiNode" process="true"/></Param>
           </Call>
           <!-- Add all functions in it -->
           <ForEach var="POSTDATA" item="item">
@@ -439,18 +466,12 @@
                 <Then>
                   <Call function="addElementToNode">
                     <Param name="template"><Var name="item" key="code_template_tpl"/> </Param>
-                    <Param name="data">
-                      <Var name="data"/>
-                    </Param>
+                    <Param name="data"><Var name="data"/></Param>
                     <Param name="base"><Var name="general" key="apiBase" process="true"/></Param>
-                    <Param name="application">
-                      <Var name="general" key="apiApplication" process="true"/>
-                    </Param>
-                    <Param name="process">
-                      <Var name="general" key="apiProcess" process="true"/>
-                    </Param>
+                    <Param name="application"><Var name="general" key="apiApplication" process="true"/></Param>
+                    <Param name="process"><Var name="general" key="apiProcess" process="true"/></Param>
                     <Param name="type">lib</Param>
-                    <Param name="node">api</Param>
+                    <Param name="node"><Var name="general" key="apiNode" process="true"/></Param>
                     <Param name="xPath">/Node/Library</Param>
                   </Call>
                   <UserMessage type="success">
@@ -479,7 +500,7 @@
             <Param name="process">
               <Var name="general" key="apiProcess" process="true"/>
             </Param>
-            <Param name="node">search</Param>
+            <Param name="node"><Var name="searchNodeName"/></Param>
             <Param name="xmlDefinition">
               <Var name="fxDASearch"/>
             </Param>
@@ -731,7 +752,7 @@
             <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
             <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
             <Param name="type">lib</Param>
-            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].aux</String.parse></Param>
           </Call>
           <!-- Now add the aux function to add a dummy element in the aux library-->
           <Call function="addElementToNode">
@@ -747,7 +768,7 @@
               <Var name="general" key="unitProcess" process="true"/>
             </Param>
             <Param name="type">lib</Param>
-            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].aux</String.parse></Param>
             <Param name="xPath">/Node/Library</Param>
           </Call>
           <!-- Adding the prepare, run and clean functions so unit test application doesn't throw an error -->
@@ -758,7 +779,7 @@
             <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
             <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
             <Param name="type">lib</Param>
-            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].aux</String.parse></Param>
             <Param name="xPath">/Node/Library</Param>
           </Call>
           <Call function="addElementToNode">
@@ -768,7 +789,7 @@
             <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
             <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
             <Param name="type">lib</Param>
-            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].aux</String.parse></Param>
             <Param name="xPath">/Node/Library</Param>
           </Call>
           <Call function="addElementToNode">
@@ -778,12 +799,11 @@
             <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
             <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
             <Param name="type">lib</Param>
-            <Param name="node"><String.parse>$unitPrefix.aux</String.parse></Param>
+            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].aux</String.parse></Param>
             <Param name="xPath">/Node/Library</Param>
           </Call>
 				</Then>
 			</If>
-			
       <ForEach var="POSTDATA" item="item">
           <If condition="$item->SELECTED == 1 &amp;&amp; $item->id_code_template == @general->unitTemplate">
             <Then>
@@ -796,7 +816,7 @@
 		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
 		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
 		            <Param name="type">lib</Param>
-		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].$item->code_template_tpl</String.parse></Param>
 		          </Call>
 		          <!-- Now add the aux function to add a dummy element in the aux library-->
 		          <!-- Add the test prepare function -->
@@ -807,7 +827,7 @@
 		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
 		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
 		            <Param name="type">lib</Param>
-		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].$item->code_template_tpl</String.parse></Param>
 		            <Param name="xPath">/Node/Library</Param>
 		          </Call>				          		   
 		          <!-- Add the test run function -->       
@@ -818,7 +838,7 @@
 		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
 		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
 		            <Param name="type">lib</Param>
-		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].$item->code_template_tpl</String.parse></Param>
 		            <Param name="xPath">/Node/Library</Param>
 		          </Call>
 		          <!-- Add the test clean function -->
@@ -829,7 +849,7 @@
 		            <Param name="application"><Var name="general" key="unitApplication" process="true"/></Param>
 		            <Param name="process"><Var name="general" key="unitProcess" process="true"/></Param>
 		            <Param name="type">lib</Param>
-		            <Param name="node"><String.parse>$unitPrefix.$item->code_template_tpl</String.parse></Param>
+		            <Param name="node"><String.parse>$unitPrefix.@general['unitNode'].$item->code_template_tpl</String.parse></Param>
 		            <Param name="xPath">/Node/Library</Param>
 		          </Call>
               <UserMessage type="success">
@@ -943,21 +963,11 @@
         </Var>
         <ReflectionLib method="nodeAdd">
           <Param name="base"><Var name="base"/></Param>
-          <Param name="application">
-            <Var name="application"/>
-          </Param>
-          <Param name="process">
-            <Var name="process"/>
-          </Param>
-          <Param name="type">
-            <Var name="type"/>
-          </Param>
-          <Param name="node">
-            <Var name="node"/>
-          </Param>
-          <Param name="xmlDefinition">
-            <Var name="nodeTpl"/>
-          </Param>
+          <Param name="application"><Var name="application"/></Param>
+          <Param name="process"><Var name="process"/></Param>
+          <Param name="type"><Var name="type"/></Param>
+          <Param name="node"><Var name="node"/></Param>
+          <Param name="xmlDefinition"><Var name="nodeTpl"/></Param>
           <Param name="override">false</Param>
         </ReflectionLib>
       </Begin>
@@ -979,34 +989,18 @@
           <TemplateLib method="ExecuteTemplate">
             <Param>framework.ide</Param>
             <Param>generator</Param>
-            <Param>
-              <Var name="template"/>
-            </Param>
-            <Param>
-              <Var name="data"/>
-            </Param>
+            <Param><Var name="template"/></Param>
+            <Param><Var name="data"/></Param>
           </TemplateLib>
         </Var>
         <ReflectionLib method="nodeAddElement">
-          <Param name="base">
-            <Var name="base"/>
-          </Param>
-          <Param name="application">
-            <Var name="application"/>
-          </Param>
-          <Param name="process">
-            <Var name="process"/>
-          </Param>
-          <Param name="type">
-            <Var name="type"/>
-          </Param>
-          <Param name="node">
-            <Var name="node"/>
-          </Param>
+          <Param name="base"><Var name="base"/></Param>
+          <Param name="application"><Var name="application"/></Param>
+          <Param name="process"><Var name="process"/></Param>
+          <Param name="type"><Var name="type"/></Param>
+          <Param name="node"><Var name="node"/></Param>
           <Param name="xPath"><Var name="xPath"/></Param>
-          <Param name="xmlDefinition">
-            <Var name="element"/>
-          </Param>
+          <Param name="xmlDefinition"><Var name="element"/></Param>
           <Param name="override">false</Param>
         </ReflectionLib>
       </Begin>
