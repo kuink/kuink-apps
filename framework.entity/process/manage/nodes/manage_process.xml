@@ -9,6 +9,7 @@
     <Param name="createForeignKeys"/>
     <Param name="removeExistingForeignKeys"/>
     <Param name="dropTablesBeforeCreate"/>
+    <Param name="dropPermanentlyExcludedColumns"/>
   </Params>
   <Doc></Doc>
   <Libraries>
@@ -79,6 +80,7 @@
           <Param name="createForeignKeys"><Var name="PARAMS" key="createForeignKeys"/></Param>          
           <Param name="removeExistingForeignKeys"><Var name="PARAMS" key="removeExistingForeignKeys"/></Param>
           <Param name="dropTablesBeforeCreate"><Var name="PARAMS" key="dropTablesBeforeCreate"/></Param>          
+          <Param name="dropPermanentlyExcludedColumns"><Var name="PARAMS" key="dropPermanentlyExcludedColumns"/></Param>     
         </DataAccess>
       </Var>
       <Control method="bind" object="logGrid">

@@ -377,6 +377,7 @@
 		            <Param name="createForeignKeys"><Config key="update.createForeignKeys"/></Param>          
 					<Param name="removeExistingForeignKeys"><Config key="update.removeExistingForeignKeys"/></Param>       
 		            <Param name="dropTablesBeforeCreate"><Config key="update.dropTablesBeforeCreate"/></Param>          
+					<Param name="dropPermanentlyExcludedColumns"><Config key="update.dropPermanentlyExcludedColumns"/></Param>  
 		          </DataAccess>
 		        </Var>
 	          <Var name="logEntry" key="message"><String>Database update available:</String></Var>
