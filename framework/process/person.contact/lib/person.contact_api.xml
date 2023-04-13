@@ -464,19 +464,27 @@
 						</If>
 
 						<!-- If there's no default contact of this type, sets this one as the default -->
-						<Var name="defaultContact">
+						<Var name="defaultContacts" dump="true">
 							<Call function="getByContactType">
 								<Param name="id_person_company"><Var name="PARAMS" key="id_person_company"/></Param>
 								<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
 								<Param name="is_default"><Int>1</Int></Param>
 							</Call>
 						</Var>
-						<If condition="$defaultContact->__length == 0 || $defaultContact->id != $PARAMS->id">
+						<Var name="isDefault"><Int>1</Int></Var>
+						<If condition="$defaultContacts->__length == 0">
 							<Then>
 								<Var name="isDefault"><Int>1</Int></Var>
 							</Then>
 							<Else>
-								<Var name="isDefault"><Int>0</Int></Var>
+								<ForEach var="defaultContacts" item="contact">
+									<Var name="contact" dump="true"/>
+									<If condition="$contact->id != $PARAMS->id">
+										<Then>
+											<Var name="isDefault"><Int>0</Int></Var>
+										</Then>
+									</If>
+								</ForEach>
 							</Else>
 						</If>
 						
