@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    <![CDATA[ Gets a list of roles-capabilities relations that meet the given search criteria. ]]>
+	</Doc>
+  <Params>
+    <Param name="id" type="int" required="false" doc="Role_capability's id"/>
+    <Param name="id_role" type="int" required="false" doc="Role's id"/>
+    <Param name="id_capability" type="int" required="false" doc="Capability's id"/>
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            <![CDATA[ 
+							rc.* 
+						]]>
+        </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            <![CDATA[ 
+              fw_role_capability rc
+              LEFT OUTER JOIN fw_role r ON (r.id = rc.id_role)
+              LEFT OUTER JOIN fw_capability c ON (c.id = rc.id_capability)
+						]]>
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+					<XCondition optional="id">
+						<![CDATA[
+							AND rc.id = {param->id}
+						]]>
+					</XCondition>
+          <XCondition optional="id_role">
+						<![CDATA[
+							AND rc.id_role = {param->id_role}
+						]]>
+					</XCondition>
+          <XCondition optional="id_capability">
+						<![CDATA[
+							AND rc.id_capability = {param->id_capability}
+						]]>
+					</XCondition>
+        </XWhere>
+        <XOrderBy>
+					<XOrder><![CDATA[ r.name ASC, c.name ASC ]]></XOrder>
+				</XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>

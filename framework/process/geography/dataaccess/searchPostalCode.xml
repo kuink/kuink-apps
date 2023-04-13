@@ -1,10 +1,10 @@
 <?xml version='1.0'?>
 <Method>
 	<Doc>
-		<Description>Search postal codes given the code</Description>
+		<![CDATA[ Searches for a specific postal code by its code or name. ]]>
 	</Doc>
 	<Params>
-		<Param name="text" doc="Postal code code or local name"/>
+		<Param name="text" type="text" required="false" doc="Postal code's code or local name"/>
 	</Params>
 	<Body>
 		<Sql>
@@ -30,7 +30,8 @@
 				<XWhere>
 					<XCondition>
 						<![CDATA[
-							1=1 AND '{param->text}' != ''
+							1 = 1 
+							AND '{param->text}' != ''
 						]]>
 					</XCondition>
 					<XCondition optional="text">
@@ -44,7 +45,7 @@
 					</XCondition>
 				</XWhere>
 				<XOrderBy>
-					<XOrder><![CDATA[  pc.code ASC  ]]></XOrder>
+					<XOrder><![CDATA[ pc.code ASC ]]></XOrder>
 				</XOrderBy>
 			</XSql>
 		</Sql>

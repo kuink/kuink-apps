@@ -1,33 +1,34 @@
-<?xml version='1.0'?><Process>
-    <Transitions>
-        <Flow role='Teacher' startnode='' event='init' endnode='manage' />
-        
-        <!-- manage users -->
-        <Flow role='Teacher' startnode='manage' event='manageUsers' endnode='xpManageUsers' />
-        <Flow role='Teacher' startnode='xpManageUsers' event='back' endnode='manage' />
-        
-        <!-- manage capabilities -->
-        <Flow role='Teacher' startnode='manage' event='manageCapabilities' endnode='xpManageCapabilities' />
-        <Flow role='Teacher' startnode='xpManageCapabilities' event='back' endnode='manage' />
-        
-        <!-- manage roles -->
-        <Flow role='Teacher' startnode='manage' event='manageRoles' endnode='xpManageRoles' />
-        <Flow role='Teacher' startnode='xpManageRoles' event='back' endnode='manage' />
-        
-        <!-- manage role capabilities -->
-        <Flow role='Teacher' startnode='manage' event='manageRoleCapabilities' endnode='xpManageRoleCapabilities' />
-        <Flow role='Teacher' startnode='xpManageRoleCapabilities' event='back' endnode='manage' />
-        
-        <!-- manage allocations -->
-        <Flow role='Teacher' startnode='manage' event='manageAllocations' endnode='xpManageAllocations' />
-        <Flow role='Teacher' startnode='xpManageAllocations' event='back' endnode='manage' />
+<?xml version="1.0"?>
+<Process>
+	<Transitions>
+		<Flow role="Teacher" startnode="" event="init" endnode="main"/>
 
-        <!-- manage records -->
-        <Flow role='Teacher' startnode='manage' event='records' endnode='xpRecords' />
-        <Flow role='Teacher' startnode='xpRecords' event='back' endnode='manage' />
+		<!-- Dashboard Main Page > Users management -->
+		<Flow role="Teacher" startnode="main" event="managePersons" endnode="xpPersonsManagement"/>
+		<Flow role="Teacher" startnode="xpPersonsManagement" event="back" endnode="main"/>
 
-        <!-- manage app files -->
-        <Flow role='Teacher' startnode='manage' event='manageAppFiles' endnode='xpManageAppFiles' />
-        <Flow role='Teacher' startnode='xpManageAppFiles' event='back' endnode='manage' />
-    </Transitions>
+		<!-- Dashboard Main Page > Capabilities management -->
+		<Flow role="Teacher" startnode="main" event="manageCapabilities" endnode="xpCapabilitiesManagement" />
+		<Flow role="Teacher" startnode="xpCapabilitiesManagement" event="back" endnode="main" />
+
+		<!-- Dashboard Main Page > Roles management -->
+		<Flow role="Teacher" startnode="main" event="manageRoles" endnode="xpRolesManagement" />
+		<Flow role="Teacher" startnode="xpRolesManagement" event="back" endnode="main" />
+
+		<!-- Dashboard Main Page > Roles-Capabilities management -->
+		<Flow role="Teacher" startnode="main" event="manageRoleCapabilities" endnode="xpRoleCapabilitiesManagement" />
+		<Flow role="Teacher" startnode="xpRoleCapabilitiesManagement" event="back" endnode="main" />
+
+		<!-- Dashboard Main Page > Allocations management -->
+		<Flow role="Teacher" startnode="main" event="manageAllocations" endnode="xpAllocationsManagement" />
+		<Flow role="Teacher" startnode="xpAllocationsManagement" event="back" endnode="main" />
+
+		<!-- Dashboard Main Page > Records management -->
+		<Flow role="Teacher" startnode="main" event="records" endnode="xpRecords" />
+		<Flow role="Teacher" startnode="xpRecords" event="back" endnode="main" />
+
+		<!-- Dashboard Main Page > App Files Management -->
+		<Flow role="Teacher" startnode="main" event="manageAppFiles" endnode="xpAppFilesManagement" />
+		<Flow role="Teacher" startnode="xpAppFilesManagement" event="back" endnode="main" />
+	</Transitions>
 </Process>

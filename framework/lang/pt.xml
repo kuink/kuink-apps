@@ -1,360 +1,484 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <Lang>
-    <Strings>
-        <!-- General strings -->
-        <String key="report_bug" value="Reportar um erro"/>
-        <String key="ok" value="Ok"/>
-        <String key="submeter" value="Submeter"/>
-        <String key="submit" value="Submeter"/>
-        <String key="cancel" value="Cancelar"/>
-        <String key="confirm" value="Confirmação"/>
-        <String key="ask_proceed" value="Tem a certeza que deseja continuar?"/>
-        <String key="preEdit" value="Editar"/>
-        <String key="preView" value="Ver"/>
-        <String key="back" value="Voltar"/>
-        <String key="add" value="Adicionar"/>
-        <String key="insert" value="Inserir"/>
-        <String key="search" value="Pesquisar"/>
-        <String key="filter" value="Filtrar"/>
-        <String key="edit" value="Editar"/>
-        <String key="view" value="Ver"/>
-        <String key="save" value="Gravar"/>
-        <String key="download" value="Descarregar"/>
-        <String key="proceed" value="Continuar"/>
-        <String key="print" value="Imprimir"/>
-        <String key="delete" value="Apagar"/>
-        <String key="remove" value="Remover"/>
-        <String key="yes" value="Sim"/>
-        <String key="no" value="Não"/>
-        <String key="display_name" value="Nome"/>
-        <String key="photo" value="Foto"/>
-        <String key="timestamp" value="Data/Hora"/>
-        <String key="key" value="Chave"/>
-        <String key="message" value="Mensagem"/>
-        <String key="home" value="Home"/>
-        <String key="file" value="Ficheiro"/>
-        <String key="help" value="Ajuda"/>
-        <String key="is_active" value="Ativo"/>
-
-        <String key="_creation" value="Criação"/>
-        <String key="_creation_ip" value="IP Criação"/>
-        <String key="_modification" value="Modificação"/>
-        <String key="_modification_ip" value="IP Modificação"/>
-        <String key="_submission" value="Submissão"/>
-
-        <String key="result" value="Resultado"/>
-        <String key="first" value="Primeiro"/>
-        <String key="last" value="Último"/>
-        <String key="previous" value="Anterior"/>
-        <String key="next" value="Próximo"/>
-        <String key="recordsPerPage" value="Registos por página"/>
-        <String key="show" value="mostrar"/>
-        <String key="hide" value="ocultar"/>
-        <String key="legend" value="Legenda"/>
-        <String key="profile" value="Perfil"/>
-        <String key="sign-out" value="Terminar Sessão"/>
-        <String key="user" value="Utilizador"/>
-        <String key="history" value="Histórico"/>
-        <String key="send" value="Enviar"/>
-        <String key="email" value="e-Mail"/>
-        <String key="bugArea" value="Área"/>
-
-        <String key="start_date" value="Início"/>
-        <String key="startDate" value="Início"/>
-        <String key="end_date" value="Fim"/>
-        <String key="endDate" value="Fim"/>
-
-
-        <String key="actions" value="Ações"/>
-        <String key="action" value="Ação"/>
-
-        <!-- Theme adminLTE2 Modal_embed -->
-        <String key="noLabel" value="Sem Etiqueta" />
-        <String key="toggleApp" value="Alternar Aplicação" />
-        <String key="toggleMenu" value="Alternar Menu" />
-
-        <String key="id" value="Id"/>
-        <String key="uuid" value="Id Único"/>
-        <String key="ficheiro" value="Ficheiro"/>
-        <String key="name" value="Nome"/>
-        <String key="code" value="Código"/>
-        <String key="order" value="Ordem"/>
-        <String key="default" value="Omissão"/>
-        <String key="active" value="Ativo"/>
-        <String key="description" value="Descrição"/>
-        <String key="requiredField" value="Campo obrigatório"/>
-        <String key="integerField" value="Este campo apenas aceita valores numéricos inteiros"/>
-        <String key="realField" value="Este campo apenas aceita valores numéricos reais"/>
-        <String key="requiredFiledsNotFilled" value="Tem de preencher todos os campos obrigatórios"/>
-        <String key="invalidEmail" value="O e-Mail é inválido"/>
-        <String key="remainingChars" value="Caracteres disponíveis"/>
-
-        <!-- Date names -->
-				<String key="january" value="janeiro"/>
-				<String key="february" value="fevereiro"/>
-				<String key="march" value="março"/>
-				<String key="april" value="abril"/>
-				<String key="may" value="maio"/>
-				<String key="june" value="junho"/>
-				<String key="july" value="julho"/>
-				<String key="august" value="agosto"/>
-				<String key="september" value="setembro"/>
-				<String key="october" value="outubro"/>
-				<String key="november" value="novembro"/>
-				<String key="december" value="dezembro"/>
-				<String key="januaryShort" value="jan"/>
-				<String key="februaryShort" value="fev"/>
-				<String key="marchShort" value="mar"/>
-				<String key="aprilShort" value="abr"/>
-				<String key="mayShort" value="mai"/>
-				<String key="juneShort" value="jun"/>
-				<String key="julyShort" value="jul"/>
-				<String key="augustShort" value="ago"/>
-				<String key="septemberShort" value="set"/>
-				<String key="octoberShort" value="out"/>
-				<String key="novemberShort" value="nov"/>
-				<String key="decemberShort" value="dez"/>
+	<Strings>
+		<!--	________________________________________________________________________________________________
+			*
+			*			G E N E R A L    ::    General strings | Actions | Fields | Records | Permissions
+			*		________________________________________________________________________________________________
+		-->
+		<String key="home"><![CDATA[ Home ]]></String>
+		<String key="main"><![CDATA[ Geral ]]></String>
+		<String key="help"><![CDATA[ Ajuda ]]></String>
+		<String key="ok"><![CDATA[ Ok ]]></String>
+		<String key="confirm"><![CDATA[ Confirmação ]]></String>
+		<String key="yes"><![CDATA[ Sim ]]></String>
+		<String key="no"><![CDATA[ Não ]]></String>
+		<String key="report_bug"><![CDATA[ Reportar um erro ]]></String>
+		<String key="ask_proceed"><![CDATA[ Tem a certeza que deseja continuar? ]]></String>
+		<String key="result"><![CDATA[ Resultado ]]></String>
+		<String key="first"><![CDATA[ Primeiro ]]></String>
+		<String key="last"><![CDATA[ Último ]]></String>
+		<String key="previous"><![CDATA[ Anterior ]]></String>
+		<String key="next"><![CDATA[ Próximo ]]></String>
+		<String key="recordsPerPage"><![CDATA[ Registos por página ]]></String>
+		<String key="legend"><![CDATA[ Legenda ]]></String>
+		<String key="profile"><![CDATA[ Perfil ]]></String>
+		<String key="sign-out"><![CDATA[ Terminar Sessão ]]></String>
+		<String key="user"><![CDATA[ Utilizador ]]></String>
+		<String key="history"><![CDATA[ Histórico ]]></String>
+		<String key="email"><![CDATA[ E-mail ]]></String>
+		<String key="bugArea"><![CDATA[ Área ]]></String>
+		<String key="id"><![CDATA[ Id ]]></String>
+		<String key="uuid"><![CDATA[ Id Único ]]></String>
+		<String key="id_company"><![CDATA[ Empresa ]]></String>
+		<String key="ficheiro"><![CDATA[ Ficheiro ]]></String>
+		<String key="name"><![CDATA[ Nome ]]></String>
+		<String key="code"><![CDATA[ Código ]]></String>
+		<String key="order"><![CDATA[ Ordem ]]></String>
+		<String key="default"><![CDATA[ Omissão ]]></String>
+		<String key="active"><![CDATA[ Ativo ]]></String>
+		<String key="description"><![CDATA[ Descrição ]]></String>
+		<String key="requiredField"><![CDATA[ Campo obrigatório ]]></String>
+		<String key="integerField"><![CDATA[ Este campo apenas aceita valores numéricos inteiros ]]></String>
+		<String key="realField"><![CDATA[ Este campo apenas aceita valores numéricos reais ]]></String>
+		<String key="requiredFiledsNotFilled"><![CDATA[ Tem de preencher todos os campos obrigatórios ]]></String>
+		<String key="invalidEmail"><![CDATA[ O e-mail é inválido ]]></String>
+		<String key="remainingChars"><![CDATA[ Caracteres disponíveis ]]></String>
+		<!--  ::  Actions  -->
+		<String key="send"><![CDATA[ Enviar ]]></String>
+		<String key="show"><![CDATA[ Mostrar ]]></String>
+		<String key="hide"><![CDATA[ Ocultar ]]></String>
+		<String key="submeter"><![CDATA[ Submeter ]]></String>
+		<String key="submit"><![CDATA[ Submeter ]]></String>
+		<String key="cancel"><![CDATA[ Cancelar ]]></String>
+		<String key="preEdit"><![CDATA[ Editar ]]></String>
+		<String key="preView"><![CDATA[ Ver ]]></String>
+		<String key="back"><![CDATA[ Voltar ]]></String>
+		<String key="add"><![CDATA[ Adicionar ]]></String>
+		<String key="insert"><![CDATA[ Inserir ]]></String>
+		<String key="search"><![CDATA[ Pesquisar ]]></String>
+		<String key="filter"><![CDATA[ Filtrar ]]></String>
+		<String key="edit"><![CDATA[ Editar ]]></String>
+		<String key="view"><![CDATA[ Ver ]]></String>
+		<String key="save"><![CDATA[ Gravar ]]></String>
+		<String key="download"><![CDATA[ Descarregar ]]></String>
+		<String key="proceed"><![CDATA[ Continuar ]]></String>
+		<String key="print"><![CDATA[ Imprimir ]]></String>
+		<String key="delete"><![CDATA[ Apagar ]]></String>
+		<String key="remove"><![CDATA[ Remover ]]></String>
+		<!--  ::  Fields  -->
+		<String key="display_name"><![CDATA[ Nome ]]></String>
+		<String key="photo"><![CDATA[ Foto ]]></String>
+		<String key="timestamp"><![CDATA[ Data/Hora ]]></String>
+		<String key="key"><![CDATA[ Chave ]]></String>
+		<String key="message"><![CDATA[ Mensagem ]]></String>
+		<String key="file"><![CDATA[ Ficheiro ]]></String>
+		<String key="is_active"><![CDATA[ Ativo ]]></String>
+		<String key="actions"><![CDATA[ Ações ]]></String>
+		<String key="action"><![CDATA[ Ação ]]></String>
+		<String key="total"><![CDATA[ Total ]]> Total</String>
+		<String key="guid"><![CDATA[ GUID ]]></String>
+		<String key="id_file"><![CDATA[ Ficheiro ]]></String>
+		<String key="record"><![CDATA[ Registo ]]></String>
+		<!--  ::  Records  -->
+		<String key="_id_creator"><![CDATA[ ID Criação ]]></String>
+		<String key="_creation"><![CDATA[ Criação ]]></String>
+		<String key="_creation_ip"><![CDATA[ IP Criação ]]></String>
+		<String key="_id_updater"><![CDATA[ ID Modificação ]]></String>
+		<String key="_modification"><![CDATA[ Modificação ]]></String>
+		<String key="_modification_ip"><![CDATA[ IP Modificação ]]></String>
+		<String key="_submission"><![CDATA[ Submissão ]]></String>
+		<!--  ::  Permissions  -->
+		<String key="noPermission"><![CDATA[ Não tem permissão para executar a ação. ]]></String>
 
 
-                <String key="month_01" value="janeiro"/>
-                <String key="month_02" value="fevereiro"/>
-                <String key="month_03" value="março"/>
-                <String key="month_04" value="abril"/>
-                <String key="month_05" value="maio"/>
-                <String key="month_06" value="junho"/>
-                <String key="month_07" value="julho"/>
-                <String key="month_08" value="agosto"/>
-                <String key="month_09" value="setembro"/>
-                <String key="month_10" value="outubro"/>
-                <String key="month_11" value="novembro"/>
-                <String key="month_12" value="dezembro"/>
 
-                <String key="Month_01" value="Janeiro"/>
-                <String key="Month_02" value="Fevereiro"/>
-                <String key="Month_03" value="Março"/>
-                <String key="Month_04" value="Abril"/>
-                <String key="Month_05" value="Maio"/>
-                <String key="Month_06" value="Junho"/>
-                <String key="Month_07" value="Julho"/>
-                <String key="Month_08" value="Agosto"/>
-                <String key="Month_09" value="Setembro"/>
-                <String key="Month_10" value="Outubro"/>
-                <String key="Month_11" value="Novembro"/>
-                <String key="Month_12" value="Dezembro"/>
 
-                <String key="month_01_short" value="jan"/>
-                <String key="month_02_short" value="fev"/>
-                <String key="month_03_short" value="mar"/>
-                <String key="month_04_short" value="abr"/>
-                <String key="month_05_short" value="mai"/>
-                <String key="month_06_short" value="jun"/>
-                <String key="month_07_short" value="jul"/>
-                <String key="month_08_short" value="ago"/>
-                <String key="month_09_short" value="set"/>
-                <String key="month_10_short" value="out"/>
-                <String key="month_11_short" value="nov"/>
-                <String key="month_12_short" value="dez"/>
+		<!--	________________________________________________________________________________________________
+			*
+			*			L O G S    ::    Log messages
+			*		________________________________________________________________________________________________
+		-->
+		<!--  ::  Company  -->
+		<String key="logCompanyInsert"><![CDATA[ fw_company | Adicionada nova empresa '{0}'. ]]></String>
+		<String key="logCompanyUpdate"><![CDATA[ fw_company | Atualizada empresa '{0}'. ]]></String>
+		<String key="logCompanyDelete"><![CDATA[ fw_company | Eliminada empresa '{0}'. ]]></String>
+		<!--  ::  Document Type  -->
+		<String key="logDocTypeInsert"><![CDATA[ fw_company | Adicionado novo tipo de documento '{0}'. ]]></String>
+		<String key="logDocTypeUpdate"><![CDATA[ fw_company | Atualizado tipo de documento '{0}'. ]]></String>
+		<String key="logDocTypeDelete"><![CDATA[ fw_company | Eliminado tipo de documento '{0}'. ]]></String>
+		<!--  ::  Entity Management  >  Data Source  -->
+		<String key="logDataSourceInsert"><![CDATA[ data_source | Adicionado utente '{0}' ao sistema '{1}'. ]]></String>
+		<String key="logDataSourceUpdate"><![CDATA[ data_source | Atualizado utente '{0}' no sistema '{1}'. ]]></String>
+		<String key="logDataSourceDelete"><![CDATA[ data_source | Eliminado utente '{0}' do sistema '{1}'. ]]></String>
+		<!--  ::  Entity Management  >  System  -->
+		<String key="logExternalSystemInsert"><![CDATA[ fw_system_entity | Adicionado novo sistema '{0}' à Gestão de Entidades. ]]></String>
+		<String key="logExternalSystemUpdate"><![CDATA[ fw_system_entity | Atualizado sistema '{0}' na Gestão de Entidades. ]]></String>
+		<String key="logExternalSystemDelete"><![CDATA[ fw_system_entity | Eliminado sistema '{0}' da Gestão de Entidades. ]]></String>
+		<!--  ::  Entity Management  >  System  >  Status Cache  -->
+		<String key="logSystemCacheInsert"><![CDATA[ fw_system_entity_status_cache | Adicionada nova relação utente-sistema '{0}'. ]]></String>
+		<String key="logSystemCacheUpdate"><![CDATA[ fw_system_entity_status_cache | Atualizada relação utente-sistema '{0}'. ]]></String>
+		<String key="logSystemCacheDelete"><![CDATA[ fw_system_entity_status_cache | Eliminada relação utente-sistema '{0}'. ]]></String>
+		<!--  ::  Jobs  -->
+		<String key="logJobInsert"><![CDATA[ fw_job | Adicionada nova profissão '{0}'. ]]></String>
+		<String key="logJobUpdate"><![CDATA[ fw_job | Atualizada profissão '{0}'. ]]></String>
+		<String key="logJobDelete"><![CDATA[ fw_job | Eliminada profissão '{0}'. ]]></String>
+		<!--  ::  Person  -->
+		<String key="logPersonInsert"><![CDATA[ fw_person | Adicionado novo utente '{0}'. ]]></String>
+		<String key="logPersonUpdate"><![CDATA[ fw_person | Atualizado utente '{0}'. ]]></String>
+		<String key="logPersonDelete"><![CDATA[ fw_person | Eliminado utente '{0}'. ]]></String>
+		<!--  ::  Person  >  Company  -->
+		<String key="logPersonCompanyInsert"><![CDATA[ fw_person_company | Adicionado utente '{0}' à empresa '{1}'. | {2} ]]></String>
+		<String key="logPersonCompanyUpdate"><![CDATA[ fw_person_company | Atualizada relação utente-empresa '{0}-{1}'. | {2} ]]></String>
+		<String key="logPersonCompanyDelete"><![CDATA[ fw_person_company | Removido utente '{0}' da empresa '{1}'. | {2} ]]></String>
+		<!--  ::  Person  >  Contacts  -->
+		<String key="logPersonContactInsert"><![CDATA[ fw_person_contact | Adicionado novo contacto '{0}' ao utente-empresa '{1}'. ]]></String>
+		<String key="logPersonContactUpdate"><![CDATA[ fw_person_contact | Atualizado contacto '{0}' do utente-empresa '{1}'. ]]></String>
+		<String key="logPersonContactDelete"><![CDATA[ fw_person_contact | Eliminado contacto '{0}' do utente-empresa '{1}'. ]]></String>
+		<!--  ::  Person  >  Contacts  >  Contact Type  -->
+		<String key="logContactTypeInsert"><![CDATA[ fw_contact_type | Adicionado novo tipo de contacto '{0} - {1}'. ]]></String>
+		<String key="logContactTypeUpdate"><![CDATA[ fw_contact_type | Atualizado tipo de contacto '{0} - {1}'. ]]></String>
+		<String key="logContactTypeDelete"><![CDATA[ fw_contact_type | Eliminado tipo de contacto '{0} - {1}'. ]]></String>
+		<!--  ::  Role  -->
+		<String key="logRoleInsert"><![CDATA[ fw_role | Adicionada função '{0}' à empresa '{1}'. ]]></String>
+		<String key="logRoleUpdate"><![CDATA[ fw_role | Atualizada função '{0}' da empresa '{1}'. ]]></String>
+		<String key="logRoleDelete"><![CDATA[ fw_role | Eliminada função '{0}' da empresa '{1}'. ]]></String>
+		<!--  ::  Role  >  Allocation  -->
+		<String key="logAllocationInsert"><![CDATA[ fw_allocation | Atribuída função '{0}' ao utente '{1}' na empresa '{2}'. | {3} ]]></String>
+		<String key="logAllocationUpdate"><![CDATA[ fw_allocation | Atualizada função '{0}' do utente '{1}' na empresa '{2}'. | {3} ]]></String>
+		<String key="logAllocationDelete"><![CDATA[ fw_allocation | Removida função '{0}' do utente '{1}' na empresa '{2}'. | {3} ]]></String>
+		<!--  ::  Role  >  Capability  -->
+		<String key="logCapabilityInsert"><![CDATA[ fw_capability | Adicionada nova capacidade '{0}'. ]]></String>
+		<String key="logCapabilityUpdate"><![CDATA[ fw_capability | Atualizada a capacidade '{0}'. ]]></String>
+		<String key="logCapabilityDelete"><![CDATA[ fw_capability | Removida a capacidade '{0}'. ]]></String>
+		<!--  ::  Role  >  Role_Capability  -->
+		<String key="logRoleCapabilityInsert"><![CDATA[ fw_role_capability | Atribuída a capacidade '{0}' à função '{1}'. | {2} ]]></String>
+		<String key="logRoleCapabilityUpdate"><![CDATA[ fw_role_capability | Atualizada a capacidade '{0}' da função '{1}'. | {2} ]]></String>
+		<String key="logRoleCapabilityDelete"><![CDATA[ fw_role_capability | Removida a capacidade '{0}' da função '{1}'. | {2} ]]></String>
 
-        <String key="sunday" value="domingo"/>
-        <String key="monday" value="segunda"/>
-        <String key="tuesday" value="terça"/>
-        <String key="wednesday" value="quarta"/>
-        <String key="thursday" value="quinta"/>
-        <String key="friday" value="sexta"/>
-        <String key="saturday" value="sábado"/>
 
-        <String key="weekday_1" value="segunda" />
-        <String key="weekday_2" value="terça" />
-        <String key="weekday_3" value="quarta" />
-        <String key="weekday_4" value="quinta" />
-        <String key="weekday_5" value="sexta" />
-        <String key="weekday_6" value="sábado" />
-        <String key="weekday_7" value="domingo" />
 
-        <String key="weekDay_1" value="Segunda" />
-        <String key="weekDay_2" value="Terça" />
-        <String key="weekDay_3" value="Quarta" />
-        <String key="weekDay_4" value="Quinta" />
-        <String key="weekDay_5" value="Sexta" />
-        <String key="weekDay_6" value="Sábado" />
-        <String key="weekDay_7" value="Domingo" />        
+		
+		<!--	________________________________________________________________________________________________
+			*
+			*			D A T E    ::    General date strings | Months | Week days
+			*		________________________________________________________________________________________________
+		-->
+		<!--  ::  General date strings  -->
+		<String key="start_date"><![CDATA[ Início ]]></String>
+		<String key="startDate"><![CDATA[ Início ]]></String>
+		<String key="end_date"><![CDATA[ Fim ]]></String>
+		<String key="endDate"><![CDATA[ Fim ]]></String>
+		<String key="today"><![CDATA[ hoje ]]></String>
+		<String key="day"><![CDATA[ dia ]]></String>
+		<String key="week"><![CDATA[ semana ]]></String>
+		<String key="month"><![CDATA[ mês ]]></String>
+		<String key="year"><![CDATA[ ano ]]></String>
+		<!--  ::  Months  -->
+		<String key="january"><![CDATA[ janeiro ]]></String>
+		<String key="february"><![CDATA[ fevereiro ]]></String>
+		<String key="march"><![CDATA[ março ]]></String>
+		<String key="april"><![CDATA[ abril ]]></String>
+		<String key="may"><![CDATA[ maio ]]></String>
+		<String key="june"><![CDATA[ junho ]]></String>
+		<String key="july"><![CDATA[ julho ]]></String>
+		<String key="august"><![CDATA[ agosto ]]></String>
+		<String key="september"><![CDATA[ setembro ]]></String>
+		<String key="october"><![CDATA[ outubro ]]></String>
+		<String key="november"><![CDATA[ novembro ]]></String>
+		<String key="december"><![CDATA[ dezembro ]]></String>
+		<!--  ::  Months (numeric | lower case)  -->
+		<String key="month_01"><![CDATA[ janeiro ]]></String>
+		<String key="month_02"><![CDATA[ fevereiro ]]></String>
+		<String key="month_03"><![CDATA[ março ]]></String>
+		<String key="month_04"><![CDATA[ abril ]]></String>
+		<String key="month_05"><![CDATA[ maio ]]></String>
+		<String key="month_06"><![CDATA[ junho ]]></String>
+		<String key="month_07"><![CDATA[ julho ]]></String>
+		<String key="month_08"><![CDATA[ agosto ]]></String>
+		<String key="month_09"><![CDATA[ setembro ]]></String>
+		<String key="month_10"><![CDATA[ outubro ]]></String>
+		<String key="month_11"><![CDATA[ novembro ]]></String>
+		<String key="month_12"><![CDATA[ dezembro ]]></String>
+		<!--  ::  Months (numeric | upper case)  -->
+		<String key="Month_01"><![CDATA[ Janeiro ]]></String>
+		<String key="Month_02"><![CDATA[ Fevereiro ]]></String>
+		<String key="Month_03"><![CDATA[ Março ]]></String>
+		<String key="Month_04"><![CDATA[ Abril ]]></String>
+		<String key="Month_05"><![CDATA[ Maio ]]></String>
+		<String key="Month_06"><![CDATA[ Junho ]]></String>
+		<String key="Month_07"><![CDATA[ Julho ]]></String>
+		<String key="Month_08"><![CDATA[ Agosto ]]></String>
+		<String key="Month_09"><![CDATA[ Setembro ]]></String>
+		<String key="Month_10"><![CDATA[ Outubro ]]></String>
+		<String key="Month_11"><![CDATA[ Novembro ]]></String>
+		<String key="Month_12"><![CDATA[ Dezembro ]]></String>
+		<!-- Months (short) -->
+		<String key="januaryShort"><![CDATA[ jan ]]></String>
+		<String key="februaryShort"><![CDATA[ fev ]]></String>
+		<String key="marchShort"><![CDATA[ mar ]]></String>
+		<String key="aprilShort"><![CDATA[ abr ]]></String>
+		<String key="mayShort"><![CDATA[ mai ]]></String>
+		<String key="juneShort"><![CDATA[ jun ]]></String>
+		<String key="julyShort"><![CDATA[ jul ]]></String>
+		<String key="augustShort"><![CDATA[ ago ]]></String>
+		<String key="septemberShort"><![CDATA[ set ]]></String>
+		<String key="octoberShort"><![CDATA[ out ]]></String>
+		<String key="novemberShort"><![CDATA[ nov ]]></String>
+		<String key="decemberShort"><![CDATA[ dez ]]></String>
+		<!-- Months (short | numeric) -->
+		<String key="month_01_short"><![CDATA[ jan ]]></String>
+		<String key="month_02_short"><![CDATA[ fev ]]></String>
+		<String key="month_03_short"><![CDATA[ mar ]]></String>
+		<String key="month_04_short"><![CDATA[ abr ]]></String>
+		<String key="month_05_short"><![CDATA[ mai ]]></String>
+		<String key="month_06_short"><![CDATA[ jun ]]></String>
+		<String key="month_07_short"><![CDATA[ jul ]]></String>
+		<String key="month_08_short"><![CDATA[ ago ]]></String>
+		<String key="month_09_short"><![CDATA[ set ]]></String>
+		<String key="month_10_short"><![CDATA[ out ]]></String>
+		<String key="month_11_short"><![CDATA[ nov ]]></String>
+		<String key="month_12_short"><![CDATA[ dez ]]></String>
+		<!-- Week days -->
+		<String key="sunday"><![CDATA[ domingo ]]></String>
+		<String key="monday"><![CDATA[ segunda ]]></String>
+		<String key="tuesday"><![CDATA[ terça ]]></String>
+		<String key="wednesday"><![CDATA[ quarta ]]></String>
+		<String key="thursday"><![CDATA[ quinta ]]></String>
+		<String key="friday"><![CDATA[ sexta ]]></String>
+		<String key="saturday"><![CDATA[ sábado ]]></String>
+		<!-- Week days (numeric | lower case) -->
+		<String key="weekday_1"><![CDATA[ segunda ]]></String>
+		<String key="weekday_2"><![CDATA[ terça ]]></String>
+		<String key="weekday_3"><![CDATA[ quarta ]]></String>
+		<String key="weekday_4"><![CDATA[ quinta ]]></String>
+		<String key="weekday_5"><![CDATA[ sexta ]]></String>
+		<String key="weekday_6"><![CDATA[ sábado ]]></String>
+		<String key="weekday_7"><![CDATA[ domingo ]]></String>
+		<!-- Week days (numeric | upper case) -->
+		<String key="weekDay_1"><![CDATA[ Segunda ]]></String>
+		<String key="weekDay_2"><![CDATA[ Terça ]]></String>
+		<String key="weekDay_3"><![CDATA[ Quarta ]]></String>
+		<String key="weekDay_4"><![CDATA[ Quinta ]]></String>
+		<String key="weekDay_5"><![CDATA[ Sexta ]]></String>
+		<String key="weekDay_6"><![CDATA[ Sábado ]]></String>
+		<String key="weekDay_7"><![CDATA[ Domingo ]]></String>
+		<!-- Week days (short | lower case) -->
+		<String key="mondayShort"><![CDATA[ seg ]]></String>
+		<String key="tuesdayShort"><![CDATA[ ter ]]></String>
+		<String key="wednesdayShort"><![CDATA[ qua ]]></String>
+		<String key="thursdayShort"><![CDATA[ qui ]]></String>
+		<String key="fridayShort"><![CDATA[ sex ]]></String>
+		<String key="saturdayShort"><![CDATA[ sáb ]]></String>
+		<String key="sundayShort"><![CDATA[ dom ]]></String>
+		<!-- Week days (short) -->
+		<String key="mon"><![CDATA[ seg ]]></String>
+		<String key="tue"><![CDATA[ ter ]]></String>
+		<String key="wed"><![CDATA[ qua ]]></String>
+		<String key="thu"><![CDATA[ qui ]]></String>
+		<String key="fri"><![CDATA[ sex ]]></String>
+		<String key="sat"><![CDATA[ sáb ]]></String>
+		<String key="sun"><![CDATA[ dom ]]></String>
+		<String key="dow_1"><![CDATA[ seg ]]></String>
+		<String key="dow_2"><![CDATA[ ter ]]></String>
+		<String key="dow_3"><![CDATA[ qua ]]></String>
+		<String key="dow_4"><![CDATA[ qui ]]></String>
+		<String key="dow_5"><![CDATA[ sex ]]></String>
+		<String key="dow_6"><![CDATA[ sáb ]]></String>
+		<String key="dow_7"><![CDATA[ dom ]]></String>
+		
 
-        <String key="sundayShort" value="dom"/>
-        <String key="mondayShort" value="seg"/>
-        <String key="tuesdayShort" value="ter"/>
-        <String key="wednesdayShort" value="qua"/>
-        <String key="thursdayShort" value="qui"/>
-        <String key="fridayShort" value="sex"/>
-        <String key="saturdayShort" value="sáb"/>
 
-        <String key="sun" value="dom"/>
-        <String key="mon" value="seg"/>
-        <String key="tue" value="ter"/>
-        <String key="wed" value="qua"/>
-        <String key="thu" value="qui"/>
-        <String key="fri" value="sex"/>
-        <String key="sat" value="sáb"/>
+		<!--	________________________________________________________________________________________________
+			*
+			*			P A S S W O R D    ::    Password policies
+			*		________________________________________________________________________________________________
+		-->
+		<String key="passwordPoliciesHead"><![CDATA[ A alteração de senha deve contemplar no mínimo:&lt;ul&gt; ]]></String>
+		<String key="passwordErrorsHead"><![CDATA[ Faltaram os requisitos mínimos de::&lt;ul&gt; ]]></String>
+		<String key="passwordsDontMatch"><![CDATA[ &lt;li&gt; As senhas novas não coincidem.&lt;/li&gt; ]]></String>
+		<String key="passwordSameAsPrevious"><![CDATA[ &lt;li&gt; A senha não pode ser igual à anterior.&lt;/li&gt; ]]></String>
+		<String key="minLength"><![CDATA[ &lt;li&gt; {0} caracteres.&lt;/li&gt; ]]></String>
+		<String key="minAlphaLower"><![CDATA[ &lt;li&gt; {0} letra(s) minúscula(s) [a..z].&lt;/li&gt; ]]></String>
+		<String key="minAlphaUpper"><![CDATA[ &lt;li&gt; {0} letra(s) maiúscula(s) [A..Z].&lt;/li&gt; ]]></String>
+		<String key="minNumeric"><![CDATA[ &lt;li&gt; {0} algarismo(s) [0..9].&lt;/li&gt; ]]></String>
+		<String key="minNonAlphaNumeric"><![CDATA[ &lt;li&gt; {0} símbolo(s) [!#$%&amp;*()\-_=+{};:,&lt;.&gt;] ]]></String>
+		<String key="errorChangingPassword"><![CDATA[ &lt;li&gt; Error a alterar a senha&lt;/li&gt; ]]></String>
+		<String key="passwordPoliciesTail"><![CDATA[ &lt;/ul&gt; ]]></String>
+		<String key="passwordErrorsTail"><![CDATA[ &lt;/ul&gt; ]]></String>
+		<String key="noUser"><![CDATA[ No user ]]></String>
+		
+		
+		
+		<!--	________________________________________________________________________________________________
+			*
+			*			V A L I D A T I O N S    ::    General validation strings | Invalid fields messages
+			*		________________________________________________________________________________________________
+		-->
+		<String key="requiredString"><![CDATA[ * ]]></String>
+		<String key="requiredFields"><![CDATA[ Por favor, preencha os campos obrigatórios marcados com *. ]]></String>
+		<String key="requiredFieldsMessage"><![CDATA[ Campos obrigatórios marcados com  ]]></String>
+		<!-- Invalid fields messages -->
+		<String key="invalid_email">
+			<![CDATA[ O endereço de e-mail é inválido. ]]>
+		</String>
+		<String key="invalidBirthdayDate">
+			<![CDATA[ A data de nascimento não é válida. ]]>
+		</String>
+		<String key="invalid_pt_postal_code">
+			<![CDATA[ O código postal é inválido. Deverá ser do formato NNNN-NN. ]]>
+		</String>
+		<String key="invalid_pt_tax_number">
+			<![CDATA[ O n.º de identificação fiscal (NIF) é inválido. ]]>
+		</String>
+		<String key="invalid_pt_ss_number">
+			<![CDATA[ O n.º de Segurança Social (NISS) é inválido. ]]>
+		</String>
+		<String key="invalid_health_number">
+			<![CDATA[ O n.º de utente é inválido. ]]>
+		</String>
+		<String key="invalid_social_sec_number">
+			<![CDATA[ O n.º de Segurança Social (NISS) é inválido. ]]>
+		</String>
+		<String key="invalid_pt_civil_number">
+			<![CDATA[ O n.º do Bilhete de Identidade (BI) é inválido. ]]>
+		</String>
+		<String key="invalid_pt_civil_card_number">
+			<![CDATA[ O n.º do Cartão de Cidadão (CC) é inválido. ]]>
+		</String>
+		<String key="invalid_pt_doc_date">
+			<![CDATA[ O documento de identificação expirou, deve atualizar os dados na secretaria. ]]>
+		</String>
+		<String key="is_pay_entity_and_nif_is_empty">
+			<![CDATA[ Por ser Entidade Pagadora, deve indicar um NIF correto. ]]>
+		</String>
+		<String key="display_name_too_long">
+			<![CDATA[ O nome próprio e o apelido, em conjunto, não poderão ultrapassar os 40 caracteres. Consulte a	ajuda. ]]>
+		</String>
 
-        <String key="dow_7" value="dom"/>
-        <String key="dow_1" value="seg"/>
-        <String key="dow_2" value="ter"/>
-        <String key="dow_3" value="qua"/>
-        <String key="dow_4" value="qui"/>
-        <String key="dow_5" value="sex"/>
-        <String key="dow_6" value="sáb"/>
 
-        <String key="today" value="hoje"/>
-        <String key="day" value="dia"/>
-        <String key="week" value="semana"/>
-        <String key="month" value="mês"/>
-        <String key="year" value="ano"/>
 
-        <!-- Password Policies -->
-        <String key="passwordPoliciesHead" value="A alteração de senha deve contemplar no mínimo:&lt;ul&gt;"/>
-        <String key="passwordErrorsHead" value="Faltaram os requisitos mínimos de::&lt;ul&gt;"/>
-        <String key="passwordsDontMatch" value="&lt;li&gt; As senhas novas não coincidem.&lt;/li&gt;"/>
-        <String key="passwordSameAsPrevious" value="&lt;li&gt; A senha não pode ser igual à anterior.&lt;/li&gt;"/>
-        <String key="minLength" value="&lt;li&gt; {0} caracteres.&lt;/li&gt;"/>
-        <String key="minAlphaLower" value="&lt;li&gt; {0} letra(s) minúscula(s) [a..z].&lt;/li&gt;"/>
-        <String key="minAlphaUpper" value="&lt;li&gt; {0} letra(s) maiúscula(s) [A..Z].&lt;/li&gt;"/>
-        <String key="minNumeric" value="&lt;li&gt; {0} algarismo(s) [0..9].&lt;/li&gt;"/>
-        <String key="minNonAlphaNumeric" value="&lt;li&gt; {0} símbolo(s) [!#$%&amp;*()\-_=+{};:,&lt;.&gt;]"/>
-        <String key="errorChangingPassword" value="&lt;li&gt; Error a alterar a senha&lt;/li&gt;"/>
-        <String key="passwordPoliciesTail" value="&lt;/ul&gt;"/>
-        <String key="passwordErrorsTail" value="&lt;/ul&gt;"/>
-        <String key="noUser" value="No user"/>
+		<!--	________________________________________________________________________________________________
+			*
+			*			R E C O R D S   M A N A G E M E N T    ::    
+			*		________________________________________________________________________________________________
+		-->
+		<String key="localFileMedium"><![CDATA[Ficheiro Digital]]> </String>
+		<String key="physicalMedium"><![CDATA[Papel]]> </String>
+		<String key="newVersionTemplate">
+			<![CDATA[
+				<strong>Documento:</strong> <a href="{5}{0}">{1}</a><br/>
+				<strong>Versão:</strong> <a href="{5}{0}">{0}-{2}</a><br/>
+				<strong>Motivo:</strong> {4}<br/><br/>
+			]]>
+		</String>
 
-        <!--framework strings -->
-        <String key="framework" value="Framework"/>
-        <String key="application" value="Aplicação"/>
-        <String key="process" value="Processo"/>
-        <String key="node" value="Node"/>
-        <String key="manage_application" value="Gerir Aplicações"/>
-        <String key="install" value="Instalar"/>
-        <String key="installApplication" value="Dados da Aplicação"/>
 
-        <String key="backToMoodleCourse" value="Voltar à disciplina"/>
 
-        <String key="erro_ficheiro">
-            O ficheiro é obrigatório.
-        </String>
-        <String key="empty_field">
-            Aqui deverá conter um valor.
-        </String>
+		<!--	________________________________________________________________________________________________
+			*
+			*			E X T E N S I O N S    ::    
+			*		________________________________________________________________________________________________
+		-->
+		<String key="ext:error">
+			<![CDATA[A extensão {0} não está instalada e é obrigatória.]]>
+		</String>
+		<String key="ext:warning">
+			<![CDATA[A extensão {0} não está instalada e não é obrigatória, mas é aconselhável.]]>
+		</String>
+		<String key="ext:success">
+			<![CDATA[ Instalada ]]>
+		</String>
+		<!-- -->
+		<String key="ext:libxml:doc">
+			<![CDATA[Permite que o KuinkFramework consiga processar documentos XML. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]>
+		</String>
+		<String key="ext:soap:doc">
+			<![CDATA[Permite que o conector SoapConnector comunique com webservices via SOAP. Se não estiver instalada não poderá ser realizada integração através de webservices SOAP. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]>
+		</String>
+		<String key="ext:pdo:doc">
+			<![CDATA[Permite que o conector DatabaseConnector comunique com bases de dados relacionais. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]>
+		</String>
+		<String key="ext:pdo_mysql:doc">
+			<![CDATA[Permite que o conector DatabaseConnector comunique com bases de dados MySql ou MariaDB. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/ref.pdo-mysql.php" target="_blank">Manual PHP</a>]]>
+		</String>
+		<String key="ext:curl:doc">
+			<![CDATA[Permite que o KuinkFramework efetur chamadas http a servidores remotos. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]>
+		</String>
 
-		    <String key="update" value="Atualizar"/>
-		    <String key="updated" value="Atualizada"/>
 
-        <!-- Messages for invalid fields (ValidationLib) -->
-        <String key="requiredString" value="*"/>
-        <String key="requiredFields" value="Por favor, preencha os campos obrigatórios marcados com *."/>
-        <String key="requiredFieldsMessage" value="Campos obrigatórios marcados com "/>
 
-        <String key="invalid_email">
-        	O endereço de e-mail é inválido
-        </String>
-        <String key="invalid_pt_postal_code">
-        	O código postal é inválido. Deverá ser do formato NNNN-NN
-        </String>
-        <String key="invalid_pt_tax_number">
-        	O nº de identificação fiscal (NIF) é inválido
-        </String>
-        <String key="invalid_pt_ss_number">
-        	O nº de Segurança Social (NISS) é inválido
-        </String>
-        <String key="invalid_health_number">
-        	O nº de utente é inválido
-        </String>
-        <String key="invalid_social_sec_number">
-        	O nº de Seg. Social é inválido
-        </String>
-        <String key="invalid_pt_civil_number">
-        	O nº de BI é inválido
-        </String>
-        <String key="invalid_pt_civil_card_number">
-        	O nº do cartão de cidadão é inválido
-        </String>
-        <String key="invalid_pt_doc_date">
-        	O documento de identificação expirou, deve atualizar os dados na secretaria
-        </String>
-        <String key="is_pay_entity_and_nif_is_empty">
-            Por ser Entidade Pagadora, deve indicar um NIF correto
-        </String>
+		<!--	________________________________________________________________________________________________
+			*
+			*			C O N F I G S   (I N I)    ::    
+			*		________________________________________________________________________________________________
+		-->
+		<String key="ini:error">
+			<![CDATA[ A configuração {0} tem o valor {1} e deveria ter o valor {2}. ]]>
+		</String>
+		<String key="ini:success">
+			<![CDATA[ Ok ]]>
+		</String>
+		<String key="ini:allow_url_fopen:doc">
+			<![CDATA[ Permite que o KuinkFramework consiga abrir ficheiros remotamente através de url. Necessário, por exemplo para abrir o WSDL de webservices SOAP. <a href="https://www.php.net/manual/pt_BR/filesystem.configuration.php">Manual PHP</a> ]]>
+		</String>
 
-      <String key="display_name_too_long">
-              O nome próprio e o apelido, em conjunto, não poderão ultrapassar os 40 caracteres. Consulte a ajuda.
-      </String>
 
-      <String key="invalidBirthdayDate">
-              A data de nascimento não é válida.
-      </String>
+	
+		<!--	________________________________________________________________________________________________
+			*
+			*			A D M I N . L T E    ::    Theme adminLTE2 Modal_embed
+			*		________________________________________________________________________________________________
+		-->
+		<String key="noLabel"><![CDATA[ Sem Etiqueta ]]></String>
+		<String key="toggleApp"><![CDATA[ Alternar Aplicação ]]></String>
+		<String key="toggleMenu"><![CDATA[ Alternar Menu ]]></String>
 
-      <String key="total">Total</String>
-      <String key="guid">GUID</String>
-      <String key="id_file">Ficheiro</String>
-		  <String key="record">Registo</String>
 
-			<String key="applicationsVersion">Aplicações</String>
-			<String key="frameworkVersion">KuinK Framework</String>
 
-	    <String key="databaseSuccess">Operação concluída com sucesso</String>
-	    <String key="databaseError">Erro a concluir operação</String>
-
-     <String key="source">Código Fonte</String>
-     <String key="screen">Ecrã</String>
-     <String key="actionSources">Código fonte das ações</String>
-
-     <!-- BugTracking -->
-	   <String key="reportBug">Reportar Problema</String>
-	   <String key="describeProblem">Descreva o problema com o maior detalhe possível</String>
-	   <String key="requestSuccess">Pedido enviado com sucesso</String>
-	   <String key="requestError">Erro a enviar o pedido. Tente de novo.</String>
-
-     <String key="applicationIsInactive"><![CDATA[Esta aplicação encontra-se <strong>inativa</strong>. Por favor contacte o Administrador de Sistemas]]></String>
-     <String key="applicationInMaintenance"><![CDATA[Esta aplicação encontra-se em <strong>manutenção</strong/>. Esperamos ser breves...]]> </String>
-     
-     <!-- Records Management strings -->
-     <String key="localFileMedium"><![CDATA[Ficheiro Digital]]> </String>          
-     <String key="physicalMedium"><![CDATA[Papel]]> </String>
-     <String key="newVersionTemplate">
-        <![CDATA[
-                <strong>Documento:</strong> <a href="{5}{0}">{1}</a><br/>
-                <strong>Versão:</strong> <a href="{5}{0}">{0}-{2}</a><br/>
-                <strong>Motivo:</strong> {4}<br/><br/>
-            ]]>
-     </String>
-
-      <!-- Extensions -->
-      <String key="ext:error"><![CDATA[A extensão {0} não está instalada e é obrigatória.]]></String>
-      <String key="ext:warning"><![CDATA[A extensão {0} não está instalada e não é obrigatória, mas é aconselável.]]></String>
-      <String key="ext:success">Instalada</String>
-
-      <String key="ext:libxml:doc"><![CDATA[Permite que o KuinkFramework consiga processar documentos XML. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]></String>
-      <String key="ext:soap:doc"><![CDATA[Permite que o conector SoapConnector comunique com webservices via SOAP. Se não estiver instalada não poderá ser realizada integração através de webservices SOAP. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]></String>
-      <String key="ext:pdo:doc"><![CDATA[Permite que o conector DatabaseConnector comunique com bases de dados relacionais. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]></String>
-      <String key="ext:pdo_mysql:doc"><![CDATA[Permite que o conector DatabaseConnector comunique com bases de dados MySql ou MariaDB. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/ref.pdo-mysql.php" target="_blank">Manual PHP</a>]]></String>      
-      <String key="ext:curl:doc"><![CDATA[Permite que o KuinkFramework efetur chamadas http a servidores remotos. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]></String>
-
-      <!--Ini configs -->
-	  <String key="ini:error"><![CDATA[A configuração {0} tem o valor {1} e deveria ter o valor {2}. ]]></String>
-      <String key="ini:success">Ok</String>
-
-      <String key="ini:allow_url_fopen:doc"><![CDATA[Permite que o KuinkFramework consiga abrir ficheiros remotamente através de url. Necessário, por exemplo para abrir o WSDL de webservices SOAP. <a href="https://www.php.net/manual/pt_BR/filesystem.configuration.php">Manual PHP</a> ]]></String>
-      
-      <!-- Permissions -->
-      <String key="noPermission">Não tem permissão para executar a ação.</String>
-
-   </Strings>
-   <ExceptionStrings>
-	   <!-- EXCEPTIONS -->
-	   <Exception name="framework/generic::unitTest">Exceção de Testes Unitários com os dados: {0}</Exception>
-   </ExceptionStrings>
-   <HelpStrings>
-        <Help key="install">
-            Instala uma aplicação no sistema.
-        </Help>
-        <Help key="application">
-            Aplicação a instalar.
-        </Help>
-   </HelpStrings>
+		<!--	________________________________________________________________________________________________
+			*
+			*			F R A M E W O R K    ::    General framework strings
+			*		________________________________________________________________________________________________
+		-->
+		<String key="framework"><![CDATA[ Framework ]]></String>
+		<String key="application"><![CDATA[ Aplicação ]]></String>
+		<String key="process"><![CDATA[ Processo ]]></String>
+		<String key="node"><![CDATA[ Node ]]></String>
+		<String key="manage_application"><![CDATA[ Gerir Aplicações ]]></String>
+		<String key="install"><![CDATA[ Instalar ]]></String>
+		<String key="installApplication"><![CDATA[ Dados da Aplicação ]]></String>
+		<String key="applicationsVersion"><![CDATA[ Aplicações ]]></String>
+		<String key="frameworkVersion"><![CDATA[ KuinK Framework ]]></String>
+		<String key="applicationIsInactive"><![CDATA[Esta aplicação encontra-se <strong>inativa</strong>. Por favor contacte o Administrador de Sistemas.]]></String>
+		<String key="applicationInMaintenance"><![CDATA[Esta aplicação encontra-se em <strong>manutenção</strong/>. Esperamos ser breves...]]> </String>
+		<!--  -->
+		<String key="backToMoodleCourse"><![CDATA[ Voltar à disciplina ]]></String>
+		<!--  -->
+		<String key="erro_ficheiro"><![CDATA[ O ficheiro é obrigatório. ]]></String>
+		<String key="empty_field"><![CDATA[ Aqui deverá conter um valor. ]]></String>
+		<!--  -->
+		<String key="update"><![CDATA[ Atualizar ]]></String>
+		<String key="updated"><![CDATA[ Atualizada ]]></String>
+		<!--  -->
+		<String key="source"><![CDATA[ Código Fonte ]]></String>
+		<String key="screen"><![CDATA[ Ecrã ]]></String>
+		<String key="actionSources"><![CDATA[ Código fonte das ações ]]></String>
+		<!--  ::  Database  -->
+		<String key="databaseSuccess"><![CDATA[ Operação concluída com sucesso ]]></String>
+		<String key="databaseError"><![CDATA[ Erro a concluir operação ]]></String>
+		<!--  ::  Bug Tracking  -->
+		<String key="reportBug"><![CDATA[ Reportar Problema ]]></String>
+		<String key="describeProblem"><![CDATA[ Descreva o problema com o maior detalhe possível ]]></String>
+		<String key="requestSuccess"><![CDATA[ Pedido enviado com sucesso ]]></String>
+		<String key="requestError"><![CDATA[ Erro a enviar o pedido. Tente de novo. ]]></String>
+	</Strings>
+	<ExceptionStrings>
+		<!-- EXCEPTIONS -->
+		<Exception name="framework/generic::unitTest">Exceção de Testes Unitários com os dados: {0}</Exception>
+	</ExceptionStrings>
+	<HelpStrings>
+		<Help key="install">Instala uma aplicação no sistema.</Help>
+		<Help key="application">Aplicação a instalar.</Help>
+	</HelpStrings>
 </Lang>

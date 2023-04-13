@@ -1,11 +1,10 @@
-<?xml version='1.0'?>
+<?xml version="1.0"?>
 <Method>
 	<Doc>
-  	<Description>Gets a list of districts (active or not) of the given country.</Description>
+    <![CDATA[ Gets a list of all the active districts of a country. ]]>
   </Doc>
 	<Params>
-		<Param name="id_country"/>
-		<Param name="is_active"/>
+		<Param name="id_country" type="int" required="true" doc="Country's id"/>
 	</Params>
 	<Body>
 		<Sql>
@@ -29,11 +28,7 @@
 					<XCondition>
 						<![CDATA[
 							d.id_country = {param->id_country}
-						]]>
-					</XCondition>
-					<XCondition optional="is_active">
-						<![CDATA[ 
-							AND d.is_active = {param->is_active}
+							AND d.is_active = 1
 						]]>
 					</XCondition>
 				</XWhere>

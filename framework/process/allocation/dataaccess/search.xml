@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    <![CDATA[ Gets a list of allocations that meet the given search criteria. ]]>
+  </Doc>
+	<Params>
+		<Param name="id" type="int" required="false" doc="Allocation's id"/>
+		<Param name="id_person" type="int" required="false" doc="Person's id"/>
+		<Param name="id_role" type="int" required="false" doc="Role's id"/>
+		<Param name="id_company" type="int" required="false" doc="Company's id"/>
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[ 
+							a.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[ 
+							fw_allocation a
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+					<XCondition optional="id">
+						<![CDATA[ 
+							AND a.id = {param->id}
+						]]>
+					</XCondition>
+					<XCondition optional="id_person">
+						<![CDATA[ 
+							AND a.id_person = {param->id_person}
+						]]>
+					</XCondition>
+					<XCondition optional="id_role">
+						<![CDATA[ 
+							AND a.id_role = {param->id_role}
+						]]>
+					</XCondition>
+					<XCondition optional="id_company">
+						<![CDATA[ 
+							AND a.id_company = {param->id_company}
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ a.id ASC, a.id_person ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>

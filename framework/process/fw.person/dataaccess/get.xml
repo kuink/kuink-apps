@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    <Description><![CDATA[ Gets the user's person data in a given company. ]]></Description>
+  </Doc>
+  <Params>
+    <Param name="id_company"/>
+    <Param name="id_person"/>
+  </Params>
+  <Body>
+    <Load>
+      <XSql>
+        <XSelect>
+          <XField>
+            <![CDATA[ 
+              p.*
+              #ct.contact AS "email"
+            ]]>
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            <![CDATA[ 
+              fw_person p
+              INNER JOIN fw_person_company pc ON (pc.id_person = p.id)
+              INNER JOIN fw_company c ON (c.id = pc.id_company)
+              #INNER JOIN fw_person_contact ct ON (ct.id_person_company = pc.id)
+            ]]>
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition> 
+            <![CDATA[ 
+              c.id_company = {param->id_company}
+              AND p.id = {param->id_person}
+              #AND ct.id_contact_type = 1
+            ]]> 
+          </XCondition>
+        </XWhere>
+      </XSql>
+    </Load>
+  </Body>
+</Method>

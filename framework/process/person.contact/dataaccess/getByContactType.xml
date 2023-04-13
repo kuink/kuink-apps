@@ -1,0 +1,51 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<![CDATA[ Gets all given person's contacts filtered by the given contact type. ]]>
+  </Doc>
+	<Params>
+		<Param name="id_person_company" type="int" required="true" doc="Person_company's id"/>
+		<Param name="id_contact_type" type="int" required="true" doc="Contact type's id"/>
+		<Param name="is_default" type="int" required="false" doc="1 if this contact is the default one of its type"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							c.*,
+							ct.code AS "code",
+							ct.name AS "name"
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_person_contact c
+							INNER JOIN fw_person_company pc ON (pc.id = c.id_person_company)
+							INNER JOIN fw_contact_type ct ON (ct.id = c.id_contact_type)
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[
+							pc.id = {param->id_person_company}	
+							AND ct.id = {param->id_contact_type}
+						]]>
+					</XCondition>
+					<XCondition optional="is_default">
+						<![CDATA[
+							AND c.is_default = {param->is_default}
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ c.is_default DESC, c.id ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

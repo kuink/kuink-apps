@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    <![CDATA[ Gets a list of the capabilities that a role have, given its code. ]]>
+	</Doc>
+	<Params>
+		<Param name="code_role" type="text" required="true" doc="Role's code"/>
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[ 
+							c.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[ 
+							fw_capability c
+							INNER JOIN fw_role_capability rc ON (rc.id_capability = c.id)
+							INNER JOIN fw_role r ON (r.id = rc.id_role)
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[ 
+							r.code = '{param->code_role}'
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ c.code ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>

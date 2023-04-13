@@ -1,42 +1,90 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+<?xml version='1.0' encoding='UTF-8'?>
 <Lang>
-    <Strings>
-        <String key="permissions"><![CDATA[Permissões]]></String>
-        <String key="users"><![CDATA[Utilizadores]]></String>
-        <String key="capabilities"><![CDATA[Capabilities]]></String>
-        <String key="roles"><![CDATA[Roles]]></String>
-        <String key="roleCapabilities"><![CDATA[Role-Capabilities]]></String>
-        <String key="allocations"><![CDATA[Allocations]]></String>
-        <String key="records"><![CDATA[Records]]></String>
-        <String key="listRecords"><![CDATA[Listar]]></String>
-        <String key="appFiles"><![CDATA[Ficheiros]]></String>
-        <String key="manage"><![CDATA[Gerir]]></String>
+	<Strings>
+		<!--	________________________________________________________________________________________________
+			*
+			*			D A S H B O A R D    ::    Main Page
+			*		________________________________________________________________________________________________
+		-->
+		<String key="framework.dashboard"><![CDATA[ Dashboard ]]></String>
+		<String key="permissions"><![CDATA[Permissões]]></String>
+		<String key="persons"><![CDATA[Utentes]]></String>
+		<String key="capabilities"><![CDATA[Capabilities]]></String>
+		<String key="roles"><![CDATA[Roles]]></String>
+		<String key="roleCapabilities"><![CDATA[Role-Capabilities]]></String>
+		<String key="allocations"><![CDATA[Allocations]]></String>
+		<String key="records"><![CDATA[Records]]></String>
+		<String key="listRecords"><![CDATA[Listar]]></String>
+		<String key="appFiles"><![CDATA[Ficheiros]]></String>
+		<String key="manage"><![CDATA[Gerir]]></String>
+		<String key="main"><![CDATA[Geral]]></String>
+		<String key="general"><![CDATA[ Geral ]]></String> 
 
-        <!-- fw_user -->
-        <String key="username"><![CDATA[Nome Utilizador]]></String>
-        <String key="id_user"><![CDATA[Id Utilizador]]></String>
-        <String key="id_company"><![CDATA[Empresa]]></String>
-        <String key="id_role"><![CDATA[Papel]]></String>
-        <String key="id_capability"><![CDATA[Capacidade]]></String>
+		<String key="id_role"><![CDATA[Papel]]></String>
+		<String key="id_capability"><![CDATA[Capacidade]]></String>
+		<String key="id_person"><![CDATA[ Utente ]]></String>
 
-        <!-- fw_capability -->
-        <String key="is_global"><![CDATA[Global?]]></String>
+		<!-- fw_capability -->
+		<String key="is_global"><![CDATA[Global?]]></String>
 
-        <!-- App Files -->
-        <String key="directory" value="Pasta"/>
-        <String key="currentDirectory" value="Pasta atual"/>
-        <String key="goTo" value="Ir para"/>
-        <String key="files" value="Ficheiros"/>
-        <String key="preview" value="Pré-visualização"/>
-        <String key="basename" value="Nome do ficheiro"/>
-        <String key="size" value="Tamanho"/>
-        <String key="newFile" value="Novo ficheiro"/>
 
-        <!-- User Messages -->
-        <String key="duplicateAllocation" value="O utilizador já tem a role selecionada."/>
 
-    </Strings>
-    <HelpStrings>
-        <Help key="is_global"><![CDATA[Uma capacidade global aplica-se a todas as companhias.]]></Help>
-    </HelpStrings>
+		<!--	________________________________________________________________________________________________
+			*
+			*			P E R M I S S I O N S    ::    Roles  |  Capabilities  |  Roles_Capabilities  |  Allocations
+			*		________________________________________________________________________________________________
+		-->
+		<!--  ::  Headers  -->
+		<String key="rolesManagementHeader">
+			<![CDATA[
+				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Roles</span></p></h3></center>
+			]]>
+		</String>
+		<String key="capabilitiesManagementHeader">
+			<![CDATA[
+				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Capabilities</span></p></h3></center>
+			]]>
+		</String>
+		<String key="rolesCapabilitiesManagementHeader">
+			<![CDATA[
+				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Roles-Capabilities</span></p></h3></center>
+			]]>
+		</String>
+		<String key="allocationsManagementHeader">
+			<![CDATA[
+				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Atribuição de Roles (Allocations)</span></p></h3></center>
+			]]>
+		</String>
+		<!--  ::  User messages  -->
+		<String key="personDoesNotExist"><![CDATA[ O utente indicado não existe. ]]></String>
+		<String key="roleDoesNotExist"><![CDATA[ A função indicada não existe. ]]></String>
+		<String key="companyDoesNotExist"><![CDATA[ A empresa indicada não existe. ]]></String>
+		<String key="personAlreadyHaveRoleInCompany"><![CDATA[ O utente já tem a função na empresa. ]]></String>
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			A P P   F I L E S    ::    Main Page
+			*		________________________________________________________________________________________________
+		-->
+		<String key="directory" value="Pasta" />
+		<String key="currentDirectory" value="Pasta atual" />
+		<String key="goTo" value="Ir para" />
+		<String key="files" value="Ficheiros" />
+		<String key="preview" value="Pré-visualização" />
+		<String key="basename" value="Nome do ficheiro" />
+		<String key="size" value="Tamanho" />
+		<String key="newFile" value="Novo ficheiro" />
+
+		<!-- User Messages -->
+		<String key="duplicateAllocation" value="O utilizador já tem a role selecionada." />
+	</Strings>
+	<HelpStrings>
+		<Help key="is_global"><![CDATA[Uma capacidade global aplica-se a todas as empresas.]]></Help>
+		<Help key="idUserGlobal"><![CDATA[ Id de utilizador no contexto global (considerado por todas as empresas).]]></Help>
+		<Help key="idPersonCompany"><![CDATA[ Número de utente no contexto da empresa em questão.]]></Help>
+		<Help key="isActiveCompany"><![CDATA[ Se este utilizador está ativo no contexto da empresa selecionada.]]></Help>
+	</HelpStrings>
 </Lang>

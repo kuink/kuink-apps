@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+    <![CDATA[ Document Type API  ::  Allows the communication with 'fw_doc_type' table. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+  <Libraries>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Screens>
+  </Screens>
+  <Actions/>
+  <Library forceinterface="true">
+    <!--
+			*		add  |  Adds a new document type to the system.
+			*  
+			*		PARAMS
+			*		 - (int) id_me				   ::  Document type's id for Ministry of Education (PT);
+			*    - (text) name           ::  Document type's name;
+			*    - (text) code           ::  Document type's code;
+			*    - (int) level           ::  Document type's level;
+			*    - (int) order           ::  Document type's global order;
+			*    - (int) is_active       ::  1 if this document type is active; 0, otherwise;
+			*    - (int) is_backoffice   ::  1 if this document type is used for backoffice; 0, otherwise;
+			*    - (int) is_frontoffice  ::  1 if this document type is used for frontoffice; 0, otherwise;
+			*    - (int) is_iddoc        ::  1 if it's an identification document type; 0, otherwise;
+			*    - (int) is_uploadable   ::  1 if it's an uploadable document; 0, otherwise.
+      *
+			*		RETURN
+			*	   - (int) id_doc_type  ::  Returns the created 'fw_doc_type' record's id.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the document type already exists.
+		-->
+    <Function name="add" doc="Adds a new document type to the system.">
+      <Params>
+        <Param name="id_me" type="int" required="false" doc="Document type's id for Ministry of Education (PT)"/>
+        <Param name="name" type="text" required="false" doc="Document type's name"/>
+        <Param name="code" type="text" required="false" doc="Document type's code"/>
+        <Param name="level" type="int" required="false" doc="Document type's level"/>
+        <Param name="order" type="int" required="false" doc="Document type's global order"/>
+        <Param name="is_active" type="int" required="false" doc="1 if this document type is active; 0, otherwise"/>
+				<Param name="is_backoffice" type="int" required="false" doc="1 if this document type is used for backoffice; 0, otherwise"/>
+				<Param name="is_frontoffice" type="int" required="false" doc="1 if this document type is used for frontoffice; 0, otherwise"/>
+        <Param name="is_iddoc" type="int" required="false" doc="1 if it's an identification document type; 0, otherwise"/>
+        <Param name="is_uploadable" type="int" required="false" doc="1 if it's an uploadable document; 0, otherwise"/>
+      </Params>
+			<Return type="int" doc="The created 'fw_doc_type' record's id."/>
+      <Errors>
+				<Error code="-1" doc="The document type already exists."/>
+			</Errors>
+
+      <Begin>
+        <!-- Checks if the document type already exists -->
+				<Var name="docType">
+					<Call function="getByCode">
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+					</Call>
+				</Var>
+
+				<!-- If it does, returns -1. Otherwise, proceeds to insert -->
+				<If condition="$docType != ''">
+					<Then>
+						<Var name="result">-1</Var>
+					</Then>
+					<Else>
+            <!-- Creates the record -->
+            <Var name="docType" key="id">
+              <DataAccess method="insert" params="PARAMS">
+                <Param name="_entity">fw_doc_type</Param>
+                <Param name="_id_updater"><Var name="USER" key="id"/></Param>
+								<Param name="_modification"><Now/></Param>
+								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+								<Param name="_id_creator"><Var name="USER" key="id"/></Param>
+								<Param name="_creation"><Now/></Param>
+								<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+              </DataAccess>
+            </Var>
+            <!-- Logs this action -->
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,doc.type,api</Param>
+              <Param name="action">insert</Param>
+              <Param name="log_key"><Var name="docType" key="id"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="docType"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logDocTypeInsert">
+                  <Param><Var name="docType" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>
+
+            <!-- Returns doc_type's id -->
+            <Var name="result"><Var name="docType" key="id"/></Var>
+          </Else>
+        </If>
+        
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		delete  |  Deletes a document type.
+			*  
+			*		PARAMS
+			*    - (int) id  ::  Document type's id.
+			*
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the document type was removed.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the document type doesn't exist.
+		-->
+    <Function name="delete" doc="Deletes a document type.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Document type's id"/>
+      </Params>
+      <Return type="int" doc="0 if the company was removed."/>
+      <Errors>
+        <Error code="-1" doc="The company doesn't exist."/>
+      </Errors>
+
+      <Begin>
+        <!-- Sets default value -->
+        <Var name="error">0</Var>
+
+        <!-- Gets the current record -->
+        <Var name="docType">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </Call>
+        </Var>
+        
+        <!-- Checks if the doc type exists: if not, returns -1 -->
+        <If condition="$docType->__length == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+          <Else>
+            <!-- Everything is in order, proceeds to delete -->
+            <!-- Deletes the record -->
+            <DataAccess method="delete">
+              <Param name="_entity">fw_doc_type</Param>
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            </DataAccess>
+            <!-- Logs this action -->
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,doc.type,api</Param>
+              <Param name="action">delete</Param>
+              <Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="docType"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logDocTypeDelete">
+                  <Param><Var name="PARAMS" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>    
+          </Else>
+        </If>
+        
+        <Return>
+          <Var name="error"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		getAll  |  Gets a list of all document types (whether they are active or not).
+			*  
+			*		RETURN
+			*	   - (multiple) fw_doc_type  ::  Returns all 'fw_doc_type' records.
+		-->
+    <Function name="getAll" doc="Gets a list of all document types (whether they are active or not).">
+      <Params/>
+      <Return type="multiple" doc="All 'fw_doc_type' records."/>
+
+      <Begin>
+        <Var name="docTypes">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_doc_type</Param>
+          </DataAccess>
+        </Var>
+
+        <Return>
+          <Var name="docTypes"/> 
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		getByCode  |  Gets a document type given the code.
+			*  
+			*		PARAMS
+			*		 - (text) code  ::  Document type's code.
+			*
+			*		RETURN
+			*	   - (single) fw_doc_type  ::  Returns the corresponding 'fw_doc_type' record. 
+		-->
+    <Function name="getByCode" doc="Gets a document type given the code.">
+      <Params>
+				<Param name="code" type="text" required="true" doc="Document type's code"/>
+      </Params>
+      <Return type="single" doc="The corresponding 'fw_doc_type' record."/>
+
+      <Begin>
+        <Var name="documentType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_doc_type</Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return>
+          <Var name="documentType"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    
+    <!--
+			*		getById  |  Gets a document type given the id.
+			*  
+			*		PARAMS
+			*    - (int) id  ::  Document type's id.
+			*
+			*		RETURN
+			*	   - (single) fw_doc_type  ::  Returns the corresponding 'fw_doc_type' record.
+		-->
+    <Function name="getById" doc="Gets a document type given the id.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Document type's id"/>
+      </Params>
+      <Return type="single" doc="The corresponding 'fw_doc_type' record."/>
+
+      <Begin>
+        <Var name="documentType">
+          <DataAccess method="load">
+            <Param name="_entity">fw_doc_type</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return>
+          <Var name="documentType"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		getIdDocTypes  |  Gets a list of all active identification document types.
+			*  
+			*		PARAMS
+			*    - (int) is_backoffice  ::  1 if it's backoffice.
+			*
+			*		RETURN
+			*	   - (multiple) fw_doc_type  ::  Returns a set of 'fw_doc_type' records.
+		-->
+		<Function name="getIdDocTypes" doc="Gets a list of all active identification document types.">
+			<Params>
+				<Param name="is_backoffice" type="int" required="false" doc="1 if it's backoffice"/>
+			</Params>
+			<Return type="multiple" doc="Set of 'fw_doc_type' records."/>
+
+			<Begin>
+				<Var name="idDocumentTypes">
+					<DataAccess method="this,this,getIdDocTypes">
+						<Param name="is_backoffice"><Var name="PARAMS" key="is_backoffice"/></Param>
+          </DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="idDocumentTypes"/>
+				</Return>
+			</Begin>
+		</Function>
+
+    
+    <!--
+			*		update  |  Updates a document type.
+			*  
+			*		PARAMS
+			*    - (int) id              ::  Document type's id to update.
+			*		 - (int) id_me				   ::  Document type's id for Ministry of Education (PT);
+			*    - (text) name           ::  Document type's name;
+			*    - (text) code           ::  Document type's code;
+			*    - (int) level           ::  Document type's level;
+			*    - (int) order           ::  Document type's global order;
+			*    - (int) is_active       ::  1 if this document type is active; 0, otherwise;
+			*    - (int) is_backoffice   ::  1 if this document type is used for backoffice; 0, otherwise;
+			*    - (int) is_frontoffice  ::  1 if this document type is used for frontoffice; 0, otherwise;
+			*    - (int) is_iddoc        ::  1 if it's an identification document type; 0, otherwise;
+			*    - (int) is_uploadable   ::  1 if it's an uploadable document; 0, otherwise.
+			*
+			*		RETURN
+			*		 - (int) 0  ::  Returns 0 if the document type was updated.
+			*
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the document type doesn't exist.
+		-->
+    <Function name="update" doc="Updates a document type.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Document type's id to update"/>
+        <Param name="id_me" type="int" required="false" doc="Document type's id for Ministry of Education (PT)"/>
+        <Param name="name" type="text" required="false" doc="Document type's name"/>
+        <Param name="code" type="text" required="false" doc="Document type's code"/>
+        <Param name="level" type="int" required="false" doc="Document type's level"/>
+        <Param name="order" type="int" required="false" doc="Document type's global order"/>
+        <Param name="is_active" type="int" required="false" doc="1 if this document type is active; 0, otherwise"/>
+				<Param name="is_backoffice" type="int" required="false" doc="1 if this document type is used for backoffice; 0, otherwise"/>
+				<Param name="is_frontoffice" type="int" required="false" doc="1 if this document type is used for frontoffice; 0, otherwise"/>
+        <Param name="is_iddoc" type="int" required="false" doc="1 if it's an identification document type; 0, otherwise"/>
+        <Param name="is_uploadable" type="int" required="false" doc="1 if it's an uploadable document; 0, otherwise"/>
+      </Params>
+      <Return type="int" doc="0 if the company was updated."/>
+			<Errors>
+				<Error code="-1" doc="The document type doesn't exist."/>
+			</Errors>
+
+      <Begin>
+        <!-- Sets default value -->
+				<Var name="error">0</Var>
+
+        <!-- Checks if the doc type already exists -->
+        <Var name="docType">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </Call>
+        </Var>
+
+        <!-- If it doesn't, sets returns -1. Else, proceeds to update -->
+        <If condition="$docType == ''">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+          <Else>
+            <!-- Updates the record -->
+            <DataAccess method="update" params="PARAMS">
+              <Param name="_entity">fw_doc_type</Param>
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              <Param name="_id_updater"><Var name="USER" key="id"/></Param>
+              <Param name="_modification"><Now/></Param>
+              <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+            </DataAccess>
+            <!-- Gets the updated record -->
+            <Var name="updatedDocType">
+              <Call function="getById">
+                <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              </Call>
+            </Var>
+            <!-- Logs this action -->
+            <Var name="records"><Set/></Var>
+            <Var name="records" key=""><Var name="docType"/></Var>
+            <Var name="records" key=""><Var name="updatedDocType"/></Var>
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,doc.type,api</Param>
+              <Param name="action">update</Param>
+              <Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="records"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logDocTypeUpdate">
+                  <Param><Var name="PARAMS" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>
+          </Else>
+        </If>
+
+        <Return>
+          <Var name="error"/>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

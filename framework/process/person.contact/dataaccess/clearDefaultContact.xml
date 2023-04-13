@@ -1,0 +1,23 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<![CDATA[ Clears a person's default contact of a certain type. ]]>
+	</Doc>
+	<Params>
+		<Param name="id_person_company" type="int" required="true" doc="Person_company's id"/>
+	</Params>
+	<Body>
+		<Execute>
+    	<![CDATA[        
+      	UPDATE 
+					fw_person_contact pc
+				SET 
+					pc.is_default = 0
+				WHERE
+					pc.id_person_company = {param->id_person_company}
+					AND pc.id_contact_type = {param->id_contact_type}
+					AND pc.is_default = 1
+				]]>
+    </Execute>
+	</Body>
+</Method>
