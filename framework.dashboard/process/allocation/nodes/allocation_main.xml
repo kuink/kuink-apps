@@ -44,7 +44,10 @@
           <Columns>
             <Column name="id"/>
             <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
-            <Column name="id_person"/>
+            <Column name="person_display_name" label="id_person">
+              <Formatter name="Separator" method="pipe"/>
+            </Column>
+            <Column name="id_person" inline="true"/>
             <Column name="id_role" datasource="call:framework,role,api,getAll" bindid="id" bindvalue="code"/>
             <Column name="_id_updater"/>
             <Column name="_modification">
@@ -115,7 +118,7 @@
       <Form name="editForm">
         <Static name="id" required="true"/>
         <Select name="id_company" required="true" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
-        <Select name="id_person" datasource="call:framework,fw.person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="id,display_name" searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple" action="search"/>
+        <Select name="id_person" datasource="call:framework,fw.person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="id,display_name" searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
         <Select name="id_role" required="true" searchable="true" datasource="call:framework,role,api,getAll" bindid="id" bindvalue="code"/>
         
         <ButtonGroup>
@@ -159,8 +162,8 @@
             <Param name="id_company"><Var name="currentData" key="id_company"/></Param>
             <Param name="id_person"><Var name="currentData" key="id_person"/></Param>
             <Param name="id_role"><Var name="currentData" key="id_role"/></Param>
-            <Param name="pagesize"><Control method="getPageSize" object="allocationsGrid"/></Param>
-            <Param name="pagenum"><Control method="getCurrentPage" object="allocationsGrid"/></Param>
+            <Param name="pageSize"><Control method="getPageSize" object="allocationsGrid"/></Param>
+            <Param name="pageNum"><Control method="getCurrentPage" object="allocationsGrid"/></Param>
         </Call>
       </Var>
       <Control method="bind" object="allocationsGrid">
