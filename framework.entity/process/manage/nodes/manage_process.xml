@@ -5,8 +5,11 @@
     <Param name="application"/>
     <Param name="node"/>
     <Param name="createForeignIndexes"/>
+    <Param name="removeExistingIndexes"/>
     <Param name="createForeignKeys"/>
+    <Param name="removeExistingForeignKeys"/>
     <Param name="dropTablesBeforeCreate"/>
+    <Param name="dropPermanentlyExcludedColumns"/>
   </Params>
   <Doc></Doc>
   <Libraries>
@@ -73,8 +76,11 @@
           <Param name="application"><Var name="PARAMS" key="application"/></Param>
           <Param name="node"><Var name="PARAMS" key="node"/></Param>
           <Param name="createForeignIndexes"><Var name="PARAMS" key="createForeignIndexes"/></Param>
+          <Param name="removeExistingIndexes"><Var name="PARAMS" key="removeExistingIndexes"/></Param>
           <Param name="createForeignKeys"><Var name="PARAMS" key="createForeignKeys"/></Param>          
+          <Param name="removeExistingForeignKeys"><Var name="PARAMS" key="removeExistingForeignKeys"/></Param>
           <Param name="dropTablesBeforeCreate"><Var name="PARAMS" key="dropTablesBeforeCreate"/></Param>          
+          <Param name="dropPermanentlyExcludedColumns"><Var name="PARAMS" key="dropPermanentlyExcludedColumns"/></Param>     
         </DataAccess>
       </Var>
       <Control method="bind" object="logGrid">

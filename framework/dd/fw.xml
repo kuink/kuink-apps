@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Domains>
-    <Domain name="id" type="int" size="10" autonumber="true" required="true" pk="true" />
-    <Domain name="idNotAI" type="int" size="10" required="true" pk="true" />
-    <Domain name="foreign" type="int" size="10" />
-    <Domain name="foreignPk" type="int" size="10" required="true" pk="true"/>
+    <Domain name="id" type="int" size="20" unsigned="true" autonumber="true" required="true" pk="true" />
+    <Domain name="idNotAI" type="int" size="20" unsigned="true" required="true" pk="true" />
+    <Domain name="foreign" type="int" size="20" unsigned="true" />
+    <Domain name="foreignPk" type="int" size="20" unsigned="true" required="true" pk="true" />
     <Domain name="lang" type="string" size="10" />
-    <Domain name="langPk" type="string" size="10" required="true" pk="true"/>    
+    <Domain name="langPk" type="string" size="10" required="true" pk="true" />    
     <Domain name="uuid" type="string" size="36" required="true" />
     <Domain name="guid" type="string" size="32" required="true" />
     <Domain name="bool" type="bool" />
@@ -14,11 +14,11 @@
     <Domain name="string" type="string" size="128" />
     <Domain name="longString" type="string" size="1024" />
     <Domain name="occurs" type="string" size="5" />
-    <Domain name="text" type="text"/>
-    <Domain name="json" type="text"/>    
-    <Domain name="html" type="text"/>
-    <Domain name="xml" type="text"/>
-    <Domain name="longText" type="longtext"/>
+    <Domain name="text" type="text" />
+    <Domain name="json" type="longtext" />    
+    <Domain name="html" type="longtext" />
+    <Domain name="xml" type="longtext" />
+    <Domain name="longText" type="longtext" />
     <Domain name="positiveInt" type="int" size="10" />
     <Domain name="real" type="decimal" size="7,4" />
     <Domain name="name" type="string" size="64" />
@@ -129,7 +129,7 @@
       <Attributes>
         <Attribute name="id" domain="id" />
         <Attribute name="id_role" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The role"/>
-        <Attribute name="id_permission" domain="foreign" refentity="fw_role" refattr="id" required="true" doc="The permission can be either role or capability"/>
+        <Attribute name="id_permission" domain="foreign" refentity="fw_permission" refattr="id" required="true" doc="The permission can be either role or capability"/>
         <Attribute name="_path" domain="string" required="false" doc="Only for role to role relation help get the child capabilities"/>
         <Template name="fw.base" />        
       </Attributes>
