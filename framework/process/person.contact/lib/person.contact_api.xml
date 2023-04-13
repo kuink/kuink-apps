@@ -212,7 +212,7 @@
 										<Param name="id_contact_type"><Var name="contact" key="id_contact_type"/></Param>
 									</Call>
 								</Var>
-								
+
 								<Var name="count"><Int>1</Int></Var>
 								<ForEach var="contacts" item="default">
 									<If condition="$count == 1">
@@ -471,7 +471,7 @@
 								<Param name="is_default"><Int>1</Int></Param>
 							</Call>
 						</Var>
-						<If condition="$defaultContact->__length == 0">
+						<If condition="$defaultContact->__length == 0 || $defaultContact->id != $PARAMS->id">
 							<Then>
 								<Var name="isDefault"><Int>1</Int></Var>
 							</Then>
@@ -529,7 +529,6 @@
 					</Then>
 				</If>
 				
-
 				<Return/>
 			</Begin>
 		</Function>
