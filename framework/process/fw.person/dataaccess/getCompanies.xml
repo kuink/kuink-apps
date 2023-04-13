@@ -1,0 +1,30 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        Get the companies of a given person
+    </Doc>
+    <Params>
+        <Param name="id_person"/>
+    </Params>
+    <Body>
+        <Sql>
+            <![CDATA[        
+                SELECT
+                    c.id,
+                    c.code,
+                    c.name,
+                    pc.is_default,
+                    pc.is_active
+                FROM 
+                    fw_person_company pc
+                    INNER JOIN fw_company c ON (c.id = pc.id_company)
+                WHERE  
+                  pc.id_person = {param->id_person}
+                  AND c.is_active = 1
+                  AND pc.is_active = 1
+                ORDER BY  
+                  c.code
+        ]]>
+        </Sql>
+    </Body>
+</Method>

@@ -18,14 +18,14 @@
         <String key="edit" value="Edit"/>
         <String key="view" value="View"/>
         <String key="save" value="Save"/>
-        <String key="proceed" value="Continuar"/>
-        <String key="print" value="Imprimir"/>
+        <String key="proceed" value="Continue"/>
+        <String key="print" value="Print"/>
         <String key="delete" value="Delete"/>
         <String key="remove" value="Remove"/>
         <String key="yes" value="Yes"/>
         <String key="no" value="No"/>
-        <String key="display_name" value="Nome"/>
-        <String key="photo" value="Foto"/>
+        <String key="display_name" value="Name"/>
+        <String key="photo" value="Photo"/>
         <String key="timestamp" value="Data/Hora"/>
         <String key="key" value="Chave"/>
         <String key="message" value="Mensagem"/>

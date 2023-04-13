@@ -1,285 +1,525 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-    <Permissions/>
-    <Libraries>
-      <Use name="DateTimeLib" type="lib"/>
-    </Libraries>
-    <Configuration/>
-    <Screens/>
-    <Actions>
-        <Action name="init"/>
-    </Actions>
-    <Library>
-      
-          <Function name="add" scope="public" doc="Add a company in the system">
-            <Params>
-                <Param name="name" type="text" required="true" doc="Login username."/>
-                <Param name="code" type="text" required="true" doc="User display name,"/>
-                <Param name="is_active" type="int" required="true" doc="Is this role active?"/>
-            </Params>
-            <Return type="int" doc="the company id"/>
-            <Errors>
-              <Error code="-1" doc="Company allready exist"/>
-            </Errors>            
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/company::manage"/>
-                  <Capability name="framework/all::admin"/>
-                </Allow>
-              </Permissions>
-              <!-- Set default values -->
-              <Var name="result">0</Var>
-              <Var name="cid">
-                <Call function="existsByCode">
-                  <Param name="code"><Var name="code"/></Param>
-                </Call>
-              </Var>
+	<Doc>
+		<![CDATA[ Company API  ::  Allows the communication with 'fw_company' table. ]]>
+	</Doc>
+	<Permissions/>
+	<Configuration/>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+	</Libraries>
+	<Params/>
+	<Screens/>
+	<Actions/>
+	<Library forceinterface="true">
+		<!--
+			*		add  |  Adds a new company to the system.
+			*  
+			*		PARAMS
+			*		 - (text) uuid         ::  Company's uuid;
+			*		 - (text) name				 ::  Company's name;
+			*		 - (text) code				 ::  Company's code;
+			*		 - (text) description  ::  Company's description;
+			*		 - (text) timezone		 ::  Company's default timezone;
+			*		 - (int) is_active		 ::  1 if this company is active; 0, otherwise.
+			*
+			*		RETURN
+			*		 - (int) id_company  ::  Returns the created 'fw_company' record's id.
+			*
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the company already exists.
+		-->
+		<Function name="add" scope="private" doc="Adds a new company to the system.">
+			<Params>
+				<Param name="uuid" type="text" required="true" doc="Company's uuid"/>
+				<Param name="name" type="text" required="true" doc="Company's name"/>
+				<Param name="code" type="text" required="true" doc="Company's code"/>
+				<Param name="description" type="text" required="false" doc="Company's description"/>
+				<Param name="timezone" type="text" required="false" doc="Company's default timezone"/>
+				<Param name="is_active" type="int" required="true" doc="1 if this company is active; 0, otherwise"/>
+			</Params>
+			<Return type="int" doc="The created 'fw_company' record's id."/>
+			<Errors>
+				<Error code="-1" doc="The company already exists."/>
+			</Errors>
 
-              <If condition="$cid == 1">
-                <Then>
-                  <Var name="result">-1</Var>
-                </Then>
-              </If>
-              
-              <If condition="$result == 0">
-                <Then>
-                  <Var name="id">
-                    <Execute method="framework,generic,insert" params="PARAMS">
-                      <Param name="table" >fw_company</Param>
-                      <Param name="_creation"><DateTimeLib method="Now"/></Param>
-                      <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
-                      <Param name="_modification"><DateTimeLib method="Now"/></Param>
-                      <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-                    </Execute>
-                  </Var>
-                  <Var name="result"><Var name="id"/></Var>
-                </Then>
-              </If>
-              <Return>
-                  <Var name="result"/>
-              </Return>
-            </Begin>
-        </Function> 
+			<Begin>
+				<!-- Checks if the company already exists -->
+				<Var name="companyExists">
+					<Call function="existsByCode">
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+					</Call>
+				</Var>
 
-        <Function name="update" scope="public" doc="Updates a company in the system">
-            <Params>
-                <Param name="id" type="int" required="true" doc="Company Id"/>
-                <Param name="name" type="text" required="true" doc="Company name"/>
-                <Param name="code" type="text" required="true" doc="Company code"/>
-                <Param name="is_active" type="int" required="true" doc="Is this company active?"/>
-            </Params>
-            <Return type="int" doc="the company id"/>
-            <Errors>
-              <Error code="-1" doc="Company does not exist"/>
-            </Errors>            
-            <Begin>
-              <Permissions>
-                <Allow>
-                  <Capability name="framework/company::manage"/>
-                </Allow>
-              </Permissions>
-              <!-- Set default values -->
-              <Var name="result">0</Var>
-              <Var name="cid">
-                <Call function="existsById">
-                  <Param name="id"><Var name="id"/></Param>
-                </Call>
-              </Var>
+				<!-- If it does, returns -1. Otherwise, proceeds to insert -->
+				<If condition="$companyExists == 1">
+					<Then>
+						<Var name="result">-1</Var>
+					</Then>
+					<Else>
+						<!-- Creates the record -->
+						<Var name="company" key="id">
+							<DataAccess method="insert" params="PARAMS">
+								<Param name="_entity">fw_company</Param>
+								<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+								<Param name="_modification"><Now/></Param>
+								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+								<Param name="_id_creator"><Var name="USER" key="id"/></Param>
+								<Param name="_creation"><Now/></Param>
+								<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+							</DataAccess>
+						</Var>
+						<!-- Gets the record just created -->
+						<Var name="company">
+							<Call function="getById">
+								<Param name="id"><Var name="company" key="id"/></Param>
+							</Call>
+						</Var>
+						<!-- Logs this action -->
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,company,api</Param>
+							<Param name="action">insert</Param>
+							<Param name="log_key"><Var name="company" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="company"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logCompanyInsert">
+									<Param><Var name="company" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+						
+						<!-- Returns company's id -->
+						<Var name="result"><Var name="company" key="id"/></Var>
+					</Else>
+				</If>
 
-              <If condition="$cid == 0">
-                <Then>
-                  <Var name="result">-1</Var>
-                </Then>
-              </If>
-              
-              <If condition="$result == 0">
-                <Then>
-                  <Var name="id">
-                    <Execute method="framework,generic,update" params="PARAMS">
-                      <Param name="table" >fw_company</Param>
-                      <Param name="_creation"><DateTimeLib method="Now"/></Param>
-                      <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
-                      <Param name="_modification"><DateTimeLib method="Now"/></Param>
-                      <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-                    </Execute>
-                  </Var>
-                  <Var name="result"><Var name="id"/></Var>
-                </Then>
-              </If>
-              <Return>
-                  <Var name="result"/>
-              </Return>
-            </Begin>
-        </Function>               
-                                          
-        <Function name="getActiveCompanies" doc="Get a list of active companies">
-            <Params>
-                <Param name="name" doc="Search by name."/>
-                <Param name="code" doc="Search by code."/>
-            </Params>
-            <Return type="multiple" doc="">
-              <External name="id" type="int" doc="Role Id"/>
-              <External name="name" type="text" doc="Role name"/>
-              <External name="code" type="text" doc="Role code"/>
-              <External name="is_active" type="int" doc="Role code"/>
-            </Return>            
-            <Begin>
-              <!-- bug in runtime - dont allow any permission -->
-              <!-- Permissions>
-                <Allow>
-                  <Capability name="framework/company::manage"/>
-                </Allow>
-              </Permissions -->
-
-               <Var name="companies">
-                   <Execute method="this,this,company.search">
-                       <Param name="name" wildcard="full"><Var name="name"/></Param>
-                       <Param name="code" wildcard="full"><Var name="code"/></Param>
-                       <Param name="is_active">1</Param>
-                   </Execute>
-               </Var>
-               <Return>
-                   <Var name="companies"/>
-               </Return>
-            </Begin>
-        </Function>        
-
-        <Function name="getById" type="int" required="true" doc="Get a company data">
-            <Params>
-                <Param name="id" type="int" required="true" doc="company Id."/>
-            </Params>
-            <Return type="single" doc="">
-              <External name="id" type="int" doc="Role Id"/>
-              <External name="name" type="text" doc="Role name"/>
-              <External name="code" type="text" doc="Role code"/>
-              <External name="is_active" type="int" doc="Is this role active?"/>
-              <External name="_creation" type="int" doc="Creation timestamp"/>
-              <External name="_creation_ip" type="text" doc="Creation ip address"/>
-              <External name="_modification" type="int" doc="Creation timestamp"/>
-              <External name="_modification_ip" type="text" doc="Modification ip address"/>
-            </Return>            
-            <Begin>
-              <!--Permissions>
-                <Allow>
-                  <Capability name="framework/company::manage"/>
-                </Allow>
-              </Permissions-->
-
-              <!-- Set default values -->
-               <Var name="company">
-                   <Execute method="framework,generic,load">
-                       <Param name="table" >fw_company</Param>
-                       <Param name="id"><Var name="id"/></Param>
-                   </Execute>
-               </Var>
-               <Return>
-                   <Var name="company"/>
-               </Return>
-            </Begin>
-        </Function>        
-
-        <Function name="getByCode" type="int" required="true" doc="Get a company data">
-            <Params>
-                <Param name="code" type="text" required="true" doc="Company code."/>
-            </Params>
-            <Return type="single" doc="">
-              <External name="id" type="int" doc="Company Id"/>
-              <External name="name" type="text" doc="Company name"/>
-              <External name="code" type="text" doc="company code"/>
-              <External name="is_active" type="int" doc="Is this company active?"/>
-              <External name="_creation" type="int" doc="Creation timestamp"/>
-              <External name="_creation_ip" type="text" doc="Creation ip address"/>
-              <External name="_modification" type="int" doc="Creation timestamp"/>
-              <External name="_modification_ip" type="text" doc="Modification ip address"/>
-            </Return>            
-            <Begin>
-              <!--Permissions>
-                <Allow>
-                  <Capability name="framework/company::manage"/>
-                </Allow>
-              </Permissions-->
-
-              <!-- Set default values -->
-               <Var name="company">
-                   <Execute method="framework,generic,load">
-                       <Param name="table" >fw_company</Param>
-                       <Param name="code"><Var name="code"/></Param>
-                   </Execute>
-               </Var>
-               <Return>
-                   <Var name="company"/>
-               </Return>
-            </Begin>
-        </Function>        
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
 
 
-        <Function name="existsById" doc="Check if the company exists">
-            <Params>
-                <Param name="id" type="int" required="true" doc="Company Id."/>
-            </Params>
-            <Return type="int" doc="1 if exists, 0 otherwise"/>
-            <Begin>
-              <!--Permissions>
-                <Allow>
-                  <Capability name="framework/role:manage"/>
-                </Allow>
-              </Permissions-->
+		<!--
+			*		delete  |  Deletes a company from the system.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Company's id.
+			*
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the company was removed.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the company doesn't exist.
+		-->
+		<Function name="delete" scope="private" doc="Deletes a company from the system.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Company's id"/>
+			</Params>
+			<Return type="int" doc="0 if the company was removed."/>
+      <Errors>
+        <Error code="-1" doc="The company doesn't exist."/>
+      </Errors>
 
-              <Var name="result">0</Var>
-              <Var name="company">
-                <Execute method="framework,generic,load">
-                  <Param name="table">fw_company</Param>
-                  <Param name="id"><Var name="id"/></Param>  
-                </Execute>
-              </Var>
-              <Var name="cid">
-                <Var name="company" key="id"/>
-              </Var>
-              <If condition="$cid != ''">
-                <Then>
-                  <Var name="result">1</Var>
-                </Then>
-              </If>
-              <Return>
-                  <Var name="result"/>
-              </Return>
-            </Begin>
-        </Function>    
-        
-        <Function name="existsByCode" doc="Check if the company exists">
-            <Params>
-                <Param name="code" type="text" required="true" doc="Company code."/>
-            </Params>
-            <Return type="int" doc="1 if exists, 0 otherwise"/>
-            <Begin>
-              <!--Permissions>
-                <Allow>
-                  <Capability name="framework/role:manage"/>
-                </Allow>
-              </Permissions-->
+			<Begin>
+				<!-- Sets default value -->
+        <Var name="error">0</Var>
 
-              <Var name="result">0</Var>
-              <Var name="company">
-                <Execute method="framework,generic,load">
-                  <Param name="table">fw_company</Param>
-                  <Param name="code"><Var name="code"/></Param>  
-                </Execute>
-              </Var>
-              <Var name="cid">
-                <Var name="company" key="id"/>
-              </Var>
-              <If condition="$cid != ''">
-                <Then>
-                  <Var name="result">1</Var>
-                </Then>
-              </If>
-              <Return>
-                  <Var name="result"/>
-              </Return>
-            </Begin>
-        </Function>            
+				<!-- Gets the record -->
+				<Var name="company">
+					<Call function="getById">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
 
-    </Library>
+				<!-- Checks if the company exists: if not, returns -1 -->
+        <If condition="$company->__length == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+          <Else>
+            <!-- Everything is in order, proceeds to delete -->
+            <!-- Deletes the record -->
+						<DataAccess method="delete">
+							<Param name="_entity">fw_company</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+						<!-- Logs this action -->
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,company,api</Param>
+							<Param name="action">delete</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="company"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logCompanyDelete">
+									<Param><Var name="PARAMS" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+          </Else>
+        </If>
+				
+				<Return>
+					<Var name="error"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		existsByCode  |  Checks if a company exists, given its code.
+			*  
+			*		PARAMS
+			*		 - (text) code  ::  Company's code.
+			*
+			*		RETURN
+			*	   - (int) 1 | 0  ::  Returns 1 if the company exists; 0, if it doesn't.
+		-->
+		<Function name="existsByCode" scope="public" doc="Checks if a company exists, given its code.">
+			<Params>
+				<Param name="code" type="text" required="true" doc="Company's code"/>
+			</Params>
+			<Return type="int" doc="1 if the company exists; 0, if it doesn't."/>
+
+			<Begin>
+				<!-- Checks if the company exists -->
+				<Var name="company">
+					<DataAccess method="load">
+						<Param name="_entity">fw_company</Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+					</DataAccess>
+				</Var>
+
+				<!-- If it does, returns 1. If it doesn't, returns 0 -->
+				<If condition="$company->__length != 0">
+					<Then>
+						<Var name="exists">1</Var>
+					</Then>
+					<Else>
+						<Var name="exists">0</Var>
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="exists"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		existsById  |  Checks if a company exists, given its id.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Company's id.
+			*
+			*		RETURN
+			*	   - (int) 1 | 0  ::  Returns 1 if the company exists; 0, if it doesn't. 
+		-->
+		<Function name="existsById" scope="public" doc="Checks if a company exists, given its id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Company's id."/>
+			</Params>
+			<Return type="int" doc="1 if the company exists; 0, if it doesn't."/>
+
+			<Begin>			
+				<!-- Checks if the company exists -->
+				<Var name="company">
+					<DataAccess method="load">
+						<Param name="_entity">fw_company</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<!-- If it does, returns 1. If it doesn't, returns 0 -->
+				<If condition="$company->__length != 0">
+					<Then>
+						<Var name="exists">1</Var>
+					</Then>
+					<Else>
+						<Var name="exists">0</Var>
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="exists"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAll  |  Gets a list of all companies (whether they are active or not).
+			*  
+			*		RETURN
+			*	   - (multiple) fw_company  ::  Returns all 'fw_company' records.
+		-->
+		<Function name="getAll" scope="public" doc="Gets a list of all companies (whether they are active or not).">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_company' records."/>
+
+			<Begin>
+				<Var name="companies">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_company</Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="companies"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getActiveCompanies  |  Gets a list of all active companies.
+			*  
+			*		RETURN
+			*	   - (multiple) fw_company  ::  Returns a set of 'fw_company' records.
+		-->
+		<Function name="getActiveCompanies" scope="public" doc="Gets a list of all active companies.">
+			<Params/>
+			<Return type="multiple" doc="Set of 'fw_company' records."/>
+
+			<Begin>
+				<Var name="companies">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_company</Param>
+						<Param name="is_active"><Int>1</Int></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="companies"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getByCode  |  Gets a company given the code.
+			*  
+			*		PARAMS
+			*		 - (text) code  ::  Company's code.
+			*
+			*		RETURN
+			*	   - (single) fw_company  ::  Returns the corresponding 'fw_company' record. 
+		-->
+		<Function name="getByCode" scope="public" doc="Gets a company given the code.">
+			<Params>
+				<Param name="code" type="text" required="true" doc="Company's code"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_company' record."/>
+
+			<Begin>
+				<Var name="company">
+					<DataAccess method="load">
+						<Param name="_entity">fw_company</Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="company"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getById  |  Gets a company given the id.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Company's id.
+			*
+			*		RETURN
+			*	   - (single) fw_company  ::  Returns the corresponding 'fw_company' record. 
+		-->
+		<Function name="getById" scope="public" doc="Gets a company given the id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Company's id"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_company' record."/>
+
+			<Begin>
+				<Var name="company">
+					<DataAccess method="load">
+						<Param name="_entity">fw_company</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="company"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getDefaultTimezone  |  Gets a company's default timezone.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Company's id.
+			*
+			*		RETURN
+			*	   - (int) id_timezone  ::  Returns the corresponding 'fw_company' record's timezone id. 
+		-->
+		<Function name="getDefaultTimezone" scope="public" doc="Gets a company given the id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Company's id"/>
+			</Params>
+			<Return type="int" doc="The corresponding 'fw_company' record's timezone id."/>
+
+			<Begin>
+				<Var name="company">
+					<DataAccess method="load">
+						<Param name="_entity">fw_company</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="company" key="id_timezone"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		search  |  Gets a list of companies that meet the given search criteria.
+			*
+			*		PARAMS
+			*		 - (text) name  		::  Company's name;		
+			*		 - (text) code      ::  Company's code;		
+			*		 - (int) is_active  ::  1 to filter by just the active companies.
+			*
+			*		RETURN
+			*	   - (multiple) fw_company  ::  Returns a set of 'fw_company' records.
+		-->
+		<Function name="search" scope="public" doc="Gets a list of companies that meet the given search criteria.">
+			<Params>
+				<Param name="name" type="text" required="false" doc="Company's name"/>
+				<Param name="code" type="text" required="false" doc="Company's code"/>
+				<Param name="is_active" type="int" required="false" doc="1 to filter by just the active companies"/>
+			</Params>
+			<Return type="multiple" doc="Set of 'fw_company' records."/>
+		
+			<Begin>
+				<Var name="companies">
+					<DataAccess method="this,this,search">
+						<Param name="name" wildcard="full"><Var name="PARAMS" key="name"/></Param>
+						<Param name="code" wildcard="full"><Var name="PARAMS" key="code"/></Param>
+						<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="companies"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		update  |  Updates a company.
+			*  
+			*		PARAMS
+			*		 - (int) id    				 ::  Company's id;
+			*		 - (text) uuid         ::  Company's uuid;
+			*		 - (text) name				 ::  Company's name;
+			*		 - (text) code				 ::  Company's code;
+			*		 - (text) description  ::  Company's description;
+			*		 - (text) timezone     ::  Company's default timezone;
+			*		 - (int) is_active		 ::  1 if this company is active; 0, otherwise.
+			*
+			*		RETURN
+			*		 - (int) 0  ::  Returns 0 if the company was updated.
+			*
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the company doesn't exist.
+		-->
+		<Function name="update" scope="private" doc="Updates a company.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Company's id"/>
+				<Param name="uuid" type="text" required="false" doc="Company's uuid"/>
+				<Param name="name" type="text" required="false" doc="Company's name"/>
+				<Param name="code" type="text" required="true" doc="Company's code"/>
+				<Param name="description" type="text" required="false" doc="Company's description"/>
+				<Param name="timezone" type="text" required="false" doc="Company's default timezone"/>
+				<Param name="is_active" type="int" required="false" doc="1 if this company is active; 0, otherwise"/>
+			</Params>
+      <Return type="int" doc="0 if the company was updated."/>
+			<Errors>
+				<Error code="-1" doc="The company doesn't exist."/>
+			</Errors>
+
+			<Begin>
+				<!-- Sets default value -->
+				<Var name="error">0</Var>
+
+				<!-- Checks if the company already exists -->
+				<Var name="companyExists">
+					<Call function="existsById">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+
+				<!-- If it doesn't, returns -1. Else, proceeds to update -->
+				<If condition="$companyExists == 0">
+					<Then>
+						<Var name="error">-1</Var>
+					</Then>
+					<Else>
+						<!-- Updates the record -->
+						<DataAccess method="update" params="PARAMS">
+							<Param name="_entity">fw_company</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+							<Param name="_modification"><Now/></Param>
+							<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+						</DataAccess>
+						<!-- Gets the updated record -->
+						<Var name="updatedCompany">
+							<Call function="getById">
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</Call>
+						</Var>
+						<!-- Logs this action -->
+						<Var name="records"><Set/></Var>
+						<Var name="records" key=""><Var name="company"/></Var>
+						<Var name="records" key=""><Var name="updatedCompany"/></Var>
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,company,api</Param>
+							<Param name="action">update</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="records"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logCompanyUpdate">
+									<Param><Var name="PARAMS" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="error"/>
+				</Return>
+			</Begin>
+		</Function>
+	</Library>
 </Node>
-

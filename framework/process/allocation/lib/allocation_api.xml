@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+		<![CDATA[ Allocation API  ::  Allows the communication with 'fw_allocation' table. ]]>
+	</Doc>
+  <Permissions/>
+  <Configuration/>
+  <Libraries>
+		<Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <Params/>
+  <Screens/>
+  <Actions/>
+  <Library forceinterface="true">
+    <!--
+			*		add  |  Adds a new role to a person in a company.
+			*
+			*		PARAMS
+			*    - (int) id_person   ::  Person's id;
+			*    - (int) id_role     ::  Role's id;
+			*    - (int) id_company  ::  Company's id.
+			*
+			*		RETURN
+			*    - (int) id_allocation  ::  Returns the created 'fw_allocation' record's id.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+      *    - (code) -2  ::  Returns -2 if the company doesn't exist.
+			*	   - (code) -3  ::  Returns -3 if the role doesn't exist in the company.
+      *    - (code) -4  ::  Returns -4 if the person already have the role in the company.
+    -->
+    <Function name="add" scope="public" doc="Adds a new role to a person in a company.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+        <Param name="id_role" type="int" required="true" doc="Role's id"/>
+        <Param name="id_company" type="int" required="true" doc="Company's id"/>
+      </Params>
+			<Return type="int" doc="The created 'fw_allocation' record's id."/>
+      <Errors>
+        <Error code="-1" doc="The person doesn't exist."/>
+        <Error code="-2" doc="The company doesn't exist."/>
+        <Error code="-3" doc="The role doesn't exist in the company."/>
+        <Error code="-4" doc="The person already have the role in the company."/>
+      </Errors>
+
+      <Begin>
+        <!-- Validates the received parameters -->
+        <Var name="result">
+          <Call library="framework,allocation,api" function="validateAllocation">
+            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="is_insert">1</Param>
+          </Call>
+        </Var>
+
+        <!-- If everything is in order, proceeds to insert -->
+        <If condition="$result == 0">
+          <Then>
+            <!-- Creates the record -->
+            <Var name="allocation" key="id">
+              <DataAccess method="insert">
+                <Param name="_entity">fw_allocation</Param>
+                <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+                <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+                <Param name="_id_updater"><Var name="USER" key="id"/></Param>
+                <Param name="_modification"><Now/></Param>
+                <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                <Param name="_id_creator"><Var name="USER" key="id"/></Param>
+                <Param name="_creation"><Now/></Param>
+                <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+              </DataAccess>
+            </Var>
+            <!-- Gets the record just created -->
+            <Var name="allocation">
+              <Call function="get">
+                <Param name="id"><Var name="allocation" key="id"/></Param>
+              </Call>
+            </Var>
+            <!-- Logs this action -->
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,allocation,api</Param>
+              <Param name="action">insert</Param>
+              <Param name="log_key"><Var name="PARAMS" key="id_person"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="allocation"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logAllocationInsert">
+                  <Param><Var name="PARAMS" key="id_role"/></Param>
+                  <Param><Var name="PARAMS" key="id_person"/></Param>
+                  <Param><Var name="PARAMS" key="id_company"/></Param>
+                  <Param><Var name="allocation" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>
+
+            <!-- Returns allocation's id -->
+            <Var name="result"><Var name="allocation" key="id"/></Var>
+          </Then>
+        </If>
+
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		addByCode  |  Adds a new role to a person in a company, by its code.
+			*
+			*		PARAMS
+			*    - (int) id_person   ::  Person's id;
+			*    - (text) code_role  ::  Role's code;
+			*    - (int) id_company  ::  Company's id.
+			*
+			*		RETURN
+			*    - (int) id_allocation  ::  Returns the created 'fw_allocation' record's id.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
+      *    - (code) -2  ::  Returns -2 if the company doesn't exist.
+			*	   - (code) -3  ::  Returns -3 if the role doesn't exist in the company.
+      *    - (code) -4  ::  Returns -4 if the person already have the role in the company.
+    -->
+    <Function name="addByCode" doc="Adds a new role to a person in a company, by its code.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+        <Param name="code_role" type="text" required="true" doc="Role's code"/>
+        <Param name="code_company" type="text" required="true" doc="Company's code"/>
+      </Params>
+      <Return type="int" doc="The created 'fw_allocation' record's id."/>
+      <Errors>
+        <Error code="-1" doc="The person doesn't exist."/>
+        <Error code="-2" doc="The company doesn't exist."/>
+        <Error code="-3" doc="The role doesn't exist in the company."/>
+        <Error code="-4" doc="The person already have the role in the company."/>
+      </Errors>
+
+      <Begin>
+        <!-- Gets the role -->
+        <Var name="role">
+          <Call library="framework,role,api" function="getByCode">
+            <Param name="code"><Var name="PARAMS" key="code_role"/></Param>
+          </Call>
+        </Var>
+
+        <!-- Adds the role to the person -->
+        <Var name="idAllocation">
+          <Call library="framework,allocation,api" function="add">
+            <Param name="id_person"><Var name="PARAMS" key="id"/></Param>
+            <Param name="id_role"><Var name="role" key="id"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+          </Call>
+        </Var>
+
+        <Return>
+          <Var name="idAllocation"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		delete  |  Removes a role from a person in a company.
+			*  
+			*		PARAMS
+			*		 - (int) id          ::  Allocation's id;
+      *    - (int) id_person   ::  Person's id;
+			*    - (int) id_role     ::  Role's id;
+			*    - (int) id_company  ::  Company's id.
+      *
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the allocation was removed.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the allocation doesn't exist.
+		-->
+    <Function name="delete" doc="Removes a role from a person in a company.">
+      <Params>
+        <Param name="id" type="int" required="false" doc="Allocation's id"/>
+        <Param name="id_person" type="int" required="false" doc="Person's id"/>
+        <Param name="id_role" type="int" required="false" doc="Role's id"/>
+        <Param name="id_company" type="int" required="false" doc="Company's id"/>
+      </Params>
+      <Return type="int" doc="0 if the allocation was removed."/>
+      <Errors>
+        <Error code="-1" doc="The allocation doesn't exist."/>
+      </Errors>
+
+      <Begin>
+        <!-- Sets default error value -->
+        <Var name="error">0</Var>
+
+        <!-- If no id is provided, get's it through the person, the role and the company -->
+        <If condition="$PARAMS->id == ''">
+          <Then>
+            <Var name="allocation">
+              <DataAccess method="load">
+                <Param name="_entity">fw_allocation</Param>
+                <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+                <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+              </DataAccess>
+            </Var>
+          </Then>
+          <Else>
+            <Var name="allocation">
+              <Call function="get">
+                <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              </Call>
+            </Var>
+          </Else>
+        </If>
+
+        <!-- Checks if the allocation exists: if not, returns -1 -->
+        <If condition="$allocation->__length == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+          <Else>
+            <!-- Everything is in order, proceeds to delete -->
+            <!-- Deletes the record -->
+            <DataAccess method="delete">
+              <Param name="_entity">fw_allocation</Param>
+              <Param name="id"><Var name="allocation" key="id"/></Param>
+            </DataAccess>
+            <!-- Logs this action -->
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,allocation,api</Param>
+              <Param name="action">delete</Param>
+              <Param name="log_key"><Var name="PARAMS" key="id_person"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="allocation"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logAllocationDelete">
+                  <Param><Var name="PARAMS" key="id_role"/></Param>
+                  <Param><Var name="PARAMS" key="id_person"/></Param>
+                  <Param><Var name="PARAMS" key="id_company"/></Param>
+                  <Param><Var name="allocation" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>
+          </Else>
+        </If>
+
+        <Return>
+          <Var name="error"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+		<!--
+			*		get  |  Gets an allocation given the id.
+			*
+			*		PARAMS
+			*    - (int) id  ::  Allocation's id.
+			*
+			*		RETURN
+			*	   - (single) fw_allocation  ::  Returns the corresponding 'fw_allocation' record. 
+		-->
+    <Function name="get" doc="Gets an allocation given the id.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Allocation's id"/>
+      </Params>
+      <Return type="single" doc="The corresponding 'fw_allocation' record."/>
+
+      <Begin>
+        <Var name="allocation">
+          <DataAccess method="load">
+            <Param name="_entity">fw_allocation</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return>
+          <Var name="allocation"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		getAll  |  Gets a list of all existing allocations, in all companies.
+			*  
+			*		RETURN
+			*	   - (multiple) fw_allocation  ::  Returns all 'fw_allocation' records.
+		-->
+    <Function name="getAll" doc="Gets a list of all existing allocations, in all companies.">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_allocation' records."/>
+
+			<Begin>
+				<Var name="allocations">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_allocation</Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="allocations"/>
+				</Return>
+			</Begin>
+    </Function>
+
+
+    <!--
+			*		getAllByCompany  |  Gets a list of all existing allocations in a company.
+      *
+			*		PARAMS
+			*    - (int) id_company  ::  Company's id.
+			*  
+			*		RETURN
+			*	   - (multiple) fw_allocation  ::  Returns a set of 'fw_allocation' records.
+		-->
+    <Function name="getAllByCompany" doc="Gets a list of all existing allocations in a company.">
+			<Params>
+        <Param name="id_company" type="int" doc="Company's id"/>
+      </Params>
+			<Return type="multiple" doc="Set of 'fw_allocation' records."/>
+
+			<Begin>
+				<Var name="allocations">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_allocation</Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="allocations"/>
+				</Return>
+			</Begin>
+    </Function>
+
+
+		<!--
+			*		search  |  Gets a list of allocations that meet the given search criteria.
+			*
+			*		PARAMS
+			*		 - (int) id          ::  Allocation's id.
+      *    - (int) id_person   ::  Person's id;
+			*    - (int) id_role     ::  Role's id;
+			*    - (int) id_company  ::  Company's id;
+			*		 - (int) pageNum  	 ::  Current page's number;
+			*		 - (int) pageSize  	 ::  Current page's size.
+      *
+			*		RETURN
+			*	   - (multiple) fw_allocation  ::  Returns a set of 'fw_allocation' records.
+		-->
+    <Function name="search" doc="Gets a list of allocations that meet the given search criteria.">
+      <Params>
+        <Param name="id" type="int" required="false" doc="Allocation's id"/>
+        <Param name="id_person" type="int" required="false" doc="Person's id"/>
+        <Param name="id_role" type="int" required="false" doc="Role's id"/>
+        <Param name="id_company" type="int" required="false" doc="Company's id"/>
+				<Param name="pageNum" type="int" required="false" doc="Current page's number"/>
+				<Param name="pageSize" type="int" required="false" doc="Current page's size"/>
+      </Params>
+      <Return type="multiple" doc="Set of 'fw_allocation' records."/>
+
+      <Begin>
+        <Var name="allocations">
+          <DataAccess method="this,this,search">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="_pageNum"><Var name="PARAMS" key="pageNum"/></Param>
+						<Param name="_pageSize"><Var name="PARAMS" key="pageSize"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return>
+          <Var name="allocations"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		update  |  Updates an allocation.
+      *  
+			*		PARAMS
+			*		 - (int) id          ::  Allocation's id;
+      *    - (int) id_person   ::  Person's id;
+			*    - (int) id_role     ::  Role's id;
+			*    - (int) id_company  ::  Company's id.
+      *
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the allocation was correctly updated.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
+      *    - (code) -2  ::  Returns -2 if the company doesn't exist.
+			*	   - (code) -3  ::  Returns -3 if the role doesn't exist in the company.
+		-->
+    <Function name="update" doc="Updates an allocation.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Allocation's id"/>
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+        <Param name="id_role" type="int" required="true" doc="Role's id"/>
+        <Param name="id_company" type="int" required="true" doc="Company's id"/>
+      </Params>
+      <Return type="int" doc="0 if the allocation was correctly updated."/>
+      <Errors>
+        <Error code="-1" doc="The person doesn't exist."/>
+        <Error code="-2" doc="The company doesn't exist."/>
+        <Error code="-3" doc="The role doesn't exist in the company."/>
+      </Errors>
+
+      <Begin>
+        <!-- Validates the params of the allocation -->
+        <Var name="error">
+          <Call library="framework,allocation,api" function="validateAllocation">
+            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+          </Call>
+        </Var>
+
+        <!-- Everything is in order, proceeds to update -->
+        <If condition="$error == 0">
+          <Then>
+            <!-- Gets the current record -->
+            <Var name="allocation">
+              <Call function="get">
+                <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              </Call>
+            </Var>
+            <!-- Updates the record -->
+            <DataAccess method="update">
+              <Param name="_entity">fw_allocation</Param>
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+              <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+              <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+              <Param name="_id_updater"><Var name="USER" key="id"/></Param>
+              <Param name="_modification"><Now/></Param>
+              <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+            </DataAccess>
+            <!-- Gets the record just updated -->
+            <Var name="updatedAllocation">
+              <Call function="get">
+                <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              </Call>
+            </Var>
+            <!-- Logs this action -->
+            <Var name="records"><Set/></Var>
+            <Var name="records" key=""><Var name="allocation"/></Var>
+            <Var name="records" key=""><Var name="updatedAllocation"/></Var>
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,allocation,api</Param>
+              <Param name="action">update</Param>
+              <Param name="log_key"><Var name="PARAMS" key="id_person"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="records"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logAllocationUpdate">
+                  <Param><Var name="PARAMS" key="id_role"/></Param>
+                  <Param><Var name="PARAMS" key="id_person"/></Param>
+                  <Param><Var name="PARAMS" key="id_company"/></Param>
+                  <Param><Var name="PARAMS" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>
+          </Then>
+        </If>
+
+        <Return>
+          <Var name="error"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
+			*		validateAllocation  |  Validates the parameters of an allocation.
+			*
+			*		PARAMS
+			*    - (int) id_person   ::  Person's id;
+			*    - (int) id_role     ::  Role's id;
+			*    - (int) id_company  ::  Company's id;
+      *    - (int) is_insert   ::  1 if this is a new allocation; 0 or NULL if it's an update.
+			*
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if all params are valid.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
+      *    - (code) -2  ::  Returns -2 if the company doesn't exist.
+			*	   - (code) -3  ::  Returns -3 if the role doesn't exist in the company.
+      *    - (code) -4  ::  Returns -4 if the person already have the role in the company.
+    -->
+    <Function name="validateAllocation" scope="private" doc="Validates the parameters of an allocation.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+        <Param name="id_role" type="int" required="true" doc="Role's id"/>
+        <Param name="id_company" type="int" required="true" doc="Company's id"/>
+        <Param name="is_insert" type="int" required="false" doc="1 if this is a new allocation; 0 or NULL if it's an update"/>
+      </Params>
+			<Return type="int" doc="0 if all params are valid."/>
+      <Errors>
+        <Error code="-1" doc="The person doesn't exist."/>
+        <Error code="-2" doc="The company doesn't exist."/>
+        <Error code="-3" doc="The role doesn't exist in the company."/>
+        <Error code="-4" doc="The person already have the role in the company."/>
+      </Errors>
+      
+      <Begin>
+        <!-- Sets default value -->
+        <Var name="error">0</Var>
+
+				<!-- ______________  1) Person's validation    ______________ -->
+        <!-- Checks if the person exists: if not, returns -1 -->
+        <Var name="person">
+					<Call library="framework,fw.person,api" function="get">
+						<Param name="id"><Var name="PARAMS" key="id_person"/></Param>
+					</Call>
+        </Var>
+        <If condition="$person->__length == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+          <Else>
+            <!-- ______________  2) Company's validation    ______________ -->
+            <!-- Checks if the company exists: if not, returns -2 -->
+            <Var name="companyExists">
+              <Call library="framework,company,api" function="existsById">
+                <Param name="id"><Var name="PARAMS" key="id_company"/></Param>
+              </Call>
+            </Var>
+            <If condition="$companyExists == 0">
+              <Then>
+                <Var name="error">-2</Var>
+              </Then>
+              <Else>            
+                <!-- ______________  3) Role's validation    ______________ -->
+                <!-- Checks if the role exists in the company: if not, returns -3 -->
+                <Var name="roleExists">
+                  <Call library="framework,role,api" function="existsInCompanyById">
+                    <Param name="id"><Var name="PARAMS" key="id_role"/></Param>
+                  </Call>
+                </Var>
+                <If condition="$roleExists == 0">
+                  <Then>
+                    <Var name="error">-3</Var>
+                  </Then>
+                  <Else>
+                    <!-- ______________  4) Allocation's validation    ______________ -->
+                    <!-- If it's a new allocation, checks if the person already have the role in the company: if it does, returns -4 -->
+                    <If condition="$PARAMS->is_insert == 1">
+                      <Then>
+                        <Var name="allocation">
+                          <DataAccess method="load">
+                            <Param name="_entity">fw_allocation</Param>
+                            <Param name="id_person"><Var name="PARAMS" key="id"/></Param>
+                            <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+                            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+                          </DataAccess>
+                        </Var>
+                        <If condition="$allocation->__length != 0">
+                          <Then>
+                            <Var name="error">-4</Var>
+                          </Then>
+                        </If>
+                      </Then>
+                    </If>
+                  </Else>
+                </If>
+              </Else>
+            </If>
+          </Else>
+        </If>
+
+        <Return>
+          <Var name="error"/>
+        </Return>
+      </Begin>
+    </Function>
+  </Library>
+</Node>

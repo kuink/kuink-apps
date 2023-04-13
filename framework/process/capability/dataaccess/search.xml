@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    <![CDATA[ Gets a list of capabilities that meet the given search criteria. ]]>
+  </Doc>
+	<Params>
+		<Param name="id" type="int" required="false" doc="Capability's id"/>
+		<Param name="name" type="text" required="false" doc="Capability's name"/>
+		<Param name="code" type="text" required="false" doc="Capability's code"/>
+		<Param name="is_global" type="int" required="false" doc="1 to filter by the capabilities that exists for all companies"/>
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[	
+							c.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_capability c
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+					<XCondition optional="id">
+						<![CDATA[ 
+							AND c.id = {param->id}
+						]]>
+					</XCondition>
+					<XCondition optional="name">
+						<![CDATA[ 
+							AND c.name LIKE {param->name}
+						]]>
+					</XCondition>
+					<XCondition optional="code">
+						<![CDATA[ 
+							AND c.code LIKE {param->code}
+						]]>
+					</XCondition>
+					<XCondition optional="is_global">
+						<![CDATA[ 
+							AND c.is_global = {param->is_global}
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ c.is_global DESC, c.code ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>

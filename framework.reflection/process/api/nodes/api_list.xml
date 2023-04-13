@@ -161,7 +161,7 @@
             </ForEach>
             <!-- Get Roles with those capabilities-->
             <!--Var name="allowedRoles">
-              <Call library="framework,user.role,api" function="getRoles">
+              <Call library="framework,role,api" function="getRoles">
                 <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
                 <Param name="capabilities"><Var name="fxCapabilities"/></Param>
               </Call>

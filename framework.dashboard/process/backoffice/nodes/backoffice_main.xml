@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc><![CDATA[ Framework Dashboard Backoffice  ::  Main page  ]]></Doc>
+	<Permissions/>
+  <Configuration/>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+	</Libraries>
+	<Params/>
+  <!--	________________________________________________________________________________________________
+    *
+    *
+    *			S C R E E N S    ::    
+    *
+    *		________________________________________________________________________________________________
+  -->
+  <Screens>
+    <!--
+			*
+			*  mainScreen  |  Shows the framework dashboard menu.
+			* 
+		-->
+    <Screen name="mainScreen" template="1col_LeftMenu">
+      <Menu name="permissions" label="permissions" icon="lock">
+        <!--Action name="processAction" label="users" actionvalue="manageUsers"/-->
+        <Action name="processAction" label="allocations" actionvalue="manageAllocations"/>
+        <Action name="init" label="----"/>
+        <Action name="processAction" label="capabilities" actionvalue="manageCapabilities"/>
+        <Action name="processAction" label="roles" actionvalue="manageRoles"/>
+        <Action name="processAction" label="roleCapabilities" actionvalue="manageRoleCapabilities"/>
+      </Menu>
+
+      <Menu name="records" label="records" icon="file">
+        <Action name="processAction" label="listRecords" actionvalue="records"/>
+      </Menu>
+
+      <Menu name="appFiles" label="appFiles" icon="folder-open">
+        <Action name="processAction" label="manage" actionvalue="manageAppFiles"/>
+      </Menu>
+    </Screen>
+  </Screens>
+
+  <!--	________________________________________________________________________________________________
+    *
+    *
+    *			A C T I O N S    ::    
+    *
+    *		________________________________________________________________________________________________
+  -->
+  <Actions>
+    <!--
+			*
+			*  init  |  Shows mainScreen.
+			*
+		-->
+    <Action name="init" screen="mainScreen"/>
+
+		<!--
+			*
+			*  back  |  Switches to another node, according to the chosen action.
+			*
+		-->
+    <Action name="processAction">
+      <Var name="eventName"><ActionValue/></Var>
+
+      <RaiseEvent name="$eventName"/>
+    </Action>
+  </Actions>
+  <Library/>
+</Node>
