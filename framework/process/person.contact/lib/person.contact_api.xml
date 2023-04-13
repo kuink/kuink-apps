@@ -203,6 +203,32 @@
 								</Lang>
 							</Param>
 						</Call>
+
+						<If condition="$contact->is_default == 1">
+							<Then>
+								<Var name="contacts" dump="true">
+									<Call function="getByContactType">
+										<Param name="id_person_company"><Var name="contact" key="id_person_company"/></Param>
+										<Param name="id_contact_type"><Var name="contact" key="id_contact_type"/></Param>
+									</Call>
+								</Var>
+								
+								<Var name="count"><Int>1</Int></Var>
+								<ForEach var="contacts" item="default">
+									<If condition="$count == 1">
+										<Then>
+											<Call function="setAsDefault">
+												<Param name="id"><Var name="default" key="id"/></Param>
+											</Call>
+											<Var name="count" value="$count + 1"/>
+										</Then>
+										<Else>
+											<Exit/>
+										</Else>
+									</If>
+								</ForEach>
+							</Then>
+						</If>
 					</Else>
 				</If>
 
@@ -419,84 +445,90 @@
 			<Return/>
 
 			<Begin>
-				<!-- If the param 'config' wasn't supplied, sets it through contact's type -->
-				<If condition="$PARAMS->config != ''">
+				<Var name="PARAMS" dump="true"/>
+				<If condition="$PARAMS->id_contact_type != '' &amp;&amp; $PARAMS->contact != ''">
 					<Then>
-						<Var name="contactConfig"><Var name="PARAMS" key="config"/></Var>
-					</Then>
-					<Else>
-						<Var name="contactType">
-							<Call function="getContactTypeById">
-								<Param name="id"><Var name="PARAMS" key="id_contact_type"/></Param>
+						<!-- If the param 'config' wasn't supplied, sets it through contact's type -->
+						<If condition="$PARAMS->config != ''">
+							<Then>
+								<Var name="contactConfig"><Var name="PARAMS" key="config"/></Var>
+							</Then>
+							<Else>
+								<Var name="contactType">
+									<Call function="getContactTypeById">
+										<Param name="id"><Var name="PARAMS" key="id_contact_type"/></Param>
+									</Call>
+								</Var>
+								<Var name="contactConfig"><Var name="contactType" key="config"/></Var>
+							</Else>
+						</If>
+
+						<!-- If there's no default contact of this type, sets this one as the default -->
+						<Var name="defaultContact">
+							<Call function="getByContactType">
+								<Param name="id_person_company"><Var name="PARAMS" key="id_person_company"/></Param>
+								<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
+								<Param name="is_default"><Int>1</Int></Param>
 							</Call>
 						</Var>
-						<Var name="contactConfig"><Var name="contactType" key="config"/></Var>
-					</Else>
-				</If>
-
-				<!-- If there's no default contact of this type, sets this one as the default -->
-				<Var name="defaultContact">
-					<Call function="getByContactType">
-						<Param name="id_person_company"><Var name="PARAMS" key="id_person_company"/></Param>
-						<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
-						<Param name="is_default"><Int>1</Int></Param>
-					</Call>
-				</Var>
-				<If condition="$defaultContact->__length == 0">
-					<Then>
-						<Var name="isDefault"><Int>1</Int></Var>
+						<If condition="$defaultContact->__length == 0">
+							<Then>
+								<Var name="isDefault"><Int>1</Int></Var>
+							</Then>
+							<Else>
+								<Var name="isDefault"><Int>0</Int></Var>
+							</Else>
+						</If>
+						
+						<!-- Gets current record -->
+						<Var name="contact">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_contact</Param>
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</DataAccess>
+						</Var>
+						<!-- Updates the record -->
+						<DataAccess method="update">
+							<Param name="_entity">fw_person_contact</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
+							<Param name="contact"><Var name="PARAMS" key="contact"/></Param>
+							<Param name="config"><Var name="contactConfig"/></Param>
+							<Param name="is_default"><Var name="isDefault"/></Param>
+							<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+							<Param name="_modification"><Now/></Param>
+							<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+						</DataAccess>
+						<!-- Gets updated record -->
+						<Var name="updatedContact">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_contact</Param>
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</DataAccess>
+						</Var>
+						<!-- Logs this action -->
+						<Var name="records"><Set/></Var>
+						<Var name="records" key=""><Var name="contact"/></Var>
+						<Var name="records" key=""><Var name="updatedContact"/></Var>
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,person.contact,api</Param>
+							<Param name="action">update</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="records"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logPersonContactUpdate">
+									<Param><Var name="updatedContact" key="id"/></Param>
+									<Param><Var name="updatedContact" key="id_person_company"/></Param>
+								</Lang>
+							</Param>
+						</Call>
 					</Then>
-					<Else>
-						<Var name="isDefault"><Int>0</Int></Var>
-					</Else>
 				</If>
 				
-				<!-- Gets current record -->
-				<Var name="contact">
-					<DataAccess method="load">
-						<Param name="_entity">fw_person_contact</Param>
-						<Param name="id"><Var name="PARAMS" key="id"/></Param>
-					</DataAccess>
-				</Var>
-				<!-- Updates the record -->
-				<DataAccess method="update">
-					<Param name="_entity">fw_person_contact</Param>
-					<Param name="id"><Var name="PARAMS" key="id"/></Param>
-					<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
-					<Param name="contact"><Var name="PARAMS" key="contact"/></Param>
-					<Param name="config"><Var name="contactConfig"/></Param>
-					<Param name="is_default"><Var name="isDefault"/></Param>
-					<Param name="_id_updater"><Var name="USER" key="id"/></Param>
-					<Param name="_modification"><Now/></Param>
-					<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-				</DataAccess>
-				<!-- Gets updated record -->
-				<Var name="updatedContact">
-					<DataAccess method="load">
-						<Param name="_entity">fw_person_contact</Param>
-						<Param name="id"><Var name="PARAMS" key="id"/></Param>
-					</DataAccess>
-				</Var>
-				<!-- Logs this action -->
-				<Var name="records"><Set/></Var>
-				<Var name="records" key=""><Var name="contact"/></Var>
-				<Var name="records" key=""><Var name="updatedContact"/></Var>
-				<Call library="framework,log,api" function="add">
-					<Param name="type">framework,person.contact,api</Param>
-					<Param name="action">update</Param>
-					<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
-					<Param name="context_data">
-						<UtilsLib method="jsonEncode">
-							<Param><Var name="records"/></Param>
-						</UtilsLib>
-					</Param>
-					<Param name="message">
-						<Lang key="logPersonContactUpdate">
-							<Param><Var name="updatedContact" key="id"/></Param>
-							<Param><Var name="updatedContact" key="id_person_company"/></Param>
-						</Lang>
-					</Param>
-				</Call>
 
 				<Return/>
 			</Begin>

@@ -15,7 +15,9 @@
 				<XSelect>
 					<XField>
 						<![CDATA[ 
-							a.*
+							a.*,
+							p.display_name AS "person_display_name",
+							r.code
 						]]>
 					</XField>
 				</XSelect>
@@ -23,6 +25,8 @@
 					<XTable>
 						<![CDATA[ 
 							fw_allocation a
+							INNER JOIN fw_person p ON (p.id = a.id_person)
+							INNER JOIN fw_role r ON (r.id = a.id_role)
 						]]>
 					</XTable>
 				</XFrom>
@@ -50,7 +54,7 @@
 					</XCondition>
 				</XWhere>
 				<XOrderBy>
-					<XOrder><![CDATA[ a.id ASC, a.id_person ASC ]]></XOrder>
+					<XOrder><![CDATA[ p.display_name ASC, r.code ASC ]]></XOrder>
 				</XOrderBy>
 			</XSql>
 		</SqlPaginated>

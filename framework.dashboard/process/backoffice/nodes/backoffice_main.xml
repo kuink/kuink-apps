@@ -24,7 +24,6 @@
       <Menu name="permissions" label="permissions" icon="lock">
         <!--Action name="processAction" label="users" actionvalue="manageUsers"/-->
         <Action name="processAction" label="allocations" actionvalue="manageAllocations"/>
-        <Action name="init" label="----"/>
         <Action name="processAction" label="capabilities" actionvalue="manageCapabilities"/>
         <Action name="processAction" label="roles" actionvalue="manageRoles"/>
         <Action name="processAction" label="roleCapabilities" actionvalue="manageRoleCapabilities"/>
