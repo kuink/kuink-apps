@@ -278,6 +278,36 @@
 
 
 		<!--
+			*		getByUsername  |  Gets a person - framework - given the username (uid).
+			*
+			*		PARAMS
+			*    - (text) username  ::  Person's username (uid).
+			*
+			*		RETURN
+			*	   - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
+		-->
+		<Function name="getByUsername" docs="Gets a person - framework - given the username (uid).">
+			<Params>
+				<Param name="username" type="int" required="true" doc="Person's username (uid)"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_person' record."/>
+
+			<Begin>
+				<Var name="person">
+					<DataAccess method="load">
+						<Param name="_entity">fw_person</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="person"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
 			*		update  |  Updates a person (framework).
 			*  
 			*		PARAMS
@@ -902,112 +932,49 @@
 
 		<!--	________________________________________________________________________________________________
 			*
-			*			U S E R
+			*			R O L E S
 			*		________________________________________________________________________________________________
 		-->
-
-    <Function name="addRole" doc="Adds a role to a person in a company.">
+		<!--
+			*		hasRole  |  Checks if a person has a role, given its code.
+			*  
+			*		PARAMS
+			*		 - (int) id_person   ::  Person's id;
+			*		 - (text) code_role  ::  Role's code.
+			*
+			*		RETURN
+			*	   - (int) 1 | 0  ::  Returns 1 if the person has the role; 0, if it doesn't.
+		-->
+		<Function name="hasRole" doc="Checks if a person has a role, given its code.">
       <Params>
-        <Param name="id" type="int" required="true" doc="User Id." />
-        <Param name="id_role" type="int" required="true" doc="Role Id." />
-        <Param name="id_company" type="int" required="true" doc="Company Id." />
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+        <Param name="code_role" type="String" required="true" doc="Role's code"/>
       </Params>
-      <Return type="int" doc=""/>
-      <Errors>
-        <Error code="-1" doc="Person doesn't exist."/>
-        <Error code="-2" doc="Role doesn't exist."/>
-      </Errors>
-
+      <Return type="int" doc="1 if the person has the role; 0, if it doesn't."/>
+      
       <Begin>
-        <!--Permissions> 
-					<Allow>
-						<Capability name="framework/role:manage"/> 
-          </Allow>
-				</Permissions -->
-        <Var name="error">0</Var>
+				<Var name="result">0</Var>
 
-        <!-- Checks if the person exists: if not, returns -1 -->
-        <Var name="person">
-					<Call function="get">
-						<Param name="id"><Var name="PARAMS" key="id_person"/></Param>
-					</Call>
+				<!-- Checks if the person has the role -->
+        <Var name="roles">
+          <Execute method="this,this,hasRole">
+            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="code_role"><Var name="PARAMS" key="code_role"/></Param>
+          </Execute>
         </Var>
-        <If condition="$person->__length == 0">
-          <Then>
-            <Var name="error">-1</Var>
-          </Then>
-        </If>
-        <!-- Checks if the role exists: if not, returns -2 -->
-        <Var name="role">
-          <Call library="framework,role,api" function="getById">
-            <Param name="id"><Var name="id_role" /></Param>
-          </Call>
-        </Var>
-        <If condition="$role->__length  == 0">
-          <Then>
-            <Var name="error">-2</Var>
-          </Then>
-        </If>
-
-				<!-- Checks if this person already have this role in the company -->
-        <Var name="allocation">
-          <DataAccess method="load">
-            <Param name="_entity">fw_allocation</Param>
-            <Param name="id_person"><Var name="PARAMS" key="id"/></Param>
-            <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
-            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-          </DataAccess>
-        </Var>
-
-        <If condition="$error == 0 &amp;&amp; $allocation->id == ''">
-          <Then>
-						<!-- Creates the record -->
-						<Var name="allocation" key="id">
-							<DataAccess method="insert">
-								<Param name="_entity">fw_allocation</Param>
-								<Param name="id_person"><Var name="PARAMS" key="id"/></Param>
-								<Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
-								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-								<Param name="_id_creator"><Var name="USER" key="id"/></Param>
-								<Param name="_creation"><Now/></Param>
-								<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
-								<Param name="_id_updater"><Var name="USER" key="id"/></Param>
-								<Param name="_modification"><Now/></Param>
-								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-							</DataAccess>
-						</Var>
-						<!-- Gets the record just created -->
-						<Var name="allocation">
-							<Call library="framework,allocation,api" function="get">
-								<Param name="id"><Var name="allocation" key="id"/></Param>
-							</Call>
-						</Var>
-						<!-- Logs this action -->
-						<Call library="framework,log,api" function="add">
-							<Param name="type">framework,fw.person,api</Param>
-							<Param name="action">insert</Param>
-							<Param name="log_key"><Var name="person" key="id"/></Param>
-							<Param name="context_data">
-								<UtilsLib method="jsonEncode">
-									<Param><Var name="person"/></Param>
-								</UtilsLib>
-							</Param>
-							<Param name="message">
-								<Lang key="logPersonInsert">
-									<Param><Var name="person" key="id"/></Param>
-								</Lang>
-							</Param>
-						</Call>
-
-           
-          </Then>
-        </If>
+				<!-- If it does, returns 1 -->
+				<If condition="$roles->__length &gt; 0">
+					<Then>
+						<Var name="result">1</Var>
+					</Then>
+				</If>
 
         <Return>
-          <Var name="error" />
+          <Var name="result"/>
         </Return>
       </Begin>
     </Function>
+
 
 
 

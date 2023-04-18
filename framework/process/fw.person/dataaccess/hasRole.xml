@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<![CDATA[ Checks if a person has a role, given its code. ]]>
+	</Doc>
+	<Params>
+		<Param name="id_person" type="int" required="true" doc="Person's id"/>
+		<Param name="code_role" type="text" required="true" doc="Role's code"/>
+	</Params>
+	<Body>
+		<Load>
+			<XSql>
+        <XSelect>
+          <XField>
+            <![CDATA[ 
+							r.id,
+							r.code
+            ]]>
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            <![CDATA[ 
+							fw_person p
+							INNER JOIN fw_person_company pc ON (pc.id_person = '{param->id_person}')  
+							INNER JOIN fw_allocation a ON (a.id_person = p.id)
+							INNER JOIN fw_role r ON (r.id = a.id_role)
+            ]]>
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition> 
+            <![CDATA[ 
+							r.code = '{param->code_role}'
+            ]]> 
+          </XCondition>
+        </XWhere>
+      </XSql>
+		</Load>
+	</Body>
+</Method>
