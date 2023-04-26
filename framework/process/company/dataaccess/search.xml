@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<Method>
+	<Doc>
+    <![CDATA[ Gets a list of companies that meet the given search criteria. ]]>
+  </Doc>
+	<Params>
+		<Param name="id" type="int" required="false" doc="Company's id"/>
+		<Param name="name" type="text" required="false" doc="Company's name"/>
+		<Param name="code" type="text" required="false" doc="Company's code"/>
+		<Param name="is_active" type="int" required="false" doc="1 to filter by just the active companies"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[ 
+							c.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[ 
+							fw_company c
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+					<XCondition optional="id">
+						<![CDATA[ 
+							AND c.id = {param->id}
+						]]>
+					</XCondition>
+					<XCondition optional="name">
+						<![CDATA[ 
+							AND c.name LIKE '{param->name}'
+						]]>
+					</XCondition>
+					<XCondition optional="code">
+						<![CDATA[ 
+							AND c.code LIKE '{param->code}'
+						]]>
+					</XCondition>
+					<XCondition condition="$is_active == 1 || $is_active == ''">
+						<![CDATA[ 
+							AND c.is_active = 1
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ c.code ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

@@ -1,15 +1,18 @@
-<?xml version='1.0'?>
-<Application name="framework" version="1.0.0">
-    <Config>
-        <!-- Global configuration... -->
-        <Key name="test" value="1"/>
-    </Config>
-    <Databases>
-        <!-- type=(pgsql, mssql, mysqli, oci) -->
-        <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
-    </Databases>
-    <Menus>
-        <Menu role='Teacher' startuc='api' startnode='' event='init' enduc='api' endnode='list' label="list" description="api" default="true"/>
-        <Menu role='Teacher' startuc='externalService' startnode='' event='init' enduc='externalService' endnode='list' label="list" description="externalService" default="false"/>
-    </Menus>
+<?xml version="1.0"?>
+<Application name="framework.reflection" version="1.000.001">
+	<!--
+		v1.000.001
+		*	@date:		 2023.04.13
+		*	@author:   catarina.fernandes
+		*	@comment:  Fix | person | Renaming functions due to person restructure.
+	-->
+	<Config>
+		<!-- Global configuration... -->
+		<Key name="test" value="1"/>
+	</Config>
+	<Databases/>
+	<Menus>
+		<Menu role="Teacher" startuc="api" startnode="" event="init" enduc="api" endnode="list" label="list" description="api" default="true"/>
+		<Menu role="Teacher" startuc="externalService" startnode="" event="init" enduc="externalService" endnode="list" label="list" description="externalService" default="false"/>
+	</Menus>
 </Application>

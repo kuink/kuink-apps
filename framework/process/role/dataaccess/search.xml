@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    <![CDATA[ Gets a list of roles that meet the given search criteria. ]]>
+	</Doc>
+	<Params>
+		<Param name="id" type="int" required="false" doc="Role's id"/>
+		<Param name="name" type="text" required="false" doc="Role's name"/>
+		<Param name="code" type="text" required="false" doc="Role's code"/>
+		<Param name="id_company" type="int" required="false" doc="Company's id"/>
+		<Param name="is_active" type="int" required="false" doc="1 to filter by just the active roles"/>
+		<Param name="capabilities" type="text" required="false" doc="Role's capabilities' list"/>
+	</Params>
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[ 
+							r.* 
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[ 
+							fw_role r
+						]]>
+					</XTable>
+					<XTable optional="capabilities">
+						<![CDATA[ 
+							INNER JOIN fw_role_capability rc ON (rc.id_role = r.id)
+							INNER JOIN fw_capability c ON (c.id = rc.id_capability)
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+					<XCondition optional="id">
+						<![CDATA[
+							AND r.id = {param->id}
+						]]>
+					</XCondition>
+					<XCondition optional="name">
+						<![CDATA[ 
+							AND r.name LIKE '{param->name}'
+						]]>
+					</XCondition>
+					<XCondition optional="code">
+						<![CDATA[ 
+							AND r.code LIKE '{param->code}' 
+						]]>
+					</XCondition>
+					<XCondition optional="id_company">
+						<![CDATA[ 
+							AND r.id_company = '{param->id_company}'
+						]]>
+					</XCondition>
+					<XCondition optional="is_active">
+						<![CDATA[ 
+							AND r.is_active = {param->is_active}
+						]]>				
+					</XCondition>
+					<XCondition optional="capabilities">
+						<![CDATA[ 
+							AND c.code IN ({@param->capabilities})
+						]]>
+					</XCondition>
+				</XWhere>
+				<XGroupBy>
+					<XCondition>
+						<![CDATA[ r.id ASC ]]>
+					</XCondition>
+				</XGroupBy>
+				<XOrderBy>
+					<XOrder><![CDATA[ r.name ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>

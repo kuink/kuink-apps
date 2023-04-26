@@ -99,15 +99,15 @@
           </Then>
         </If>
       
-        <Var name="fwUser">      
+        <Var name="person">      
           <If condition="$PARAMS->uid!=''">
             <Then>
-              <Call library="framework,user,api" function="getByUsername">
+              <Call library="framework,fw.person,api" function="getByUsername">
                 <Param name="username"><Var name="PARAMS" key="uid"/></Param>
               </Call>
             </Then>
             <Else>
-              <Call library="framework,user,api" function="getByEmail">
+              <Call library="gecol.core,person,api" function="getByEmail">
                 <Param name="email"><Var name="PARAMS" key="email"/></Param>
               </Call>
             </Else>
@@ -126,7 +126,7 @@
             <Var name="requestGuid" >
               <Call library="framework,request,api" function="addByCode">
                 <Param name="request_category_code">password.reset</Param>
-                <Param name="data"><Var name="fwUser" key="username"/></Param>
+                <Param name="data"><Var name="person" key="username"/></Param>
                 <Param name="allowDuplicates">1</Param>
 								<Param name="assyncProcess"><Int>0</Int></Param>                
               </Call>      
@@ -142,8 +142,8 @@
             <!-- Notify the user by email with the new password -->
             <Call library="framework,message,api" function="sendSimpleMessage">
               <Param name="template">framework,authentication,passwordChangeRequest</Param>
-              <Param name="to_name"><Var name="fwUser" key="display_name"/></Param>
-              <Param name="to_email"><Var name="fwUser" key="email"/></Param>
+              <Param name="to_name"><Var name="person" key="display_name"/></Param>
+              <Param name="to_email"><Var name="person" key="email"/></Param>
               <Param name="from_name"><Config key="authentication.password.fromName"/></Param>
               <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>
               <Param name="guid"><Guid/></Param>
@@ -184,8 +184,8 @@
           </Call>
         </Var>
 
-        <Var name="fwUser" >
-          <Call library="framework,user,api" function="getByUsername">
+        <Var name="person" >
+          <Call library="framework,fw.person,api" function="getByUsername">
             <Param name="username"><Var name="PARAMS" key="uid"/></Param>
           </Call>
         </Var>
@@ -300,8 +300,8 @@
           </Call>
         </Var>
 
-        <Var name="fwUser">
-          <Call library="framework,user,api" function="getByUsername">
+        <Var name="person">
+          <Call library="framework,fw.person,api" function="getByUsername">
             <Param name="username"><Var name="PARAMS" key="uid"/></Param>
           </Call>
         </Var>
@@ -404,8 +404,8 @@
           </Then>
         </If>
         
-        <Var name="fwUser" >
-          <Call library="framework,user,api" function="getByUsername">
+        <Var name="person" >
+          <Call library="framework,fw.person,api" function="getByUsername">
             <Param name="username"><Var name="request"/></Param>
           </Call>
         </Var>
@@ -651,8 +651,8 @@
           <Capability name="framework/authentication.password::send.new"/>
         </Allow>
       </Permissions>
-      <Var name="fwUser" >
-        <Call library="framework,user,api" function="getByUsername">
+      <Var name="person" dump="true">
+        <Call library="framework,fw.person,api" function="getByUsername">
           <Param name="username"><Var name="PARAMS" key="username"/></Param>
         </Call>
       </Var>
@@ -664,7 +664,7 @@
               <Call function="generatePassword"/>
             </Var>
             <Var name="data" key="username">
-              <Var name="fwUser" key="username"/>
+              <Var name="person" key="username"/>
             </Var>
             <!-- Change the password -->
                         
@@ -683,7 +683,7 @@
             <Var name="requestGuid" >
               <Call library="framework,request,api" function="addByCode">
                 <Param name="request_category_code">password.reset</Param>
-                <Param name="data"><Var name="fwUser" key="username"/></Param>
+                <Param name="data"><Var name="person" key="username"/></Param>
                 <Param name="allowDuplicates">1</Param>
                 <Param name="assyncProcess"><Int>0</Int></Param>              
               </Call>      
@@ -701,8 +701,8 @@
                 <!-- Notify the user by email with the new password -->
                 <Call library="framework,message,api" function="sendSimpleMessage">
                   <Param name="template">framework,authentication,passwordSendNew</Param>
-                  <Param name="to_name"><Var name="fwUser" key="display_name"/></Param>
-                  <Param name="to_email"><Var name="fwUser" key="email"/></Param>
+                  <Param name="to_name"><Var name="person" key="display_name"/></Param>
+                  <Param name="to_email"><Var name="person" key="email"/></Param>
                   <Param name="from_name"><Config key="authentication.password.fromName"/></Param>
                   <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>
                   <Param name="guid"><Guid/></Param>

@@ -1,0 +1,22 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<![CDATA[ Clears the default company of a given person. ]]>
+	</Doc>
+	<Params>
+		<Param name="id_person" type="int" required="true" doc="Person's id"/>
+	</Params>
+	<Body>
+		<Execute>
+    	<![CDATA[        
+      	UPDATE 
+					fw_person_company
+				SET 
+					is_default = 0 
+				WHERE
+					id_person = {param->id_person}
+					AND is_default = 1
+				]]>
+    </Execute>
+	</Body>
+</Method>

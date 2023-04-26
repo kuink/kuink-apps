@@ -63,7 +63,7 @@
         <Attribute name="_modification_ip" domain="ip"/>
       </Attributes>
       <Relations>
-        <Entity name="fw_user_company" doc="User company relation">
+        <Entity name="fw_person_company" doc="User company relation">
           <Attributes>
             <Attribute name="id" foreign="id_user" domain="id" required="true" autonumber="true" pk="true"/>
             <Attribute name="id_person" domain="id"/>

@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Doc>
+		<![CDATA[ Job API  ::  Allows the communication with 'fw_job', 'fw_job_class' and 'fw_job_sector' tables. ]]>
+	</Doc>
+	<Permissions/>
+	<Configuration/>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+	</Libraries>
+	<Params/>
+	<Screens/>
+	<Actions/>
+	<Library forceinterface="true">
+		<!--
+			*		add  |  Adds a new job to the system.
+			*  
+			*		PARAMS
+			*		 - (int) id_job_class  ::  Job class' id;
+			*		 - (text) id_me				 ::  Job's id for Ministry of Education (PT);
+			*		 - (text) name				 ::  Job's name;
+			*		 - (text) code			   ::  Job's code;
+			*		 - (int) is_active		 ::  1 if this job is active; 0, otherwise;
+			*		 - (int) order				 ::  Global order;
+			*		 - (text) obs					 ::  Observations/notes.
+			*
+			*		RETURN
+			*		 - (int) id_job  ::  Returns the created 'fw_job' record's id.
+			*
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the job already exists.
+		-->
+		<Function name="add" scope="protected" doc="Adds a new job to the system.">
+			<Params>
+				<Param name="id_job_class" type="int" required="true" doc="Job class' id"/>
+				<Param name="id_me" type="text" required="true" doc="Job's id for Ministry of Education (PT)"/>
+				<Param name="name" type="text" required="true" doc="Job's name"/>
+				<Param name="code" type="text" required="true" doc="Job's code"/>
+				<Param name="is_active" type="int" required="true" doc="1 if this job is active; 0, otherwise"/>
+				<Param name="order" type="int" required="false" doc="Global order"/>
+				<Param name="obs" type="text" required="false" doc="Observations/notes"/>
+			</Params>
+			<Return type="int" doc="The created 'fw_job' record's id."/>
+			<Errors>
+				<Error code="-1" doc="The job already exists."/>
+			</Errors>
+
+			<Begin>
+				<!-- Checks if the job already exists -->
+				<Var name="job">
+					<DataAccess method="load">
+						<Param name="_entity">fw_job</Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+					</DataAccess>
+				</Var>
+
+				<!-- If it does, returns -1. Otherwise, proceeds to insert -->
+				<If condition="$job->__length != ''">
+					<Then>
+						<Var name="result">-1</Var>
+					</Then>
+					<Else>
+						<!-- Creates the record -->
+						<Var name="job" key="id">
+							<DataAccess method="insert" params="PARAMS">
+								<Param name="_entity">fw_job</Param>
+								<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+								<Param name="_modification"><Now/></Param>
+								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+								<Param name="_id_creator"><Var name="USER" key="id"/></Param>
+								<Param name="_creation"><Now/></Param>
+								<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+							</DataAccess>
+						</Var>
+						<!-- Gets the record just created -->
+						<Var name="job">
+							<Call function="getById">
+								<Param name="id"><Var name="job" key="id"/></Param>
+							</Call>
+						</Var>
+						<!-- Logs this action -->
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,job,api</Param>
+							<Param name="action">insert</Param>
+							<Param name="log_key"><Var name="job" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="job"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logJobInsert">
+									<Param><Var name="job" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+
+						<!-- Returns job's id -->
+						<Var name="result"><Var name="job" key="id"/></Var>
+					</Else>
+				</If>
+				var
+
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		delete  |  Deletes a job from the system.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Job's id.
+			*
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the job was removed.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the job doesn't exist.
+		-->
+		<Function name="delete" doc="Deletes a job from the system.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Job's id"/>
+			</Params>
+			<Return type="int" doc="0 if the job was removed."/>
+      <Errors>
+        <Error code="-1" doc="The job doesn't exist."/>
+      </Errors>
+
+			<Begin>
+				<!-- Sets default value -->
+        <Var name="error">0</Var>
+
+				<!-- Gets the record -->
+				<Var name="job">
+					<Call function="getById">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+
+				<!-- Checks if the job exists: if not, returns -1 -->
+				<If condition="$job->__length == 0">
+					<Then>
+						<Var name="error">-1</Var>
+					</Then>
+					<Else>
+            <!-- Everything is in order, proceeds to delete -->
+						<!-- Deletes the record -->
+						<DataAccess method="delete">
+							<Param name="_entity">fw_job</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+						<!-- Logs this action -->
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,job,api</Param>
+							<Param name="action">delete</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="job"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logJobDelete">
+									<Param><Var name="job" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>						
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="error"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAll  |  Gets a list of all jobs (whether they are active or not).
+			*
+			*		RETURN
+			*	   - (multiple) fw_job  ::  Returns all 'fw_job' records.
+		-->
+		<Function name="getAll" doc="Gets a list of all jobs (whether they are active or not).">
+			<Params/>
+			<Return type="multiple" doc="All of 'fw_job' records."/>
+			
+			<Begin>
+				<Var name="jobs">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_job</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="jobs"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getActiveJobs  |  Gets a list of all active jobs.		
+			*
+			*		RETURN
+			*	   - (multiple) fw_job  ::  Returns a set of 'fw_job' records.
+		-->
+		<Function name="getActiveJobs" doc="Gets a list of all active jobs.">
+			<Params/>
+			<Return type="multiple" doc="Set of 'fw_job' records."/>
+			
+			<Begin>
+				<Var name="jobs">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_job</Param>
+						<Param name="is_active"><Int>1</Int></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="jobs"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getById  |  Gets a job given the id.
+			*
+			*		PARAMS
+			*    - (int) id  ::  Job's id.
+			*
+			*		RETURN
+			*	   - (single) fw_job  ::  Returns the corresponding 'fw_job' record. 
+		-->
+		<Function name="getById" doc="Gets a job given the id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Job's id"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_job' record."/>
+
+			<Begin>
+				<Var name="job">
+					<DataAccess method="load">
+						<Param name="_entity">fw_job</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="job"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*  searchByClass  |  Searches for a job by its name or the job class' name.
+			*
+			*  PARAMS
+			*    - (text) text     ::  Search text - job's or job class' name;
+			*		 - (int) pagesize  ::  Current page's size;
+			*		 - (int) pagenum   ::  Current page's number.
+			*
+			*  RETURN
+			*	   - (single) fw_job  ::  Returns the corresponding 'fw_job' record.
+		-->
+		<Function name="searchByClass" doc="Searches for a job by its name or the job class' name.">
+			<Params>
+				<Param name="text" type="string" required="true" doc="Search text: job's or job class' name"/>
+				<Param name="pagesize" type="int" required="false" doc="Current page's size"/>
+				<Param name="pagenum" type="int" required="false" doc="Current page's number"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_job' record."/>
+
+			<Begin>
+				<Var name="job">
+					<DataAccess method="this,this,searchByClass">
+						<Param name="text" wildcard="fullSplit"><Var name="PARAMS" key="text"/></Param>
+						<Param name="_pageSize"><Var name="PARAMS" key="pagesize"/></Param>
+						<Param name="_pageNum"><Var name="PARAMS" key="pagenum"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="job"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		update  |  Updates a job.
+			*  
+			*		PARAMS
+			*		 - (int) id            ::  Job's id;
+			*		 - (int) id_me				 ::  Job's id for Ministry of Education (PT);
+			*		 - (int) id_job_class  ::  Job class' id;
+			*		 - (text) name				 ::  Job's name;
+			*		 - (text) code			   ::  Job's code;
+			*		 - (int) is_active		 ::  1 if this job is active; 0, otherwise;
+			*		 - (text) order				 ::  Global order;
+			*		 - (text) obs					 ::  Observations/notes.
+			*
+			*		RETURN	
+			*		 - (int) 0  ::  Returns 0 if the job was updated.
+			*
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the job doesn't exist.
+		-->
+		<Function name="update" doc="Updates a job.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Job's id"/>
+				<Param name="id_me" type="int" required="false" doc="Job's id for Ministry of Education (PT)"/>
+				<Param name="id_job_class" type="int" required="false" doc="Job class' id"/>
+				<Param name="name" type="text" required="false" doc="Job's name"/>
+				<Param name="code" type="text" required="false" doc="Job's code"/>
+				<Param name="is_active" type="int" required="false" doc="1 if this job is active; 0, otherwise"/>
+				<Param name="order" type="text" required="false" doc="Global order"/>
+				<Param name="obs" type="text" required="false" doc="Observations/notes"/>
+			</Params>
+      <Return type="int" doc="0 if the job was updated."/>
+			<Errors>
+				<Error code="-1" doc="The job doesn't exist."/>
+			</Errors>
+
+			<Begin>
+				<!-- Sets default value -->
+				<Var name="error">0</Var>
+
+				<!-- Gets the record -->
+				<Var name="job">
+					<Call function="getById">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+
+				<If condition="$job->__length == 0">
+					<Then>
+						<Var name="error">-1</Var>
+					</Then>
+					<Else>
+						<!-- Updates the record -->
+						<DataAccess method="update" params="PARAMS">
+							<Param name="_entity">fw_job</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+							<Param name="_modification"><Now/></Param>
+							<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+						</DataAccess>
+						<!-- Gets the updated record -->
+						<Var name="updatedJob">
+							<Call function="getById">
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</Call>
+						</Var>
+						<!-- Logs this action -->
+						<Var name="records"><Set/></Var>
+						<Var name="records" key=""><Var name="job"/></Var>
+						<Var name="records" key=""><Var name="updatedJob"/></Var>
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,job,api</Param>
+							<Param name="action">update</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="records"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logJobUpdate">
+									<Param><Var name="updatedJob" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="error"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+
+		
+		<!--	________________________________________________________________________________________________
+			*
+			*			J O B   S E C T O R
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		getAllJobSectors  |  Gets a list of all existing job sectors.
+			*
+			*		RETURN
+			*	   - (multiple) fw_job_sector  ::  Returns all 'fw_job_sector' records.
+		-->
+		<Function name="getAllJobSectors" doc="Gets a list of all existing job sectors.">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_job_sector' records."/>
+			
+			<Begin>
+				<Var name="jobSectors">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_job_sector</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="jobSectors"/>
+				</Return>
+			</Begin>
+		</Function>
+	</Library>
+</Node>

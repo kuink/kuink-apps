@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Doc><![CDATA[ Statistics API  ::  Allows the communication with 'fw_marital_status' and 'fw_qualification' tables (usually used for statistical data). ]]></Doc>
+	<Permissions/>
+	<Configuration/>
+	<Libraries/>
+	<Params/>
+	<Screens/>
+	<Actions/>
+	<Library forceinterface="true">
+		<!--	________________________________________________________________________________________________
+			*
+			*			M A R I T A L   S T A T U S
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		getAllMaritalStatuses  |  Gets a list of all existing marital statuses.
+			*
+			*		RETURN
+			*	   - (multiple) fw_marital_status  ::  Returns all 'fw_marital_status' records.
+		-->
+		<Function name="getAllMaritalStatuses" doc="Gets a list of all existing marital statuses.">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_marital_status' records."/>
+			
+			<Begin>
+				<Var name="maritalStatuses">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_marital_status</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="maritalStatuses"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+
+		
+		<!--	________________________________________________________________________________________________
+			*
+			*			Q U A L I F I C A T I O N S
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		getAllQualifications  |  Gets a list of all existing qualifications.
+			*
+			*		RETURN
+			*	   - (multiple) fw_qualification  ::  Returns all 'fw_qualification' records.
+		-->
+		<Function name="getAllQualifications" doc="Gets a list of all existing qualifications.">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_qualification' records."/>
+			
+			<Begin>
+				<Var name="qualifications">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_qualification</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="qualifications"/>
+				</Return>
+			</Begin>
+		</Function>
+	</Library>
+</Node>

@@ -49,12 +49,12 @@
               <Var name="expectedResult">1</Var>
               <Var name="test">
                 <Execute method="framework,generic,load">
-                  <Param name="table">fw_user</Param>
+                  <Param name="table">fw_person</Param>
                   <Param name="id">-1</Param>
                 </Execute>
               </Var>
               <Var name="test2">
-                <Execute method="framework,user,user.getCompanies">
+                <Execute method="framework,fw.perosn,getCompanies">
                   <Param name="id_person">2460</Param>
                 </Execute>
               </Var>
@@ -88,4 +88,3 @@
         </Function>
     </Library>
 </Node>
-

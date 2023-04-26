@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<![CDATA[ Gets a list of the contact types allowed (to be edited) by a person type. ]]>
+  </Doc>
+	<Params>
+		<Param name="allowed_types" type="text" required="true" doc="Allowed contact types' ids"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							ct.id,
+							ct.code,
+							ct.name
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_contact_type ct
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[
+							ct.id IN ( {@param->allowed_types} )
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ ct.id ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

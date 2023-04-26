@@ -1,0 +1,45 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+<![CDATA[ Gets the list of roles of a given user in a given company. ]]>
+	</Doc>
+	<Params>
+		<Param name="id_person"/>
+		<Param name="id_company"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+        <XSelect>
+          <XField>
+            <![CDATA[ 
+							r.id,
+							r.code
+            ]]>
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            <![CDATA[ 
+							fw_person p  
+							INNER JOIN fw_person_company pc ON (pc.id_person = p.id)  
+							INNER JOIN fw_allocation a ON (a.id_person = p.id)  
+							INNER JOIN fw_role r ON (r.id = a.id_role) 
+            ]]>
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition> 
+            <![CDATA[ 
+							pc.id_company = '{param->id_company}'
+							AND pc.id_person = '{param->id_person}' 
+            ]]> 
+          </XCondition>
+        </XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ r.code ]]></XOrder>
+				</XOrderBy>
+      </XSql>
+		</Sql>
+	</Body>
+</Method>

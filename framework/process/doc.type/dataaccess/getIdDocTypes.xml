@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<Method>
+	<Doc>
+		<![CDATA[ Gets a list of all active identification document types. ]]>
+	</Doc>
+	<Params>
+		<Param name="is_backoffice" type="int" required="false" doc="1 if it's backoffice"/>
+	</Params>
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							dt.*
+            ]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_doc_type dt
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[
+							dt.is_iddoc = 1
+							AND dt.is_active = 1
+						]]>
+					</XCondition>
+					<XCondition optional="is_backoffice">
+						<![CDATA[
+							AND dt.is_backoffice = '{param->is_backoffice}'
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ dt.order ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+    </Sql>
+	</Body>
+</Method>

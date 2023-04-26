@@ -1,11 +1,10 @@
 <?xml version='1.0'?>
 <Method>
 	<Doc>
-  	<Description>Gets a list of counties (active or not) of the given district.</Description>
+    <![CDATA[ Gets a list of all the active counties of a district. ]]>
   </Doc>
 	<Params>
-		<Param name="code_district"/>
-		<Param name="is_active"/>
+		<Param name="id_district" type="int" required="true" doc="District's id"/>
 	</Params>
 	<Body>
 		<Sql>
@@ -29,12 +28,8 @@
 				<XWhere>
 					<XCondition>
 						<![CDATA[
-							c.code_district = {param->code_district}
-						]]>
-					</XCondition>
-					<XCondition optional="is_active">
-						<![CDATA[
-							AND c.is_active = {param->is_active}
+							d.id = {param->id_district}
+							AND c.is_active = 1
 						]]>
 					</XCondition>
 				</XWhere>

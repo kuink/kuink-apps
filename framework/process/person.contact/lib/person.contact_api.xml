@@ -1,0 +1,884 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Doc>
+		<![CDATA[ Person Contact API  ::  Allows the communication with 'fw_person_contact' and 'fw_contact_type' tables. ]]>
+	</Doc>
+	<Permissions/>
+	<Configuration/>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+	</Libraries>
+	<Screens/>
+	<Actions/>
+	<Library forceinterface="true">
+		<!--
+			*		add  |  Adds a new contact to a person.
+			*  
+			*		PARAMS
+			*		 - (int) id_person   				::  Person's id;
+			*		 - (int) id_company  				::  Company's id;
+			*		 - (int) id_person_company  ::  Person_company's id;
+			*		 - (int) id_contact_type  	::  Contact type's id;
+			*		 - (text) contact         	::  Contact;
+			*		 - (text) config  					::  Contact's specific configuration;
+			*		 - (int) is_default  				::  1 if this contact is the default one of this type (in this company context); 0, otherwise.
+			*
+			*		RETURN
+			*		 - (int) id_person_contact  ::  Returns the created 'fw_person_contact' record's id.
+		-->
+		<Function name="add" doc="Adds a new contact to a person.">
+			<Params>
+				<Param name="id_person" type="int" required="false" doc="Person's id"/>
+				<Param name="id_company" type="int" required="false" doc="Company's id"/>
+				<Param name="id_person_company" type="int" required="false" doc="Person_Company relation's id"/>
+				<Param name="id_contact_type" type="int" required="false" doc="Contact type's id"/>
+				<Param name="contact" type="text" required="false" doc="Contact"/>
+				<Param name="config" type="text" required="false" doc="Contact's specific configuration"/>
+				<Param name="is_default" type="int" required="false" doc="1 if this contact is the default one of this type (in this company context); 0, otherwise"/>
+			</Params>
+			<Return type="int" doc="The created 'fw_person_contact' record's id."/>
+
+			<Begin>
+				<!-- If no param for 'id_person_company' was supplied, gets it through id_person and id_company -->
+				<If condition="$PARAMS->id_person_company != ''">
+					<Then>
+						<Var name="idPersonCompany"><Var name="PARAMS" key="id_person_company"/></Var>
+					</Then>
+					<Else>
+						<Var name="personCompany">
+							<Call library="framework,fw.person,api" function="getPersonCompany">
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+							</Call>
+						</Var>
+						<Var name="idPersonCompany"><Var name="personCompany" key="id"/></Var>
+					</Else>
+				</If>
+
+				<!-- If no param for 'id_contact_type' was supplied (meaning it's a blank contact), sets by default to 2 -->
+				<Var name="idContactType">
+					<IsNull>
+						<Param><Var name="PARAMS" key="id_contact_type"/></Param>
+						<Param>2</Param>
+					</IsNull>
+				</Var>
+
+				<!-- If no param for 'config' was supplied, sets it through contact's type -->
+				<If condition="$PARAMS->config != ''">
+					<Then>
+						<Var name="contactConfig"><Var name="PARAMS" key="config"/></Var>
+					</Then>
+					<Else>
+						<Var name="contactType">
+							<Call function="getContactTypeById">
+								<Param name="id"><Var name="idContactType"/></Param>
+							</Call>
+						</Var>
+						<Var name="contactConfig"><Var name="contactType" key="config"/></Var>
+					</Else>
+				</If>
+
+				<Var name="defaultContact">
+					<Call function="getByContactType">
+						<Param name="id_person_company"><Var name="idPersonCompany"/></Param>
+						<Param name="id_contact_type"><Var name="idContactType"/></Param>
+						<Param name="is_default">1</Param>
+					</Call>
+				</Var>
+				<If condition="$defaultContact->__length == 0">
+					<Then>
+						<Var name="isDefault">1</Var>
+					</Then>
+					<Else>
+						<Var name="isDefault">0</Var>
+					</Else>
+				</If>
+
+				<!-- Creates the record -->
+				<Var name="contact" key="id">
+					<DataAccess method="insert">
+						<Param name="_entity">fw_person_contact</Param>
+						<Param name="id_person_company"><Var name="idPersonCompany"/></Param> 
+						<Param name="id_contact_type"><Var name="idContactType"/></Param>
+						<Param name="contact"><Var name="PARAMS" key="contact"/></Param>
+						<Param name="config"><Var name="contactConfig"/></Param>
+						<Param name="is_default"><Var name="isDefault"/></Param>
+						<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+						<Param name="_modification"><Now/></Param>
+						<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+						<Param name="_id_creator"><Var name="USER" key="id"/></Param>
+						<Param name="_creation"><Now/></Param>
+						<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+					</DataAccess>
+				</Var>
+				<!-- Gets the record just created -->
+				<Var name="contact">
+					<Call function="get">
+						<Param name="id"><Var name="contact" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Logs this action -->
+				<Call library="framework,log,api" function="add">
+					<Param name="type">framework,person.contact,api</Param>
+					<Param name="action">insert</Param>
+					<Param name="log_key"><Var name="contact" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="contact"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logPersonContactInsert">
+							<Param><Var name="contact" key="id"/></Param>
+							<Param><Var name="contact" key="id_person_company"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return>
+					<Var name="contact" key="id"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		delete  |  Deletes a contact from a person.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Contact's id.
+			*
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the contact was removed.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the contact doesn't exist.
+		-->
+		<Function name="delete" doc="Deletes a contact from a person.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Contact's id"/>
+			</Params>
+			<Return type="int" doc="0 if the contact was removed."/>
+      <Errors>
+        <Error code="-1" doc="The contact doesn't exist."/>
+      </Errors>
+
+			<Begin>
+				<!-- Sets default value -->
+        <Var name="error">0</Var>
+
+				<!-- Gets the record -->
+				<Var name="contact">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+
+				<!-- Checks if the contact exists: if not, returns -1 -->
+				<If condition="$contact->__length == 0">
+					<Then>
+						<Var name="error">-1</Var>
+					</Then>
+					<Else>
+						<!-- Everything is in order, proceeds to delete -->
+						<!-- Deletes the record -->
+						<DataAccess method="delete">
+							<Param name="_entity">fw_person_contact</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+						<!-- Logs this action -->
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,person.contact,api</Param>
+							<Param name="action">delete</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="contact"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logPersonContactDelete">
+									<Param><Var name="contact" key="id"/></Param>
+									<Param><Var name="contact" key="id_person_company"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+
+						<If condition="$contact->is_default == 1">
+							<Then>
+								<Var name="contacts" dump="true">
+									<Call function="getByContactType">
+										<Param name="id_person_company"><Var name="contact" key="id_person_company"/></Param>
+										<Param name="id_contact_type"><Var name="contact" key="id_contact_type"/></Param>
+									</Call>
+								</Var>
+
+								<Var name="count"><Int>1</Int></Var>
+								<ForEach var="contacts" item="default">
+									<If condition="$count == 1">
+										<Then>
+											<Call function="setAsDefault">
+												<Param name="id"><Var name="default" key="id"/></Param>
+											</Call>
+											<Var name="count" value="$count + 1"/>
+										</Then>
+										<Else>
+											<Exit/>
+										</Else>
+									</If>
+								</ForEach>
+							</Then>
+						</If>
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="error"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		get  |  Gets a contact given the id.
+			*
+			*		PARAMS
+			*    - (int) id  ::  Contact's id.
+			*
+			*		RETURN
+			*	   - (single) fw_person_contact  ::  Returns the corresponding 'fw_person_contact' record. 
+		-->
+		<Function name="get" doc="Gets a contact given the id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Contact's id"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_person_contact' record."/>
+
+			<Begin>
+				<Var name="contact">
+					<DataAccess method="load">
+						<Param name="_entity">fw_person_contact</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="contact"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAll  |  Gets a list of all existing contacts (from all persons).
+			*
+			*		RETURN
+			*	   - (multiple) fw_person_contact  ::  Returns all 'fw_person_contact' records. 
+		-->
+		<Function name="getAll" doc="Gets a list of all existing contacts (from all persons).">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_person_contact' records."/>
+
+			<Begin>
+				<Var name="contacts">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_person_contact</Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="contacts"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAllByPerson  |  Gets a person's contacts list (filtered or not by the ones allowed by person's type).
+			*
+			*		PARAMS
+			*    - (int) id_person   		::  Person's id;
+			*    - (int) id_company  		::  Company's id;
+			*    - (int) is_backoffice  ::  1 if it's for the backoffice - gets all contacts; 
+			*																0 (or NULL) if it isn't - gets only the contacts allowed for the type of person.
+			*
+			*		RETURN
+			*	   - (multiple) fw_person_contact  ::  Returns a set of 'fw_person_contact' records. 
+		-->
+		<Function name="getAllByPerson" doc="Gets a person's full contacts list.">
+			<Params>
+				<Param name="id_person" type="int" required="true" doc="Person's id"/>
+				<Param name="id_company" type="int" required="true" doc="Company's id"/>
+				<Param name="is_backoffice" type="int" required="false" doc="1 if it's for the backoffice - gets all contacts; 0 (or NULL) if it's not - filters the contacts by the ones allowed for the type of person"/>
+			</Params>
+			<Return type="single" doc="Set of 'fw_person_contact' records."/>
+
+			<Begin>
+				<!-- Gets person_company through id_person and id_company -->
+				<Var name="personCompany">
+					<Call library="framework,fw.person,api" function="getPersonCompany">
+						<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+						<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+					</Call>
+				</Var>
+
+				<!-- If there's no person_company created yet, returns an empty array -->
+				<If condition="$personCompany == ''">
+					<Then>
+						<Var name="contacts"><Set/></Var>
+					</Then>
+					<Else>
+						<!-- If it isn't for backoffice, filters the contacts by the ones allowed for this type of person -->
+						<If condition="$PARAMS->is_backoffice != 1">
+							<Then>
+								<Var name="person">
+									<Call library="gecol.core,person,api" function="get">
+										<Param name="id"><Var name="PARAMS" key="id_person"/></Param>
+									</Call>
+								</Var>
+								<Var name="personType">
+									<Call library="gecol.core,person,api" function="getPersonTypeById">
+										<Param name="id"><Var name="person" key="id_person_type"/></Param>
+									</Call>
+								</Var>
+								<Var name="contacts">
+									<DataAccess method="this,this,getAllByPerson">
+										<Param name="id_person_company"><Var name="personCompany" key="id"/></Param>
+										<Param name="allowed_types"><Var name="personType" key="check_list_allowed_contacts"/></Param>
+									</DataAccess>
+								</Var>
+							</Then>
+							<Else>
+								<Var name="contacts">
+									<DataAccess method="this,this,getAllByPerson">
+										<Param name="id_person_company"><Var name="personCompany" key="id"/></Param>
+									</DataAccess>
+								</Var>
+							</Else>
+						</If>
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="contacts"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getByContactType  |  Gets the list of a person's contacts of the given contact type.
+			*
+			*		PARAMS
+			*    - (int) id_person        	::  Person's id;
+			*    - (int) id_company       	::  Company's id;
+			*		 - (int) id_person_company  ::  Person_company's id;
+			*    - (int) id_contact_type  	::  Contact type's id;
+			*    - (int) is_default         ::  1 if the contact it's the default of this type.
+			*
+			*		RETURN
+			*	   - (multiple) fw_person_contact  ::  Returns a set of 'fw_person_contact' records. 
+		-->
+		<Function name="getByContactType" doc="Gets the list of a person's contacts of the given contact type.">
+			<Params>
+				<Param name="id_person" type="int" required="false" doc="Person's id"/>
+				<Param name="id_company" type="int" required="false" doc="Company's id"/>
+				<Param name="id_person_company" type="int" required="false" doc="Person_company's id"/>
+				<Param name="id_contact_type" type="int" required="true" doc="Contact type's id"/>
+				<Param name="is_default" type="int" required="true" doc="1 if the contact it's the default one of this type"/>
+			</Params>
+			<Return type="multiple" doc="Set of 'fw_person_contact' records."/>
+
+			<Begin>
+				<!-- If no param for 'id_person_company' was supplied, sets it through 'id_person' and 'id_company' -->
+				<If condition="$PARAMS->id_person_company != ''">
+					<Then>
+						<Var name="idPersonCompany"><Var name="PARAMS" key="id_person_company"/></Var>
+					</Then>
+					<Else>
+						<Var name="personCompany">
+							<Call library="framework,fw.person,api" function="getPersonCompany">
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+							</Call>
+						</Var>
+						<Var name="idPersonCompany"><Var name="personCompany" key="id"/></Var>
+					</Else>
+				</If>
+				
+				<!-- Gets the contacts list -->
+				<Var name="contacts">
+					<DataAccess method="this,this,getByContactType">
+						<Param name="id_person_company"><Var name="idPersonCompany"/></Param>
+						<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
+						<Param name="is_default"><Var name="PARAMS" key="is_default"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="contacts"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		update  |  Updates a person's contact.
+			*  
+			*		PARAMS
+			*		 - (int) id               	::  Contact's id;
+			*		 - (int) id_person_company  ::  Person_company's id;
+			*		 - (int) id_contact_type  	::  Contact type's id;
+			*		 - (text) contact         	::  Contact;
+			*		 - (text) config  					::  Contact's specific configuration;
+			*		 - (int) is_default  				::  1 if this contact is the default one of this type (in this company context); 0, otherwise;
+		-->
+		<Function name="update" doc="Updates a person's contact.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Contact's id"/>
+				<Param name="id_person_company" type="int" required="false" doc="Id of this person/company relation"/>
+				<Param name="id_contact_type" type="int" required="false" doc="Contact type"/>
+				<Param name="contact" type="text" required="false" doc="Contact"/>
+				<Param name="config" type="text" required="false" doc="Contact's specific configuration"/>
+				<Param name="is_default" type="int" required="false" doc="1 if this contact is the default one of this type (in this company context); 0, otherwise."/>
+			</Params>
+			<Return/>
+
+			<Begin>
+				<Var name="PARAMS" dump="true"/>
+				<If condition="$PARAMS->id_contact_type != '' &amp;&amp; $PARAMS->contact != ''">
+					<Then>
+						<!-- If the param 'config' wasn't supplied, sets it through contact's type -->
+						<If condition="$PARAMS->config != ''">
+							<Then>
+								<Var name="contactConfig"><Var name="PARAMS" key="config"/></Var>
+							</Then>
+							<Else>
+								<Var name="contactType">
+									<Call function="getContactTypeById">
+										<Param name="id"><Var name="PARAMS" key="id_contact_type"/></Param>
+									</Call>
+								</Var>
+								<Var name="contactConfig"><Var name="contactType" key="config"/></Var>
+							</Else>
+						</If>
+
+						<!-- If there's no default contact of this type, sets this one as the default -->
+						<Var name="defaultContacts" dump="true">
+							<Call function="getByContactType">
+								<Param name="id_person_company"><Var name="PARAMS" key="id_person_company"/></Param>
+								<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
+								<Param name="is_default"><Int>1</Int></Param>
+							</Call>
+						</Var>
+						<Var name="isDefault"><Int>1</Int></Var>
+						<If condition="$defaultContacts->__length == 0">
+							<Then>
+								<Var name="isDefault"><Int>1</Int></Var>
+							</Then>
+							<Else>
+								<ForEach var="defaultContacts" item="contact">
+									<Var name="contact" dump="true"/>
+									<If condition="$contact->id != $PARAMS->id">
+										<Then>
+											<Var name="isDefault"><Int>0</Int></Var>
+										</Then>
+									</If>
+								</ForEach>
+							</Else>
+						</If>
+						
+						<!-- Gets current record -->
+						<Var name="contact">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_contact</Param>
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</DataAccess>
+						</Var>
+						<!-- Updates the record -->
+						<DataAccess method="update">
+							<Param name="_entity">fw_person_contact</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
+							<Param name="contact"><Var name="PARAMS" key="contact"/></Param>
+							<Param name="config"><Var name="contactConfig"/></Param>
+							<Param name="is_default"><Var name="isDefault"/></Param>
+							<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+							<Param name="_modification"><Now/></Param>
+							<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+						</DataAccess>
+						<!-- Gets updated record -->
+						<Var name="updatedContact">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_contact</Param>
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</DataAccess>
+						</Var>
+						<!-- Logs this action -->
+						<Var name="records"><Set/></Var>
+						<Var name="records" key=""><Var name="contact"/></Var>
+						<Var name="records" key=""><Var name="updatedContact"/></Var>
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,person.contact,api</Param>
+							<Param name="action">update</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="records"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logPersonContactUpdate">
+									<Param><Var name="updatedContact" key="id"/></Param>
+									<Param><Var name="updatedContact" key="id_person_company"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+					</Then>
+				</If>
+				
+				<Return/>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		setAsDefault  |  Sets a contact as the default one of its type.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Contact's id.
+		-->
+		<Function name="setAsDefault" doc="Sets a contact as the default one of its type.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Contact's id"/>
+			</Params>
+			<Return/>
+
+			<Begin>
+				<!-- Gets the contact -->
+				<Var name="contact">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				
+				<!-- Clears the current default contact of this type -->
+				<DataAccess method="this,this,clearDefaultContact">
+					<Param name="id_person_company"><Var name="contact" key="id_person_company"/></Param>
+					<Param name="id_contact_type"><Var name="contact" key="id_contact_type"/></Param>
+				</DataAccess>
+
+				<!-- Sets this one as default -->
+				<!-- Updates the record -->
+				<DataAccess method="update">
+					<Param name="_entity">fw_person_contact</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					<Param name="is_default"><Int>1</Int></Param>
+					<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+					<Param name="_modification"><Now/></Param>
+					<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+				</DataAccess>
+				<!-- Gets updated record -->
+				<Var name="updatedContact">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Logs this action -->
+				<Var name="records"><Set/></Var>
+				<Var name="records" key=""><Var name="contact"/></Var>
+				<Var name="records" key=""><Var name="updatedContact"/></Var>
+				<Call library="framework,log,api" function="add">
+					<Param name="type">framework,person.contact,api</Param>
+					<Param name="action">update</Param>
+					<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="records"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logPersonContactUpdate">
+							<Param><Var name="PARAMS" key="id"/></Param>
+							<Param><Var name="updatedContact" key="id_person_company"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return/>
+			</Begin>
+		</Function>
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			C O N T A C T   T Y P E
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		addContactType  |  Adds a new contact type to the system.
+			*  
+			*		PARAMS
+			*		 - (text) name    ::  Contact type's name;
+			*		 - (text) code    ::  Contact type's code;
+			*		 - (text) config  ::  Contact type's default configuration.
+			*
+			*		RETURN
+			*		 - (int) id_contact_type  ::  Returns the created 'fw_contact_type' record's id.
+		-->
+		<Function name="addContactType" doc="Adds a new contact type to the system.">
+			<Params>
+				<Param name="name" type="text" required="false" doc="Contact type's name"/>
+				<Param name="code" type="text" required="false" doc="Contact type's code"/>
+				<Param name="config" type="text" required="false" doc="Contact type's default configuration"/>
+			</Params>
+			<Return type="int" doc="The created 'fw_contact_type' record's id."/>
+
+			<Begin>
+				<!-- Creates the record -->
+				<Var name="contactType" key="id">
+					<DataAccess method="insert" params="PARAMS">
+						<Param name="_entity">fw_contact_type</Param>
+						<Param name="_id_creator"><Var name="USER" key="id"/></Param>
+						<Param name="_creation"><Now/></Param>
+						<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+						<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+						<Param name="_modification"><Now/></Param>
+						<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+					</DataAccess>
+				</Var>
+				<!-- Gets the record just created -->
+				<Var name="contactType">
+					<Call function="getContactTypeById">
+						<Param name="id"><Var name="contactType" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Logs this action -->
+				<Call library="framework,log,api" function="add">
+					<Param name="type">framework,person.contact,api</Param>
+					<Param name="action">insert</Param>
+					<Param name="log_key"><Var name="contactType" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="contactType"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logContactTypeInsert">
+							<Param><Var name="contactType" key="id"/></Param>
+							<Param><Var name="contactType" key="code"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return>
+					<Var name="contactType" key="id"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		deleteContactType  |  Deletes a contact type from the system.
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Contact type's id.
+		-->
+		<Function name="deleteContactType" doc="Deletes a contact type from the system.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Contact type's id"/>
+			</Params>
+			<Return/>
+
+			<Begin>
+				<!-- Gets the record -->
+				<Var name="contactType">
+					<Call function="getContactTypeById">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Deletes the record -->
+				<DataAccess method="delete">
+					<Param name="_entity">fw_contact_type</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+				</DataAccess>
+				<!-- Logs this action -->
+				<Call library="framework,log,api" function="add">
+					<Param name="type">framework,person.contact,api</Param>
+					<Param name="action">delete</Param>
+					<Param name="log_key"><Var name="contactType" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="contactType"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logContactTypeDelete">
+							<Param><Var name="contactType" key="id"/></Param>
+							<Param><Var name="contactType" key="code"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return/>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getContactTypeById  |  Gets a contact type given the id.
+			*
+			*		PARAMS
+			*    - (int) id  ::  Contact type's id.
+			*
+			*		RETURN
+			*	   - (single) fw_contact_type  ::  Returns the corresponding 'fw_contact_type' record. 
+		-->
+		<Function name="getContactTypeById" doc="Gets a contact type given the id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Contact type's id"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_contact_type' record."/>
+
+			<Begin>
+				<Var name="contactType">
+					<DataAccess method="load">
+						<Param name="_entity">fw_contact_type</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="contactType"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAllContactTypes  |  Gets a list of all existing contact types.
+			*
+			*		RETURN
+			*	   - (multiple) fw_contact_type  ::  Returns all 'fw_contact_type' records. 
+		-->
+		<Function name="getAllContactTypes" doc="Gets a list of all existing contact types.">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_contact_type' records."/>
+
+			<Begin>
+				<Var name="contactTypes">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_contact_type</Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="contactTypes"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAllowedContactTypes  |  Gets a list of the contact types allowed (to be edited) by the given person type.
+			*
+			*		PARAMS
+			*    - (int) id_person_type  ::  Person type's id.
+			*
+			*		RETURN
+			*	   - (multiple) fw_contact_type  ::  Returns a set of 'fw_contact_type' records. 
+		-->
+		<Function name="getAllowedContactTypes" doc="Gets a list of the contact types allowed (to be edited) by the given person type.">
+			<Params>
+				<Param name="id_person_type" type="int" required="true" doc="Person type's id"/>
+			</Params>
+			<Return type="multiple" doc="Set of 'fw_contact_type' records."/>
+
+			<Begin>
+				<!-- Gets person type and its allowed contact types' ids -->
+				<Var name="personType">
+					<Call library="gecol.core,person,api" function="getPersonTypeById">
+						<Param name="id"><Var name="PARAMS" key="id_person_type"/></Param>
+					</Call>
+				</Var>
+				<!-- Gets contact types' corresponding records -->
+				<Var name="contactTypes">
+					<DataAccess method="this,this,contactType.getAllowedContactTypes">
+						<Param name="allowed_types"><Var name="personType" key="check_list_allowed_contacts"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="contactTypes"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		updateContactType  |  Updates a contact type.
+			*  
+			*		PARAMS
+			*		 - (int) id       ::  Contact type's id;
+			*		 - (text) name    ::  Contact type's name;
+			*		 - (text) code    ::  Contact type's code;
+			*		 - (text) config  ::  Contact type's default configuration.
+		-->
+		<Function name="updateContactType" doc="Updates a contact type.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Contact type's id"/>
+				<Param name="name" type="text" required="false" doc="Contact type's name"/>
+				<Param name="code" type="text" required="false" doc="Contact type's code"/>
+				<Param name="config" type="text" required="false" doc="Contact type's default configuration"/>
+			</Params>
+			<Return/>
+
+			<Begin>
+				<!-- Gets the record -->
+				<Var name="contactType">
+					<Call function="getContactTypeById">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Updates the record -->
+				<DataAccess method="update" params="PARAMS">
+					<Param name="_entity">fw_contact_type</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+					<Param name="_modification"><Now/></Param>
+					<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+				</DataAccess>
+				<!-- Gets the updated record -->
+				<Var name="updatedContactType">
+					<Call function="getContactTypeById">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Logs this action -->
+				<Var name="records"><Set/></Var>
+				<Var name="records" key=""><Var name="contactType"/></Var>
+				<Var name="records" key=""><Var name="updatedContactType"/></Var>
+				<Call library="framework,log,api" function="add">
+					<Param name="type">framework,person.contact,api</Param>
+					<Param name="action">update</Param>
+					<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="records"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logContactTypeUpdate">
+							<Param><Var name="PARAMS" key="id"/></Param>
+							<Param><Var name="updatedContactType" key="code"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return/>
+			</Begin>
+		</Function>
+	</Library>
+</Node>

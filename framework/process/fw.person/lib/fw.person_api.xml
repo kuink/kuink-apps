@@ -1,0 +1,1034 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Doc>
+		<![CDATA[ Person (Framework) API  ::  Allows the communication with 'fw_person' and 'fw_person_company' tables. ]]>
+	</Doc>
+	<Permissions/>
+	<Configuration/>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+		<Use name="StringLib" type="lib"/>
+	</Libraries>
+	<Params/>
+	<Screens/>
+	<Actions/>
+	<Library forceinterface="true">
+		<!--
+			*		add  |  Adds a new person (framework).
+			*  
+			*		PARAMS
+			*    - (text) uid      						 ::  Person's unique identifier;
+			*    - (text) public_key  				 ::  Person's public key
+			*    - (text) private_key  				 ::  Person's private key;
+			*    - (int) id_title    					 ::  Person's title;
+			*    - (text) name         				 ::  Person's full name;
+			*    - (text) given_name           ::  Person's first name(s);
+			*    - (text) surname           	 ::  Person's surname(s);
+			*    - (text) display_name         ::  Person's display name (shown in the system)
+			*    - (char) id_sex_code          ::  Person's sex (F | M)
+			*    - (int) birthday           	 ::  Person's birthday;
+			*    - (int) id_iddoc_country      ::  Person's identification document country;
+			*    - (int) id_iddoc_type         ::  Person's identification document type;
+			*    - (text) iddoc_number         ::  Person's identification document number;
+			*    - (text) iddoc_expiry_date    ::  Person's identification document expiry date;
+			*    - (int) id_nationality        ::  Person's nationality;
+			*    - (text) tax_number           ::  Person's tax number;
+			*    - (text) health_number        ::  Person's health number;
+			*    - (text) social_sec_number    ::  Person's  social security number;
+			*    - (text) sps_number           ::  Person's social protective service number;
+			*    - (int) id_sps_type           ::  Person's social protective service type;
+			*    - (int) id_place_of_birth		 ::  Person's country of birth;
+			*    - (int) id_district           ::  Person's district of birth;
+			*    - (int) id_county           	 ::  Person's county of birth;
+			*    - (int) id_civil_parish       ::  Person's civil parish of birth;
+			*    - (int) id_residence_country  ::  Person's residence country;
+			*    - (text) street_address       ::  Person's street address;
+			*    - (text) postal_code          ::  Person's postal code;
+			*    - (text) uri				           ::  Person's URI;
+			*    - (int) id_qualification      ::  Person's qualifications;
+			*    - (int) id_job_sector         ::  Person's job sector;
+			*    - (int) id_job_class          ::  Person's job class;
+			*    - (int) id_job           		 ::  Person's job;
+			*    - (text) job_employer				 ::  Person's job employer;
+			*    - (int) id_marital_status     ::  Person's marital status;
+			*    - (text) obs           			 ::  Public observations about this person;
+			*    - (text) obs_private          ::  Private observations about this person;
+			*    - (int) _is_system            ::  1 if this is a system kind of person.
+			*
+			*		RETURN
+			*		 - (int) id_person  ::  Returns the created 'fw_person' record's id.
+		-->
+		<Function name="add" doc="Adds a new person (framework).">
+			<Params>
+				<Param name="uid" type="text" required="false" doc="Person's unique identifier"/>
+				<Param name="public_key" type="text" required="false" doc="Person's public key"/>
+				<Param name="private_key" type="text" required="false" doc="Person's private key"/>
+				<Param name="id_title" type="int" required="false" doc="Person's title"/>
+				<Param name="name" type="text" required="false" doc="Person's full name"/>
+				<Param name="given_name" type="text" required="false" doc="Person's first name(s)"/>
+				<Param name="surname" type="text" required="false" doc="Person's surname(s)"/>
+				<Param name="display_name" type="text" required="false" doc="Person's display name (shown in the system)"/>
+				<Param name="id_sex_code" type="int" required="false" doc="Person's sex (F | M)"/>
+				<Param name="birthday" type="int" required="false" doc="Person's birthday"/>
+				<Param name="id_iddoc_country" type="int" required="false" doc="Person's identification document country"/>
+				<Param name="id_iddoc_type" type="int" required="false" doc="Person's identification document type"/>
+				<Param name="iddoc_number" type="text" required="false" doc="Person's identification document number"/>
+				<Param name="iddoc_expiry_date" type="text" required="false" doc="Person's identification document expiry date"/>
+				<Param name="id_nationality" type="int" required="false" doc="Person's nationality"/>
+				<Param name="tax_number" type="text" required="false" doc="Person's tax number"/>
+				<Param name="health_number" type="text" required="false" doc="Person's health number"/>
+				<Param name="social_sec_number" type="text" required="false" doc="Person's social security number"/>
+				<Param name="sps_number" type="text" required="false" doc="Person's social protective service number"/>
+				<Param name="id_sps_type" type="int" required="false" doc="Person's social protective service type"/>
+				<Param name="id_place_of_birth" type="int" required="false" doc="Person's country of birth"/>
+				<Param name="id_district" type="int" required="false" doc="Person's district of birth"/>
+				<Param name="id_county" type="int" required="false" doc="Person's county of birth"/>
+				<Param name="id_civil_parish" type="int" required="false" doc="Person's civil parish of birth"/>
+				<Param name="id_residence_country" type="int" required="false" doc="Person's residence country"/>
+				<Param name="street_address" type="text" required="false" doc="Person's street address"/>
+				<Param name="postal_code" type="text" required="false" doc="Person's postal code"/>
+				<Param name="uri" type="text" required="false" doc="Person's URI"/>
+				<Param name="id_qualification" type="int" required="false" doc="Person's qualifications"/>
+				<Param name="id_job_sector" type="int" required="false" doc="Person's job sector"/>
+				<Param name="id_job_class" type="int" required="false" doc="Person's job class"/>
+				<Param name="id_job" type="int" required="false" doc="Person's job"/>
+				<Param name="job_employer" type="text" required="false" doc="Person's job employer"/>
+				<Param name="id_marital_status" type="int" required="false" doc="Person's marital status"/>
+				<Param name="obs" type="text" required="false" doc="Public observations about this person"/>
+				<Param name="obs_private" type="text" required="false" doc="Private observations about this person"/>
+				<Param name="_is_system" type="int" required="false" doc="1 if this is a system person (eg. services)"/>
+			</Params>
+			<Return type="int" doc="The created 'fw_person' record's id."/>
+			
+			<Begin>
+				<Transaction>
+					<Try>
+						<Instructions>
+							<!-- Sets empty/null params -->
+							<ForEach var="PARAMS" key="paramKey" item="paramValue">
+								<If condition="$paramValue == '' &amp;&amp; $paramValue !== 0">
+									<Then>
+										<Var name="paramValue"><Null/></Var>
+									</Then>
+								</If>
+								<Var name="fwPersonParams" key="$paramKey"><Var name="paramValue"/></Var>
+							</ForEach>
+							<!-- Sets iddoc_number param -->
+							<Var name="fwPersonParams" key="iddoc_number">
+								<StringLib method="removeWhiteSpaces">
+									<Param><Var name="fwPersonParams" key="iddoc_number"/></Param>
+								</StringLib>
+							</Var>
+							<Var name="fwPersonParams" key="iddoc_number">
+								<StringLib method="toUpper">
+									<Param><Var name="fwPersonParams" key="iddoc_number"/></Param>
+								</StringLib>
+							</Var>
+
+							<!-- Creates the record -->
+							<Var name="person" key="id">
+								<DataAccess method="insert" params="fwPersonParams">
+									<Param name="_entity">fw_person</Param>
+									<Param name="_id_creator"><Var name="USER" key="id"/></Param>
+									<Param name="_creation"><Now/></Param>
+									<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+									<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+									<Param name="_modification"><Now/></Param>
+									<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+								</DataAccess>
+							</Var>
+							<!-- Gets the record just created -->
+							<Var name="person">
+								<Call function="get">
+									<Param name="id"><Var name="person" key="id"/></Param>
+								</Call>
+							</Var>
+							<!-- Logs this action -->
+							<Call library="framework,log,api" function="add">
+								<Param name="type">framework,fw.person,api</Param>
+								<Param name="action">insert</Param>
+								<Param name="log_key"><Var name="person" key="id"/></Param>
+								<Param name="context_data">
+									<UtilsLib method="jsonEncode">
+										<Param><Var name="person"/></Param>
+									</UtilsLib>
+								</Param>
+								<Param name="message">
+									<Lang key="logPersonInsert">
+										<Param><Var name="person" key="id"/></Param>
+									</Lang>
+								</Param>
+							</Call>
+						</Instructions>
+						<Catch>
+							<!-- Something went wrong, sends an exception -->
+							<RollBack/>
+							<Exception>
+								<String.parse>Error writing to database.</String.parse>
+							</Exception>
+						</Catch>
+					</Try>
+				</Transaction>
+
+				<Return>
+					<Var name="person" key="id"/>
+				</Return>
+			</Begin>
+		</Function>
+	
+
+		<!--
+			*		delete  |  Deletes a person (framework).
+			*  
+			*		PARAMS
+			*		 - (int) id  ::  Person's id.
+		-->
+		<Function name="delete" doc="Deletes a person (framework).">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Person's id"/>
+			</Params>
+			<Return/>
+
+			<Begin>
+				<!-- Gets the record -->
+				<Var name="person">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Deletes the record -->
+				<DataAccess method="delete">
+					<Param name="_entity">fw_person</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+				</DataAccess>
+				<!-- Logs this action -->
+				<Call library="framework,log,api" function="add">
+					<Param name="type">framework,fw.person,api</Param>
+					<Param name="action">delete</Param>
+					<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="person"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logPersonDelete">
+							<Param><Var name="PARAMS" key="id"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return/>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		get  |  Gets a person (framework only) given the id.
+			*
+			*		PARAMS
+			*    - (int) id  ::  Person's id.
+			*
+			*		RETURN
+			*	   - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
+		-->
+		<Function name="get" docs="Gets a person (framework only) given the id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Person's id"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_person' record."/>
+
+			<Begin>
+				<Var name="person">
+					<DataAccess method="load">
+						<Param name="_entity">fw_person</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="person"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAll  |  Gets a list of all persons (framework only).
+			*
+			*		RETURN
+			*	   - (multiple) fw_person  ::  Returns all 'fw_person' records. 
+		-->
+		<Function name="getAll" docs="Gets a list of all persons (framework only).">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_person' records."/>
+
+			<Begin>
+				<Var name="persons">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_person</Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="persons"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getByUsername  |  Gets a person - framework - given the username (uid).
+			*
+			*		PARAMS
+			*    - (text) username  ::  Person's username (uid).
+			*
+			*		RETURN
+			*	   - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
+		-->
+		<Function name="getByUsername" docs="Gets a person - framework - given the username (uid).">
+			<Params>
+				<Param name="username" type="int" required="true" doc="Person's username (uid)"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_person' record."/>
+
+			<Begin>
+				<Var name="person">
+					<DataAccess method="load">
+						<Param name="_entity">fw_person</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="person"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		update  |  Updates a person (framework).
+			*  
+			*		PARAMS
+			*    - (int) id  									 ::  Person's id.
+			*    - (text) uid      						 ::  Person's unique identifier;
+			*    - (text) public_key  				 ::  Person's public key
+			*    - (text) private_key  				 ::  Person's private key;
+			*    - (int) id_title    					 ::  Person's title;
+			*    - (text) name         				 ::  Person's full name;
+			*    - (text) given_name           ::  Person's first name(s);
+			*    - (text) surname           	 ::  Person's surname(s);
+			*    - (text) display_name         ::  Person's display name (shown in the system)
+			*    - (char) id_sex_code          ::  Person's sex (F | M)
+			*    - (int) birthday           	 ::  Person's birthday;
+			*    - (int) id_iddoc_country      ::  Person's identification document country;
+			*    - (int) id_iddoc_type         ::  Person's identification document type;
+			*    - (text) iddoc_number         ::  Person's identification document number;
+			*    - (text) iddoc_expiry_date    ::  Person's identification document expiry date;
+			*    - (int) id_nationality        ::  Person's nationality;
+			*    - (text) tax_number           ::  Person's tax number;
+			*    - (text) health_number        ::  Person's health number;
+			*    - (text) social_sec_number    ::  Person's  social security number;
+			*    - (text) sps_number           ::  Person's social protective service number;
+			*    - (int) id_sps_type           ::  Person's social protective service type;
+			*    - (int) id_place_of_birth		 ::  Person's country of birth;
+			*    - (int) id_district           ::  Person's district of birth;
+			*    - (int) id_county           	 ::  Person's county of birth;
+			*    - (int) id_civil_parish       ::  Person's civil parish of birth;
+			*    - (int) id_residence_country  ::  Person's residence country;
+			*    - (text) street_address       ::  Person's street address;
+			*    - (text) postal_code          ::  Person's postal code;
+			*    - (text) uri				           ::  Person's URI;
+			*    - (int) id_qualification      ::  Person's qualifications;
+			*    - (int) id_job_sector         ::  Person's job sector;
+			*    - (int) id_job_class          ::  Person's job class;
+			*    - (int) id_job           		 ::  Person's job;
+			*    - (text) job_employer				 ::  Person's job employer;
+			*    - (int) id_marital_status     ::  Person's marital status;
+			*    - (text) obs           			 ::  Public observations about this person;
+			*    - (text) obs_private          ::  Private observations about this person;
+			*    - (int) _is_system            ::  1 if this is a system kind of person.
+			*
+			*		RETURN
+			*		 - (int) id_person  ::  Returns the updated 'fw_person' record id.
+		-->
+		<Function name="update" doc="Updates a person (framework).">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Person's id"/>
+				<Param name="uid" type="text" required="false" doc="Person's unique identifier"/>
+				<Param name="public_key" type="text" required="false" doc="Person's public key"/>
+				<Param name="private_key" type="text" required="false" doc="Person's private key"/>
+				<Param name="id_title" type="int" required="false" doc="Person's title"/>
+				<Param name="name" type="text" required="false" doc="Person's full name"/>
+				<Param name="given_name" type="text" required="false" doc="Person's first name(s)"/>
+				<Param name="surname" type="text" required="false" doc="Person's surname"/>
+				<Param name="display_name" type="text" required="false" doc="Person's display name (shown in the system)"/>
+				<Param name="id_sex_code" type="int" required="false" doc="Person's sex (F | M)"/>
+				<Param name="birthday" type="int" required="false" doc="Person's birthday"/>
+				<Param name="id_iddoc_country" type="int" required="false" doc="Person's identification document country"/>
+				<Param name="id_iddoc_type" type="int" required="false" doc="Person's identification document type"/>
+				<Param name="iddoc_number" type="text" required="false" doc="Person's identification document number"/>
+				<Param name="iddoc_expiry_date" type="int" required="false" doc="Person's identification document expiry date"/>
+				<Param name="id_nationality" type="int" required="false" doc="Person's nationality"/>
+				<Param name="tax_number" type="text" required="false" doc="Person's tax number"/>
+				<Param name="health_number" type="text" required="false" doc="Person's health number"/>
+				<Param name="social_sec_number" type="text" required="false" doc="Person's social security number"/>
+				<Param name="sps_number" type="text" required="false" doc="Person's social protective service number"/>
+				<Param name="id_sps_type" type="int" required="false" doc="Person's social protective service type"/>
+				<Param name="id_place_of_birth" type="int" required="false" doc="Person's country of birth"/>
+				<Param name="id_district" type="int" required="false" doc="Person's district of birth"/>
+				<Param name="id_county" type="int" required="false" doc="Person's county of birth"/>
+				<Param name="id_civil_parish" type="int" required="false" doc="Person's civil parish of birth"/>
+				<Param name="id_residence_country" type="int" required="false" doc="Person's residence country"/>
+				<Param name="street_address" type="text" required="false" doc="Person's street address"/>
+				<Param name="postal_code" type="text" required="false" doc="Person's postal code"/>
+				<Param name="uri" type="text" required="false" doc="Person's URI"/>
+				<Param name="id_qualification" type="int" required="false" doc="Person's qualifications"/>
+				<Param name="id_job_sector" type="int" required="false" doc="Person's job sector"/>
+				<Param name="id_job_class" type="int" required="false" doc="Person's job class"/>
+				<Param name="id_job" type="int" required="false" doc="Person's job"/>
+				<Param name="job_employer" type="text" required="false" doc="Person's job employer"/>
+				<Param name="id_marital_status" type="int" required="false" doc="Person's marital status"/>
+				<Param name="obs" type="text" required="false" doc="Public observations about this person"/>
+				<Param name="obs_private" type="text" required="false" doc="Private observations about this person"/>
+				<Param name="_is_system" type="int" required="false" doc="1 if this is a system kind of person"/>
+			</Params>
+			<Return type="int" doc="The updated 'fw_person' record id."/>
+
+			<Begin>
+				<Transaction>
+					<Try>
+						<Instructions>
+							<!-- Sets empty/null params -->
+							<ForEach var="PARAMS" key="paramKey" item="paramValue">
+								<If condition="$paramValue == '' &amp;&amp; $paramValue !== 0">
+									<Then>
+										<Var name="paramValue"><Null/></Var>
+									</Then>
+								</If>
+								<Var name="fwPersonParams" key="$paramKey"><Var name="paramValue"/></Var>
+							</ForEach>
+							<!-- Sets iddoc_number param -->
+							<Var name="PARAMS" key="iddoc_number">
+								<StringLib method="removeWhiteSpaces">
+									<Param><Var name="fwPersonParams" key="iddoc_number"/></Param>
+								</StringLib>
+							</Var>
+							<Var name="PARAMS" key="iddoc_number">
+								<StringLib method="toUpper">
+									<Param><Var name="fwPersonParams" key="iddoc_number"/></Param>
+								</StringLib>
+							</Var>
+
+							<!-- Gets current record -->
+							<Var name="fwPerson">
+								<DataAccess method="load">
+									<Param name="_entity">fw_person</Param>
+									<Param name="id"><Var name="person" key="id"/></Param>
+								</DataAccess>
+							</Var>
+							<!-- Updates the record -->
+							<DataAccess method="update" params="fwPersonParams">
+								<Param name="_entity">fw_person</Param>
+								<Param name="id"><Var name="person" key="id"/></Param>
+								<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+								<Param name="_modification"><Now/></Param>
+								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+							</DataAccess>
+							<!-- Gets updated record -->
+							<Var name="updatedFwPerson">
+								<DataAccess method="load">
+									<Param name="_entity">fw_person</Param>
+									<Param name="id"><Var name="person" key="id"/></Param>
+								</DataAccess>
+							</Var>
+							<!-- Logs this action -->
+							<Var name="records"><Set/></Var>
+							<Var name="records" key=""><Var name="fwPerson"/></Var>
+							<Var name="records" key=""><Var name="updatedFwPerson"/></Var>
+							<Call library="framework,log,api" function="add">
+								<Param name="type">framework,person,api</Param>
+								<Param name="action">update</Param>
+								<Param name="log_key"><Var name="person" key="id"/></Param>
+								<Param name="context_data">
+									<UtilsLib method="jsonEncode">
+										<Param><Var name="records"/></Param>
+									</UtilsLib>
+								</Param>
+								<Param name="message">
+									<Lang key="logPersonUpdate">
+										<Param><Var name="person" key="id"/></Param>
+									</Lang>
+								</Param>
+							</Call>
+						</Instructions>
+						<Catch>
+							<!-- Something went wrong, sends an exception and shows an error message -->
+							<RollBack/>
+							<Exception>
+								<String.parse>Error writing to database.</String.parse>
+							</Exception>
+						</Catch>
+					</Try>
+				</Transaction>
+
+				<Return>
+					<Var name="person" key="id"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		searchFullText  |  Searches for persons according to the given criteria.
+			*  
+			*		PARAMS
+			*    - (text) text     ::  Search text;
+			*		 - (int) pagesize  ::  Current page's size;
+			*		 - (int) pagenum   ::  Current page's number.
+			*
+			*		RETURN
+			*		 - (multiple) person  ::  Returns a set of 'person' records.
+		-->
+		<Function name="searchFullText" doc="Searches for persons according to the given criteria.">
+			<Params>
+				<Param name="text" type="text" required="true" doc="Search text"/>
+				<Param name="pagesize" type="int" required="true" doc="Current page's size"/>
+				<Param name="pagenum" type="int" required="true" doc="Current page's number"/>
+			</Params>
+			<Return type="multiple" doc="Set of 'person' records."/>
+
+			<Begin>
+				<Var name="persons">
+					<DataAccess method="this,this,search">
+						<Param name="text" wildcard="fullSplit"><Var name="PARAMS" key="text"/></Param>
+						<Param name="_pageSize"><Var name="PARAMS" key="pagesize"/></Param>
+						<Param name="_pageNum"><Var name="PARAMS" key="pagenum"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="persons"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		setUid  |  Updates a person's unique identifier.
+			*  
+			*		PARAMS
+			*    - (int) id    ::  Person's id;
+			*		 - (text) uid  ::  Person's unique identifier.
+		-->
+		<Function name="setUid" doc="Updates a person's unique identifier.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Person's id"/>
+				<Param name="uid" type="text" required="true" doc="Person's unique identifier"/>
+			</Params>
+			<Return/>
+
+			<Begin>
+				<!-- Gets the record -->
+				<Var name="person">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Updates the record -->
+				<DataAccess method="update">
+					<Param name="_entity">fw_person</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+					<Param name="_modification"><Now/></Param>
+					<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+				</DataAccess>
+				<!-- Gets the updated record -->
+				<Var name="updatedPerson">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Logs this action -->
+				<Var name="records"><Set/></Var>
+				<Var name="records" key=""><Var name="person"/></Var>
+				<Var name="records" key=""><Var name="updatedPerson"/></Var>
+				<Call library="framework,log,api" function="add">
+					<Param name="context">framework,fw.person,api</Param>
+					<Param name="action">update</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="records"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logPersonUpdate">
+							<Param><Var name="PARAMS" key="id"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return/>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		setTaxNumber  |  Updates a person's tax number.
+			*  
+			*		PARAMS
+			*    - (int) id    			 ::  Person's id;
+			*		 - (text) tax_number ::  Person's tax number.
+		-->
+		<Function name="setTaxNumber" doc="Updates a person's tax number.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Person's id"/>
+				<Param name="tax_number" type="text" required="true" doc="Person's tax number"/>
+			</Params>
+			<Return/>
+
+			<Begin>
+				<!-- Gets the record -->
+				<Var name="person">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Updates the record -->
+				<DataAccess method="update">
+					<Param name="_entity">fw_person</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					<Param name="tax_number"><Var name="PARAMS" key="tax_number"/></Param>
+					<Param name="_id_updater"><Var name="USER" key="id"/></Param>
+					<Param name="_modification"><Now/></Param>
+					<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+				</DataAccess>
+				<!-- Gets the updated record -->
+				<Var name="updatedPerson">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</Call>
+				</Var>
+				<!-- Logs this action -->
+				<Var name="records"><Set/></Var>
+				<Var name="records" key=""><Var name="person"/></Var>
+				<Var name="records" key=""><Var name="updatedPerson"/></Var>
+				<Call library="framework,log,api" function="add">
+					<Param name="context">framework,fw.person,api</Param>
+					<Param name="action">update</Param>
+					<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					<Param name="context_data">
+						<UtilsLib method="jsonEncode">
+							<Param><Var name="records"/></Param>
+						</UtilsLib>
+					</Param>
+					<Param name="message">
+						<Lang key="logPersonUpdate">
+							<Param><Var name="PARAMS" key="id"/></Param>
+						</Lang>
+					</Param>
+				</Call>
+
+				<Return/>
+			</Begin>
+		</Function>
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			P E R S O N   C O M P A N Y
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		addToCompany  |  Adds a person to a company.
+			*
+			*		PARAMS
+			*    - (int) id_person   ::  Person's id;
+			*    - (int) id_company  ::  Company's id;
+			*    - (int) is_default  ::  1 if this is the default company for this person; 0, otherwise.
+			*
+			*		RETURN
+			*		 - (int) id_person_company  ::  Returns the created 'fw_person_company' record's id.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
+      *    - (code) -2  ::  Returns -2 if the company doesn't exist.
+      *    - (code) -3  ::  Returns -3 if the person already belongs to the company.
+		-->
+    <Function name="addToCompany" doc="Adds a person to a company.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+				<Param name="id_company" type="int" required="true" doc="Company's id"/>
+        <Param name="is_default" type="int" required="true" doc="1 if this is the default company for this person; 0, otherwise"/>
+      </Params>
+      <Return type="int" doc="The created 'fw_person_company' record's id."/>
+      <Errors>
+        <Error code="-1" doc="The person doesn't exist."/>
+        <Error code="-2" doc="The company doesn't exist."/>
+				<Error code="-3" doc="The person already belongs to the company."/>
+      </Errors>
+
+      <Begin>
+				<!-- Sets the default value -->
+        <Var name="error">0</Var>
+
+        <!-- Checks if the person exists: if not, returns -1 -->
+        <Var name="person">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id_person"/></Param>
+					</Call>
+        </Var>
+        <If condition="$person->__length == 0">
+          <Then>
+            <Var name="error">-1</Var>
+          </Then>
+        </If>
+        <!-- Checks if the company exists: if not, returns -2 -->
+        <Var name="company">
+          <Call library="framework,company,api" function="existsById">
+            <Param name="id"><Var name="PARAMS" key="id_company"/></Param>
+          </Call>
+        </Var>
+        <If condition="$company == 0">
+          <Then>
+            <Var name="error">-2</Var>
+          </Then>
+        </If>
+        <!-- Checks if the person already belongs to the company: if so, returns -3 -->
+        <Var name="contract">
+					<Call function="getPersonCompany">
+						<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+					</Call>
+        </Var>
+				<If condition="$contract->__length != 0">
+          <Then>
+            <Var name="error">-3</Var>
+          </Then>
+        </If>
+
+        <If condition="$error == 0 &amp;&amp; $contract->id == ''">
+          <Then>
+            <!-- If this is supposed to be the default company, clears the one that already exists -->
+            <If condition="$PARAMS->is_default == 1">
+              <Then>
+                <DataAccess method="this,this,personCompany.clearDefaultCompany">
+                  <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                </DataAccess>
+              </Then>
+            </If>
+						<!-- Creates the record -->
+            <Var name="personCompany" key="id">
+              <DataAccess method="insert">
+                <Param name="_entity">fw_person_company</Param>
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+                <Param name="is_default"><Var name="PARAMS" key="is_default"/></Param>
+								<Param name="is_active"><Int>1</Int></Param>
+                <Param name="_id_updater"><Var name="USER" key="id"/></Param>
+                <Param name="_modification"><Now/></Param>
+                <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+								<Param name="_id_creator"><Var name="USER" key="id"/></Param>
+                <Param name="_creation"><Now/></Param>
+                <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+              </DataAccess>
+            </Var>
+            <!-- Gets created record -->
+            <Var name="personCompany">
+              <DataAccess method="load">
+                <Param name="_entity">fw_person_company</Param>
+                <Param name="id"><Var name="personCompany" key="id"/></Param>
+              </DataAccess>
+            </Var>
+            <!-- Logs this action -->
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,fw.person,api</Param>
+              <Param name="action">insert</Param>
+              <Param name="log_key"><Var name="PARAMS" key="id_person"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="personCompany"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logPersonCompanyInsert">
+                  <Param><Var name="PARAMS" key="id_person"/></Param>
+									<Param><Var name="PARAMS" key="id_company"/></Param>
+                  <Param><Var name="personCompany" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>
+
+						<!-- Returns person_company's id -->
+						<Var name="error"><Var name="personCompany" key="id"/></Var>
+						<Trace><String.parse>Person $PARAMS->id_person added to company $PARAMS->id_company.</String.parse></Trace>
+          </Then>
+        </If>
+
+        <Return>
+          <Var name="error"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+		<!--
+			*		getPersonCompany  |  Gets a person_company given its id or given a person and a company.
+			*
+			*		PARAMS
+			*    - (int) id          ::  Person_company's id;
+			*    - (int) id_person   ::  Person's id;
+			*    - (int) id_company  ::  Company's id.
+			*
+			*		RETURN
+			*	   - (single) fw_person_company  ::  Returns the corresponding 'fw_person_company' record. 
+		-->
+		<Function name="getPersonCompany" doc="Gets a person_company given its id or given a person and a company.">
+			<Params>
+				<Param name="id" type="int" required="false" doc="Person_company's id"/>
+				<Param name="id_person" type="int" required="false" doc="Person's id"/>
+				<Param name="id_company" type="int" required="false" doc="Company's id"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_person_company' record."/>
+
+			<Begin>
+				<!-- If no param 'id' was supplied, gets person_company through id_person and id_company -->
+				<If condition="$PARAMS->id != ''">
+					<Then>
+						<Var name="personCompany">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_company</Param>
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</DataAccess>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="personCompany">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_company</Param>
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+							</DataAccess>
+						</Var>
+					</Else>
+				</If>
+
+				<Return>
+					<Var name="personCompany"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		setDefaultCompany  |  Sets a person's default company to the given one.
+			*
+			*		PARAMS
+			*    - (int) id_person   ::  Person's id;
+			*    - (int) id_company  ::  Company's id.
+			*
+			*		RETURN
+			*		 - (int) 0  ::  Returns 0 if the person_company was updated.
+			*
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
+			*	   - (code) -2  ::  Returns -2 if the company doesn't exist.
+		-->
+		<Function name="setDefaultCompany" doc="Sets a person's default company to the given one.">
+			<Params>
+				<Param name="id_person" type="int" required="true" doc="Person's id"/>
+				<Param name="id_company" type="int" required="true" doc="Company's id"/>
+			</Params>
+			<Return type="int" doc="0 if the person_company was updated."/>
+			<Errors>
+				<Error code="-1" doc="The person doesn't exist."/>
+        <Error code="-2" doc="The company doesn't exist."/>
+			</Errors>
+
+			<Begin>
+				<!-- Sets default value -->
+				<Var name="error">0</Var>
+
+				<!-- Checks if the person exists: if not, returns -1 -->
+				<Var name="person">
+					<Call function="get">
+						<Param name="id"><Var name="PARAMS" key="id_person"/></Param>
+					</Call>
+				</Var>
+				<If condition="$person->__length == 0">
+					<Then>
+						<Var name="error">-1</Var>
+					</Then>
+				</If>
+				<!-- Checks if the company exists: if not, returns -2 -->
+				<Var name="company">
+					<Call library="framework,company,api" function="getById">
+						<Param name="id"><Var name="PARAMS" key="id_company"/></Param>
+					</Call>
+				</Var>
+				<If condition="$company->__length == 0">
+					<Then>
+						<Var name="error">-2</Var>
+					</Then>
+				</If>
+				<If condition="$error == 0">
+					<Then>
+						<!-- Gets the record -->
+						<Var name="personCompany">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_company</Param>
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+							</DataAccess>
+						</Var>
+						<!-- Updates the record -->
+						<DataAccess method="update">
+							<Param name="_entity">fw_person_company</Param>
+							<Param name="id"><Var name="personCompany" key="id"/></Param>
+							<Param name="is_default"><Int>1</Int></Param>
+						</DataAccess>
+						<!-- Gets the updated record -->
+						<Var name="updatedPersonCompany">
+							<Call function="getPersonCompany">
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+							</Call>
+						</Var>
+						<!-- Logs this action -->
+						<Var name="records"><Set/></Var>
+						<Var name="records" key=""><Var name="personCompany"/></Var>
+						<Var name="records" key=""><Var name="updatedPersonCompany"/></Var>
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,fw.person,api</Param>
+							<Param name="action">update</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="records"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logPersonCompanyUpdate">
+									<Param><Var name="PARAMS" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+					</Then>
+				</If>
+				
+				<Return>
+					<Var name="error"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			R O L E S
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		hasRole  |  Checks if a person has a role, given its code.
+			*  
+			*		PARAMS
+			*		 - (int) id_person   ::  Person's id;
+			*		 - (text) code_role  ::  Role's code.
+			*
+			*		RETURN
+			*	   - (int) 1 | 0  ::  Returns 1 if the person has the role; 0, if it doesn't.
+		-->
+		<Function name="hasRole" doc="Checks if a person has a role, given its code.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+        <Param name="code_role" type="String" required="true" doc="Role's code"/>
+      </Params>
+      <Return type="int" doc="1 if the person has the role; 0, if it doesn't."/>
+      
+      <Begin>
+				<Var name="result">0</Var>
+
+				<!-- Checks if the person has the role -->
+        <Var name="roles">
+          <Execute method="this,this,hasRole">
+            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="code_role"><Var name="PARAMS" key="code_role"/></Param>
+          </Execute>
+        </Var>
+				<!-- If it does, returns 1 -->
+				<If condition="$roles->__length &gt; 0">
+					<Then>
+						<Var name="result">1</Var>
+					</Then>
+				</If>
+
+        <Return>
+          <Var name="result"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			T I T L E   |   S P S _ T Y P E
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		getAllTitles  |  Gets a list of all existing titles for a person.
+			*
+			*		RETURN
+			*	   - (multiple) fw_title  ::  Returns all 'fw_title' records.
+		-->
+		<Function name="getAllTitles" doc="Gets a list of all existing titles for a person.">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_title' records."/>
+			
+			<Begin>
+				<Var name="titles">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_title</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="titles"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAllSpsTypes  |  Gets a list of all existing social protective services.
+			*
+			*		RETURN
+			*	   - (multiple) fw_sps_type  ::  Returns all 'fw_sps_type' records.
+		-->
+		<Function name="getAllSpsTypes" doc="Gets a list of all existing social protective services.">
+			<Params/>
+			<Return type="multiple" doc="All 'fw_sps_type' records."/>
+			
+			<Begin>
+				<Var name="spsTypes">
+					<DataAccess method="getAll">
+						<Param name="_entity">fw_sps_type</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="spsTypes"/>
+				</Return>
+			</Begin>
+		</Function>
+	</Library>
+</Node>

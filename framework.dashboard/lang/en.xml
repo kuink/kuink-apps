@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<Lang>
+	<Strings>
+		<!--	________________________________________________________________________________________________
+			*
+			*			D A S H B O A R D    ::    Main Page
+			*		________________________________________________________________________________________________
+		-->
+		<String key="framework.dashboard"><![CDATA[ Dashboard ]]></String>
+		<String key="permissions"><![CDATA[ Permissions ]]></String>
+		<String key="users"><![CDATA[ Users ]]></String>
+		<String key="capabilities"><![CDATA[ Capabilities ]]></String>
+		<String key="roles"><![CDATA[ Roles ]]></String>
+		<String key="roleCapabilities"><![CDATA[ Role-Capabilities ]]></String>
+		<String key="allocations"><![CDATA[ Allocations ]]></String>
+		<String key="records"><![CDATA[ Records ]]></String>
+		<String key="listRecords"><![CDATA[ List Records ]]></String>
+		<String key="appFiles"><![CDATA[ Files ]]></String>
+		<String key="manage"><![CDATA[ Manage ]]></String>
+		<String key="main"><![CDATA[ Main ]]></String>
+		<String key="general"><![CDATA[ Main ]]></String> 
+
+		<String key="id_role"><![CDATA[Papel]]></String>
+		<String key="id_capability"><![CDATA[Capacidade]]></String>
+
+		<!-- fw_capability -->
+		<String key="is_global"><![CDATA[Global?]]></String>
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			P E R M I S S I O N S    ::    System permissions (roles | capabilities | allocations)
+			*		________________________________________________________________________________________________
+		-->
+		<String key="servicesHeader">
+			<![CDATA[
+				<center><h2><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Serviços</span></p></h2></center>
+			]]>
+		</String>	
+
+		
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			U S E R    M E S S A G E S    ::    General user messages
+			*		________________________________________________________________________________________________
+		-->
+		<String key="personDoesNotExist"><![CDATA[ O utente indicado não existe. ]]></String>
+		<String key="roleDoesNotExist"><![CDATA[ A função indicada não existe. ]]></String>
+		<String key="companyDoesNotExist"><![CDATA[ A empresa indicada não existe. ]]></String>
+		<String key="personAlreadyHaveRoleInCompany"><![CDATA[ O utente já tem a função na empresa. ]]></String>
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			A P P   F I L E S    ::    Main Page
+			*		________________________________________________________________________________________________
+		-->
+		<String key="directory" value="Pasta" />
+		<String key="currentDirectory" value="Pasta atual" />
+		<String key="goTo" value="Ir para" />
+		<String key="files" value="Ficheiros" />
+		<String key="preview" value="Pré-visualização" />
+		<String key="basename" value="Nome do ficheiro" />
+		<String key="size" value="Tamanho" />
+		<String key="newFile" value="Novo ficheiro" />
+
+		<!-- User Messages -->
+		<String key="duplicateAllocation" value="O utilizador já tem a role selecionada." />
+	</Strings>
+	<HelpStrings>
+		<Help key="is_global"><![CDATA[Uma capacidade global aplica-se a todas as empresas.]]></Help>
+		<Help key="idUserGlobal"><![CDATA[ Id de utilizador no contexto global (considerado por todas as empresas).]]></Help>
+		<Help key="idPersonCompany"><![CDATA[ Número de utente no contexto da empresa em questão.]]></Help>
+		<Help key="isActiveCompany"><![CDATA[ Se este utilizador está ativo no contexto da empresa selecionada.]]></Help>
+	</HelpStrings>
+</Lang>

@@ -28,7 +28,7 @@
 			
 			  <!-- Roles and capabilities -->
 			  <Var name="roleId">
-				  <Call library="framework,user.role,api" function="add">
+				  <Call library="framework,role,api" function="add">
 			      <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
 			      <Param name="name">Records Manager</Param>
 			      <Param name="code">recordsManager</Param>
@@ -37,13 +37,13 @@
 			  </Var>  
 			  
 			  <Var name="capabilityId">
-				  <Call library="framework,user.capability,api" function="add">
+				  <Call library="framework,capability,api" function="add">
 				    <Param name="name">Can manage controlled documents</Param>
 				    <Param name="code">framework/rm.controlledDocuments::manage</Param>
 				    <Param name="is_global">0</Param>
 				  </Call>
 				</Var>
-				<Call library="framework,user.role,api" function="addCapability">
+				<Call library="framework,role,api" function="addCapability">
 				  <Param name="id_role"><Var name="roleId"/></Param>
 				  <Param name="id_capability"><Var name="capabilityId"/></Param>
 				</Call>				

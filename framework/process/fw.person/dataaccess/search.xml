@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    <![CDATA[ Gets a list of persons that meet the given search criteria. ]]>
+	</Doc>
+  <Params>
+    <Param name="text" type="text" required="true" doc="Search text"/>
+  </Params>
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            <![CDATA[ 
+							p.* 
+						]]>
+        </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            <![CDATA[ 
+              fw_person p
+						]]>
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+					<XCondition optional="text">
+	          <![CDATA[
+							AND ( 
+								p.name LIKE '{param->text}'
+								OR p.id LIKE '{param->text}'
+								OR p.uid LIKE '{param->text}'
+							)  
+						]]>
+	        </XCondition>
+        </XWhere>
+        <XOrderBy>
+					<XOrder><![CDATA[ p.name ASC ]]></XOrder>
+				</XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
+</Method>
