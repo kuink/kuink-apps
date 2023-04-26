@@ -1150,7 +1150,7 @@
 						<Var name="msgParams" key="subject"><Var name="preview" key="name"/></Var>
 						<Var name="msgParams" key="send_date"><Now/></Var>
 						<Var name="msgParams" key="is_cancellable"><Int>0</Int></Var>
-						<Var name="msgParams" key="template"><String>message/generic</String></Var>
+						<Var name="msgParams" key="template"><String>generic</String></Var>
 						<Var name="msgParams" key="context"><Var name="PARAMS" key="context"/></Var>
 						<Var name="msgParams" key="confirm_reading"><Int>1</Int></Var>
 						<Var name="msgParams" key="send_now"><Int>1</Int></Var>

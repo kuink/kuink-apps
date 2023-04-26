@@ -21,11 +21,13 @@
                     <Param name="guid"><Var name="PARAMS" key="guid"/></Param>
                 </Call>
             </Var>
-            <Var name="html" dump="true">
-                <TemplateLib method="GetTemplateHtml" >
-                    <Param>custom/messageHtmlBlock</Param>
-                    <Param><Var name="message"/></Param>
-                </TemplateLib>
+            <Var name="html">
+                <TemplateLib method="ExecuteTemplate" >
+                    <Param>gecol.common</Param>
+                    <Param>person</Param>
+                    <Param>messageHtmlBlock</Param>
+                    <Param><Var name="person"/></Param>
+                </TemplateLib>            
             </Var>
             <Control method="bind" object="messageHtml">
                 <Param><Var name="html"/></Param>
