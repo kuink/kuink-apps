@@ -1,18 +1,19 @@
 <?xml version='1.0'?>
-<Application name="fw.cms" version="1.0.0">
-    <Config>
-        <!-- Global configuration... -->
-    </Config>
-    <Databases>
-        <!-- type=(pgsql, mssql, mysqli, oci) -->
-        <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
-    </Databases>
-    <Menus>
-        <Menu role="Teacher,Student" startuc="content" startnode="" event="init" label="manageContent" default="true"/>
-        <Menu role="Teacher,Student" startuc="channel" startnode="" event="init" label="manageChannels" default="false"/>
-        <Menu role="Teacher,Student" startuc="device" startnode="" event="init" label="manageDevices" default="false"/>
-        <Menu role="Teacher,Student" startuc="template" startnode="" event="init" label="manageTemplates" default="false"/>        
-        <Menu role="Teacher,Student" startuc="contentType" startnode="" event="init" label="manageContentTypes" default="false"/>
-        <Menu role="Teacher,Student" startuc="appFiles" startnode="" event="init" label="manageAppFiles" default="false"/>
-    </Menus>
+<Application name="fw.cms" version="1.001.000">
+	<!--
+		v1.001.000
+		*	@date:		 2023.05.30
+		*	@author:   catarina.fernandes
+		*	@comment:  Feature | Adding permissions.
+	-->
+	<Config/>
+	<Databases/>
+	<Menus>
+		<Menu role="Teacher,Student" icon="images" startuc="content" startnode="" event="init" label="manageContent" default="true"/>
+		<Menu role="Teacher,Student" icon="server" startuc="channel" startnode="" event="init" label="manageChannels" default="false"/>
+		<Menu role="Teacher,Student" icon="tv" startuc="device" startnode="" event="init" label="manageDevices" default="false"/>
+		<Menu role="Teacher,Student" icon="file-alt" startuc="template" startnode="" event="init" label="manageTemplates" default="false"/>
+		<Menu role="Teacher,Student" icon="tags" startuc="contentType" startnode="" event="init" label="manageContentTypes" default="false"/>
+		<Menu role="Teacher,Student" icon="folder" startuc="appFiles" startnode="" event="init" label="manageAppFiles" default="false"/>
+	</Menus>
 </Application>

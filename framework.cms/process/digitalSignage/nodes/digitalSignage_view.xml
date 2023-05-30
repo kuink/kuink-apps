@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-  <Permissions>
-  </Permissions>
-  <Doc lang="pt-PT">
-  </Doc>
+  <Doc/>
+  <Permissions/>
+  <Configuration/>
   <Libraries>
     <Use name="DateTimeLib" type="lib"/>
     <Use name="UtilsLib" type="lib"/>
   </Libraries>
-  <Configuration/>
   <Params>
     <Param name="device" doc="The device to play contents"/>
   </Params>
@@ -17,7 +15,6 @@
       <Custom name="contentCtrl" control="framework.cms,digitalSignage,view"/>
 		</Screen>
   </Screens>
-
   <Actions>
     <Action name="init">
       <If condition="$PARAMS->device != ''">

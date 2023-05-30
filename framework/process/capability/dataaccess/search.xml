@@ -50,7 +50,7 @@
 					</XCondition>
 				</XWhere>
 				<XOrderBy>
-					<XOrder><![CDATA[ c.is_global DESC, c.code ASC ]]></XOrder>
+					<XOrder><![CDATA[ c.code ASC, c.name ASC ]]></XOrder>
 				</XOrderBy>
 			</XSql>
 		</SqlPaginated>

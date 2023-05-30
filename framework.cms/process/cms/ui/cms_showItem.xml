@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-    <Params>
-      <Param name="langCode"><Var name="USER" key="lang"/></Param>
-      <Param name="categoryCode" />
-      <Param name="itemCode" />
-    </Params>
-    <Libraries>
-    </Libraries>
-    <Screens>
-        <Screen name="scCmsItem">
-            <HtmlContainer name="hcCmsItem" />
-        </Screen>
-    </Screens>
-    <Actions>
-        <Action name="init" screen="scCmsItem">
-        	<Var name="cmsItemData">
-             <Execute method="this,this,cms.loadItem">
-               <Param name="lang_code"><Var name="PARAMS" key="langCode"/></Param>
-               <Param name="category_code"><Var name="PARAMS" key="categoryCode"/></Param>
-               <Param name="item_code"><Var name="PARAMS" key="itemCode"/></Param>
-             </Execute>
-        	</Var>
-        	
-          <Control method="bind" object="hcCmsItem">
-                <Param>
-	                <Var name="cmsItemData" key="content"/>
-                </Param>
-            </Control>
-        </Action>
+	<Params>
+		<Param name="langCode"><Var name="USER" key="lang"/></Param>
+		<Param name="categoryCode"/>
+		<Param name="itemCode"/>
+	</Params>
+	<Libraries/>
+	<Screens>
+		<Screen name="scCmsItem">
+			<HtmlContainer name="hcCmsItem"/>
+		</Screen>
+	</Screens>
+	<Actions>
+		<Action name="init" screen="scCmsItem">
+			<Var name="cmsItemData">
+				<Execute method="this,this,cms.loadItem">
+					<Param name="lang_code"><Var name="PARAMS" key="langCode"/></Param>
+					<Param name="category_code"><Var name="PARAMS" key="categoryCode"/></Param>
+					<Param name="item_code"><Var name="PARAMS" key="itemCode"/></Param>
+				</Execute>
+			</Var>
+			<Control method="bind" object="hcCmsItem">
+				<Param><Var name="cmsItemData" key="content"/></Param>
+			</Control>
+		</Action>
 	</Actions>
 </Node>

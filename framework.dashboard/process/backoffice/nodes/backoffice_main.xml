@@ -9,9 +9,7 @@
 	<Params/>
   <!--	________________________________________________________________________________________________
     *
-    *
-    *			S C R E E N S    ::    
-    *
+    *			S C R E E N S    ::    mainScreen
     *		________________________________________________________________________________________________
   -->
   <Screens>
@@ -22,10 +20,9 @@
 		-->
     <Screen name="mainScreen" template="1col_LeftMenu">
       <Menu name="permissions" label="permissions" icon="lock">
-        <!--Action name="processAction" label="users" actionvalue="manageUsers"/-->
-        <Action name="processAction" label="allocations" actionvalue="manageAllocations"/>
-        <Action name="processAction" label="capabilities" actionvalue="manageCapabilities"/>
         <Action name="processAction" label="roles" actionvalue="manageRoles"/>
+        <Action name="processAction" label="capabilities" actionvalue="manageCapabilities"/>
+        <Action name="processAction" label="allocations" actionvalue="manageAllocations"/>
         <Action name="processAction" label="roleCapabilities" actionvalue="manageRoleCapabilities"/>
       </Menu>
 
@@ -38,12 +35,9 @@
       </Menu>
     </Screen>
   </Screens>
-
   <!--	________________________________________________________________________________________________
     *
-    *
     *			A C T I O N S    ::    
-    *
     *		________________________________________________________________________________________________
   -->
   <Actions>

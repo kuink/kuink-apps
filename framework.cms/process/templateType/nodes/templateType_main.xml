@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Doc>
+		<![CDATA[ CMS  >  Template Types Management  ::  Shows and allows to edit the digital signage's template types. ]]>
+	</Doc>
+	<Permissions/>
+	<Configuration/>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <!--	________________________________________________________________________________________________
+    *
+    *			S C R E E N S    ::    mainScreen  |  detailsScreen  |  editDetailsScreen
+    *		________________________________________________________________________________________________
+  -->
+  <Screens>
+		<!--
+			*
+			*  mainScreen  |  Shows a list of template types.
+			* 
+		-->
+    <Screen name="mainScreen">
+      <Form name="header">
+				<Header name="templateTypesManagementHeader" label="channelsManagementHeader"/>
+			</Form>
+
+      <Form name="searchForm" title="search" persist="true">
+        <Text name="name"/>
+
+        <ButtonGroup>
+          <Button name="search" type="search" action="search"/>
+          <Button name="add" type="add" action="add"/>
+        </ButtonGroup>
+      </Form>
+
+      <Grid name="templateTypesGrid" title="result" pageable="true" pagesize="20" pagingaction="search" collapsible="false">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="uuid"/>
+            <Column name="code"/>
+            <Column name="name"/>
+            <Column name="description"/>
+          </Columns>
+          <Actions separator="true">
+						<Action name="view" icon="chevron-right" actionvalue="id"/>
+						<Action name="edit" icon="pencil" actionvalue="id"/>
+						<Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+					</Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+
+		<!--
+			*
+			*  detailsScreen  |  Shows a template type's details.
+			* 
+		--> 
+    <Screen name="detailsScreen">
+      <Form name="detailsForm">
+        <Static name="id"/>
+        <Static name="uuid"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
+
+        <ButtonGroup>
+					<Button name="back" type="back" action="search"/>
+					<Button name="edit" type="update" action="edit"/>
+					<Button name="delete" type="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+
+    <!--
+			*
+			*  editDetailsScreen  |  Allows to edit a template type's details.
+			* 
+		-->  
+    <Screen name="editDetailsScreen">
+      <Form name="editDetailsForm">
+        <Static name="id" required="true"/>
+        <Text name="uuid" required="true"/>
+        <Text name="code" required="true"/>
+        <Text name="name" required="true"/>
+        <Text name="description"/>
+
+        <ButtonGroup>
+          <Button name="cancel" type="cancel" action="search"/>
+          <Button name="save" type="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <!--	________________________________________________________________________________________________
+    *
+    *			A C T I O N S    ::    
+    *		________________________________________________________________________________________________
+  --> 
+  <Actions>
+    <!--
+			*
+			*  init  |  Redirects to 'search'.
+			*
+		-->
+    <Action name="init">
+      <!-- Only users with this role/capability can manage channels -->
+			<Permissions>
+				<Allow>
+					<Role name="framework.admin"/>
+					<Capability name="framework/cms::manage.all"/>
+				</Allow>
+			</Permissions>
+
+      <Action name="search"/>
+    </Action>
+    
+    
+    <!--
+			*
+			*  search  |  Configuration of mainScreen.
+			*
+		-->   
+    <Action name="search" screen="mainScreen">
+      <If condition="$defaultData->__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="searchForm">
+            <Param><Var name="defaultData"/></Param>
+          </Control>
+        </Then>
+      </If>
+
+      <Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
+      <Var name="templateTypes">
+        <Call library="framework,cms.template.type,api" function="search">
+          <Param name="name"><Var name="currentData" key="name"/></Param>
+          <Param name="pagesize"><Control method="getPageSize" object="templateTypesGrid"/></Param>
+          <Param name="pagenum"><Control method="getCurrentPage" object="templateTypesGrid"/></Param>
+        </Call>
+      </Var>
+
+      <Control method="bind" object="templateTypesGrid">
+        <Param><Var name="templateTypes"/></Param>
+      </Control>
+    </Action>
+
+
+		<!--
+			*
+			*  add  |  Configuration of editDetailsScreen, to create a new template type.
+			*
+		-->
+		<Action name="add" screen="editDetailsScreen">
+			<Var name="selectedId" process="true"><Null/></Var>
+		</Action>
+
+
+		<!--
+			*
+			*  view  |  Configuration of detailsScreen, to view a template type's details.
+			*
+		-->
+    <Action name="view" screen="detailsScreen">
+      <Var name="selectedId" process="true"><ActionValue/></Var>
+      <Var name="templateType">
+        <Call library="framework,cms.template.type,api" function="getById">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="templateType"/></Param>
+      </Control>
+    </Action>
+
+
+		<!--
+			*
+			*  edit  |  Configuration of editDetailsScreen, to edit a template type.
+			*
+		-->
+    <Action name="edit" screen="editDetailsScreen">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+      <Var name="templateType">
+        <Call library="framework,cms.template.type,api" function="getById">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+
+      <Control method="bind" object="editDetailsForm">
+        <Param><Var name="templateType"/></Param>
+      </Control>
+    </Action>
+
+
+		<!--
+			*
+			*  delete  |  Deletes a template type.
+			*
+		-->
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+
+      <Call library="framework,cms.template.type,api" function="delete">
+        <Param name="id"><Var name="selectedId" process="true"/></Param>
+      </Call>
+
+      <Action name="search"/>
+    </Action>
+
+
+    <!--
+			*
+			*  save  |  Saves a template type's details (or creates a new one).
+			*
+		-->
+    <Action name="save">
+      <If condition="@selectedId == ''">
+        <Then>
+          <Call library="framework,cms.template.type,api" function="add" params="POSTDATA"/>
+        </Then>
+        <Else>
+          <Call library="framework,cms.template.type,api" function="update" params="POSTDATA">
+            <Param name="id"><Var name="selectedId" process="true"/></Param>
+          </Call>
+        </Else>
+      </If>
+
+      <Action name="search"/>
+    </Action>
+  </Actions>
+  <Library/>
+</Node>

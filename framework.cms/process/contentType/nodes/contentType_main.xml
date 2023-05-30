@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Doc>
+		<![CDATA[ CMS  >  Content Type Management  ::  Shows and allows to edit the digital signage's content types. ]]>
+	</Doc>
+	<Permissions/>
+	<Configuration/>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+  </Libraries>
+  <!--	________________________________________________________________________________________________
+    *
+    *			S C R E E N S    ::    mainScreen  |  detailsScreen  |  editDetailsScreen
+    *		________________________________________________________________________________________________
+  -->
+  <Screens>
+    <!--
+			*
+			*  mainScreen  |  Shows a list of content types.
+			* 
+		-->
+    <Screen name="mainScreen">
+      <Form name="header">
+				<Header name="contentTypesManagementHeader" label="contentTypesManagementHeader"/>
+			</Form>
+
+      <Form name="searchForm" title="search" persist="true">
+        <Text name="code"/>
+
+        <ButtonGroup>
+          <Button name="search" type="search" action="search"/>
+          <Button name="add" type="add" action="add"/>
+        </ButtonGroup>
+      </Form>
+
+      <Grid name="contentTypesGrid" title="contentTypes" pageable="true" pagesize="20" pagingaction="search" collapsible="false">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="code"/>
+            <Column name="name"/>
+            <Column name="description"/>
+            <Column name="allowed_extensions"/>
+            <Column name="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="view" icon="chevron-right" actionvalue="id"/>
+            <Action name="edit" icon="pencil" actionvalue="id"/>
+            <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+    
+    
+    <!--
+			*
+			*  detailsScreen  |  Shows a content type's details.
+			* 
+		-->
+    <Screen name="detailsScreen">
+      <Form name="detailsForm">
+        <Static name="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+        <Static name="code"/>
+        <Static name="name"/>
+        <Static name="description"/>
+        <Static name="allowed_extensions"/>
+        <Static name="id_child_type" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name" required="false"/>
+        <Static name="allow_zero_duration">
+          <Formatter name="YesNo"/>
+        </Static>
+        <Static name="fields"/>
+
+        <ButtonGroup>
+          <Button name="back" type="back" action="search"/>
+          <Button name="edit" type="update" action="edit"/>
+          <Button name="delete" type="delete" action="delete" confirm="true"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+
+
+    <!--
+			*
+			*  editDetailsScreen  |  Allows to edit a content type's details.
+			* 
+		-->   
+    <Screen name="editDetailsScreen">
+      <Form name="editDetailsForm">
+        <Select name="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
+        <Text name="code" required="true"/>
+        <Text name="name" required="true"/>
+        <Text name="description"/>
+        <Text name="allowed_extensions"/>
+        <Checkbox name="allow_zero_duration" required="true"/>
+        <Select name="id_child_type" datasource="call:framework,cms.content.type,api,getAll" bindid="id" bindvalue="name"/>
+        <CodeEditor name="fields" required="false"/>        
+        
+        <ButtonGroup>
+          <Button name="cancel" type="cancel" action="search"/>
+          <Button name="save" type="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  <!--	________________________________________________________________________________________________
+    *
+    *			A C T I O N S    ::    
+    *		________________________________________________________________________________________________
+  -->
+  <Actions>
+		<!--
+			*
+			*  init  |  Redirects to 'search'.
+			*
+		-->
+    <Action name="init">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/cms::manage.all"/>
+        </Allow>
+      </Permissions>
+      
+      <Action name="search"/>
+    </Action>
+		
+    
+    <!--
+			*
+			*  search  |  Configuration of mainScreen.
+			*
+		-->
+    <Action name="search" screen="mainScreen">
+      <If condition="$defaultData->__length &gt; 0">
+        <Then>
+          <Control method="setDefaultData" object="searchForm">
+            <Param><Var name="defaultData"/></Param>
+          </Control>
+        </Then>
+      </If>
+
+      <Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
+      <Var name="contentTypes">
+        <Call library="framework,cms.content.type,api" function="search">
+          <Param name="code"><Var name="currentData" key="code"/></Param>
+          <Param name="pagesize"><Control method="getPageSize" object="contentTypesGrid"/></Param>
+          <Param name="pagenum"><Control method="getCurrentPage" object="contentTypesGrid"/></Param>
+        </Call>
+      </Var>
+
+      <Control method="bind" object="contentTypesGrid">
+        <Param><Var name="contentTypes"/></Param>
+      </Control>
+    </Action>
+
+
+		<!--
+			*
+			*  add  |  Configuration of editDetailsScreen, to create a new content type.
+			*
+		-->
+    <Action name="add" screen="editDetailsScreen">
+      <Var name="selectedId" process="true"><Null/></Var>
+    </Action>
+
+
+		<!--
+			*
+			*  view  |  Configuration of detailsScreen, to view a content type's details.
+			*
+		-->
+    <Action name="view" screen="detailsScreen">
+      <Var name="selectedId" process="true"><ActionValue/></Var>
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="contentType"/></Param>
+      </Control>
+    </Action>
+
+
+		<!--
+			*
+			*  edit  |  Configuration of editDetailsScreen, to edit a content type.
+			*
+		-->
+    <Action name="edit" screen="editDetailsScreen">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+
+      <Var name="contentType">
+        <Call library="framework,cms.content.type,api" function="getById">
+          <Param name="id"><Var name="selectedId" process="true"/></Param>
+        </Call>
+      </Var>
+
+      <Control method="bind" object="editDetailsForm">
+        <Param><Var name="contentType"/></Param>
+      </Control>
+    </Action>
+
+
+		<!--
+			*
+			*  delete  |  Deletes a content type.
+			*
+		-->
+    <Action name="delete">
+      <Var name="selectedId" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="selectedId" process="true"/></Param>
+        </IsNull>
+      </Var>
+
+      <Call library="framework,cms.content.type,api" function="delete">
+        <Param name="id"><Var name="selectedId" process="true"/></Param>
+      </Call>
+
+      <Action name="search"/>
+    </Action>
+
+
+    <!--
+			*
+			*  save  |  Saves a content type's details (or creates a new one).
+			*
+		-->
+    <Action name="save">
+      <If condition="@selectedId == ''">
+        <Then>
+          <Call library="framework,cms.content.type,api" function="add" params="POSTDATA"/>
+        </Then>
+        <Else>
+          <Call library="framework,cms.content.type,api" function="update" params="POSTDATA">
+            <Param name="id"><Var name="selectedId" process="true"/></Param>
+          </Call>
+        </Else>
+      </If>
+
+      <Action name="search"/>
+    </Action>
+  </Actions>
+  <Library/>
+</Node>

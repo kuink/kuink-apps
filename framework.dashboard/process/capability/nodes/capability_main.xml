@@ -43,29 +43,24 @@
         <Template>
           <Columns>
             <Column name="id"/>
-            <Column name="name"/>
             <Column name="code"/>
+            <Column name="name" label="description"/>
             <Column name="is_global">
-              <Formatter name="Icon" size="18">
-								<Param name="0">error.png</Param>
-								<Param name="1">success.png</Param>
+							<Formatter name="Icon" size="16" method="simpleIcon">
+								<Param name="0">times-circle-o</Param>
+								<Param name="1">check-circle</Param>
 							</Formatter>
-            </Column>
+						</Column>
             <Column name="_id_updater"/>
             <Column name="_modification">
               <Formatter name="DateTime" method="shortDateTime"/>
             </Column>
             <Column name="_modification_ip"/>
-            <!--Column name="_id_creator"/>
-            <Column name="_creation">
-              <Formatter name="DateTime" method="shortDateTime"/>
-            </Column>
-            <Column name="_creation_ip"/-->
           </Columns>
           <Actions separator="true">
-            <Action name="viewDetails" label="view" icon="info" actionvalue="id"/>
+            <Action name="viewDetails" label="view" icon="chevron-right" actionvalue="id"/>
             <Action name="editDetails" label="edit" icon="pencil" actionvalue="id"/>
-            <Action name="delete" label="delete" icon="times" actionvalue="id" confirm="true"/>
+            <Action name="delete" label="delete" icon="trash-o" actionvalue="id" confirm="true"/>
           </Actions>
         </Template>
       </Grid>
@@ -74,7 +69,7 @@
 
     <!--
 			*
-			*  detailsScreen  |  Shows a role's details.
+			*  detailsScreen  |  Shows a capability's details.
 			* 
 		-->
     <Screen name="detailsScreen" template="1col_LeftMenu">
@@ -88,9 +83,9 @@
         <Static name="name"/>
         <Static name="code"/>
         <Static name="is_global">
-          <Formatter name="Icon" size="18">
-            <Param name="0">error.png</Param>
-            <Param name="1">success.png</Param>
+          <Formatter name="Icon" size="16" method="simpleIcon">
+            <Param name="0">times-circle-o</Param>
+            <Param name="1">check-circle</Param>
           </Formatter>
         </Static>
         <!-- Record's details (creation, modification) -->
@@ -117,7 +112,7 @@
 
     <!--
 			*
-			*  editDetailsScreen  |  Allows to edit a role's details.
+			*  editDetailsScreen  |  Allows to edit a capability's details.
 			* 
 		-->    
     <Screen name="editDetailsScreen" template="1col_LeftMenu">
@@ -145,7 +140,7 @@
   <Actions>
     <!--
 			*
-			*  init  |  Redirects to 'search' action.
+			*  init  |  Redirects to 'search'.
 			*
 		-->
     <Action name="init">
@@ -183,7 +178,7 @@
   
     <!--
 			*
-			*  add  |  Configuration of editDetailsScreen to create a new capability.
+			*  add  |  Configuration of editDetailsScreen, to create a new capability.
 			*
 		-->
     <Action name="add" screen="editDetailsScreen">
@@ -193,7 +188,7 @@
 
     <!--
 			*
-			*  viewDetails  |  Configuration of detailsScreen to view a capability's details.
+			*  viewDetails  |  Configuration of detailsScreen, to view a capability's details.
 			*
 		-->
     <Action name="viewDetails" screen="detailsScreen">
@@ -213,7 +208,7 @@
 
     <!--
 			*
-			*  editDetails  |  Configuration of editDetailsScreen to edit a role's details.
+			*  editDetails  |  Configuration of editDetailsScreen, to edit a capability's details.
 			*
 		-->
     <Action name="editDetails" screen="editDetailsScreen">
@@ -248,6 +243,7 @@
           <Param><Var name="idCapability" process="true"/></Param>
         </IsNull>
       </Var>
+      
       <Call library="framework,capability,api" function="delete">
         <Param name="id"><Var name="idCapability" process="true"/></Param>
       </Call>
@@ -286,5 +282,5 @@
       <RaiseEvent name="back"/>
     </Action>
   </Actions>
-  <Library forceinterface="true"/>
+  <Library/>
 </Node>
