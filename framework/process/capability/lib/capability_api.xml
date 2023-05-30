@@ -262,6 +262,7 @@
         <Var name="capabilities">
 					<DataAccess method="getAll">
 						<Param name="_entity">fw_capability</Param>
+            <Param name="_sort">code ASC, name ASC</Param>
 					</DataAccess>
 				</Var>
 
@@ -287,6 +288,7 @@
 					<DataAccess method="getAll">
 						<Param name="_entity">fw_capability</Param>
             <Param name="is_global"><Int>1</Int></Param>
+            <Param name="_sort">code ASC, name ASC</Param>
 					</DataAccess>
 				</Var>
 

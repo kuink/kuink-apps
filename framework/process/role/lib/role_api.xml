@@ -321,6 +321,7 @@
         <Var name="roles">
 					<DataAccess method="getAll">
 						<Param name="_entity">fw_role</Param>
+            <Param name="_sort">name ASC, code ASC</Param>
 					</DataAccess>
 				</Var>
 
@@ -351,6 +352,7 @@
 					<DataAccess method="getAll">
 						<Param name="_entity">fw_role</Param>
             <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="_sort">name ASC, code ASC</Param>
 					</DataAccess>
 				</Var>
 
@@ -407,6 +409,7 @@
 						<Param name="_entity">fw_role</Param>
             <Param name="is_active"><Int>1</Int></Param>
             <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="_sort">name ASC, code ASC</Param>
 					</DataAccess>
 				</Var>
 

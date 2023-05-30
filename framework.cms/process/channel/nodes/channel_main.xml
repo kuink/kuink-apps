@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+	<Doc>
+		<![CDATA[ CMS  >  Channels Management  ::  Shows and allows to edit the digital signage's channels. ]]>
+	</Doc>
+	<Permissions/>
+	<Configuration/>
+	<Libraries>
+		<Use name="DateTimeLib" type="lib"/>
+		<Use name="UtilsLib" type="lib"/>
+	</Libraries>
+  <!--	________________________________________________________________________________________________
+    *
+    *			S C R E E N S    ::    mainScreen  |  detailsScreen  |  editDetailsScreen
+    *		________________________________________________________________________________________________
+  -->
+	<Screens>
+		<!--
+			*
+			*  mainScreen  |  Shows a list of channels.
+			* 
+		-->
+		<Screen name="mainScreen">
+			<Form name="header">
+				<Header name="channelsManagementHeader" label="channelsManagementHeader"/>
+			</Form>
+
+			<Form name="searchForm" title="search" persist="true">
+				<Text name="text"/>
+
+				<ButtonGroup>
+					<Button name="search" type="search" action="search"/>
+					<Button name="add" type="add" action="add"/>
+				</ButtonGroup>
+			</Form>
+
+			<Grid name="channelsGrid" title="channels" pageable="true" pagesize="20" pagingaction="search" collapsible="false">
+				<Template>
+					<Columns>
+						<Column name="id"/>
+						<Column name="name" action="view" actionvalue="id"/>
+						<Column name="code"/>
+						<Column name="description"/>
+						<Column name="uuid"/>
+						<Column name="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+						<Column name="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+					</Columns>
+					<Actions separator="true">
+						<Action name="view" icon="chevron-right" actionvalue="id"/>
+						<Action name="edit" icon="pencil" actionvalue="id"/>
+						<Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+					</Actions>
+				</Template>
+			</Grid>
+		</Screen>
+
+
+		<!--
+			*
+			*  detailsScreen  |  Shows a channel's details.
+			* 
+		-->
+		<Screen name="detailsScreen" template="1col_LeftMenu">
+			<Form name="detailsForm">
+				<Static name="id"/>
+				<Static name="name"/>
+				<Static name="code"/>
+				<Static name="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+				<Static name="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name"/>
+				<Static name="description"/>
+
+				<ButtonGroup>
+					<Button name="back" type="back" action="search"/>
+					<Button name="edit" type="update" action="edit"/>
+					<Button name="delete" type="delete" action="delete" confirm="true"/>
+					<Button name="reorder" type="refresh" action="reorder" confirm="true"/>
+				</ButtonGroup>
+			</Form>
+
+			<Grid name="contentsGrid" title="content" pageable="true" pagesize="50" pagingaction="view" collapsible="false">
+				<Template>
+					<Columns>
+						<Column name="id"/>
+						<Column name="id_content">
+							<Formatter name="Call" library="framework,cms.content,api" function="formatter"/>
+						</Column>
+						<Column name="is_published">
+							<Formatter name="Icon" size="18" method="simpleIcon">
+								<Param name="0">times-circle-o</Param>
+								<Param name="1">check-circle</Param>
+							</Formatter>
+						</Column>
+						<Column name="rank"/>
+						<Column name="seconds_duration"/>
+						<Column name="start_date">
+							<Formatter name="DateTime" method="shortDate"/>
+						</Column>
+						<Column name="end_date">
+							<Formatter name="DateTime" method="shortDate"/>
+						</Column>
+					</Columns>
+					<Actions separator="true">
+						<Action name="preview" icon="search" actionvalue="id"/>
+					</Actions>
+				</Template>
+			</Grid>
+		</Screen>
+
+
+    <!--
+			*
+			*  editDetailsScreen  |  Allows to edit a channel's details.
+			* 
+		--> 
+		<Screen name="editDetailsScreen">
+			<Form name="editForm">
+				<Static name="id" required="true"/>
+				<Select name="id_template" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
+				<Select name="id_theme" datasource="call:framework,cms.template,api,getAll" bindid="id" bindvalue="name" required="true"/>
+				<Text name="code" required="true"/>
+				<Text name="name" required="true"/>
+				<Text name="description"/>
+
+				<ButtonGroup>
+					<Button name="back" type="back" action="search"/>
+					<Button name="save" type="save" action="save"/>
+				</ButtonGroup>
+			</Form>
+		</Screen>
+	</Screens>
+  <!--	________________________________________________________________________________________________
+    *
+    *			A C T I O N S    ::    
+    *		________________________________________________________________________________________________
+  -->
+	<Actions>
+		<!--
+			*
+			*  init  |  Redirects to 'search'.
+			*
+		-->
+		<Action name="init">
+			<!-- Only users with this role/capability can manage channels -->
+			<Permissions>
+				<Allow>
+					<Role name="framework.admin"/>
+					<Capability name="framework/cms::manage.all"/>
+				</Allow>
+			</Permissions>
+
+			<Action name="search"/>
+		</Action>
+
+
+		<!--
+			*
+			*  search  |  Configuration of mainScreen.
+			*
+		-->
+		<Action name="search" screen="mainScreen">
+			<If condition="$defaultData->__length &gt; 0">
+				<Then>
+					<Control method="setDefaultData" object="searchForm">
+						<Param><Var name="defaultData"/></Param>
+					</Control>
+				</Then>
+			</If>
+			<Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
+			<Var name="channels">
+				<Call library="framework,cms.channel,api" function="search">
+					<Param name="uuid"><Var name="currentData" key="uuid"/></Param>
+					<Param name="code"><Var name="currentData" key="code"/></Param>
+					<Param name="pagesize"><Control method="getPageSize" object="channelsGrid"/></Param>
+					<Param name="pagenum"><Control method="getCurrentPage" object="channelsGrid"/></Param>
+				</Call>
+			</Var>
+			<Control method="bind" object="channelsGrid">
+				<Param><Var name="channels"/></Param>
+			</Control>
+		</Action>
+
+
+		<!--
+			*
+			*  add  |  Configuration of editDetailsScreen, to create a new channel.
+			*
+		-->
+		<Action name="add" screen="editDetailsScreen">
+			<Var name="selectedId" process="true"><Null/></Var>
+		</Action>
+
+
+		<!--
+			*
+			*  view  |  Configuration of detailsScreen, to view a channel's details.
+			*
+		-->
+		<Action name="view" screen="detailsScreen">
+			<Var name="selectedId" process="true">
+				<IsNull>
+					<Param><ActionValue/></Param>
+					<Param><Var name="selectedId" process="true"/></Param>
+				</IsNull>
+			</Var>
+
+			<Var name="channel">
+				<Call library="framework,cms.channel,api" function="getById">
+					<Param name="id"><ActionValue/></Param>
+				</Call>
+			</Var>
+			<Var name="publishedContents">
+				<Call library="framework,cms.channel,api" function="getContent">
+					<Param name="id_channel"><Var name="selectedId" process="true"/></Param>
+					<Param name="is_published"><Int>1</Int></Param>
+				</Call>
+			</Var>
+			<Var name="unpublishedContents">
+				<Call library="framework,cms.channel,api" function="getContent">
+					<Param name="id_channel"><Var name="selectedId" process="true"/></Param>
+					<Param name="is_published"><Int>0</Int></Param>
+				</Call>
+			</Var>
+
+			<!-- Binds channel and contents -->
+			<Control method="bind" object="detailsForm">
+				<Param><Var name="channel"/></Param>
+			</Control>
+			<Control method="bind" object="contentsGrid">
+				<Param><Var name="publishedContents"/></Param>
+			</Control>
+			<Control method="bind" object="contentsGrid">
+				<Param><Var name="unpublishedContents"/></Param>
+			</Control>
+		</Action>
+
+
+		<!--
+			*
+			*  edit  |  Configuration of editDetailsScreen, to edit a channel.
+			*
+		-->
+		<Action name="edit" screen="editDetailsScreen">
+			<Var name="selectedId" process="true">
+				<IsNull>
+					<Param><ActionValue/></Param>
+					<Param><Var name="selectedId" process="true"/></Param>
+				</IsNull>
+			</Var>
+
+			<Var name="channel">
+				<Call library="framework,cms.channel,api" function="getById">
+					<Param name="id"><Var name="selectedId" process="true"/></Param>
+				</Call>
+			</Var>
+
+			<Control method="bind" object="editForm">
+				<Param><Var name="channel"/></Param>
+			</Control>
+		</Action>
+
+
+		<!--
+			*
+			*  delete  |  Deletes a channel from the system.
+			*
+		-->
+		<Action name="delete">
+			<Var name="selectedId" process="true">
+				<IsNull>
+					<Param><ActionValue/></Param>
+					<Param><Var name="selectedId" process="true"/></Param>
+				</IsNull>
+			</Var>
+
+			<Call library="framework,cms.channel,api" function="delete">
+				<Param name="id"><Var name="selectedId" process="true"/></Param>
+			</Call>
+
+			<Action name="search"/>
+		</Action>
+
+
+		<!--
+			*
+			*  reorder  |  Rebuilds a channel's contents order.
+			*
+		-->
+		<Action name="reorder">
+			<Call library="framework,cms.channel,api" function="rebuildContentOrder">
+				<Param name="id_channel"><Var name="selectedId" process="true"/></Param>
+			</Call>
+
+			<Action name="view"/>
+		</Action>
+
+
+    <!--
+			*
+			*  save  |  Saves a channel's details (or creates a new one).
+			*
+		-->
+		<Action name="save">
+			<If condition="@selectedId == &apos;&apos;">
+				<Then>
+					<Call library="framework,cms.channel,api" function="add" params="POSTDATA"/>
+				</Then>
+				<Else>
+					<Call library="framework,cms.channel,api" function="update" params="POSTDATA">
+						<Param name="id"><Var name="selectedId" process="true"/></Param>
+					</Call>
+				</Else>
+			</If>
+
+			<Action name="search"/>
+		</Action>
+	</Actions>
+	<Library/>
+</Node>

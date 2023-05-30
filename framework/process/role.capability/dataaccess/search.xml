@@ -46,7 +46,7 @@
 					</XCondition>
         </XWhere>
         <XOrderBy>
-					<XOrder><![CDATA[ r.name ASC, c.name ASC ]]></XOrder>
+					<XOrder><![CDATA[ r.name ASC, c.code ASC ]]></XOrder>
 				</XOrderBy>
       </XSql>
     </SqlPaginated>
