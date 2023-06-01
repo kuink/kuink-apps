@@ -565,7 +565,7 @@
                         <Var name="allocation">
                           <DataAccess method="load">
                             <Param name="_entity">fw_allocation</Param>
-                            <Param name="id_person"><Var name="PARAMS" key="id"/></Param>
+                            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
                             <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
                             <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
                           </DataAccess>
