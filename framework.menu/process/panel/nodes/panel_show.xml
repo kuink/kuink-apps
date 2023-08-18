@@ -12,7 +12,8 @@
   </Params>
   <Screens>
     <Screen name="scrMain" doc="Main screen">
-      <Repeatable name="rptItems" template="menuBox" cols="4" type="type" icon="icon" label="name" url="url" tooltip="description"/>
+      <!--<Repeatable name="rptItems" template="menuBox" cols="4" type="type" icon="icon" label="name" url="url" tooltip="description"/>-->
+      <Repeatable name="rptItems" template="menuBox" cols="100" type="type" icon="icon" label="name" url="url" tooltip="description"/>
     </Screen>
   </Screens>
   <Actions>
