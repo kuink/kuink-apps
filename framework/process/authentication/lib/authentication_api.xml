@@ -553,10 +553,18 @@
       <Params/>
       <Return type="text" doc="The generated Password"/>
       <Begin>
-        <Var name="alphaUpper">ABCDEFGHIJKLMNOPQRSTUVWXYZ</Var>
-        <Var name="alphaLower">abcdefghijklmnopqrstuvwxyz</Var>
-        <Var name="numeric">0123456789</Var>
-        <Var name="nonAlphaNumeric">!?</Var>
+        <Var name="alphaUpper">
+          <Config key="authentication.password.alphaUpper" />
+        </Var>
+        <Var name="alphaLower">
+          <Config key="authentication.password.alphaLower" />
+        </Var>
+        <Var name="numeric">
+          <Config key="authentication.password.numeric" />
+        </Var>
+        <Var name="nonAlphaNumeric">
+          <Config key="authentication.password.nonAlphaNumeric" />
+        </Var>
          
         <Var name="newPassword"><String/></Var>
         <Var name="minLength">
