@@ -553,6 +553,7 @@
       <Params/>
       <Return type="text" doc="The generated Password"/>
       <Begin>
+        <!--  -->
         <Var name="alphaUpper">
           <Config key="authentication.password.alphaUpper" />
         </Var>
@@ -615,7 +616,7 @@
            <Var name="random">
             <MathLib method="random">
               <Param>0</Param>
-              <Param>1</Param>
+              <Param>30</Param>
             </MathLib>
            </Var>
            <Var name="newPassword">
