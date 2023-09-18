@@ -553,7 +553,9 @@
       <Params/>
       <Return type="text" doc="The generated Password"/>
       <Begin>
-        <!--  -->
+
+        <!-- 2nd version of generatePassword function -->
+        <!-- Get the different characters to use in generated passwords -->
         <Var name="alphaUpper">
           <Config key="authentication.password.alphaUpper" />
         </Var>
@@ -566,11 +568,24 @@
         <Var name="nonAlphaNumeric">
           <Config key="authentication.password.nonAlphaNumeric" />
         </Var>
-         
-        <Var name="newPassword"><String/></Var>
-        <Var name="minLength">
-          <Config key="authentication.password.minLength" />
+        <Var name="allChars">
+          <StringLib method="concatenate">
+            <Param>
+              <Var name="alphaUpper"/>
+            </Param>
+            <Param>
+              <Var name="alphaLower"/>
+            </Param>
+            <Param>
+              <Var name="numeric"/>
+            </Param>
+            <Param>
+              <Var name="nonAlphaNumeric"/>
+            </Param>
+          </StringLib>
         </Var>
+        
+        <!-- Get the required minimum number of characters of each type -->
         <Var name="minAlphaUpper">
           <Config key="authentication.password.minAlphaUpper" />
         </Var>
@@ -583,66 +598,198 @@
         <Var name="minNonAlphaNumeric">
           <Config key="authentication.password.minNonAlphaNumeric" />
         </Var>
-         
-         <For var="count" start="1" condition="$count &lt;= $minAlphaUpper" step="1">
-           <Var name="random">
-            <MathLib method="random">
+
+        <!-- Get the required number of characters of generated passwords -->
+        <Var name="generatedPasswordLength">
+          <Config key="authentication.password.generatedLength" />
+        </Var>
+        
+        <Var name="newPassword"><String/></Var>
+
+        <Var name="newPasswordMinRequiredCharacters"><String/></Var>
+
+
+        <!-- Concatenate the required number of alpha upper characters -->
+        <Var name="length">
+          <StringLib method="length">
+            <Param>
+              <Var name="alphaUpper"/>
+            </Param>
+          </StringLib>
+        </Var>
+        <For var="count" start="1" condition="$count &lt;= $minAlphaUpper" step="1">
+          <Var name="random">
+            <MathLib method="random_int">
               <Param>0</Param>
-              <Param>25</Param>
+              <Param><Int.parse>$length - 1</Int.parse></Param>
             </MathLib>
-           </Var>
-           <Var name="newPassword">
-              <StringLib method="concatenate">
-                <Param><Var name="newPassword"/></Param>
-                <Param><Var name="alphaUpper" key="$random"/></Param>
-              </StringLib>
-           </Var>
-         </For>
-         <For var="count" start="1" condition="$count &lt;= $minAlphaLower" step="1">
-           <Var name="random">
-            <MathLib method="random">
+          </Var>
+          <Var name="newPasswordMinRequiredCharacters">
+            <StringLib method="concatenate">
+              <Param><Var name="newPasswordMinRequiredCharacters"/></Param>
+              <Param><Var name="alphaUpper" key="$random"/></Param>
+            </StringLib>
+          </Var>
+        </For>
+
+        <!-- Concatenate the required number of alpha lower characters -->
+        <Var name="length">
+          <StringLib method="length">
+            <Param>
+              <Var name="alphaLower"/>
+            </Param>
+          </StringLib>
+        </Var>
+        <For var="count" start="1" condition="$count &lt;= $minAlphaLower" step="1">
+          <Var name="random">
+            <MathLib method="random_int">
               <Param>0</Param>
-              <Param>25</Param>
+              <Param><Int.parse>$length - 1</Int.parse></Param>
             </MathLib>
-           </Var>
-           <Var name="newPassword">
-              <StringLib method="concatenate">
-                <Param><Var name="newPassword"/></Param>
-                <Param><Var name="alphaLower" key="$random"/></Param>
-              </StringLib>
-           </Var>
-         </For>
-         <For var="count" start="1" condition="$count &lt;= $minNonAlphaNumeric" step="1">
-           <Var name="random">
-            <MathLib method="random">
+          </Var>
+          <Var name="newPasswordMinRequiredCharacters">
+            <StringLib method="concatenate">
+              <Param><Var name="newPasswordMinRequiredCharacters"/></Param>
+              <Param><Var name="alphaLower" key="$random"/></Param>
+            </StringLib>
+          </Var>
+        </For>
+
+        <!-- Concatenate the required number of numeric characters -->
+        <Var name="length">
+          <StringLib method="length">
+            <Param>
+              <Var name="numeric"/>
+            </Param>
+          </StringLib>
+        </Var>
+        <For var="count" start="1" condition="$count &lt;= $minNumeric" step="1">
+          <Var name="random">
+            <MathLib method="random_int">
               <Param>0</Param>
-              <Param>30</Param>
+              <Param><Int.parse>$length - 1</Int.parse></Param>
             </MathLib>
-           </Var>
-           <Var name="newPassword">
-              <StringLib method="concatenate">
-                <Param><Var name="newPassword"/></Param>
-                <Param><Var name="nonAlphaNumeric" key="$random"/></Param>
-              </StringLib>
-           </Var>
-         </For>
-         
-         <!-- preappend numbers until minlength -->
-         <Var name="numbers" value="$minLength - $minNonAlphaNumeric - $minAlphaUpper - $minAlphaLower"/>
-         <For var="count" start="1" condition="$count &lt;= $numbers" step="1">
-           <Var name="random">
-            <MathLib method="random">
+          </Var>
+          <Var name="newPasswordMinRequiredCharacters">
+            <StringLib method="concatenate">
+              <Param><Var name="newPasswordMinRequiredCharacters"/></Param>
+              <Param><Var name="numeric" key="$random"/></Param>
+            </StringLib>
+          </Var>
+        </For>
+
+        <!-- Concatenate the required number of non alphanumeric characters -->
+        <Var name="length">
+          <StringLib method="length">
+            <Param>
+              <Var name="nonAlphaNumeric"/>
+            </Param>
+          </StringLib>
+        </Var>
+        <For var="count" start="1" condition="$count &lt;= $minNonAlphaNumeric" step="1">
+          <Var name="random">
+            <MathLib method="random_int">
               <Param>0</Param>
-              <Param>9</Param>
+              <Param><Int.parse>$length - 1</Int.parse></Param>
             </MathLib>
-           </Var>
-           <Var name="newPassword">
-              <StringLib method="concatenate">
-                <Param><Var name="newPassword"/></Param>
-                <Param><Var name="random"/></Param>
-              </StringLib>
-           </Var>
-         </For>
+          </Var>
+          <Var name="newPasswordMinRequiredCharacters">
+            <StringLib method="concatenate">
+              <Param><Var name="newPasswordMinRequiredCharacters"/></Param>
+              <Param><Var name="nonAlphaNumeric" key="$random"/></Param>
+            </StringLib>
+          </Var>
+        </For>
+
+        <!-- Concatenate characters of any type until the required number of characters of generated passwords -->
+        <Var name="length">
+          <StringLib method="length">
+            <Param>
+              <Var name="allChars"/>
+            </Param>
+          </StringLib>
+        </Var>
+        <For var="count" start="1" condition="$count &lt; $generatedPasswordLength - $minNonAlphaNumeric - $minAlphaUpper - $minAlphaLower" step="1">
+          <Var name="random">
+            <MathLib method="random_int">
+              <Param>0</Param>
+              <Param><Int.parse>$length - 1</Int.parse></Param>
+            </MathLib>
+          </Var>
+          <Var name="newPasswordMinRequiredCharacters">
+            <StringLib method="concatenate">
+              <Param><Var name="newPasswordMinRequiredCharacters"/></Param>
+              <Param><Var name="allChars" key="$random"/></Param>
+            </StringLib>
+          </Var>
+        </For>
+
+        <!-- Password is the required characters picked at a random order -->
+        <Var name="newPassword"><String/></Var>
+        <Var name="length">
+          <StringLib method="length">
+            <Param>
+              <Var name="newPasswordMinRequiredCharacters"/>
+            </Param>
+          </StringLib>
+        </Var>
+        <Var name="nRemainingChars">
+          <Var name="length"/>
+        </Var>
+
+        <While condition="$newPasswordMinRequiredCharacters">
+          <!-- Random character index -->
+          <Var name="random">
+            <MathLib method="random_int">
+              <Param>0</Param>
+              <Param><Int.parse>$nRemainingChars - 1</Int.parse></Param>
+            </MathLib>
+          </Var>
+
+          <!-- String with the characters before the randomly chosen one -->
+          <Var name="subCharsA">
+            <If condition="$random != 0">
+              <Then>
+                <StringLib method="substr">
+                  <Param name="str"><Var name="newPasswordMinRequiredCharacters"/></Param>
+                  <Param name="start">0</Param>
+                  <Param name="length"><Var name="random"/></Param>
+                </StringLib>
+              </Then>
+              <Else>
+                <String/>
+              </Else>
+            </If>
+          </Var>
+
+          <!-- String with the characters after the randomly chosen one -->
+          <Var name="subCharsB">
+            <StringLib method="substr">
+              <Param name="str"><Var name="newPasswordMinRequiredCharacters"/></Param>
+              <Param name="start"><Int.parse>$random + 1</Int.parse></Param>
+            </StringLib>
+          </Var>
+
+          <!-- Concatenate the new password with the randomly chosen character -->
+          <Var name="newPassword">
+            <StringLib method="concatenate">
+              <Param><Var name="newPassword"/></Param>
+              <Param><Var name="newPasswordMinRequiredCharacters" key="$random"/></Param>
+            </StringLib>
+          </Var>
+
+          <!-- String with remaining characters without the randomly chosen one -->
+          <Var name="newPasswordMinRequiredCharacters">
+            <StringLib method="concatenate">
+              <Param><Var name="subCharsA"/></Param>
+              <Param><Var name="subCharsB"/></Param>
+            </StringLib>
+          </Var>
+          
+          <Var name="nRemainingChars"><Int.parse>$nRemainingChars - 1</Int.parse></Var>
+        </While>
+
+
         <Return><Var name="newPassword"/></Return>
       </Begin>
     </Function>
