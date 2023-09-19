@@ -296,7 +296,7 @@
 				<Var name="person">
 					<DataAccess method="load">
 						<Param name="_entity">fw_person</Param>
-						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="username"/></Param>
 					</DataAccess>
 				</Var>
 
