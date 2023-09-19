@@ -294,19 +294,20 @@
 			*			P A S S W O R D    ::    Password policies
 			*		________________________________________________________________________________________________
 		-->
-		<String key="passwordPoliciesHead"><![CDATA[ A alteração de senha deve contemplar no mínimo:&lt;ul&gt; ]]></String>
-		<String key="passwordErrorsHead"><![CDATA[ Faltaram os requisitos mínimos de::&lt;ul&gt; ]]></String>
-		<String key="passwordsDontMatch"><![CDATA[ &lt;li&gt; As senhas novas não coincidem.&lt;/li&gt; ]]></String>
-		<String key="passwordSameAsPrevious"><![CDATA[ &lt;li&gt; A senha não pode ser igual à anterior.&lt;/li&gt; ]]></String>
-		<String key="minLength"><![CDATA[ &lt;li&gt; {0} caracteres.&lt;/li&gt; ]]></String>
-		<String key="minAlphaLower"><![CDATA[ &lt;li&gt; {0} letra(s) minúscula(s) [a..z].&lt;/li&gt; ]]></String>
-		<String key="minAlphaUpper"><![CDATA[ &lt;li&gt; {0} letra(s) maiúscula(s) [A..Z].&lt;/li&gt; ]]></String>
-		<String key="minNumeric"><![CDATA[ &lt;li&gt; {0} algarismo(s) [0..9].&lt;/li&gt; ]]></String>
-		<String key="minNonAlphaNumeric"><![CDATA[ &lt;li&gt; {0} símbolo(s) [!#$%&amp;*()\-_=+{};:,&lt;.&gt;] ]]></String>
-		<String key="errorChangingPassword"><![CDATA[ &lt;li&gt; Error a alterar a senha&lt;/li&gt; ]]></String>
-		<String key="passwordPoliciesTail"><![CDATA[ &lt;/ul&gt; ]]></String>
-		<String key="passwordErrorsTail"><![CDATA[ &lt;/ul&gt; ]]></String>
+		<String key="passwordPoliciesHead"><![CDATA[ A alteração de senha deve contemplar no mínimo:<ul> ]]></String>
+		<String key="passwordErrorsHead"><![CDATA[ Faltaram os requisitos mínimos de::<ul> ]]></String>
+		<String key="passwordsDontMatch"><![CDATA[ <li> As senhas novas não coincidem.</li> ]]></String>
+		<String key="passwordSameAsPrevious"><![CDATA[ <li> A senha não pode ser igual à anterior.</li> ]]></String>
+		<String key="minLength"><![CDATA[ <li> {0} caracteres.</li> ]]></String>
+		<String key="minAlphaLower"><![CDATA[ <li> {0} letra(s) minúscula(s) [a..z].</li> ]]></String>
+		<String key="minAlphaUpper"><![CDATA[ <li> {0} letra(s) maiúscula(s) [A..Z].</li> ]]></String>
+		<String key="minNumeric"><![CDATA[ <li> {0} algarismo(s) [0..9].</li> ]]></String>
+		<String key="minNonAlphaNumeric"><![CDATA[ <li> {0} símbolo(s) [!#$%&amp;*()\-_=+{};:,<.>] ]]></String>
+		<String key="errorChangingPassword"><![CDATA[ <li> Error a alterar a senha</li> ]]></String>
+		<String key="passwordPoliciesTail"><![CDATA[ </ul> ]]></String>
+		<String key="passwordErrorsTail"><![CDATA[ </ul> ]]></String>
 		<String key="noUser"><![CDATA[ No user ]]></String>
+		<String key="validationErrors"><![CDATA[Existem {0} erro(s).]]></String>
 		
 		
 		

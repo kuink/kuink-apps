@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+    <!-- Override domain inherited definitions or add local definitions here -->
+  </Domains>
+  <Templates>
+    <!-- Override template inherited definitions or add local definitions here -->
+  </Templates>
+  <Entities>
+    <Entity name="fw_person" doc="Person">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="public_key" domain="uuid" required="false" doc=""/>
+        <Attribute name="private_key" domain="uuid" required="false" doc=""/>
+        <Attribute name="uid" type="string" size="128" doc="Person uid"/>
+        <Attribute name="id_title" domain="foreign" default="1" refentity="fw_title" refattr="id" required="false" />
+        <Attribute name="name" domain="longName" required="false" doc=""/>
+        <Attribute name="given_name" domain="mediumText" required="false" doc=""/>
+        <Attribute name="surname" domain="mediumText" required="false" doc=""/>
+        <Attribute name="display_name" type="string" size="100" required="false" doc=""/>
+        <Attribute name="id_sex_code" domain="foreign" type="string" size="1" required="false" doc=""/>
+        <Attribute name="birthday" domain="timestamp" doc=""/>
+        <Attribute name="id_iddoc_country" domain="foreign" refentity="fw_country" required="false" doc=""/>
+        <Attribute name="id_iddoc_type" domain="foreign" refentity="fw_doc_type" required="false" doc=""/>
+        <Attribute name="iddoc_number" domain="mediumText" required="false" doc=""/>
+        <Attribute name="iddoc_expiry_date" domain="timestamp" required="false" doc=""/>
+        <Attribute name="id_nationality" domain="foreign" refentity="fw_country" required="false" doc=""/>
+        <Attribute name="tax_number" domain="mediumText" doc=""/>
+        <Attribute name="health_number" domain="mediumText" doc=""/>
+        <Attribute name="social_sec_number" domain="mediumText" doc=""/>
+        <Attribute name="sps_number" domain="mediumText" doc=""/>
+        <Attribute name="id_sps_type" domain="foreign" refentity="fw_sps_type" required="false" doc=""/>
+        <Attribute name="id_place_of_birth" domain="foreign" refentity="fw_country" required="false" doc=""/>
+        <Attribute name="id_district" domain="foreign" refentity="fw_district" refattr="id" required="true" doc="Place of Birth, District"/>
+        <Attribute name="id_county" domain="foreign" refentity="fw_county" refattr="id" required="false" doc="Place of Birth, County"/>
+        <Attribute name="id_civil_parish" domain="foreign" refentity="fw_civil_parish" refattr="id" required="false" doc="Place of Birth, Civil Parish"/>
+        <Attribute name="id_residence_country" domain="foreign" refentity="fw_country" refattr="id" required="false" doc="Country of Residence"/>
+        <Attribute name="street_address" domain="mediumText" doc=""/>
+        <Attribute name="postal_code" domain="mediumText" doc=""/>
+        <Attribute name="uri" domain="uri" required="false" doc=""/>
+        <Attribute name="id_qualification" domain="foreign" refentity="fw_qualification" refattr="id" required="false"/>
+        <Attribute name="id_job_sector" domain="foreign" refentity="fw_job_sector" refattr="id" required="false"/>
+        <Attribute name="id_job_class" domain="foreign" refentity="fw_job_class" refattr="id" required="false"/>
+        <Attribute name="id_job" domain="foreign" refentity="fw_job" refattr="id" required="true" doc="Job ID"/>
+        <Attribute name="job" domain="mediumText" required="false" />
+        <Attribute name="job_employer" domain="mediumText" required="false" />
+        <Attribute name="id_marital_status" domain="foreign" refentity="fw_marital_status" refattr="id" required="false" />
+        <Attribute name="obs" domain="longText" required="false" doc=""/>
+        <Attribute name="obs_private" domain="longText" required="false" doc="Private observations"/>
+        <Attribute name="_is_system" domain="bool" default="0" required="true" doc="Is this a system person"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_title" doc="">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="name" domain="mediumName" required="false" doc=""/>
+        <Attribute name="code" domain="code" required="false" doc=""/>
+        <Attribute name="order" domain="int" required="false" doc=""/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+    <Entity name="fw_title" doc="">
+      <Attributes>
+        <Attribute name="id" domain="id" />
+        <Attribute name="name" domain="mediumName" required="false" doc=""/>
+        <Attribute name="code" domain="code" required="false" doc=""/>
+        <Attribute name="order" domain="int" required="false" doc=""/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>
