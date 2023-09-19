@@ -12,16 +12,19 @@
     <Domain name="bool" type="bool" />
     <Domain name="int" type="int" size="10" />
     <Domain name="string" type="string" size="128" />
+    <Domain name="mediumString" type="string" size="256" />
     <Domain name="longString" type="string" size="1024" />
     <Domain name="occurs" type="string" size="5" />
     <Domain name="text" type="text" />
     <Domain name="json" type="longtext" />    
     <Domain name="html" type="longtext" />
     <Domain name="xml" type="longtext" />
+    <Domain name="mediumText" type="mediumtext" />
     <Domain name="longText" type="longtext" />
     <Domain name="positiveInt" type="int" size="10" />
     <Domain name="real" type="decimal" size="7,4" />
     <Domain name="name" type="string" size="64" />
+    <Domain name="mediumName" type="string" size="128" />
     <Domain name="longName" type="string" size="256" />
     <Domain name="value" type="string" size="256" />
     <Domain name="order" type="int" size="10" />
