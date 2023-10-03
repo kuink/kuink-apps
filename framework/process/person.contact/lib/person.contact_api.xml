@@ -459,6 +459,9 @@
 							</Call>
 						</Var>
 					</Then>
+					<Else>
+						<Var name="idPersonCompany"><Var name="PARAMS" key="id_person_company"/></Var>
+					</Else>
 				</If>
 				<If condition="$PARAMS->id_contact_type != '' &amp;&amp; $PARAMS->contact != ''">
 					<Then>
@@ -478,7 +481,7 @@
 						</If>
 
 						<!-- If there's no default contact of this type, sets this one as the default -->
-						<Var name="defaultContacts" dump="true">
+						<Var name="defaultContacts">
 							<Call function="getByContactType">
 								<Param name="id_person_company"><Var name="idPersonCompany"/></Param>
 								<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
@@ -492,7 +495,7 @@
 							</Then>
 							<Else>
 								<ForEach var="defaultContacts" item="contact">
-									<Var name="contact" dump="true"/>
+									<Var name="contact"/>
 									<If condition="$contact->id != $PARAMS->id">
 										<Then>
 											<Var name="isDefault"><Int>0</Int></Var>
@@ -523,7 +526,7 @@
 							<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
 						</DataAccess>
 						<!-- Gets updated record -->
-						<Var name="updatedContact">
+						<Var name="updatedContact" dump="true">
 							<DataAccess method="load">
 								<Param name="_entity">fw_person_contact</Param>
 								<Param name="id"><Var name="PARAMS" key="id"/></Param>
