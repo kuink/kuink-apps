@@ -1,0 +1,54 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <Description>List persons enrolled into a person group</Description>
+    </Doc>
+    <Params>
+    	<Param name="id_person_group"/>
+    	<Param name="person_group_code"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField>
+                    <![CDATA[
+                        p.id,
+                        p.display_name,
+                        p.public_key,
+                        p._person_type_description,
+                        p.id_card,
+                        prg.is_master,
+                        pg.name as "person_group_name",
+                        pg.code as "person_group_code",
+                        if (prg.is_master=1,pg.master_designation,null) as "master_designation",
+                        pg.id_person_group_type as "id_person_group_type",
+                        pgt.name as "person_group_type_name",
+                        pgt.code as "person_group_type_code"
+
+                    ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        <![CDATA[
+                          fw_person_rel_group prg
+                          INNER JOIN fw_person_group pg on (prg.id_person_group=pg.id)
+                          INNER JOIN fw_person_group_type pgt on (pg.id_person_group_type=pgt.id)
+                          INNER JOIN person p ON (p.id=prg.id_person)
+                        ]]>
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition optional="id_person_group">prg.id_person_group='{param->id_person_group}'</XCondition>
+                    <XCondition optional="person_group_code">pg.code='{param->person_group_code}'</XCondition>
+                </XWhere>
+                <XOrderBy>
+                    <XOrder>
+                        <![CDATA[ p.name ASC ]]>
+                    </XOrder>
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

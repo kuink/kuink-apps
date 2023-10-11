@@ -30,7 +30,7 @@
 					<XTable>
 						fw_access_control_list_entry acle
 						LEFT OUTER JOIN person p ON (p.id=acle.id_person)
-						LEFT OUTER JOIN person_group pg ON (pg.id=acle.id_person_group)
+						LEFT OUTER JOIN fw_person_group pg ON (pg.id=acle.id_person_group)
 						LEFT OUTER JOIN fw_permission pm ON (pm.id=acle.id_permission)
 					</XTable>
 				</XFrom>
@@ -47,4 +47,3 @@
 		</Sql>
 	</Body>
 </Method>
-

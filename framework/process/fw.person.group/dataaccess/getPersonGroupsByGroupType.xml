@@ -1,0 +1,50 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <Description>List groups by group type</Description>
+    </Doc>
+    <Params>
+    	<Param name="id_person_group_type" type="int" doc="The person group type"/>
+        <Param name="is_active" type="int" doc="active or inactive groups"/>
+    	<Param name="id_person" type="int" doc="The person"/>
+    </Params>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        <![CDATA[
+                            pg.id as id_person_group,
+                            pg.name as "person_group_name",
+                            prg.id as id_person_rel_group,
+                            p.display_name,
+                            p.name,
+                            p.public_key,
+                            pgt.name as "person_group_type_name"
+                        ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        <![CDATA[
+                          fw_person_rel_group prg
+                          INNER JOIN fw_person_group pg on (prg.id_person_group=pg.id)
+                          INNER JOIN fw_person_group_type pgt on (pg.id_person_group_type=pgt.id)
+                          INNER JOIN person p ON (p.id=prg.id_person and prg.is_master = 1)
+                        ]]>
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>pg.id_person_group_type='{param->id_person_group_type}'</XCondition>
+                    <XCondition optional="id_person">AND p.id='{param->id_person}'</XCondition>
+                    <XCondition optional="is_active">AND pg.is_active='{param->is_active}'</XCondition>
+                </XWhere>
+                <XOrderBy>
+                    <XOrder>
+                        <![CDATA[ pg.name ASC ]]>
+                    </XOrder>
+                </XOrderBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

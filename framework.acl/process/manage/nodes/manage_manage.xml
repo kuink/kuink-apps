@@ -106,7 +106,7 @@
       <Form name="frmEditEntry" title="aclEntry">
       	<Select name="id_person" datasource="call:gecol.core,person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="display_name,_person_type_description"  searchable="dynamic"
           datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
-      	<Select name="id_person_group" datasource="call:gecol.core,person.group,api,getAll" bindid="id" bindvalue="code" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person.group,api,getById"/>
+      	<Select name="id_person_group" datasource="call:framework,fw.person.group,api,getAll" bindid="id" bindvalue="code" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,fw.person.group,api,getById"/>
       	<Select name="id_permission" datasource="call:framework,permission,api,search" bindid="id" bindvalue="code" bindresults="code,name"  searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:framework,permission,api,getById"/>
         <ButtonGroup>
           <Button name="cancel" type="cancel" label="cancel" action="edit"/>

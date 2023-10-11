@@ -396,7 +396,7 @@
       	
       	<!-- Get the person_group -->
       	<Var name="idPersonGroup">
-      		<Call library="gecol.core,person.group,api" function="getIdByCode">
+      		<Call library="framework,fw.person.group,api" function="getIdByCode">
 						<Param name="code"><Var name="PARAMS" key="person_group_code"/></Param>
 					</Call>
       	</Var>
