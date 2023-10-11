@@ -53,7 +53,7 @@
 			*    - (int) id_marital_status     ::  Person's marital status;
 			*    - (text) obs           			 ::  Public observations about this person;
 			*    - (text) obs_private          ::  Private observations about this person;
-			*    - (int) _is_system            ::  1 if this is a system kind of person.
+			*    - (int) _is_system_valid      ::  1 if this is a system kind of person.
 			*
 			*		RETURN
 			*		 - (int) id_person  ::  Returns the created 'fw_person' record's id.
@@ -296,7 +296,7 @@
 				<Var name="person">
 					<DataAccess method="load">
 						<Param name="_entity">fw_person</Param>
-						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="username"/></Param>
 					</DataAccess>
 				</Var>
 

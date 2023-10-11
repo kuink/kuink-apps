@@ -52,7 +52,7 @@
             </XWhere>
             <XOrderBy>
               <XOrder>
-                  <![CDATA[ {param->entitySort}, ags.code asc ]]> 
+                  <![CDATA[ {@param->entitySort}, ags.code asc ]]> 
               </XOrder>
             </XOrderBy>
           </XSql>

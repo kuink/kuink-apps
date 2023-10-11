@@ -1,8 +1,12 @@
-<?xml version='1.0'?><Process>
+<?xml version="1.0"?>
+<Process>
 	<Transitions>
-		<Flow role='Teacher' startnode='' event='init' endnode='manage' />
-		<Flow role='Teacher' startnode='manage' event='add' endnode='edit' />
-		<Flow role='Teacher' startnode='manage' event='edit' endnode='edit' />
-		<Flow role='Teacher' startnode='edit' event='back' endnode='manage' />
-    </Transitions>
+		<!-- From nothing, enters to content management main page -->
+		<Flow role="Teacher,Student" startnode="" event="init" endnode="main"/>
+		<!-- Main page  >  Add a new content or edit an existing one (edit node) --> 
+		<Flow role="Teacher,Student" startnode="main" event="add" endnode="edit"/>
+		<Flow role="Teacher,Student" startnode="main" event="edit" endnode="edit"/>
+		<!-- Content edit  >  Main page -->
+		<Flow role="Teacher,Student" startnode="edit" event="back" endnode="main"/>
+  </Transitions>
 </Process>

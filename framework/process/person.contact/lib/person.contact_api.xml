@@ -427,15 +427,19 @@
 			*  
 			*		PARAMS
 			*		 - (int) id               	::  Contact's id;
+			*		 - (int) id_person					::  Person's id;
+			*		 - (int) id_company					::  Company's id;
 			*		 - (int) id_person_company  ::  Person_company's id;
-			*		 - (int) id_contact_type  	::  Contact type's id;
+			*		 - (int) id_contact_type  	::  Contact type;
 			*		 - (text) contact         	::  Contact;
 			*		 - (text) config  					::  Contact's specific configuration;
 			*		 - (int) is_default  				::  1 if this contact is the default one of this type (in this company context); 0, otherwise;
 		-->
 		<Function name="update" doc="Updates a person's contact.">
 			<Params>
-				<Param name="id" type="int" required="true" doc="Contact's id"/>
+				<Param name="id" type="int" required="false" doc="Contact's id"/>
+				<Param name="id_person" type="int" required="false" doc="Person's id"/>
+				<Param name="id_company" type="int" required="false" doc="Company's id"/>
 				<Param name="id_person_company" type="int" required="false" doc="Id of this person/company relation"/>
 				<Param name="id_contact_type" type="int" required="false" doc="Contact type"/>
 				<Param name="contact" type="text" required="false" doc="Contact"/>
@@ -445,7 +449,20 @@
 			<Return/>
 
 			<Begin>
-				<Var name="PARAMS" dump="true"/>
+				<!-- If the param 'id_person_company' wasn't supplied, gets it through id_person and id_company -->
+				<If condition="$PARAMS->id_person_company == '' &amp;&amp; $PARAMS->id_person != '' &amp;&amp; $PARAMS->id_company != ''">
+					<Then>
+						<Var name="idPersonCompany">
+							<Call library="framework,fw.person,api" function="getPersonCompany">
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+							</Call>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="idPersonCompany"><Var name="PARAMS" key="id_person_company"/></Var>
+					</Else>
+				</If>
 				<If condition="$PARAMS->id_contact_type != '' &amp;&amp; $PARAMS->contact != ''">
 					<Then>
 						<!-- If the param 'config' wasn't supplied, sets it through contact's type -->
@@ -464,9 +481,9 @@
 						</If>
 
 						<!-- If there's no default contact of this type, sets this one as the default -->
-						<Var name="defaultContacts" dump="true">
+						<Var name="defaultContacts">
 							<Call function="getByContactType">
-								<Param name="id_person_company"><Var name="PARAMS" key="id_person_company"/></Param>
+								<Param name="id_person_company"><Var name="idPersonCompany"/></Param>
 								<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
 								<Param name="is_default"><Int>1</Int></Param>
 							</Call>
@@ -478,7 +495,7 @@
 							</Then>
 							<Else>
 								<ForEach var="defaultContacts" item="contact">
-									<Var name="contact" dump="true"/>
+									<Var name="contact"/>
 									<If condition="$contact->id != $PARAMS->id">
 										<Then>
 											<Var name="isDefault"><Int>0</Int></Var>
@@ -499,6 +516,7 @@
 						<DataAccess method="update">
 							<Param name="_entity">fw_person_contact</Param>
 							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							<Param name="id_person_company"><Var name="idPersonCompany"/></Param>
 							<Param name="id_contact_type"><Var name="PARAMS" key="id_contact_type"/></Param>
 							<Param name="contact"><Var name="PARAMS" key="contact"/></Param>
 							<Param name="config"><Var name="contactConfig"/></Param>
@@ -508,7 +526,7 @@
 							<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
 						</DataAccess>
 						<!-- Gets updated record -->
-						<Var name="updatedContact">
+						<Var name="updatedContact" dump="true">
 							<DataAccess method="load">
 								<Param name="_entity">fw_person_contact</Param>
 								<Param name="id"><Var name="PARAMS" key="id"/></Param>

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <Lang>
-    <Strings>
-		<!-- cms -->
+  <Strings>
+    <!-- cms -->
     <String key="framework.cms" value="Gestão de Conteúdos"/>
 
     <String key="manageContent" value="Conteúdos"/>    
@@ -35,7 +35,7 @@
     <String key="contentItems" value="Conteúdos"/>
     <String key="is_published" value="Publicado"/>
     <String key="childs" value="Conteúdos Relacionados"/>
-    <String key="addChild" value="Adicionar conteúdo Relacionado"/>
+    <String key="addChild" value="Adicionar Conteúdo Relacionado"/>
     <String key="publishNewChannel" value="Publicar em Canal"/>
 
     <!-- Content -->
@@ -55,21 +55,57 @@
     <String key="change_position" value="Alterar posição"/>
     <String key="addToChannel" value="Gravar"/>
     <String key="rank" value="Posição"/>
-    
+    <String key="reorder"><![CDATA[ Reordenar ]]></String>
+    <String key="editPublication"><![CDATA[ Editar publicação ]]></String>
+    <String key="deletePublication"><![CDATA[ Apagar publicação ]]></String>
+
     <!-- Device -->
+    <String key="devices"><![CDATA[ Dispositivos ]]></String>
     <String key="ip_address" value="Endereço IP"/>
 
     <!-- Templates -->
+    <String key="templates"><![CDATA[ Templates ]]></String>
     <String key="id_template_type" value="Tipo de Template"/>
     <String key="saveAndStay" value="Gravar e Ficar"/>
     <String key="saveAndLeave" value="Gravar e Sair"/>
 
     <!-- Tipos de Conteúdos -->
+    <String key="contentTypes"><![CDATA[ Tipos de Conteúdo ]]></String>
     <String key="allowed_extensions" value="Extensões permitidas"/>
     <String key="fields" value="Campos"/>
     <String key="id_child_type" value="Tipo de conteúdo filhos"/>
 
-   </Strings>
-   <HelpStrings>
-   </HelpStrings>
+    <!--  ::  Headers  -->
+		<String key="channelsManagementHeader">
+			<![CDATA[
+				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Canais</span></p></h3></center>
+			]]>
+		</String>
+		<String key="contentsManagementHeader">
+			<![CDATA[
+      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Conteúdos</span></p></h3></center>
+			]]>
+		</String>
+    <String key="contentTypesManagementHeader">
+			<![CDATA[
+      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Tipos de Conteúdo</span></p></h3></center>
+			]]>
+		</String>
+		<String key="devicesManagementHeader">
+			<![CDATA[
+      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Dispositivos</span></p></h3></center>
+			]]>
+		</String>
+		<String key="templatesManagementHeader">
+			<![CDATA[
+      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Templates</span></p></h3></center>
+			]]>
+		</String>
+    <String key="templateTypesManagementHeader">
+			<![CDATA[
+      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Tipos de Template</span></p></h3></center>
+			]]>
+		</String>
+  </Strings>
+  <HelpStrings/>
 </Lang>
