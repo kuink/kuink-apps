@@ -1,0 +1,638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+        <Function name="add" scope="public" doc="Add a new person group type">
+            <Params>
+                <Param name="name" doc="Person group name"/>
+                <Param name="code" doc="Person group code"/>
+                <Param name="master_designation" doc="Master designation"/>
+                <Param name="id_person_group_type" doc="Person group type"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="master_designation" type="text" doc=""/>
+                <External name="id_person_group_type" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Var name="newId" >
+                    <DataAccess method="insert">
+                        <Param name="_entity">fw_person_group</Param>
+                        <Param name="name"><Var name="PARAMS" key="name"/></Param>
+                        <Param name="code"><Var name="PARAMS" key="code"/></Param>
+                        <Param name="master_designation"><Var name="PARAMS" key="master_designation"/></Param>
+                        <Param name="id_person_group_type"><Var name="PARAMS" key="id_person_group_type"/></Param>
+                        <Param name="_creation"><Now/></Param>
+                        <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                        <Param name="_modification"><Now/></Param>
+                        <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                    </DataAccess>
+                </Var>
+                <Return>
+                    <Call function="get">
+                        <Param name="id"><Var name="newId"/></Param>
+                    </Call>
+                </Return>
+            </Begin>
+        </Function>
+        <Function name="get" scope="public" doc="Get a person group">
+            <Params>
+                <Param name="id" required="true"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="master_designation" type="text" doc=""/>
+                <External name="id_person_group_type" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <DataAccess method="this,this,get">
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="getIdByCode" scope="public" doc="Get the id given the code of a person group type">
+            <Params>
+              <Param name="code" required="true"/>
+            </Params>
+            <Return type="int" doc="The id"/>
+            <Begin>
+              <Var name="record">
+               <DataAccess method="load">
+                   <Param name="_entity">fw_person_group</Param>
+                   <Param name="code"><Var name="PARAMS" key="code"/></Param>
+               </DataAccess>
+              </Var>
+              <Return><Var name="record" key="id"/></Return>
+            </Begin>
+        </Function>
+
+        <Function name="getAll" scope="public" doc="Get all person groups">
+            <Params>
+              <Param name="id_person_group_type" type="int" doc="The group type"/>
+              <Param name="group_type_code" type="string" doc="The group type code"/>
+            </Params>
+            <Return type="multiple" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="master_designation" type="text" doc=""/>
+                <External name="id_person_group_type" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <If condition="$PARAMS->group_type_code != ''">
+									<Then>
+									<Var name="groupType" dump="true">
+										 <DataAccess method="load">
+												<Param name="_entity">fw_person_group_type</Param>
+												<Param name="code"><Var name="group_type_code"/></Param>
+											</DataAccess>
+										</Var>
+										<Var name="id_person_group_type" dump="true"><Var name="groupType" key="id"/></Var>
+									</Then>
+								</If>
+
+                <Var name="result">
+                  <If condition="$PARAMS->id_person_group_type == '' &amp;&amp; $PARAMS->group_type_code == ''">
+										<Then>
+	                    <DataAccess method="getAll">
+	                        <Param name="_entity">fw_person_group</Param>
+	                        <Param name="_sort">id_person_group_type, name</Param>
+	                    </DataAccess>
+										</Then>
+										<Else>
+	                    <DataAccess method="getAll">
+	                        <Param name="_entity">fw_person_group</Param>
+	                        <Param name="id_person_group_type"><Var name="id_person_group_type"/></Param>
+	                        <Param name="_sort">id_person_group_type, name</Param>
+	                    </DataAccess>
+										</Else>
+									</If>
+                </Var>
+
+                <Return><Var name="result"/></Return>
+            </Begin>
+        </Function>
+        <Function name="update" scope="public" doc="Update a person group">
+            <Params>
+                <Param name="id" required="true"/>
+                <Param name="name"/>
+                <Param name="code"/>
+                <Param name="master_designation"/>
+                <Param name="id_person_group_type"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="master_designation" type="text" doc=""/>
+                <External name="id_person_group_type" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Var name="dataParams">
+                    <UtilsLib method="filterNotNull">
+                        <Param><Var name="PARAMS" /></Param>
+                    </UtilsLib>
+                </Var>
+                <DataAccess method="update" params="dataParams">
+                    <Param name="_entity">fw_person_group</Param>
+                    <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    <Param name="_modification"><Now/></Param>
+                    <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                </DataAccess>
+                <Return>
+                    <Call function="get">
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </Call>
+                </Return>
+            </Begin>
+        </Function>
+        <Function name="delete" scope="public" doc="Delete a person group">
+            <Params>
+                <Param name="id" required="true"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="deleted">
+                    <DataAccess method="delete">
+                        <Param name="_entity">fw_person_group</Param>
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </DataAccess>
+                </Var>
+                <Return>
+                    <If condition="$deleted == 1">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+        <Function name="getByIdGroupType" scope="public" doc="Get all groups of a type">
+            <Params>
+                <Param name="id_group_type"/>
+                <Param name="is_active"/>
+            </Params>
+            <Return type="multiple"/>
+            <Begin>
+                <Return>
+                    <DataAccess method="this,this,getPersonGroupsByGroupType">
+                        <Param name="id_person_group_type"><Var name="PARAMS" key="id_group_type"/></Param>
+                        <Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
+				<Function name="getPersonRelGroupPaginated" scope="public" doc="Get all relations between persons and groups paginated">
+					<Params>
+						<Param name="id_person_group"/>
+						<Param name="id_person"/>
+		        <Param name="pagenum" type="int"/>
+		        <Param name="pagesize" type="int"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+						<Var name="result">
+							<DataAccess method="this,this,getPersonRelGroupPaginated">
+								<Param name="id_person_group">
+									<Var name="PARAMS" key="id_person_group"/>
+								</Param>
+								<Param name="id_person">
+									<Var name="PARAMS" key="id_person"/>
+								</Param>
+		            <Param name="pagenum">
+		              <Var name="PARAMS" key="pagenum"/>
+		            </Param>
+		            <Param name="pagesize">
+		              <Var name="PARAMS" key="pagesize"/>
+		            </Param>
+							</DataAccess>
+						</Var>
+						<Return>
+							<Var name="result"/>
+						</Return>
+					</Begin>
+				</Function>
+
+				<Function name="getAllPersonRelGroup" scope="public" doc="Get all relations between persons and groups">
+					<Params/>
+					<Return type="multiple"/>
+					<Begin>
+						<Var name="result">
+							<DataAccess method="this,this,getAllPersonRelGroup"/>
+						</Var>
+						<Return>
+							<Var name="result"/>
+						</Return>
+					</Begin>
+				</Function>
+
+				<Function name="insertPersonRelGroup" scope="public" doc="Insert person relation group">
+					<Params>
+						<Param name="id_person"/>
+						<Param name="id_person_group"/>
+						<Param name="is_master"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+                        <Var name="PARAMS" dump="true"/>
+						<Var name="result">
+							<DataAccess method="insert">
+								<Param name="_entity">fw_person_rel_group</Param>
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+								<Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
+                                <Param name="_base">true</Param>
+                                <!--
+								<Param name="id_company"><Var name="USER" key="idCompany"/></Param>
+								<Param name="_creation"><Now/></Param>
+								<Param name="_modification"><Now/></Param>
+								<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+								<Param name="_id_creator"><Var name="USER" key="ip"/></Param>
+								<Param name="_id_updater"><Var name="USER" key="ip"/></Param>
+                                -->
+							</DataAccess>
+						</Var>
+						<Return>
+							<Var name="result"/>
+						</Return>
+					</Begin>
+				</Function>
+				<Function name="updatePersonRelGroup" scope="public" doc="Update person relation group">
+					<Params>
+						<Param name="id"/>
+						<Param name="id_person"/>
+						<Param name="id_person_group"/>
+						<Param name="is_master"/>
+						<Param name="id_company"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+						<Var name="result">
+							<DataAccess method="update">
+								<Param name="_entity">fw_person_rel_group</Param>
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+								<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+								<Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
+								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+								<Param name="_modification"><Now/></Param>
+								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+								<Param name="_id_updater"><Var name="USER" key="ip"/></Param>
+							</DataAccess>
+						</Var>
+						<Return>
+							<Var name="result"/>
+						</Return>
+					</Begin>
+				</Function>
+
+				<Function name="getPersonRelGroup" scope="public" doc="Get relation between person and group">
+					<Params>
+						<Param name="id"/>
+					</Params>
+					<Return type="multiple"/>
+					<Begin>
+						<Var name="result">
+							<DataAccess method="load">
+								<Param name="_entity">fw_person_rel_group</Param>
+								<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							</DataAccess>
+						</Var>
+						<Return>
+							<Var name="result"/>
+						</Return>
+					</Begin>
+				</Function>
+
+        <!-- **************************************************************************** -->
+        <!--
+            Handle persons in person groups
+        -->
+        <Function name="enrollPerson" scope="public" doc="Add a person into a group">
+            <Params>
+                <Param name="id_person"/>
+                <Param name="id_person_group"/>
+                <Param name="is_master"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="id_person" type="text" doc=""/>
+                <External name="id_person_group" type="text" doc=""/>
+                <External name="is_master" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Var name="exists">
+                    <Call function="isEnrolled">
+                        <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                        <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+                    </Call>
+                </Var>
+                <Var name="returnValue">0</Var>
+                <If condition="$exists == 0">
+                    <Then>
+                        <Var name="newId">
+                            <DataAccess method="insert">
+                                <Param name="_entity">fw_person_rel_group</Param>
+                                <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                                <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+                                <Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
+                                <Param name="_creation"><Now/></Param>
+                                <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                                <Param name="_modification"><Now/></Param>
+                                <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                            </DataAccess>
+                        </Var>
+                        <Var name="returnValue">
+                            <Call function="getEnroll">
+                                <Param name="id"><Var name="newId"/></Param>
+                            </Call>
+                        </Var>
+                    </Then>
+                    <Else>
+                        <Var name="returnValue">
+                            <Call function="getEnroll">
+                                <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                                <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+                            </Call>
+                        </Var>
+                    </Else>
+                </If>
+                <Return>
+                    <Var name="returnValue"/>
+                </Return>
+            </Begin>
+        </Function>
+        
+        <Function name="unEnrollPerson" scope="public" doc="Remove the person enroll">
+            <Params>
+                <Param name="id"/>
+                <Param name="id_person"/>
+                <Param name="id_person_group"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="enroll" >
+                    <Call function="getEnroll" params="PARAMS"/>
+                </Var>
+                <Var name="returnValue">0</Var>
+                <If condition="$enroll->id &gt; 0">
+                    <Then>
+                        <Var name="returnValue">
+                            <DataAccess method="delete">
+                                <Param name="_entity">fw_person_rel_group</Param>
+                                <Param name="id"><Var name="enroll" key="id"/></Param>
+                            </DataAccess>
+                        </Var>
+                    </Then>
+                </If>
+                <Return><Var name="returnValue"/></Return>
+            </Begin>
+        </Function>
+
+        <Function name="unEnrollPersonFromAllGroups" scope="public" doc="Remove the person enroll in all groups by group type">
+          <Params>
+            <Param name="group_type_code"/>
+            <Param name="id_person"/>
+          </Params>
+          <Return type="int"/>
+          <Begin>
+            <Var name="groupType">
+              <DataAccess method="load">
+								<Param name="_entity">fw_person_group_type</Param>
+								<Param name="code"><Var name="PARAMS" key="group_type_code"/></Param>
+							</DataAccess>
+            </Var>
+            <Exception name="framework/fw.person.group.type::notExist" condition="$groupType->__length == 0"/>
+			<Var name="enrolls" dump="true">            
+	            <DataAccess method="this,this,getPersonGroupsByGroupType">
+	              <Param name="id_person_group_type"><Var name="groupType" key="id"/></Param>
+	              <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+	            </DataAccess>
+             </Var>
+             <ForEach var="enrolls" item="enroll">
+             	<DataAccess method="delete">
+								<Param name="_entity">fw_person_rel_group</Param>
+								<Param name="id"><Var name="enroll" key="id_person_rel_group"/></Param>
+							</DataAccess>
+							</ForEach>
+            <Return><Int>0</Int></Return>
+          </Begin>
+        </Function>
+        
+        <Function scope="public" name="getEnrolledPersons" doc="Get all enrolled persons in this group">
+            <Params>
+                <Param name="id_person_group"/>
+            </Params>
+            <Return type="multiple" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="display_name" type="text" doc=""/>
+                <External name="public_key" type="text" doc=""/>
+                <External name="id_card" type="text" doc=""/>
+                <External name="_person_type_description" type="text" doc=""/>
+                <External name="is_master" type="text" doc=""/>
+                <External name="person_group_name" type="text" doc=""/>
+                <External name="person_group_code" type="text" doc=""/>
+                <External name="master_designation" type="text" doc=""/>
+                <External name="id_person_group_type" type="text" doc=""/>
+                <External name="person_group_type_name" type="text" doc=""/>
+                <External name="person_group_type_code" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <DataAccess method="this,this,getEnrolledPersons">
+                        <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function scope="public" name="getEnrolledPersonsByCode" doc="Get all enrolled persons in this group">
+            <Params>
+                <Param name="person_group_code"/>
+            </Params>
+            <Return type="multiple" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="display_name" type="text" doc=""/>
+                <External name="public_key" type="text" doc=""/>
+                <External name="id_card" type="text" doc=""/>
+                <External name="_person_type_description" type="text" doc=""/>
+                <External name="is_master" type="text" doc=""/>
+                <External name="person_group_name" type="text" doc=""/>
+                <External name="person_group_code" type="text" doc=""/>
+                <External name="master_designation" type="text" doc=""/>
+                <External name="id_person_group_type" type="text" doc=""/>
+                <External name="person_group_type_name" type="text" doc=""/>
+                <External name="person_group_type_code" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <DataAccess method="this,this,getEnrolledPersons">
+                        <Param name="person_group_code"><Var name="PARAMS" key="person_group_code"/></Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="getEnroll" scope="public" doc="Get a person enroll record">
+            <Params>
+                <Param name="id"/>
+                <Param name="id_person"/>
+                <Param name="id_person_group"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="id_person" type="text" doc=""/>
+                <External name="id_person_group" type="text" doc=""/>
+                <External name="is_master" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <DataAccess method="load" params="PARAMS">
+                        <Param name="_entity">fw_person_rel_group</Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+        <Function name="isEnrolled" scope="public" doc="Check if a person is enrolled in group">
+            <Params>
+                <Param name="id_person"/>
+                <Param name="id_person_group"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="exists" >
+                    <Call function="getEnroll" params="PARAMS" />
+                </Var>
+                <Return>
+                    <If condition="$exists->id &gt; 0">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="isEnrolledByCode" scope="public" doc="Check if a person is enrolled in group">
+            <Params>
+                <Param name="id_person"/>
+                <Param name="person_group_code"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+            		<Var name="idGroup">
+            			<Call function="getIdByCode">
+										<Param name="code"><Var name="PARAMS" key="person_group_code"/></Param>
+									</Call>
+            		</Var>
+
+            		<If condition="$idGroup == ''">
+									<Then>
+										<Var name="exists"><Set/></Var>
+									</Then>
+									<Else>
+		                <Var name="exists">
+		                    <Call function="getEnroll">
+		                    	<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+		                    	<Param name="id_person_group"><Var name="idGroup"/></Param>
+		                    </Call>
+		                </Var>
+									</Else>
+								</If>
+                <Return>
+                    <If condition="$exists->id &gt; 0">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="isMaster" scope="public" doc="Check if a person is master in group or not">
+            <Params>
+                <Param name="id_person"/>
+                <Param name="id_person_group"/>
+            </Params>
+            <Return type="int" doc="1 if is master. 0 if isn't master. -1 if enroll not exists"/>
+            <Begin>
+                <Var name="enroll">
+                    <Call function="getEnroll">
+                        <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                        <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+                    </Call>
+                </Var>
+                <Return>
+                    <If condition="$enroll->id &gt; 0">
+                        <Then><Var name="enroll" key="is_master"/></Then>
+                        <Else>-1</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+        <Function name="getGroup" scope="public" doc="Given a person, find out which group is master. Assuming that one person only belongs to a one group">
+            <Params>
+                <Param name="id_person"/>
+                <Param name="is_master"/>
+                <Param name="person_group_type_code"/>
+            </Params>
+            <Return type="single"/>
+            <Begin>
+                <Var name="masterPerson" >
+                    <DataAccess method="this,this,getPersonRelGroup">
+                        <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                        <Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
+                        <Param name="person_group_type_code"><Var name="PARAMS" key="person_group_type_code"/></Param>
+                    </DataAccess>
+                </Var>
+                <Return>
+                    <If condition="$masterPerson->id &gt; 0">
+                        <Then>
+                            <Call function="get"><Param name="id"><Var name="masterPerson" key="id_person_group"/></Param></Call>
+                        </Then>
+                        <Else></Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>

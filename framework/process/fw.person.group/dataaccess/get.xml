@@ -1,0 +1,49 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <Description>List groups by group type</Description>
+    </Doc>
+    <Params/>
+    <Body>
+        <Load>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        <![CDATA[
+                            pg.id,
+                            pg.name as "person_group_name",
+                            p.id as "id_master",
+                            p.display_name,
+                            p.name,
+                            p.public_key,
+                            pgt.name as "person_group_type_name"
+
+                        ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        <![CDATA[
+                          fw_person_rel_group prg
+                          INNER JOIN fw_person_group pg on (prg.id_person_group=pg.id)
+                          INNER JOIN fw_person_group_type pgt on (pg.id_person_group_type=pgt.id)
+                          INNER JOIN person p ON (p.id=prg.id_person and prg.is_master = 1)
+                        ]]>
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>pg.id='{param->id}'</XCondition>
+                    <XCondition optional="is_active"> and pg.is_active='{param->is_active}'</XCondition>
+                </XWhere>
+                <XGroupBy>
+                    <XCondition>p.id</XCondition>
+                </XGroupBy>
+                <XOrderBy>
+                    <XOrder>
+                        <![CDATA[ pg.name ASC ]]>
+                    </XOrder>
+                </XOrderBy>
+            </XSql>
+        </Load>
+    </Body>
+</Method>

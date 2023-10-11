@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.000.001">
+<Application name="framework" version="2.001.000">
 	<!--
-		v2.000.001
-		*	@date:		 2023.04.18
-		*	@author:   catarina.fernandes
-		*	@comment:  Fix | authentication | Fixing calls to deprecated user API (instead of current fw_person API).
+		v2.001.000
+		*	@date:		2023.10.11
+		*	@author:	jose.rebelo
+		*	@comment:	Refactor | person_group / person_group_type / person_rel_group /.. | Rename functions and entities due to person_group restructure.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

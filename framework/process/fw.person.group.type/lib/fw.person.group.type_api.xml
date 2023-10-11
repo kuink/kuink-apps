@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+    <Permissions/>
+    <Libraries>
+        <Use name="DateTimeLib" type="lib"/>
+        <Use name="UtilsLib" type="lib"/>
+    </Libraries>
+    <Configuration/>
+    <Screens/>
+    <Actions>
+        <Action name="init"/>
+    </Actions>
+    <Library>
+        <Function name="add" scope="public" doc="Add a new person group type">
+            <Params>
+                <Param name="name" doc="Person group type name"/>
+                <Param name="code" doc="Person group type code"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Var name="newId" >
+                    <DataAccess method="insert">
+                        <Param name="_entity">fw_person_group_type</Param>
+                        <Param name="name"><Var name="PARAMS" key="name"/></Param>
+                        <Param name="code"><Var name="PARAMS" key="code"/></Param>
+                        <Param name="_creation"><Now/></Param>
+                        <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                        <Param name="_modification"><Now/></Param>
+                        <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                    </DataAccess>
+                </Var>
+                <Return>
+                    <DataAccess method="load">
+                        <Param name="_entity">fw_person_group_type</Param>
+                        <Param name="id"><Var name="newId"/></Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="get" scope="public" doc="Get a person group type">
+            <Params>
+                <Param name="id" required="true"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <DataAccess method="load">
+                        <Param name="_entity">fw_person_group_type</Param>
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="getIdByCode" scope="public" doc="Get the id given the code of a person group type">
+            <Params>
+              <Param name="code" required="true"/>
+            </Params>
+            <Return type="int" doc="The id"/>
+            <Begin>
+              <Var name="record">
+               <DataAccess method="load">
+                   <Param name="_entity">fw_person_group_type</Param>
+                   <Param name="code"><Var name="PARAMS" key="code"/></Param>
+               </DataAccess>
+              </Var>
+              <Return><Var name="record" key="id"/></Return>
+            </Begin>
+        </Function>
+
+
+        <Function name="getAll" scope="public" doc="Get all person group types">
+            <Params />
+            <Return type="multiple" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Return>
+                    <DataAccess method="getAll">
+                        <Param name="_entity">fw_person_group_type</Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="update" scope="public" doc="Update a person group">
+            <Params>
+                <Param name="id" required="true"/>
+                <Param name="name"/>
+                <Param name="code"/>
+            </Params>
+            <Return type="single" doc="">
+                <External name="id" type="text" doc=""/>
+                <External name="name" type="text" doc=""/>
+                <External name="code" type="text" doc=""/>
+                <External name="_creation" type="text" doc=""/>
+                <External name="_modification" type="text" doc=""/>
+                <External name="_creation_ip" type="text" doc=""/>
+                <External name="_modification_ip" type="text" doc=""/>
+            </Return>
+            <Begin>
+                <Var name="dataParams">
+                    <UtilsLib method="filterNotNull">
+                        <Param><Var name="PARAMS" /></Param>
+                    </UtilsLib>
+                </Var>
+                <DataAccess method="update" params="dataParams">
+                    <Param name="_entity">fw_person_group_type</Param>
+                    <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    <Param name="_modification"><Now/></Param>
+                    <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                </DataAccess>
+                <Return>
+                    <Call function="get">
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </Call>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="delete" scope="public" doc="Delete a person group type">
+            <Params>
+                <Param name="id" required="true"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="deleted">
+                    <DataAccess method="delete">
+                        <Param name="_entity">fw_person_group_type</Param>
+                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                    </DataAccess>
+                </Var>
+                <Return>
+                    <If condition="$deleted == 1">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+    </Library>
+</Node>

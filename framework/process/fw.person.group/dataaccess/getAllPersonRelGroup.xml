@@ -1,0 +1,43 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <Description>Get all relations between persons and groups</Description>
+    </Doc>
+    <Params/>
+		<Body>
+        <GetAll>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        <![CDATA[
+														prg.id AS 'id_person_rel_group',
+														p.id AS 'id_person',
+                            p.display_name AS 'display_name',
+														pg.name AS 'id_person_group',
+														fwc.name AS 'id_company'
+                        ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        <![CDATA[
+                          fw_person_rel_group prg
+													INNER JOIN fw_person_group pg ON (pg.id=prg.id_person_group)
+													INNER JOIN fw_person_group_type pgt ON (pgt.id=pg.id_person_group_type)
+													INNER JOIN person p ON (p.id=prg.id_person)
+													INNER JOIN fw_company fwc ON (fwc.id=prg.id_company)
+                        ]]>
+                    </XTable>
+                </XFrom>
+								<XWhere>
+                  <XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+								</XWhere>
+                <XOrderBy>
+                    <XOrder>
+                        <![CDATA[ p.name ]]>
+                    </XOrder>
+                </XOrderBy>
+							</XSql>
+	        </GetAll>
+	    </Body>
+	</Method>

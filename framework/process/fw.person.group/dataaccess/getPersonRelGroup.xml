@@ -1,0 +1,40 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <Description>Get the person rel group</Description>
+    </Doc>
+    <Params>
+    	<Param name="id_person" type="int" doc="The person "/>
+        <Param name="is_master" type="int" doc="The person is master of this group"/>
+        <Param name="person_group_type_code" type="string" doc="Person group type code"/>
+    </Params>
+    <Body>
+        <Load>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        <![CDATA[
+                            prg.*
+                        ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        <![CDATA[
+                          fw_person_rel_group prg
+                          INNER JOIN fw_person_group pg on (prg.id_person_group=pg.id)
+                          INNER JOIN fw_person_group_type pgt on (pg.id_person_group_type=pgt.id)
+                          INNER JOIN person p ON (p.id=prg.id_person and prg.is_master = 1)
+                        ]]>
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1=1</XCondition>
+                    <XCondition optional="id_person">AND p.id='{param->id_person}'</XCondition>
+                    <XCondition optional="is_master">AND prg.is_master='{param->is_master}'</XCondition>
+                    <XCondition optional="person_group_type_code">AND pgt.code='{param->person_group_type_code}'</XCondition>
+                </XWhere>
+            </XSql>
+        </Load>
+    </Body>
+</Method>
