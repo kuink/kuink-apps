@@ -31,10 +31,8 @@
                         <Param name="_entity">fw_person_group_type</Param>
                         <Param name="name"><Var name="PARAMS" key="name"/></Param>
                         <Param name="code"><Var name="PARAMS" key="code"/></Param>
-                        <Param name="_creation"><Now/></Param>
-                        <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
-                        <Param name="_modification"><Now/></Param>
-                        <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                        <Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+                        <Param name="_base">true</Param>
                     </DataAccess>
                 </Var>
                 <Return>
@@ -106,6 +104,16 @@
             </Begin>
         </Function>
 
+        <Function name="getAllWithUsageCount" scope="public" doc="Get all person group types with usage count in person groups">
+            <Params />
+            <Return type="multiple"/>
+            <Begin>
+                <Return>
+                    <DataAccess method="this,this,getAllWithUsageCount"/>
+                </Return>
+            </Begin>
+        </Function>
+
         <Function name="update" scope="public" doc="Update a person group">
             <Params>
                 <Param name="id" required="true"/>
@@ -122,6 +130,15 @@
                 <External name="_modification_ip" type="text" doc=""/>
             </Return>
             <Begin>
+                <!-- Get the record -->
+                <Var name="record">
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <!-- Update the record -->
                 <Var name="dataParams">
                     <UtilsLib method="filterNotNull">
                         <Param><Var name="PARAMS" /></Param>
@@ -130,13 +147,41 @@
                 <DataAccess method="update" params="dataParams">
                     <Param name="_entity">fw_person_group_type</Param>
                     <Param name="id"><Var name="PARAMS" key="id"/></Param>
-                    <Param name="_modification"><Now/></Param>
-                    <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                    <Param name="_base">true</Param>
                 </DataAccess>
-                <Return>
+                <!-- Get the updated record -->
+                <Var name="updatedRecord">
                     <Call function="get">
-                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
                     </Call>
+                </Var>
+                <!-- Log this action, if the record existed -->
+                <If condition="$updatedRecord != '' &amp;&amp; $updatedRecord != null">
+                    <Then>
+                        <Var name="records"><Set/></Var>
+                        <Var name="records" key=""><Var name="record"/></Var>
+                        <Var name="records" key=""><Var name="updatedRecord"/></Var>
+                        <Call library="framework,log,api" function="add">
+                            <Param name="type">framework,fw.person.group.type,api</Param>
+                            <Param name="action">update</Param>
+                            <Param name="log_key"><Var name="record" key="id"/></Param>
+                            <Param name="context_data">
+                                <UtilsLib method="jsonEncode">
+                                    <Param><Var name="records"/></Param>
+                                </UtilsLib>
+                            </Param>
+                            <Param name="message">
+                                <Lang key="logPersonGroupTypeUpdate">
+                                    <Param><Var name="updatedRecord" key="id"/></Param>
+                                </Lang>
+                            </Param>
+                        </Call>
+                    </Then>
+                </If>
+                <Return>
+                    <Var name="record"/>
                 </Return>
             </Begin>
         </Function>
@@ -147,12 +192,41 @@
             </Params>
             <Return type="int"/>
             <Begin>
+                <!-- Get the record -->
+                <Var name="record">
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <!-- Delete the record -->
                 <Var name="deleted">
                     <DataAccess method="delete">
                         <Param name="_entity">fw_person_group_type</Param>
                         <Param name="id"><Var name="PARAMS" key="id"/></Param>
                     </DataAccess>
                 </Var>
+                <!-- Log this action, if the record existed -->
+                <If condition="$record != '' &amp;&amp; $record != null">
+                    <Then>
+                        <Call library="framework,log,api" function="add">
+                            <Param name="type">framework,fw.person.group.type,api</Param>
+                            <Param name="action">delete</Param>
+                            <Param name="log_key"><Var name="record" key="id"/></Param>
+                            <Param name="context_data">
+                                <UtilsLib method="jsonEncode">
+                                    <Param><Var name="record"/></Param>
+                                </UtilsLib>
+                            </Param>
+                            <Param name="message">
+                                <Lang key="logAchievementStdTypeDelete">
+                                    <Param><Var name="record" key="id"/></Param>
+                                </Lang>
+                            </Param>
+                        </Call>
+                    </Then>
+                </If>
                 <Return>
                     <If condition="$deleted == 1">
                         <Then>1</Then>

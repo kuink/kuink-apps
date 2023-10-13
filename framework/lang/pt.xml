@@ -155,6 +155,10 @@
 		<String key="logRoleCapabilityInsert"><![CDATA[ fw_role_capability | Atribuída a capacidade '{0}' à função '{1}'. | {2} ]]></String>
 		<String key="logRoleCapabilityUpdate"><![CDATA[ fw_role_capability | Atualizada a capacidade '{0}' da função '{1}'. | {2} ]]></String>
 		<String key="logRoleCapabilityDelete"><![CDATA[ fw_role_capability | Removida a capacidade '{0}' da função '{1}'. | {2} ]]></String>
+		<!--  ::  Person Group  >  Type   -->
+		<String key="logPersonGroupTypeInsert"><![CDATA[ fw_person_group_type | Adicionado novo registo '{0}'. ]]></String>
+		<String key="logPersonGroupTypeUpdate"><![CDATA[ fw_person_group_type | Atualizado registo '{0}'.  ]]></String>
+		<String key="logPersonGroupTypeDelete"><![CDATA[ fw_person_group_type | Eliminado registo '{0}'.  ]]></String>
 
 
 

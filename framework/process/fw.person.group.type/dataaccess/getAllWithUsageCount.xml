@@ -1,0 +1,32 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <Description>Get all person group types with usage count in person groups</Description>
+    </Doc>
+    <Params/>
+    <Body>
+        <Sql>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        <![CDATA[
+                            pgt.*,
+                            COUNT(pg.id) as usage_count
+                        ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        <![CDATA[
+                          fw_person_group_type pgt
+                          LEFT JOIN fw_person_group pg ON (pgt.id = pg. id_person_group_type)
+                        ]]>
+                    </XTable>
+                </XFrom>
+                <XGroupBy>
+                    <XCondition><![CDATA[pgt.id]]></XCondition>
+                </XGroupBy>
+            </XSql>
+        </Sql>
+    </Body>
+</Method>

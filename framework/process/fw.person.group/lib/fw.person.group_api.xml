@@ -337,6 +337,26 @@
 					</Begin>
 				</Function>
 
+                <Function name="search" doc="Search records from table fw_person_group">
+                    <Params>
+                        <Param name="pagenum" type="int"/>
+                        <Param name="pagesize" type="int"/>
+                    </Params>
+                    <Return type="multiple" doc=""/>
+                    <Begin>
+                        <Return>
+                            <DataAccess method="this,this,search">
+                                <Param name="_pageNum">
+                                    <Var name="PARAMS" key="pagenum"/>
+                                </Param>
+                                <Param name="_pageSize">
+                                    <Var name="PARAMS" key="pagesize"/>
+                                </Param>
+                            </DataAccess>
+                        </Return>
+                    </Begin>
+                </Function>
+
         <!-- **************************************************************************** -->
         <!--
             Handle persons in person groups

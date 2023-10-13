@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><Method>
+    <Doc>
+        Search all fw_person_group
+    </Doc>
+    <Params>
+    </Params>
+    <Body>
+        <SqlPaginated>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        pg.*,
+                        COUNT(prp.id) as usage_count
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        fw_person_group pg
+                        LEFT JOIN fw_person_rel_group prp ON (prp.id_person_group = pg.id)
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>1 = 1</XCondition>
+                </XWhere>
+                <XGroupBy>
+                    <XCondition><![CDATA[pg.id]]></XCondition>
+                </XGroupBy>
+            </XSql>
+        </SqlPaginated>
+    </Body>
+</Method>
