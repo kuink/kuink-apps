@@ -12,9 +12,9 @@
 	</Libraries>
 	<Screens/>
 	<Actions/>
-	<Library forceinterface="true">
+	<Library>
 		<!--
-			*		add  |  Adds a new system to entity management.
+			*		addSystem  |  Adds a new system to entity management.
 			*  
 			*		PARAMS
 			*		 - (text) datasource	 ::  System's datasource;
@@ -109,7 +109,7 @@
 
 
 		<!--
-			*		delete  |  Deletes a system from entity management.
+			*		deleteSystem  |  Deletes a system from entity management.
 			*  
 			*		PARAMS
 			*		 - (int) id  ::  System's id.
@@ -333,16 +333,16 @@
 				<If condition="$PARAMS->taskList == ''">
 					<Then>
 						<Var name="configuration" dump="true"><String.parse>entityManagement.$PARAMS->task</String.parse></Var>
-						<Var name="taskList" dump="true"><Config key="$configuration"/></Var>
+						<Var name="taskList"><Config key="$configuration"/></Var>
 					</Then>
 					<Else>
-						<Var name="taskList" dump="true"><Var name="PARAMS" key="taskList"/></Var>
+						<Var name="taskList"><Var name="PARAMS" key="taskList"/></Var>
 					</Else>
 				</If>
 
 				<!-- ____________________________		SYSTEMS   ____________________________ -->
-				<Var name="tasks"><ListToSet><Var name="taskList"/></ListToSet></Var>
-				<Var name="all" dump="true">
+				<Var name="tasks" dump="true"><ListToSet><Var name="taskList"/></ListToSet></Var>
+				<Var name="all">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>all</Param>
@@ -350,7 +350,7 @@
 				</Var>
 
 				<!-- ______________		FRAMEWORK   ______________ -->
-				<Var name="inFw" dump="true">
+				<Var name="inFw">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>fw</Param>
@@ -397,7 +397,7 @@
 				</If>
 
 				<!-- ______________		LDAP   ______________ -->
-				<Var name="inLdap" dump="true">
+				<Var name="inLdap">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>ldap</Param>
@@ -439,7 +439,7 @@
 				</If>
 
 				<!-- ______________		MOODLE   ______________ -->
-				<Var name="inMoodle" dump="true">
+				<Var name="inMoodle">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>moodle</Param>
@@ -481,7 +481,7 @@
 				</If>
 
 				<!-- ______________		GOOGLE   ______________ -->
-				<Var name="inGoogle" dump="true">
+				<Var name="inGoogle">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>google</Param>
@@ -489,8 +489,6 @@
 				</Var>
 				<If condition="($inGoogle == 1) || ($all == 1)">
 					<Then>
-						<Try>
-							<Instructions>
 								<!-- Gets person's google data -->
 								<Var name="googleUser" dump="true">
 									<DataAccess method="load" datasource="googleAPIAdminSDK">
@@ -499,11 +497,6 @@
 										<Param name="uid"><Var name="object" key="uid"/></Param>
 									</DataAccess>
 								</Var>
-							</Instructions>
-							<Catch>
-								<Var name="googleUser"><Null/></Var>
-							</Catch>
-						</Try>
 						<!-- Sets this data in systems' array --> 
             <Var name="entry"><Set/></Var>
             <Var name="entry" key="datasource">google</Var>
@@ -531,7 +524,7 @@
 				</If>
 
 				<!-- ______________		MICROSOFT   ______________ -->
-				<Var name="inMicrosoft" dump="true">
+				<Var name="inMicrosoft">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>microsoft</Param>
@@ -580,7 +573,7 @@
 				</If>
 
 				<!-- ______________		ACCESS CONTROL   ______________ -->
-				<Var name="inAccessControl" dump="true">
+				<Var name="inAccessControl">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>accessControl</Param>
@@ -623,7 +616,7 @@
 				</If>
 
 				<!-- ______________		PRIMAVERA ACCOUNT   ______________ -->
-				<Var name="inPrimaveraAccount" dump="true">
+				<Var name="inPrimaveraAccount">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>primaveraAccount</Param>
@@ -670,7 +663,7 @@
 				</If>
 
 				<!-- ______________		PRIMAVERA		______________ -->
-				<Var name="inPrimavera" dump="true">
+				<Var name="inPrimavera">
 					<SetLib method="ValueIn">
 						<Param><Var name="tasks"/></Param>
 						<Param>primavera</Param>
@@ -679,7 +672,7 @@
 				<If condition="($inPrimavera == 1) || ($all == 1)">
 					<Then>
 						<!-- Gets person's primavera data -->
-						<Var name="personService" dump="true">
+						<Var name="personService">
 							<Call library="gecol.core,person,api" function="getService">
 								<Param name="id"><Var name="object" key="id"/></Param>
 							</Call>
@@ -850,14 +843,28 @@
 
 			<Begin>
 				<!-- $object->person_type_code == 'STD' || $object->person_type_code == 'CLB' || $object->person_type_code == 'GRD' || $object->person_type_code == 'RSCM' || $object->person_type_code == 'CJG' || $object->person_type_code == 'CLB.AEC' -->
+				
+				<!-- If no password was supplied, generates a new one -->
+				<If condition="$object->password == ''">
+					<Then>
+						<!-- Generates a new password for this person -->
+						<Var name="password" dump="true">
+							<Call library="framework,authentication,api" function="generatePassword"/>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="password"><Var name="object" key="password"/></Var>
+					</Else>
+				</If>
+
 				<!-- If no task list was supplied, gets it through the config key -->
 				<If condition="$PARAMS->taskList == ''">
 					<Then>
-						<Var name="configuration" dump="true"><String.parse>entityManagement.$PARAMS->task</String.parse></Var>
-						<Var name="taskList" dump="true"><Config key="$configuration"/></Var>
+						<Var name="configuration"><String.parse>entityManagement.$PARAMS->task</String.parse></Var>
+						<Var name="taskList"><Config key="$configuration"/></Var>
 					</Then>
 					<Else>
-						<Var name="taskList" dump="true"><Var name="PARAMS" key="taskList"/></Var>
+						<Var name="taskList"><Var name="PARAMS" key="taskList"/></Var>
 					</Else>
 				</If>
 
@@ -868,8 +875,8 @@
 				<Var name="log" key=""><Var name="logEntry"/></Var>
 
 				<!-- ____________________________		SYSTEMS   ____________________________ -->
-				<Var name="tasks"><ListToSet><Var name="taskList"/></ListToSet></Var>
-				<Var name="all" dump="true">
+				<Var name="tasks" dump="true"><ListToSet><Var name="taskList"/></ListToSet></Var>
+				<Var name="all">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>all</Param>
@@ -877,15 +884,15 @@
 				</Var>
 
 				<!-- ______________		LDAP   ______________ -->
-				<Var name="inLdap" dump="true">
+				<Var name="inLdap">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>ldap</Param>
 					</SetLib>
 				</Var>
-				<Trace><String.parse>Creating LDAP ($inLdap) user $object->uid</String.parse></Trace>
 				<If condition="$inLdap == 1 || $all == 1">
 					<Then>
+						<!--<Trace><String.parse>Creating LDAP user $object->uid</String.parse></Trace>-->
 						<!-- Creates the person in Ldap -->
             <Var name="ldapUser" dump="true">
               <DataAccess method="insert" datasource="CSCM-LX">
@@ -906,7 +913,7 @@
 						<!-- Sleeping for 4 seconds to give time before creating user in moodle -->
 						<Sleep>4</Sleep>
 						<!-- Gets the record just created -->
-            <Var name="newLdapUser" dump="true">
+            <Var name="newLdapUser">
               <DataAccess method="load" datasource="CSCM-LX">
                 <Param name="_attributes">dn,cn,sn,givenname,mail</Param>
                 <Param name="id"><Var name="object" key="uid"/></Param>
@@ -942,15 +949,15 @@
 				</If>
 				 
 				<!-- ______________		MOODLE   ______________ -->
-				<Var name="inMoodle" dump="true">
+				<Var name="inMoodle">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>moodle</Param>
 					</SetLib>
 				</Var>
-				<Trace><String.parse>Creating Moodle ($inMoodle) user $object->uid</String.parse></Trace>
 				<If condition="$inMoodle == 1 || $all == 1">
 					<Then>
+						<Trace><String.parse>Creating moodle user '$object->uid'</String.parse></Trace>
 						<!-- Creates the person in Moodle (STD, CLB, GRD, RSCM, CJG, CLB.AEC) -->
 						<Var name="statusMoodle" dump="true">
 							<Call library="gecol.core,moodle,api" function="createUserFromPerson">
@@ -1010,27 +1017,29 @@
 				</If>
 				
 				<!-- ______________		GOOGLE   ______________ -->
-				<Var name="inGoogle" dump="true">
+				<Var name="inGoogle">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>google</Param>
 					</SetLib>
 				</Var>
-				<Trace><String.parse>Creating Google ($inGoogle) user $object->uid</String.parse></Trace>
 				<If condition="$inGoogle == 1 || $all == 1">
 					<Then>
+						<Trace><String.parse>Creating Google user $object->uid</String.parse></Trace>
+						<Var name="object" dump="true"/>
 						<!-- Create the person in Google (STD, CLB) -->
 						<Var name="statusGoogle" dump="true">
 							<DataAccess method="insert" datasource="googleAPIAdminSDK">
 								<Param name="_entity">user</Param>
-								<Param name="uid"><Var name="object" key="uid"/></Param>								
-								<Param name="given_name"><Var name="object" key="given_name"/></Param>
-								<Param name="surname"><Var name="object" key="surname"/></Param>
+								<Param name="uid"><Var name="object" key="uid"></Var></Param>
+								<Param name="given_name"><Var name="object" key="given_name"></Var></Param>
+								<Param name="surname"><Var name="object" key="surname"></Var></Param>
+								<Param name="email"><Var name="object" key="email"></Var></Param>
 								<Param name="password"><Var name="password"/></Param>
-							</DataAccess>
+							</DataAccess>  
 						</Var>
 						<!-- Gets the record just created -->
-						<Var name="googleUser">
+						<Var name="googleUser" dump="true">
 							<DataAccess method="load" datasource="googleAPIAdminSDK">
 								<Param name="_entity">user</Param>
 								<Param name="_attributes">id,email,given_name,surname,suspended</Param>											
@@ -1067,15 +1076,15 @@
 				</If>
 				
 				<!-- ______________		MICROSOFT   ______________ -->
-				<Var name="inMicrosoft" dump="true">
+				<Var name="inMicrosoft">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>microsoft</Param>
 					</SetLib>
 				</Var>
-				<Trace><String.parse>Creating Microsoft ($inMicrosoft) user $object->uid</String.parse></Trace>
 				<If condition="$inMicrosoft == 1 || $all == 1">
 					<Then>
+						<Trace><String.parse>Creating Microsoft user $object->uid</String.parse></Trace>
 						<!-- Creates the person in Microsoft (CLB) -->
 						<Var name="statusMicrosoft" dump="true">
 							<DataAccess method="insert" datasource="microsoftAPIAdminSDK">
@@ -1123,15 +1132,15 @@
 				</If>				
 
 				<!-- ______________		ACCESS CONTROL   ______________ -->
-				<Var name="inAccessControl" dump="true">
+				<Var name="inAccessControl">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>accessControl</Param>
 					</SetLib>
 				</Var>
-				<Trace><String.parse>Creating Access Control ($inAccessControl) user $object->uid</String.parse></Trace>
 				<If condition="$inAccessControl == 1 || $all == 1">
 					<Then>
+						<Trace><String.parse>Creating Access Control user $object->uid</String.parse></Trace>
 						<!-- Creates the person in Access Control -->
 						<Var name="acResult" dump="true">
 							<Call library="gecol.core,accessControl,api" function="addPerson">
@@ -1174,17 +1183,17 @@
 				</If>
 
 				<!-- ______________		PRIMAVERA ACCOUNT   ______________ -->
-				<Var name="inPrimaveraAccount" dump="true">
+				<Var name="inPrimaveraAccount">
 					<SetLib method="ValueIn">
 					<Param><Var name="tasks"/></Param>
 					<Param>primaveraAccount</Param>
 					</SetLib>
 				</Var>
-				<Trace><String.parse>Creating Primavera Account ($inPrimaveraAccount) user $object->uid</String.parse></Trace>
 				<If condition="$inPrimaveraAccount == 1 || $all == 1">
 					<Then>
 						<Try>
 							<Instructions>
+								<Trace><String.parse>Creating Primavera Account user $object->uid</String.parse></Trace>
 								<!-- Create the person account in invoicing system -->
 								<Var name="newAccount">
 									<Call library="gecol.core,service,api" function="addAccount">
@@ -1241,17 +1250,17 @@
 				</If>
 
 				<!-- ______________		PRIMAVERA   ______________ -->
-				<Var name="inPrimavera" dump="true">
+				<Var name="inPrimavera">
 					<SetLib method="ValueIn">
 					  <Param><Var name="tasks"/></Param>
 					  <Param>primavera</Param>
 					</SetLib>
 				</Var>
-				<Trace><String.parse>Creating Primavera ($inPrimavera) user $object->uid</String.parse></Trace>
 				<If condition="$inPrimavera == 1 || $all == 1">
 					<Then>
 						<Try>
 							<Instructions>
+								<Trace><String.parse>Creating Primavera user $object->u	id</String.parse></Trace>
 								<!-- Creates person in financial service application (STD, CLB, GRD, RSCM, CJG, CLB.AEC) -->
 								<Var name="newPrimaveraUser">
 									<Call library="gecol.core,primavera,api" function="saveClientByPerson">
@@ -1308,11 +1317,6 @@
 					</Then>
 				</If>
 
-				<!-- Generates a new password for this person -->
-				<Var name="password" dump="true">
-					<Call library="framework,authentication,api" function="generatePassword"/>
-				</Var>
-
 				<!-- ______________		PASSWORD (SET)   ______________ -->
 				<If condition="$inLdap == 1 || $all == 1">
 					<Then>
@@ -1351,6 +1355,7 @@
 						<Var name="log" key=""><Var name="logEntry"/></Var>
 					</Then>
 				</If>
+				
 				<Var name="log" dump="true"/>
 
 				<Return>
