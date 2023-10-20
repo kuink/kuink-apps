@@ -3,6 +3,11 @@
         Search all fw_person_group
     </Doc>
     <Params>
+        <Param name="pagenum"/>
+        <Param name="pagesize"/>
+        <Param name="search_keywords"/>
+        <Param name="id_person_group_type"/>
+        <Param name="is_active"/>
     </Params>
     <Body>
         <SqlPaginated>
@@ -17,13 +22,24 @@
                     <XTable>
                         fw_person_group pg
                         LEFT JOIN fw_person_rel_group prp ON (prp.id_person_group = pg.id)
+                        INNER JOIN fw_person_group_type pgt ON (pgt.id = pg.id_person_group_type)
                     </XTable>
                 </XFrom>
                 <XWhere>
                     <XCondition>1 = 1</XCondition>
+                    <XCondition optional="is_active"><![CDATA[AND pg.is_active = {param->is_active}]]></XCondition>
+                    <XCondition optional="id_person_group_type"><![CDATA[AND pg.id_person_group_type = {param->id_person_group_type}]]></XCondition>
+                    <XCondition optional="search_keywords"><![CDATA[
+                            AND (   pg.name LIKE '{param->search_keywords}'
+                                OR pg.master_designation LIKE '{param->search_keywords}'
+                                OR pg.code LIKE '{param->search_keywords}'
+                                OR pg.uid LIKE '{param->search_keywords}'
+                                OR pgt.name LIKE '{param->search_keywords}'
+                                OR pgt.code LIKE '{param->search_keywords}')]]>
+                    </XCondition>
                 </XWhere>
                 <XGroupBy>
-                    <XCondition><![CDATA[pg.id]]></XCondition>
+                    <XCondition>pg.id</XCondition>
                 </XGroupBy>
             </XSql>
         </SqlPaginated>

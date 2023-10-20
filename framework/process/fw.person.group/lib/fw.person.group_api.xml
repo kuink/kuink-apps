@@ -17,36 +17,54 @@
                 <Param name="code" doc="Person group code"/>
                 <Param name="master_designation" doc="Master designation"/>
                 <Param name="id_person_group_type" doc="Person group type"/>
+                <Param name="uid" doc="Group UID|CN"/>
+                <Param name="is_collaborative" doc="Is this a collaborative group?"/>
+                <Param name="_is_system" doc="Is this a system group"/>
+                <Param name="is_active" doc=""/>
             </Params>
-            <Return type="single" doc="">
-                <External name="id" type="text" doc=""/>
-                <External name="name" type="text" doc=""/>
-                <External name="code" type="text" doc=""/>
-                <External name="master_designation" type="text" doc=""/>
-                <External name="id_person_group_type" type="text" doc=""/>
-                <External name="_creation" type="text" doc=""/>
-                <External name="_modification" type="text" doc=""/>
-                <External name="_creation_ip" type="text" doc=""/>
-                <External name="_modification_ip" type="text" doc=""/>
-            </Return>
+            <Return type="single" doc=""/>
             <Begin>
-                <Var name="newId" >
+                <!-- Create new record -->
+                <Var name="newId">
                     <DataAccess method="insert">
                         <Param name="_entity">fw_person_group</Param>
+                        <Param name="id_person_group_type"><Var name="PARAMS" key="id_person_group_type"/></Param>
+                        <Param name="master_designation"><Var name="PARAMS" key="master_designation"/></Param>
                         <Param name="name"><Var name="PARAMS" key="name"/></Param>
                         <Param name="code"><Var name="PARAMS" key="code"/></Param>
-                        <Param name="master_designation"><Var name="PARAMS" key="master_designation"/></Param>
-                        <Param name="id_person_group_type"><Var name="PARAMS" key="id_person_group_type"/></Param>
-                        <Param name="_creation"><Now/></Param>
-                        <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
-                        <Param name="_modification"><Now/></Param>
-                        <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                        <Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+                        <Param name="is_collaborative"><Var name="PARAMS" key="is_collaborative"/></Param>
+                        <Param name="_is_system"><Var name="PARAMS" key="_is_system"/></Param>
+                        <Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
+                        <Param name="_base">true</Param>
                     </DataAccess>
                 </Var>
-                <Return>
-                    <Call function="get">
-                        <Param name="id"><Var name="newId"/></Param>
+                <!-- Get the record created -->
+                <Var name="record">
+                    <Call function="getById">
+                        <Param name="id">
+                            <Var name="newId"/>
+                        </Param>
                     </Call>
+                </Var>
+                <!-- Log this action -->
+                <Call library="framework,log,api" function="add">
+                    <Param name="type">framework,fw.person.group,api</Param>
+                    <Param name="action">insert</Param>
+                    <Param name="log_key"><Var name="record" key="id"/></Param>
+                    <Param name="context_data">
+                        <UtilsLib method="jsonEncode">
+                            <Param><Var name="record"/></Param>
+                        </UtilsLib>
+                    </Param>
+                    <Param name="message">
+                        <Lang key="logPersonGroupInsert">
+                            <Param><Var name="record" key="id"/></Param>
+                        </Lang>
+                    </Param>
+                </Call>
+                <Return>
+                    <Var name="record"/>
                 </Return>
             </Begin>
         </Function>
@@ -73,7 +91,22 @@
                 </Return>
             </Begin>
         </Function>
-
+        <Function name="getById" doc="Get a record by id from table fw_person_group">
+            <Params>
+              <Param name="id" type="int" required="true"/>
+            </Params>
+            <Return type="single"/>
+            <Begin>
+                <Return>
+                    <DataAccess method="load">
+                        <Param name="_entity">fw_person_group</Param>
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
         <Function name="getIdByCode" scope="public" doc="Get the id given the code of a person group type">
             <Params>
               <Param name="code" required="true"/>
@@ -143,23 +176,26 @@
         <Function name="update" scope="public" doc="Update a person group">
             <Params>
                 <Param name="id" required="true"/>
+                <Param name="id_person_group_type"/>
+                <Param name="master_designation"/>
                 <Param name="name"/>
                 <Param name="code"/>
-                <Param name="master_designation"/>
-                <Param name="id_person_group_type"/>
+                <Param name="uid"/>
+                <Param name="is_active"/>
+                <Param name="is_collaborative"/>
+                <Param name="_is_system"/>
             </Params>
-            <Return type="single" doc="">
-                <External name="id" type="text" doc=""/>
-                <External name="name" type="text" doc=""/>
-                <External name="code" type="text" doc=""/>
-                <External name="master_designation" type="text" doc=""/>
-                <External name="id_person_group_type" type="text" doc=""/>
-                <External name="_creation" type="text" doc=""/>
-                <External name="_modification" type="text" doc=""/>
-                <External name="_creation_ip" type="text" doc=""/>
-                <External name="_modification_ip" type="text" doc=""/>
-            </Return>
+            <Return type="single"/>
             <Begin>
+                <!-- Get the record -->
+                <Var name="record">
+                    <Call function="getById">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <!-- Update the record -->
                 <Var name="dataParams">
                     <UtilsLib method="filterNotNull">
                         <Param><Var name="PARAMS" /></Param>
@@ -168,13 +204,41 @@
                 <DataAccess method="update" params="dataParams">
                     <Param name="_entity">fw_person_group</Param>
                     <Param name="id"><Var name="PARAMS" key="id"/></Param>
-                    <Param name="_modification"><Now/></Param>
-                    <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+                    <Param name="_base">true</Param>
                 </DataAccess>
-                <Return>
-                    <Call function="get">
-                        <Param name="id"><Var name="PARAMS" key="id"/></Param>
+                <!-- Get the updated record -->
+                <Var name="updatedRecord">
+                    <Call function="getById">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
                     </Call>
+                </Var>
+                <!-- Log this action, if the record existed -->
+                <If condition="$updatedRecord != '' &amp;&amp; $updatedRecord != null">
+                    <Then>
+                        <Var name="records"><Set/></Var>
+                        <Var name="records" key=""><Var name="record"/></Var>
+                        <Var name="records" key=""><Var name="updatedRecord"/></Var>
+                        <Call library="framework,log,api" function="add">
+                            <Param name="type">framework,fw.person.group,api</Param>
+                            <Param name="action">update</Param>
+                            <Param name="log_key"><Var name="record" key="id"/></Param>
+                            <Param name="context_data">
+                                <UtilsLib method="jsonEncode">
+                                    <Param><Var name="records"/></Param>
+                                </UtilsLib>
+                            </Param>
+                            <Param name="message">
+                                <Lang key="logPersonGroupUpdate">
+                                    <Param><Var name="updatedRecord" key="id"/></Param>
+                                </Lang>
+                            </Param>
+                        </Call>
+                    </Then>
+                </If>
+                <Return>
+                    <Var name="updatedRecord"/>
                 </Return>
             </Begin>
         </Function>
@@ -184,12 +248,41 @@
             </Params>
             <Return type="int"/>
             <Begin>
+                <!-- Get the record -->
+                <Var name="record">
+                    <Call function="getById">
+                        <Param name="id">
+                            <Var name="PARAMS" key="id"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <!-- Delete the record -->
                 <Var name="deleted">
                     <DataAccess method="delete">
                         <Param name="_entity">fw_person_group</Param>
                         <Param name="id"><Var name="PARAMS" key="id"/></Param>
                     </DataAccess>
                 </Var>
+                <!-- Log this action, if the record existed -->
+                <If condition="$record != '' &amp;&amp; $record != null">
+                    <Then>
+                        <Call library="framework,log,api" function="add">
+                            <Param name="type">framework,fw.person.group,api</Param>
+                            <Param name="action">delete</Param>
+                            <Param name="log_key"><Var name="record" key="id"/></Param>
+                            <Param name="context_data">
+                                <UtilsLib method="jsonEncode">
+                                    <Param><Var name="record"/></Param>
+                                </UtilsLib>
+                            </Param>
+                            <Param name="message">
+                                <Lang key="logPersonGroupDelete">
+                                    <Param><Var name="record" key="id"/></Param>
+                                </Lang>
+                            </Param>
+                        </Call>
+                    </Then>
+                </If>
                 <Return>
                     <If condition="$deleted == 1">
                         <Then>1</Then>
@@ -262,31 +355,50 @@
 					<Params>
 						<Param name="id_person"/>
 						<Param name="id_person_group"/>
-						<Param name="is_master"/>
+						<Param name="is_owner"/>
+                        <Param name="is_master"/>
+                        <Param name="is_main"/>
 					</Params>
 					<Return type="multiple"/>
 					<Begin>
-                        <Var name="PARAMS" dump="true"/>
-						<Var name="result">
+						<Var name="newId">
+                            <!-- Create new record -->
 							<DataAccess method="insert">
 								<Param name="_entity">fw_person_rel_group</Param>
 								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
 								<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
-								<Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
+                                <Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
+                                <Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
+                                <Param name="is_main"><Var name="PARAMS" key="is_main"/></Param>
                                 <Param name="_base">true</Param>
-                                <!--
-								<Param name="id_company"><Var name="USER" key="idCompany"/></Param>
-								<Param name="_creation"><Now/></Param>
-								<Param name="_modification"><Now/></Param>
-								<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
-								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-								<Param name="_id_creator"><Var name="USER" key="ip"/></Param>
-								<Param name="_id_updater"><Var name="USER" key="ip"/></Param>
-                                -->
 							</DataAccess>
-						</Var>
+                        </Var>
+                        <!-- Get the record created -->
+                        <Var name="record">
+                            <Call function="getPersonRelGroup">
+                                <Param name="id">
+                                    <Var name="newId"/>
+                                </Param>
+                            </Call>
+                        </Var>
+                        <!-- Log this action -->
+                        <Call library="framework,log,api" function="add">
+                            <Param name="type">framework,fw.person.group,api</Param>
+                            <Param name="action">insert</Param>
+                            <Param name="log_key"><Var name="record" key="id"/></Param>
+                            <Param name="context_data">
+                                <UtilsLib method="jsonEncode">
+                                    <Param><Var name="record"/></Param>
+                                </UtilsLib>
+                            </Param>
+                            <Param name="message">
+                                <Lang key="logPersonRelGroupInsert">
+                                    <Param><Var name="record" key="id"/></Param>
+                                </Lang>
+                            </Param>
+                        </Call>
 						<Return>
-							<Var name="result"/>
+							<Var name="newId"/>
 						</Return>
 					</Begin>
 				</Function>
@@ -300,17 +412,16 @@
 					</Params>
 					<Return type="multiple"/>
 					<Begin>
+                        <Var name="dataParams">
+                            <UtilsLib method="filterNotNull">
+                                <Param><Var name="PARAMS"/></Param>
+                            </UtilsLib>
+                        </Var>
 						<Var name="result">
-							<DataAccess method="update">
+							<DataAccess method="update" params="dataParams">
 								<Param name="_entity">fw_person_rel_group</Param>
 								<Param name="id"><Var name="PARAMS" key="id"/></Param>
-								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
-								<Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
-								<Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
-								<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-								<Param name="_modification"><Now/></Param>
-								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-								<Param name="_id_updater"><Var name="USER" key="ip"/></Param>
+								<Param name="_base">true</Param>
 							</DataAccess>
 						</Var>
 						<Return>
@@ -339,8 +450,11 @@
 
                 <Function name="search" doc="Search records from table fw_person_group">
                     <Params>
-                        <Param name="pagenum" type="int"/>
-                        <Param name="pagesize" type="int"/>
+                        <Param name="pagenum" type="int" required="false"/>
+                        <Param name="pagesize" type="int" required="false"/>
+                        <Param name="search_keywords" type="string" required="false"/>
+                        <Param name="id_person_group_type" type="int" required="false"/>
+                        <Param name="is_active" type="int" required="false"/>
                     </Params>
                     <Return type="multiple" doc=""/>
                     <Begin>
@@ -351,6 +465,15 @@
                                 </Param>
                                 <Param name="_pageSize">
                                     <Var name="PARAMS" key="pagesize"/>
+                                </Param>
+                                <Param name="search_keywords" wildcard="fullSplit">
+                                    <Var name="PARAMS" key="search_keywords"/>
+                                </Param>
+                                <Param name="id_person_group_type">
+                                    <Var name="PARAMS" key="id_person_group_type"/>
+                                </Param>
+                                <Param name="is_active">
+                                    <Var name="PARAMS" key="is_active"/>
                                 </Param>
                             </DataAccess>
                         </Return>
@@ -387,6 +510,7 @@
                 <Var name="returnValue">0</Var>
                 <If condition="$exists == 0">
                     <Then>
+                        <!-- Create new record -->
                         <Var name="newId">
                             <DataAccess method="insert">
                                 <Param name="_entity">fw_person_rel_group</Param>
@@ -404,6 +528,30 @@
                                 <Param name="id"><Var name="newId"/></Param>
                             </Call>
                         </Var>
+                        <!-- Get the record created -->
+                        <Var name="record">
+                            <Call function="getPersonRelGroup">
+                                <Param name="id">
+                                    <Var name="newId"/>
+                                </Param>
+                            </Call>
+                        </Var>
+                        <!-- Log this action -->
+                        <Call library="framework,log,api" function="add">
+                            <Param name="type">framework,fw.person.group,api</Param>
+                            <Param name="action">insert</Param>
+                            <Param name="log_key"><Var name="record" key="id"/></Param>
+                            <Param name="context_data">
+                                <UtilsLib method="jsonEncode">
+                                    <Param><Var name="record"/></Param>
+                                </UtilsLib>
+                            </Param>
+                            <Param name="message">
+                                <Lang key="logPersonRelGroupInsert">
+                                    <Param><Var name="record" key="id"/></Param>
+                                </Lang>
+                            </Param>
+                        </Call>
                     </Then>
                     <Else>
                         <Var name="returnValue">
@@ -428,18 +576,47 @@
             </Params>
             <Return type="int"/>
             <Begin>
-                <Var name="enroll" >
+                <Var name="enroll">
                     <Call function="getEnroll" params="PARAMS"/>
                 </Var>
                 <Var name="returnValue">0</Var>
                 <If condition="$enroll->id &gt; 0">
                     <Then>
+                        <!-- Get the record -->
+                        <Var name="record">
+                            <Call function="getPersonRelGroup">
+                                <Param name="id">
+                                    <Var name="enroll" key="id"/>
+                                </Param>
+                            </Call>
+                        </Var>
+                        <!-- Delete the record -->
                         <Var name="returnValue">
                             <DataAccess method="delete">
                                 <Param name="_entity">fw_person_rel_group</Param>
                                 <Param name="id"><Var name="enroll" key="id"/></Param>
                             </DataAccess>
                         </Var>
+                        <!-- Log this action, if the record existed -->
+                        <If condition="$record != '' &amp;&amp; $record != null">
+                            <Then>
+                                <Call library="framework,log,api" function="add">
+                                    <Param name="type">framework,fw.person.group,api</Param>
+                                    <Param name="action">delete</Param>
+                                    <Param name="log_key"><Var name="record" key="id"/></Param>
+                                    <Param name="context_data">
+                                        <UtilsLib method="jsonEncode">
+                                            <Param><Var name="record"/></Param>
+                                        </UtilsLib>
+                                    </Param>
+                                    <Param name="message">
+                                        <Lang key="logPersonRelGroupDelete">
+                                            <Param><Var name="record" key="id"/></Param>
+                                        </Lang>
+                                    </Param>
+                                </Call>
+                            </Then>
+                        </If>
                     </Then>
                 </If>
                 <Return><Var name="returnValue"/></Return>

@@ -15,18 +15,12 @@
             <Params>
                 <Param name="name" doc="Person group type name"/>
                 <Param name="code" doc="Person group type code"/>
+                <Param name="is_active" doc=""/>
             </Params>
-            <Return type="single" doc="">
-                <External name="id" type="text" doc=""/>
-                <External name="name" type="text" doc=""/>
-                <External name="code" type="text" doc=""/>
-                <External name="_creation" type="text" doc=""/>
-                <External name="_modification" type="text" doc=""/>
-                <External name="_creation_ip" type="text" doc=""/>
-                <External name="_modification_ip" type="text" doc=""/>
-            </Return>
+            <Return type="single" doc=""/>
             <Begin>
-                <Var name="newId" >
+                <!-- Create new record -->
+                <Var name="newId">
                     <DataAccess method="insert">
                         <Param name="_entity">fw_person_group_type</Param>
                         <Param name="name"><Var name="PARAMS" key="name"/></Param>
@@ -35,15 +29,35 @@
                         <Param name="_base">true</Param>
                     </DataAccess>
                 </Var>
+                <!-- Get the record created -->
+                <Var name="record">
+                    <Call function="get">
+                        <Param name="id">
+                            <Var name="newId"/>
+                        </Param>
+                    </Call>
+                </Var>
+                <!-- Log this action -->
+                <Call library="framework,log,api" function="add">
+                    <Param name="type">framework,fw.person.group.type,api</Param>
+                    <Param name="action">insert</Param>
+                    <Param name="log_key"><Var name="record" key="id"/></Param>
+                    <Param name="context_data">
+                        <UtilsLib method="jsonEncode">
+                            <Param><Var name="record"/></Param>
+                        </UtilsLib>
+                    </Param>
+                    <Param name="message">
+                        <Lang key="logPersonGroupTypeInsert">
+                            <Param><Var name="record" key="id"/></Param>
+                        </Lang>
+                    </Param>
+                </Call>
                 <Return>
-                    <DataAccess method="load">
-                        <Param name="_entity">fw_person_group_type</Param>
-                        <Param name="id"><Var name="newId"/></Param>
-                    </DataAccess>
+                    <Var name="newId"/>
                 </Return>
             </Begin>
         </Function>
-
         <Function name="get" scope="public" doc="Get a person group type">
             <Params>
                 <Param name="id" required="true"/>
@@ -66,26 +80,23 @@
                 </Return>
             </Begin>
         </Function>
-
         <Function name="getIdByCode" scope="public" doc="Get the id given the code of a person group type">
             <Params>
               <Param name="code" required="true"/>
             </Params>
             <Return type="int" doc="The id"/>
             <Begin>
-              <Var name="record">
-               <DataAccess method="load">
-                   <Param name="_entity">fw_person_group_type</Param>
-                   <Param name="code"><Var name="PARAMS" key="code"/></Param>
-               </DataAccess>
-              </Var>
-              <Return><Var name="record" key="id"/></Return>
+                <Var name="record">
+                    <DataAccess method="load">
+                        <Param name="_entity">fw_person_group_type</Param>
+                        <Param name="code"><Var name="PARAMS" key="code"/></Param>
+                    </DataAccess>
+                </Var>
+                <Return><Var name="record" key="id"/></Return>
             </Begin>
         </Function>
-
-
         <Function name="getAll" scope="public" doc="Get all person group types">
-            <Params />
+            <Params/>
             <Return type="multiple" doc="">
                 <External name="id" type="text" doc=""/>
                 <External name="name" type="text" doc=""/>
@@ -103,7 +114,20 @@
                 </Return>
             </Begin>
         </Function>
-
+        <Function name="getActive" scope="public" doc="Get active person group types">
+            <Params>
+                <Param name="is_active"/>
+            </Params>
+            <Return type="multiple" doc=""/>
+            <Begin>
+                <Return>
+                    <DataAccess method="getAll">
+                        <Param name="_entity">fw_person_group_type</Param>
+                        <Param name="is_active">1</Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
         <Function name="getAllWithUsageCount" scope="public" doc="Get all person group types with usage count in person groups">
             <Params />
             <Return type="multiple"/>
@@ -113,7 +137,6 @@
                 </Return>
             </Begin>
         </Function>
-
         <Function name="update" scope="public" doc="Update a person group">
             <Params>
                 <Param name="id" required="true"/>
@@ -181,11 +204,10 @@
                     </Then>
                 </If>
                 <Return>
-                    <Var name="record"/>
+                    <Var name="updatedRecord"/>
                 </Return>
             </Begin>
         </Function>
-
         <Function name="delete" scope="public" doc="Delete a person group type">
             <Params>
                 <Param name="id" required="true"/>
@@ -220,7 +242,7 @@
                                 </UtilsLib>
                             </Param>
                             <Param name="message">
-                                <Lang key="logAchievementStdTypeDelete">
+                                <Lang key="logPersonGroupTypeDelete">
                                     <Param><Var name="record" key="id"/></Param>
                                 </Lang>
                             </Param>
