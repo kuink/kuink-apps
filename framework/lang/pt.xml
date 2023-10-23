@@ -155,6 +155,18 @@
 		<String key="logRoleCapabilityInsert"><![CDATA[ fw_role_capability | Atribuída a capacidade '{0}' à função '{1}'. | {2} ]]></String>
 		<String key="logRoleCapabilityUpdate"><![CDATA[ fw_role_capability | Atualizada a capacidade '{0}' da função '{1}'. | {2} ]]></String>
 		<String key="logRoleCapabilityDelete"><![CDATA[ fw_role_capability | Removida a capacidade '{0}' da função '{1}'. | {2} ]]></String>
+		<!--  ::  Person Group  >  Type   -->
+		<String key="logPersonGroupTypeInsert"><![CDATA[ fw_person_group_type | Adicionado novo registo '{0}'. ]]></String>
+		<String key="logPersonGroupTypeUpdate"><![CDATA[ fw_person_group_type | Atualizado registo '{0}'.  ]]></String>
+		<String key="logPersonGroupTypeDelete"><![CDATA[ fw_person_group_type | Eliminado registo '{0}'.  ]]></String>
+		<!--  ::  Person Group   -->
+		<String key="logPersonGroupInsert"><![CDATA[ fw_person_group | Adicionado novo registo '{0}'. ]]></String>
+		<String key="logPersonGroupUpdate"><![CDATA[ fw_person_group | Atualizado registo '{0}'.  ]]></String>
+		<String key="logPersonGroupDelete"><![CDATA[ fw_person_group | Eliminado registo '{0}'.  ]]></String>
+		<!--  ::  Person Group > Person Rel Group  -->
+		<String key="logPersonRelGroupInsert"><![CDATA[ fw_person_rel_group | Adicionado novo registo '{0}'. ]]></String>
+		<String key="logPersonRelGroupUpdate"><![CDATA[ fw_person_rel_group | Atualizado registo '{0}'.  ]]></String>
+		<String key="logPersonRelGroupDelete"><![CDATA[ fw_person_rel_group | Eliminado registo '{0}'.  ]]></String>
 
 
 
