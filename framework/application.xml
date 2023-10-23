@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.002.000">
+<Application name="framework" version="2.004.000">
 	<!--
-		v2.002.000
+		v2.004.000
 		*	@date:		2023.10.23
 		*	@author:	catarina.fernandes
 		*	@comment:	New | Adding Google and Microsoft APIs.
