@@ -1,0 +1,600 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<Node>
+	<Doc>
+		<Description><![CDATA[ Google API  ::  Allows the communication with the Google system. ]]></Description>
+	</Doc>
+	<Permissions/>
+	<Configuration>
+		<Config key="uuid_datasource" value="77bea1ac-a40b-4bdc-9ac2-1686efa55e0b"/>
+	</Configuration>
+	<Libraries/>
+	<Screens/>
+	<Actions/>
+	<Library>
+		<!--	________________________________________________________________________________________________
+			*
+			*			P E R S O N S
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		addPerson  |  Creates a new person. 
+			*  
+			*		PARAMS
+			*    - (string) uid		 				 	::  Person unique identifier (usually something like 'catarina.fernandes');
+			*    - (string) given_name	 		::  Person given name;
+			*    - (string) surname	 				::  Person surname;
+			*    - (string) recovery_email  ::  Person recovery email;
+			*    - (int) change_password  	::  1 if the person have to change the password at the next login; 0 (or NULL), otherwise.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully created. Otherwise, returns 1. 
+		-->
+		<Function name="addPerson" doc="Creates a new person.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="given_name" type="string" required="true" doc="Person given name"/>			
+				<Param name="surname" type="string" required="true" doc="Person surname"/>
+				<Param name="recovery_email" type="string" required="false" doc="Person recovery email"/>
+				<Param name="change_password" type="int" required="false" doc="1 if the person have to change the password at the next login; 0 (or NULL), otherwise"/>
+			</Params>
+			<Return type="int" doc="0 if the person was successfully created; 1, otherwise."/>
+
+			<Begin>
+				<If condition="$PARAMS->change_password == ''">
+					<Then><Var name="PARAMS" key="change_password">0</Var></Then>
+				</If>
+				<Var name="result">
+					<DataAccess method="insert" datasource="googleAPIAdminSDK">
+						<Param name="_entity">user</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="given_name"><Var name="PARAMS" key="given_name"/></Param>
+						<Param name="surname"><Var name="PARAMS" key="surname"/></Param>
+						<Param name="recovery_email"><Var name="PARAMS" key="recovery_email"/></Param>
+						<Param name="change_password"><Var name="PARAMS" key="change_password"/></Param>
+						<Param name="password">kjlk7yhjqt534ewrrjkrwe</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		activatePerson  |  Activates a person. 
+			*  
+			*		PARAMS
+			*    - (string) uid  ::  Person uid.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully reactived. Otherwise, returns 1. 
+		-->
+		<Function name="activatePerson" doc="Activates a person.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Person uid"/>
+			</Params>
+			<Return type="int" doc="0 if the person was successfully reactivated; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="update" datasource="googleAPIAdminSDK">
+						<Param name="_entity">user</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="suspend">0</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		deletePerson  |  Deletes a person. 
+			*  
+			*		PARAMS
+			*    - (string) uid  ::  Person uid.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully deleted. Otherwise, returns 1. 
+		-->
+		<Function name="deletePerson" doc="Deletes a person.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Person uid"/>
+			</Params>
+			<Return type="int" doc="0 if the person was successfully deleted; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="execute" datasource="googleAPIAdminSDK">
+						<Param name="_entity">user</Param>
+						<Param name="_method">delete</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		NOT COMPLETELY IMPLEMENTED.
+			*
+			*		getAllPeople  |  Gets a list of all the existing people. 
+			*  
+			*		PARAMS
+			*    - (string) attributes  ::  Person attributes to get (separated by a comma).
+			*
+			*		RETURN
+			*	   - (multiple) person  ::  Returns all of 'person' (user) records. 
+		-->
+		<Function name="getAllPeople" doc="Gets a list of all the existing users.">
+			<Params>
+				<Param name="_attributes" type="string" required="false" doc="Person attributes to get (separated by a comma)"/>
+ 			</Params>
+			<Return type="multiple" doc="All  of 'person' (user) records."/>
+
+			<Begin>
+				<Var name="people"><Set/></Var>
+				<For var="count" start="1" condition="$count &lt;= 3" step="1">
+					<Var name="result">
+						<DataAccess method="getAll" datasource="googleAPIAdminSDK">
+							<Param name="_entity">user</Param>
+							<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
+							<Param name="_pageNum"><Var name="nextPageToken"/></Param>
+						</DataAccess>
+					</Var>
+					<Var name="nextPageToken"><Var name="result" key="nextPageToken"/></Var>
+					<Var name="records"><Var name="result" key="records"/></Var>
+					<ForEach var="records" item="record">
+						<Var name="people" key=""><Var name="record"/></Var>
+					</ForEach>
+		 		</For>
+				
+				<Return>
+					<Var name="people"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getPerson  |  Gets a person given its uid. 
+			*  
+			*		PARAMS
+			*    - (string) uid  				::  Person uid;
+			*    - (string) attributes  ::  Person attributes to get (separated by a comma).
+			*
+			*		RETURN
+			*	   - (single) person  ::  Returns the corresponding 'person' (user) record. 
+		-->
+		<Function name="getPerson" doc="Gets a person given its uid.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="attributes" type="string" required="false" doc="Person attributes to get (separated by a comma)"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'person' (user) record."/>
+
+			<Begin>
+				<Var name="person">
+					<DataAccess method="load" datasource="googleAPIAdminSDK">
+						<Param name="_entity">user</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="_attributes"><Var name="PARAMS" key="attributes"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="person"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		inactivatePerson  |  Inactivates a person. 
+			*  
+			*		PARAMS
+			*    - (string) uid  ::  Person uid.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully inactived. Otherwise, returns 1. 
+		-->
+		<Function name="inactivatePerson" doc="Inactivates a person.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Person uid"/>
+			</Params>
+			<Return type="int" doc="0 if the person was successfully inactivated; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="update" datasource="googleAPIAdminSDK">
+						<Param name="_entity">user</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="suspend">1</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		NOT COMPLETELY TESTED.
+			*		searchPeople  |  Gets a list of people who meet the search criteria. 
+			*  
+			*		PARAMS
+			*    - (string) uid		 			::  Person uid;
+			*    - (string) given_name  ::  Person given name;
+			*    - (string) surname	 		::  Person surname.
+			*
+			*		RETURN
+			*	   - (multiple) person  ::  Returns a set of 'person' (user) records. 
+		-->
+		<Function name="searchUsers" doc="Gets a list of people who meet the search criteria.">
+			<Params>
+				<Param name="uid" type="string" required="false" doc="Person uid"/>
+				<Param name="given_name" type="string" required="false" doc="Person given name"/>			
+				<Param name="surname" type="string" required="false" doc="Person surname"/>
+			</Params>
+			<Return type="multiple" doc="Set of 'person' (user) records."/>
+
+			<Begin>
+				<Var name="people">
+					<DataAccess method="execute" datasource="googleAPIAdminSDK">
+						<Param name="_entity">user</Param>
+						<Param name="_method">search</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="given_name"><Var name="PARAMS" key="given_name"/></Param>
+						<Param name="surname"><Var name="PARAMS" key="surname"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="people"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		updatePerson  |  Updates a person. 
+			*  
+			*		PARAMS
+			*    - (string) uid		 				 	::  Person uid;
+			*    - (string) given_name	 		::  Person given name;
+			*    - (string) surname	 				::  Person surname;
+			*    - (string) recovery_email  ::  Person recovery email;
+			*    - (int) change_password  	::  1 if the person have to change the password at the next login; 0 (or NULL), otherwise.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully updated. Otherwise, returns 1. 
+		-->
+		<Function name="updatePerson" doc="Updates a person.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="given_name" type="string" required="false" doc="Person given name"/>			
+				<Param name="surname" type="string" required="false" doc="Person surname"/>
+				<Param name="recovery_email" type="string" required="false" doc="Person recovery email"/>
+				<Param name="change_password" type="int" required="false" doc="1 if the person have to change the password at the next login; 0 (or NULL), otherwise"/>
+			</Params>
+			<Return type="int" doc="0 if the person was successfully updated; 1, otherwise."/>
+
+			<Begin>
+				<If condition="$PARAMS->change_password == ''">
+					<Then><Var name="PARAMS" key="change_password">0</Var></Then>
+				</If>
+				<Var name="result">
+					<DataAccess method="update" datasource="googleAPIAdminSDK">
+						<Param name="_entity">user</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="given_name"><Var name="PARAMS" key="given_name"/></Param>
+						<Param name="surname"><Var name="PARAMS" key="surname"/></Param>
+						<Param name="recovery_email"><Var name="PARAMS" key="recovery_email"/></Param>
+						<Param name="change_password"><Var name="PARAMS" key="change_password"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			G R O U P S
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		addGroup  |  Creates a new group. 
+			*  
+			*		PARAMS
+			*    - (string) uid		 			::  Group uid;
+			*    - (string) code	 			::  Group code ('name' in Google);
+			*    - (string) name		 		::  Group name ('description' in Google);
+			*    - (int) admin_created  ::  1 if is an admin creating the group; 0 (or NULL), otherwise.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the group was successfully created. Otherwise, returns 1. 
+		-->
+		<Function name="addGroup" doc="Creates a new group.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="code" type="string" required="true" doc="Group code"/>			
+				<Param name="name" type="string" required="true" doc="Group name"/>
+				<Param name="admin_created" type="int" required="false" doc="1 if is an admin creating the group; 0 (or NULL), otherwise"/>
+			</Params>
+			<Return type="int" doc="0 if the group was successfully created; 1, otherwise."/>
+
+			<Begin>
+				<Var name="group">
+					<DataAccess method="insert" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+						<Param name="name"><Var name="PARAMS" key="name"/></Param>
+						<Param name="admin_created"><Var name="PARAMS" key="admin_created"/></Param>					
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="group"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		addPersonToGroup  |  Adds a person to a group. 
+			*  
+			*		PARAMS
+			*    - (string) uid_group   ::  Group uid;
+			*    - (string) uid_person  ::  Person uid;
+			*    - (int) is_owner       ::  1 if the person is owner of the group; 0 (or NULL) if is only a member.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully added to the group. Otherwise, returns 1. 
+		-->
+		<Function name="addPersonToGroup" doc="Adds a person to a group.">
+			<Params>
+				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
+				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
+				<Param name="is_owner" type="int" required="false" doc="1 if the person is owner of the group; 0, otherwise"/>
+			</Params>
+			<Return type="int" doc="0 if the person was successfully added to the group; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="execute" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="_method">addUser</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
+						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
+						<Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		deleteGroup  |  Deletes a group. 
+			*  
+			*		PARAMS
+			*    - (string) uid  ::  Group uid.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the group was successfully deleted. Otherwise, returns 1. 
+		-->
+		<Function name="deleteGroup" doc="Deletes a group.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Group uid"/>
+			</Params>
+			<Return type="int" doc="0 if the group was successfully deleted; 1, otherwise."/>
+
+			<Begin>
+				<Var name="group">
+					<Call function="getGroup">
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</Call>
+				</Var>
+				<Var name="result">
+					<DataAccess method="execute" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="_method">delete</Param>
+						<Param name="id"><Var name="group" key="id"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getGroup  |  Gets a group given its uid. 
+			*  
+			*		PARAMS
+			*    - (string) uid  				::  Group uid;
+			*    - (string) attributes  ::  Group attributes to get (separated by a comma).
+			*
+			*		RETURN
+			*	   - (single) group  ::  Returns the corresponding 'group' record. 
+		-->
+		<Function name="getGroup" doc="Gets a group given its uid.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="_attributes" type="string" required="false" doc="Group attributes to get (separated by a comma)"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'group' record."/>
+
+			<Begin>
+				<Var name="group">
+					<DataAccess method="load" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="group"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getAllGroups  |  Gets a list of all the existing groups. 
+			*  
+			*		PARAMS
+			*    - (string) attributes  ::  Group attributes to get (separated by a comma).
+			*
+			*		RETURN
+			*	   - (multiple) group  ::  Returns all of 'group' records. 
+		-->
+		<Function name="getAllGroups" doc="Gets a list of all the existing groups.">
+			<Params>
+				<Param name="_attributes" type="string" required="false" doc="Group attributes to get (separated by a comma)"/>
+			</Params>
+			<Return type="multiple" doc="All of 'group' records."/>
+
+			<Begin>
+				<Var name="groups">
+					<DataAccess method="getAll" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="groups" key="records"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		getGroupMembers  |  Gets a list of all the group members. 
+			*  
+			*		PARAMS
+			*    - (string) uid    			::  Group uid;
+			*    - (string) attributes  ::  Member attributes to get (separated by a comma).
+			*
+			*		RETURN
+			*	   - (multiple) member  ::  Returns a set of 'member' records. 
+		-->
+		<Function name="getGroupMembers" doc="Gets a list of all the group members.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="_attributes" type="string" required="false" doc="Member attributes to get (separated by a comma)"/>
+			</Params>
+			<Return type="multiple" doc="Set of 'member' records."/>
+
+			<Begin>
+				<Var name="members">
+					<DataAccess method="execute" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="_method">listUsers</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="members"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		updateGroup  |  Updates a group. 
+			*  
+			*		PARAMS
+			*    - (string) uid		 			::  Group uid;
+			*    - (string) code	 			::  Group code ('name' in Google);
+			*    - (string) name		 		::  Group name ('description' in Google).
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the group was successfully updated. Otherwise, returns 1. 
+		-->
+		<Function name="updateGroup" doc="Updates a group.">
+			<Params>
+				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="code" type="string" required="true" doc="Group code"/>			
+				<Param name="name" type="string" required="true" doc="Group name"/>
+			</Params>
+			<Return type="int" doc="0 if the group was successfully updated; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="update" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="code"><Var name="PARAMS" key="code"/></Param>
+						<Param name="name"><Var name="PARAMS" key="name"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		removePersonFromGroup  |  Removes a person from a group. 
+			*  
+			*		PARAMS
+			*    - (string) uid_group   ::  Group uid;
+			*    - (string) uid_person  ::  Person uid.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully removed from the group. Otherwise, returns 1. 
+		-->
+		<Function name="removePersonFromGroup" doc="Removes a person from a group.">
+			<Params>
+				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
+				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
+			</Params>
+			<Return type="int" doc="0 if the person was successfully removed from the group; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="execute" datasource="googleAPIAdminSDK">
+						<Param name="_entity">group</Param>
+						<Param name="_method">removeUser</Param>
+						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
+						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+	</Library>
+</Node>
