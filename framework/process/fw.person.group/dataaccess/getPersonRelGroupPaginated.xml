@@ -10,47 +10,48 @@
 			<Param name="pagenum"/>
 		</Params>
 		<Body>
-        <SqlPaginated>
-            <XSql>
-                <XSelect>
-                    <XField>
-                        <![CDATA[
-                            prg.id AS 'id_person_rel_group',
-                            prg.is_master AS 'is_master',
-                            prg.is_main AS 'is_main',
-                            prg.is_owner AS 'is_owner',
-                            p.id AS 'id_person',
-                            p.display_name AS 'display_name',
-                            p.name as name,
-                            p.email as email,
-                            p.birthday as birthday,
-                            pg.name AS 'id_person_group',
-                            fwc.name AS 'id_company'
-                        ]]>
-                    </XField>
-                </XSelect>
-                <XFrom>
-                    <XTable>
-                        <![CDATA[
-                          fw_person_rel_group prg
-													INNER JOIN fw_person_group pg ON (pg.id=prg.id_person_group)
-													INNER JOIN fw_person_group_type pgt ON (pgt.id=pg.id_person_group_type)
-													INNER JOIN person p ON (p.id=prg.id_person)
-													INNER JOIN fw_company fwc ON (fwc.id=prg.id_company)
-                        ]]>
-                    </XTable>
-                </XFrom>
-								<XWhere>
-                  <XCondition><![CDATA[ 1 = 1 ]]></XCondition>
-									<XCondition optional="id_person_group"><![CDATA[ AND prg.id_person_group = '{param->id_person_group}' ]]></XCondition>
-									<XCondition optional="id_person"><![CDATA[ AND prg.id_person = '{param->id_person}' ]]></XCondition>
-								</XWhere>
-                <XOrderBy>
-                    <XOrder>
-                        <![CDATA[ p.name ]]>
-                    </XOrder>
-                </XOrderBy>
-							</XSql>
+            <SqlPaginated>
+                <XSql>
+                    <XSelect>
+                        <XField>
+                            <![CDATA[
+                                prg.id AS 'id_person_rel_group',
+                                prg.is_master AS 'is_master',
+                                prg.is_main AS 'is_main',
+                                prg.is_owner AS 'is_owner',
+                                p.id AS 'id_person',
+                                p.display_name AS 'display_name',
+                                p.name as name,
+                                p.email as email,
+                                p.birthday as birthday,
+                                pg.name AS 'id_person_group',
+                                fwc.name AS 'id_company'
+                            ]]>
+                        </XField>
+                    </XSelect>
+                    <XFrom>
+                        <XTable>
+                            <![CDATA[
+                            fw_person_rel_group prg
+                                INNER JOIN fw_person_group pg ON (pg.id=prg.id_person_group)
+                                INNER JOIN fw_person_group_type pgt ON (pgt.id=pg.id_person_group_type)
+                                INNER JOIN person p ON (p.id=prg.id_person)
+                                INNER JOIN fw_company fwc ON (fwc.id=prg.id_company)
+                            ]]>
+                        </XTable>
+                    </XFrom>
+                    <XWhere>
+                        <XCondition><![CDATA[ 1 = 1 ]]></XCondition>
+                        <XCondition><![CDATA[ AND pg.is_active = 1 ]]></XCondition>
+                        <XCondition optional="id_person_group"><![CDATA[ AND prg.id_person_group = '{param->id_person_group}' ]]></XCondition>
+                        <XCondition optional="id_person"><![CDATA[ AND prg.id_person = '{param->id_person}' ]]></XCondition>
+                    </XWhere>
+                    <XOrderBy>
+                        <XOrder>
+                            <![CDATA[ p.name ]]>
+                        </XOrder>
+                    </XOrderBy>
+                </XSql>
 	        </SqlPaginated>
 	    </Body>
 	</Method>
