@@ -69,6 +69,7 @@
 			*		activatePerson  |  Activates a person. 
 			*  
 			*		PARAMS
+			*    - (string) id   ::  Person id;
 			*    - (string) uid  ::  Person uid.
 			*
 			*		RETURN
@@ -76,7 +77,8 @@
 		-->
 		<Function name="activatePerson" doc="Activates a person.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="id" type="string" required="false" doc="Person id"/>
+				<Param name="uid" type="string" required="false" doc="Person uid"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully reactivated; 1, otherwise."/>
 
@@ -84,6 +86,7 @@
 				<Var name="result">
 					<DataAccess method="update" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">user</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 						<Param name="account_enabled">true</Param>
 					</DataAccess>
@@ -100,6 +103,7 @@
 			*		deletePerson  |  Deletes a person. 
 			*  
 			*		PARAMS
+			*    - (string) id   ::  Person id;
 			*    - (string) uid  ::  Person uid.
 			*
 			*		RETURN
@@ -107,7 +111,8 @@
 		-->
 		<Function name="deletePerson" doc="Deletes a person.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="id" type="string" required="false" doc="Person id"/>
+				<Param name="uid" type="string" required="false" doc="Person uid"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully deleted; 1, otherwise."/>
 
@@ -115,6 +120,7 @@
 				<Var name="result">
 					<DataAccess method="delete" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">user</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
@@ -161,6 +167,7 @@
 			*		getPerson  |  Gets a person given its uid. 
 			*  
 			*		PARAMS
+			*    - (string) id   				::  Person id;
 			*    - (string) uid  				::  Person uid;
 			*    - (string) attributes  ::  Person attributes to get (separated by a comma).
 			*
@@ -169,7 +176,8 @@
 		-->
 		<Function name="getPerson" doc="Gets a person given its uid.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="id" type="string" required="false" doc="Person id"/>
+				<Param name="uid" type="string" required="false" doc="Person uid"/>
 				<Param name="_attributes" type="string" required="false" doc="Person attributes to get (separated by a comma)"/>
 			</Params>
 			<Return type="single" doc="The corresponding 'person' (user) record."/>
@@ -178,6 +186,7 @@
 				<Var name="person">
 					<DataAccess method="load" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">user</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
 					</DataAccess>
@@ -194,6 +203,7 @@
 			*		inactivatePerson  |  Inactivates a person. 
 			*  
 			*		PARAMS
+			*    - (string) id   ::  Person id;
 			*    - (string) uid  ::  Person uid.
 			*
 			*		RETURN
@@ -201,7 +211,8 @@
 		-->
 		<Function name="inactivatePerson" doc="Inactivates a person.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="id" type="string" required="false" doc="Person id"/>
+				<Param name="uid" type="string" required="false" doc="Person uid"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully inactivated; 1, otherwise."/>
 
@@ -209,6 +220,7 @@
 				<Var name="result">
 					<DataAccess method="update" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">user</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 						<Param name="account_enabled">false</Param>
 					</DataAccess>
@@ -225,6 +237,7 @@
 			*		updatePerson  |  Updates a person. 
 			*  
 			*		PARAMS
+			*    - (string) id		 				 	 ::  Person id;
 			*    - (string) uid		 				 	 ::  Person uid;
 			*    - (string) given_name	 		 ::  Person given name;
 			*    - (string) surname	 				 ::  Person surname;
@@ -238,7 +251,8 @@
 		-->
 		<Function name="updatePerson" doc="Updates a person.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Person uid"/>
+				<Param name="id" type="string" required="false" doc="Person id"/>
+				<Param name="uid" type="string" required="false" doc="Person uid"/>
 				<Param name="given_name" type="string" required="false" doc="Person given name"/>			
 				<Param name="surname" type="string" required="false" doc="Person surname"/>
 				<Param name="display_name" type="string" required="false" doc="Person display name"/>
@@ -257,6 +271,7 @@
 				<Var name="result">
 					<DataAccess method="update" datasource="microsoftAPIAdminSDK" params="params">
 						<Param name="_entity">user</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
@@ -328,6 +343,7 @@
 			*		addPersonToGroup  |  Adds a person to a group. 
 			*  
 			*		PARAMS
+			*    - (string) id_group  	::  Group id;
 			*    - (string) uid_group  	::  Group uid;
 			*    - (string) uid_person  ::  Person uid;
 			*    - (int) is_owner      	::  1 if the person is owner of the group; 0 (or NULL) if is only a member.
@@ -337,7 +353,8 @@
 		-->
 		<Function name="addPersonToGroup" doc="Adds a person to a group.">
 			<Params>
-				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
 				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
 				<Param name="is_owner" type="int" required="false" doc="1 if the person is owner of the group; 0, otherwise"/>
 			</Params>
@@ -348,6 +365,7 @@
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">group</Param>
 						<Param name="_method">addUser</Param>
+						<Param name="id"><Var name="PARAMS" key="id_group"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
 						<Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
@@ -365,6 +383,7 @@
 			*		addGroupOwner  |  Adds a person as owner of a group. 
 			*  
 			*		PARAMS
+			*    - (string) id_group  	::  Group id;
 			*    - (string) uid_group  	::  Group uid;
 			*    - (string) uid_person  ::  Person uid.
 			*
@@ -373,7 +392,8 @@
 		-->
 		<Function name="addGroupOwner" doc="Adds a person as owner of a group.">
 			<Params>
-				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
 				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully added as owner of the group; 1, otherwise."/>
@@ -383,6 +403,7 @@
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">group</Param>
 						<Param name="_method">addOwner</Param>
+						<Param name="id"><Var name="PARAMS" key="id_group"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
 					</DataAccess>
@@ -399,6 +420,7 @@
 			*		deleteGroup  |  Deletes a group. 
 			*  
 			*		PARAMS
+			*    - (string) id   ::  Group id;
 			*    - (string) uid  ::  Group uid.
 			*
 			*		RETURN
@@ -406,7 +428,8 @@
 		-->
 		<Function name="deleteGroup" doc="Deletes a group.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>
 			</Params>
 			<Return type="int" doc="0 if the group was successfully deleted; 1, otherwise."/>
 
@@ -414,6 +437,7 @@
 				<Var name="result">
 					<DataAccess method="delete" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">group</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
@@ -426,18 +450,20 @@
 
 
 		<!--
-			*		getGroup  |  Gets a group given its uid. 
+			*		getGroup  |  Gets a group given its id or uid. 
 			*  
 			*		PARAMS
+			*    - (string) id   				::  Group id;
 			*    - (string) uid  				::  Group uid;
 			*    - (string) attributes  ::  Group attributes to get (separated by a comma).
 			*
 			*		RETURN
 			*	   - (single) group  ::  Returns the corresponding 'group' record. 
 		-->
-		<Function name="getGroup" doc="Gets a group given its uid.">
+		<Function name="getGroup" doc="Gets a group given its id or uid.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>
 				<Param name="_attributes" type="string" required="false" doc="Group attributes to get (separated by a comma)"/>
 			</Params>
 			<Return type="single" doc="The corresponding 'group' record."/>
@@ -446,6 +472,7 @@
 				<Var name="group">
 					<DataAccess method="load" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">group</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
 					</DataAccess>
@@ -492,6 +519,7 @@
 			*		getGroupMembers  |  Gets a list of all the group members. 
 			*  
 			*		PARAMS
+			*    - (string) id     ::  Group id;
 			*    - (string) uid    ::  Group uid;
 			*    - (int) is_owner  ::  1 to list the owners; 0 (or NULL) to list the members.
 			*
@@ -500,7 +528,8 @@
 		-->
 		<Function name="getGroupMembers" doc="Gets a list of all the group members.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>
 				<Param name="is_owner" type="int" required="false" doc="1 to list the owners; 0 (or NULL) to list the members"/>
 			</Params>
 			<Return type="multiple" doc="Set of 'person' (user) records."/>
@@ -510,6 +539,7 @@
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">group</Param>
 						<Param name="_method">listUsers</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 						<Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
 					</DataAccess>
@@ -526,6 +556,7 @@
 			*		updateGroup  |  Updates a group. 
 			*  
 			*		PARAMS
+			*    - (string) id		 				 ::  Group id;
 			*    - (string) uid		 				 ::  Group uid;
 			*    - (string) display_name	 ::  Group name;
 			*    - (string) description		 ::  Group description;
@@ -537,7 +568,8 @@
 		-->
 		<Function name="updateGroup" doc="Updates a group.">
 			<Params>
-				<Param name="uid" type="string" required="true" doc="Group uid"/>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>
 				<Param name="display_name" type="string" required="false" doc="Group name"/>			
 				<Param name="description" type="string" required="false" doc="Group description"/>
 				<Param name="mail_enabled" type="int" required="false" doc="1 if the group's mail is enabled; 0, otherwise"/>
@@ -554,6 +586,7 @@
 				<Var name="result">
 					<DataAccess method="update" datasource="microsoftAPIAdminSDK" params="params">
 						<Param name="_entity">group</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
@@ -569,6 +602,7 @@
 			*		removePersonFromGroup  |  Removes a person from a group. 
 			*  
 			*		PARAMS
+			*    - (string) id_group    ::  Group id;
 			*    - (string) uid_group   ::  Group uid;
 			*    - (string) uid_person  ::  Person uid.
 			*
@@ -577,7 +611,8 @@
 		-->
 		<Function name="removePersonFromGroup" doc="Removes a person from a group.">
 			<Params>
-				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
 				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully removed from the group; 1, otherwise."/>
@@ -587,6 +622,7 @@
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">group</Param>
 						<Param name="_method">removeUser</Param>
+						<Param name="id"><Var name="PARAMS" key="id_group"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
 					</DataAccess>
@@ -603,6 +639,7 @@
 			*		removeGroupOwner  |  Removes a person as owner of a group. 
 			*  
 			*		PARAMS
+			*    - (string) id_group  	::  Group id;
 			*    - (string) uid_group  	::  Group uid;
 			*    - (string) uid_person  ::  Person uid.
 			*
@@ -611,7 +648,8 @@
 		-->
 		<Function name="removeGroupOwner" doc="Removes a person as owner of a group.">
 			<Params>
-				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
 				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully removed as owner of the group; 1, otherwise."/>
@@ -621,6 +659,7 @@
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">group</Param>
 						<Param name="_method">removeOwner</Param>
+						<Param name="id"><Var name="PARAMS" key="id_group"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
 					</DataAccess>
