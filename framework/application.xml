@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.005.000">
+<Application name="framework" version="2.006.000">
 	<!--
-		v2.005.000
-		*	@date:		2023.10.23
-		*	@author:	catarina.fernandes
-		*	@comment:	Feature | Implementing 'addGroupOwner' and 'removeGroupOwner' for Google and Microsoft APIs.
+		v2.006.000
+		*	@date:		2023.10.24
+		*	@author:	jose.rebelo
+		*	@comment:	Fix | framework | fw.person | dataaccess / api | hasRole | Correction of 'hasRole' dataaccess and inclusion of id_company
+						Feature | framework | fw.person.group | api | Add 'getAllEnrollInGroupsFormatted' for getting groups of a person
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />
