@@ -5,6 +5,7 @@
 	</Doc>
 	<Params>
 		<Param name="id_person" type="int" required="true" doc="Person's id"/>
+    <Param name="id_company" type="int" required="true" doc="Company's id"/>
 		<Param name="code_role" type="text" required="true" doc="Role's code"/>
 	</Params>
 	<Body>
@@ -22,7 +23,7 @@
           <XTable>
             <![CDATA[ 
 							fw_person p
-							INNER JOIN fw_person_company pc ON (pc.id_person = '{param->id_person}')  
+							INNER JOIN fw_person_company pc ON (pc.id_person = p.id AND pc.id_company = '{param->id_company}')  
 							INNER JOIN fw_allocation a ON (a.id_person = p.id)
 							INNER JOIN fw_role r ON (r.id = a.id_role)
             ]]>
@@ -32,6 +33,7 @@
           <XCondition> 
             <![CDATA[ 
 							r.code = '{param->code_role}'
+              AND p.id = '{param->id_person}'
             ]]> 
           </XCondition>
         </XWhere>

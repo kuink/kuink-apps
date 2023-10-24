@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.004.001">
+<Application name="framework" version="2.006.000">
 	<!--
-		v2.004.001
-		*	@date:		2023.10.23
+		v2.006.000
+		*	@date:		2023.10.24
 		*	@author:	jose.rebelo
-		*	@comment:	Fix | framework | fw.person.group | dataaccess | getPersonRelGroupPaginated | Now, only gets the relation if the group is active
-						New | framework | fw.person.group | api | added getActive / introduced logs to add, update and delete person_rel_group data
+		*	@comment:	Fix | framework | fw.person | dataaccess / api | hasRole | Correction of 'hasRole' dataaccess and inclusion of id_company
+						Feature | framework | fw.person.group | api | Add 'getAllEnrollInGroupsFormatted' for getting groups of a person
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

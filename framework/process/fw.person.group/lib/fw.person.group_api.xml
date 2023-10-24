@@ -814,6 +814,21 @@
                 </Return>
             </Begin>
         </Function>
+
+        <Function name="getAllEnrollInGroupsFormatted" scope="public" doc="Get person all enroll in groups">
+            <Params>
+                <Param name="id_person"/>
+            </Params>
+            <Return type="single" doc=""/>
+            <Begin>
+                <Return>
+                    <DataAccess method="this,this,getAllEnrollInGroupsFormatted">
+                        <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+                    </DataAccess>
+                </Return>
+            </Begin>
+        </Function>
+
         <Function name="isEnrolled" scope="public" doc="Check if a person is enrolled in group">
             <Params>
                 <Param name="id_person"/>

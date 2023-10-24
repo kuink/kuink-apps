@@ -936,10 +936,11 @@
 			*		________________________________________________________________________________________________
 		-->
 		<!--
-			*		hasRole  |  Checks if a person has a role, given its code.
+			*		hasRole  |  Checks if a person has a role in a company, given its code.
 			*  
 			*		PARAMS
 			*		 - (int) id_person   ::  Person's id;
+			*		 - (int) id_company  ::  Company's id;
 			*		 - (text) code_role  ::  Role's code.
 			*
 			*		RETURN
@@ -948,6 +949,7 @@
 		<Function name="hasRole" doc="Checks if a person has a role, given its code.">
       <Params>
         <Param name="id_person" type="int" required="true" doc="Person's id"/>
+		<Param name="id_company" type="int" required="true" doc="Company's id"/>
         <Param name="code_role" type="String" required="true" doc="Role's code"/>
       </Params>
       <Return type="int" doc="1 if the person has the role; 0, if it doesn't."/>
@@ -959,6 +961,7 @@
         <Var name="roles">
           <Execute method="this,this,hasRole">
             <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+			<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
             <Param name="code_role"><Var name="PARAMS" key="code_role"/></Param>
           </Execute>
         </Var>

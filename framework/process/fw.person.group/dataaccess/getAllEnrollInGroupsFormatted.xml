@@ -1,0 +1,33 @@
+<?xml version='1.0'?>
+<Method>
+    <Doc>
+        <Description>Get person all enroll in groups</Description>
+    </Doc>
+    <Params>
+    	<Param name="id_person" type="int" doc="The person"/>
+    </Params>
+    <Body>
+        <Load>
+            <XSql>
+                <XSelect>
+                    <XField>
+                        <![CDATA[
+                            CONCAT('<h4>', GROUP_CONCAT(pg.name ORDER BY pg.name SEPARATOR '<br>'), '</h4>') AS groups_list
+                        ]]>
+                    </XField>
+                </XSelect>
+                <XFrom>
+                    <XTable>
+                        <![CDATA[
+                            fw_person_rel_group prg
+                            INNER JOIN fw_person_group pg on (prg.id_person_group=pg.id)
+                        ]]>
+                    </XTable>
+                </XFrom>
+                <XWhere>
+                    <XCondition>prg.id_person='{param->id_person}'</XCondition>
+                </XWhere>
+            </XSql>
+        </Load>
+    </Body>
+</Method>
