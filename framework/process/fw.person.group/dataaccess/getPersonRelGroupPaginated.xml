@@ -19,6 +19,7 @@
                                 prg.is_master AS 'is_master',
                                 prg.is_main AS 'is_main',
                                 prg.is_owner AS 'is_owner',
+                                prg.is_member AS 'is_member',
                                 p.id AS 'id_person',
                                 p.display_name AS 'display_name',
                                 p.name as name,

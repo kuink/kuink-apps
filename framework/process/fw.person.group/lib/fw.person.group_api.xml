@@ -372,6 +372,7 @@
 						<Param name="is_owner"/>
                         <Param name="is_master"/>
                         <Param name="is_main"/>
+                        <Param name="is_member"/>
 					</Params>
 					<Return type="multiple"/>
 					<Begin>
@@ -384,6 +385,7 @@
                                 <Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
                                 <Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
                                 <Param name="is_main"><Var name="PARAMS" key="is_main"/></Param>
+                                <Param name="is_member"><Var name="PARAMS" key="is_member"/></Param>
                                 <Param name="_base">true</Param>
 							</DataAccess>
                         </Var>
@@ -758,6 +760,8 @@
                 <Return>
                     <DataAccess method="this,this,getEnrolledPersons">
                         <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
+                        <Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
+                        <Param name="is_member"><Var name="PARAMS" key="is_member"/></Param>
                     </DataAccess>
                 </Return>
             </Begin>
@@ -836,6 +840,46 @@
             </Params>
             <Return type="int"/>
             <Begin>
+                <Var name="exists" >
+                    <Call function="getEnroll" params="PARAMS" />
+                </Var>
+                <Return>
+                    <If condition="$exists->id &gt; 0">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="isMember" scope="public" doc="Check if a person is member of group">
+            <Params>
+                <Param name="id_person"/>
+                <Param name="id_person_group"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="PARAMS" key="is_member">1</Var>
+                <Var name="exists" >
+                    <Call function="getEnroll" params="PARAMS" />
+                </Var>
+                <Return>
+                    <If condition="$exists->id &gt; 0">
+                        <Then>1</Then>
+                        <Else>0</Else>
+                    </If>
+                </Return>
+            </Begin>
+        </Function>
+
+        <Function name="isOwner" scope="public" doc="Check if a person is owner of group">
+            <Params>
+                <Param name="id_person"/>
+                <Param name="id_person_group"/>
+            </Params>
+            <Return type="int"/>
+            <Begin>
+                <Var name="PARAMS" key="is_owner">1</Var>
                 <Var name="exists" >
                     <Call function="getEnroll" params="PARAMS" />
                 </Var>

@@ -12,7 +12,7 @@
                 <XSelect>
                     <XField>
                         <![CDATA[
-                            CONCAT('<h4>', GROUP_CONCAT(pg.name ORDER BY pg.name SEPARATOR '<br>'), '</h4>') AS groups_list
+                            CONCAT('<h4>', GROUP_CONCAT(CONCAT('<p>', pg.name, '</p>') ORDER BY pg.name SEPARATOR ''), '</h4>') AS groups_list
                         ]]>
                     </XField>
                 </XSelect>
