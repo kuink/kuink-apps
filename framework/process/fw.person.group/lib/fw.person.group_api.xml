@@ -863,6 +863,7 @@
                     <DataAccess method="this,this,getEnrolledPersons">
                         <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
                         <Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
+                        <Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
                         <Param name="is_member"><Var name="PARAMS" key="is_member"/></Param>
                     </DataAccess>
                 </Return>

@@ -41,6 +41,9 @@
                 <XGroupBy>
                     <XCondition>pg.id</XCondition>
                 </XGroupBy>
+                <XOrderBy>
+					<XOrder><![CDATA[ pg.name ]]></XOrder>
+				</XOrderBy>
             </XSql>
         </SqlPaginated>
     </Body>
