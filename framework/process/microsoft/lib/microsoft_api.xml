@@ -294,16 +294,16 @@
 			*		addGroup  |  Creates a new group. 
 			*  
 			*		PARAMS
-			*    - (string) uid		 				 ::  Group uid;
+			*    - (string) uid		 		 ::  Group uid;
 			*    - (string) display_name	 ::  Group name;
 			*    - (string) description		 ::  Group description;
-			*    - (int) mail_enabled			 ::  1 if the group's mail will be enable; 0, otherwise;
-			*    - (int) security_enabled  ::  1 if the group's security will be enable; 0, otherwise;
-			*    - (string) uid_person  	 ::  Person uid;
-			*    - (int) is_owner      		 ::  1 if the specified person is owner of the group; 0 (or NULL), otherwise.
+			*    - (int) mail_enabled	     ::  1 if the group's mail will be enable; 0, otherwise;
+			*    - (int) security_enabled    ::  1 if the group's security will be enable; 0, otherwise;
+			*    - (int) is_collaborative    ::  1 if the group is collaborative; 0 (or NULL), otherwise.
+			*    - (string) uid_person  	 ::  Person owner uid;
 			*
 			*		RETURN
-			*	   - (int) 0 | 1  ::  Returns the group itself if it was successfully created. Otherwise, returns 1. 
+			*	   - (int) 0 | 1  ::  Returns 0 if the group was successfully created. Otherwise, returns 1. 
 		-->
 		<Function name="addGroup" doc="Creates a new group.">
 			<Params>
@@ -312,10 +312,10 @@
 				<Param name="description" type="string" required="true" doc="Group description"/>
 				<Param name="mail_enabled" type="int" required="true" doc="1 if the group's mail will be enable; 0, otherwise"/>
 				<Param name="security_enabled" type="int" required="true" doc="1 if the group's security will be enable; 0, otherwise"/>
-				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
-				<Param name="is_owner" type="int" required="true" doc="1 if the specified person is owner of the group; 0, otherwise"/>
+				<Param name="is_collaborative" type="int" required="false" doc="1 if the group is collaborative; 0, otherwise"/>
+				<Param name="uid_person" type="string" required="true" doc="Person owner uid"/>
 			</Params>
-			<Return type="int" doc="the group itself if it was successfully created; 1, otherwise."/>
+			<Return type="int" doc="0 if the group was successfully created; 1, otherwise."/>
 
 			<Begin>
 				<Var name="group">
@@ -326,12 +326,10 @@
 						<Param name="description"><Var name="PARAMS" key="description"/></Param>
 						<Param name="mail_enabled"><Var name="PARAMS" key="mail_enabled"/></Param>
 						<Param name="security_enabled"><Var name="PARAMS" key="security_enabled"/></Param>
+						<Param name="is_collaborative"><Var name="PARAMS" key="is_collaborative"/></Param>	
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
-						<Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
-						<Param name="is_collaborative">1</Param>						
 					</DataAccess>
 				</Var>
-				
 				<Return>
 					<Var name="group"/>
 				</Return>
@@ -662,6 +660,112 @@
 						<Param name="id"><Var name="PARAMS" key="id_group"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+
+
+		<!--	________________________________________________________________________________________________
+			*
+			*			T E A M S
+			*		________________________________________________________________________________________________
+		-->
+		<!--
+			*		addTeam  |  Creates a new team. 
+			*  
+			*		PARAMS
+			*    - (string) id		 				 ::  Group id;
+			*    - (string) uid		 				 ::  Group uid;
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the group was successfully created. Otherwise, returns 1. 
+		-->
+		<Function name="addTeam" doc="Creates a new team.">
+			<Params>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>			
+			</Params>
+			<Return type="int" doc="0 if the team was successfully created; 1, otherwise."/>
+
+			<Begin>
+				<Var name="team">
+					<DataAccess method="insert" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>			
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="team"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		
+		<!--
+			*		getTeam  |  Gets a team given its id or uid. 
+			*  
+			*		PARAMS
+			*    - (string) id   				::  Group id;
+			*    - (string) uid  				::  Group uid;
+			*
+			*		RETURN
+			*	   - (single) team  ::  Returns the corresponding 'team' record. 
+		-->
+		<Function name="getTeam" doc="Gets a group given its id or uid.">
+			<Params>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'team' record."/>
+
+			<Begin>
+				<Var name="team">
+					<DataAccess method="load" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="team"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*		deleteTeam  |  Deletes a team. 
+			*  
+			*		PARAMS
+			*    - (string) id   ::  Team id;
+			*    - (string) uid  ::  Team uid.
+			*
+			*		RETURN
+			*	   - (int) 0 | 1  ::  Returns 0 if the team was successfully deleted. Otherwise, returns 1. 
+		-->
+		<Function name="deleteTeam" doc="Deletes a team.">
+			<Params>
+				<Param name="id" type="string" required="false" doc="Team id"/>
+				<Param name="uid" type="string" required="false" doc="Team uid"/>
+			</Params>
+			<Return type="int" doc="0 if the team was successfully deleted; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="delete" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
 				
