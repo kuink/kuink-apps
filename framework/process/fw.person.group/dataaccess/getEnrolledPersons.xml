@@ -7,6 +7,7 @@
     	<Param name="id_person_group"/>
     	<Param name="person_group_code"/>
         <Param name="is_owner"/>
+        <Param name="is_master"/>
         <Param name="is_member"/>
     </Params>
     <Body>
@@ -48,6 +49,7 @@
                     <XCondition optional="id_person_group">prg.id_person_group='{param->id_person_group}'</XCondition>
                     <XCondition optional="person_group_code">pg.code='{param->person_group_code}'</XCondition>
                     <XCondition optional="is_owner">AND prg.is_owner='{param->is_owner}'</XCondition>
+                    <XCondition optional="is_master">AND prg.is_master='{param->is_master}'</XCondition>
                     <XCondition optional="is_member">AND prg.is_member='{param->is_member}'</XCondition>
                 </XWhere>
                 <XOrderBy>

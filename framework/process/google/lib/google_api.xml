@@ -363,7 +363,7 @@
 			*		PARAMS
 			*    - (string) uid_group   ::  Group uid;
 			*    - (string) uid_person  ::  Person uid;
-			*    - (int) is_owner       ::  1 if the person is owner of the group; 0 (or NULL) if is only a member.
+			*    - (string) role        ::  Person role in group.
 			*
 			*		RETURN
 			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully added to the group. Otherwise, returns 1. 
@@ -372,7 +372,7 @@
 			<Params>
 				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
 				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
-				<Param name="is_owner" type="int" required="false" doc="1 if the person is owner of the group; 0, otherwise"/>
+				<Param name="role" type="string" required="false" doc="Person role in group"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully added to the group; 1, otherwise."/>
 
@@ -383,7 +383,7 @@
 						<Param name="_method">addUser</Param>
 						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
-						<Param name="is_owner"><Var name="PARAMS" key="is_owner"/></Param>
+						<Param name="role"><Var name="PARAMS" key="role"/></Param>
 					</DataAccess>
 				</Var>
 				
@@ -395,19 +395,21 @@
 
 
 		<!--
-			*		addGroupOwner  |  Adds a person as owner of a group. 
+			*		updatePersonInGroup  |  Updates a person in group. Adds the person if not member.
 			*  
 			*		PARAMS
 			*    - (string) uid_group  	::  Group uid;
 			*    - (string) uid_person  ::  Person uid.
+			+    - (string) role        ::  Person role in group.
 			*
 			*		RETURN
 			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully added as owner of the group. Otherwise, returns 1. 
 		-->
-		<Function name="addGroupOwner" doc="Adds a person as owner of a group.">
+		<Function name="updatePersonInGroup" doc="Updates a person in group. Adds the person if not member.">
 			<Params>
 				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
 				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
+				<Param name="role" type="string" required="false" doc="Person role in group"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully added as owner of the group; 1, otherwise."/>
 
@@ -415,9 +417,10 @@
 				<Var name="result">
 					<DataAccess method="execute" datasource="googleAPIAdminSDK">
 						<Param name="_entity">group</Param>
-						<Param name="_method">addOwner</Param>
+						<Param name="_method">updateUser</Param>
 						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
+						<Param name="role"><Var name="PARAMS" key="role"/></Param>
 					</DataAccess>
 				</Var>
 				
@@ -444,16 +447,11 @@
 			<Return type="int" doc="0 if the group was successfully deleted; 1, otherwise."/>
 
 			<Begin>
-				<Var name="group">
-					<Call function="getGroup">
-						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
-					</Call>
-				</Var>
 				<Var name="result">
 					<DataAccess method="execute" datasource="googleAPIAdminSDK">
 						<Param name="_entity">group</Param>
 						<Param name="_method">delete</Param>
-						<Param name="id"><Var name="group" key="id"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
 				
@@ -624,40 +622,6 @@
 					</DataAccess>
 				</Var>
 
-				<Return>
-					<Var name="result"/>
-				</Return>
-			</Begin>
-		</Function>
-
-
-		<!--
-			*		removeGroupOwner  |  Removes a person as owner of a group. 
-			*  
-			*		PARAMS
-			*    - (string) uid_group  	::  Group uid;
-			*    - (string) uid_person  ::  Person uid.
-			*
-			*		RETURN
-			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully removed as owner of the group. Otherwise, returns 1. 
-		-->
-		<Function name="removeGroupOwner" doc="Removes a person as owner of a group.">
-			<Params>
-				<Param name="uid_group" type="string" required="true" doc="Group uid"/>
-				<Param name="uid_person" type="string" required="true" doc="Person uid"/>
-			</Params>
-			<Return type="int" doc="0 if the person was successfully removed as owner of the group; 1, otherwise."/>
-
-			<Begin>
-				<Var name="result">
-					<DataAccess method="execute" datasource="googleAPIAdminSDK">
-						<Param name="_entity">group</Param>
-						<Param name="_method">removeOwner</Param>
-						<Param name="uid"><Var name="PARAMS" key="uid_group"/></Param>
-						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
-					</DataAccess>
-				</Var>
-				
 				<Return>
 					<Var name="result"/>
 				</Return>
