@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.008.000">
+<Application name="framework" version="2.008.001">
 	<!--
-		v2.008.000
-		*	@date:		2023.11.20
+		v2.008.001
+		*	@date:		2023.11.21
 		*	@author:	jose.rebelo
-		*	@comment:	Feature: framework | google / microsoft | api | update functions according changes in connector.
+		*	@comment:	Feature: framework | fw.person.group | dataaccess | getEnrolledPersons | add getting also id_moodle.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

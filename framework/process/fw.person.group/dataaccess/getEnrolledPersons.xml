@@ -22,6 +22,7 @@
                         p.public_key,
                         p._person_type_description,
                         p.id_card,
+                        p.id_moodle,
                         prg.is_master,
                         prg.is_owner,
                         prg.is_member,
