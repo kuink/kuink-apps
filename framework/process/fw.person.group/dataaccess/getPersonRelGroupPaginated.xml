@@ -20,6 +20,7 @@
                                 prg.is_main AS 'is_main',
                                 prg.is_owner AS 'is_owner',
                                 prg.is_member AS 'is_member',
+                                prg.communication_order AS 'communication_order',
                                 p.id AS 'id_person',
                                 p.display_name AS 'display_name',
                                 p.name as name,
