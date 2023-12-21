@@ -14,6 +14,7 @@
         <Function name="add" scope="public" doc="Add a new person group type">
             <Params>
                 <Param name="name" doc="Person group name"/>
+                <Param name="name_communication" doc="Person group name communication"/>
                 <Param name="code" doc="Person group code"/>
                 <Param name="master_designation" doc="Master designation"/>
                 <Param name="id_person_group_type" doc="Person group type"/>
@@ -31,6 +32,7 @@
                         <Param name="id_person_group_type"><Var name="PARAMS" key="id_person_group_type"/></Param>
                         <Param name="master_designation"><Var name="PARAMS" key="master_designation"/></Param>
                         <Param name="name"><Var name="PARAMS" key="name"/></Param>
+                        <Param name="name_communication"><Var name="PARAMS" key="name_communication"/></Param>
                         <Param name="code"><Var name="PARAMS" key="code"/></Param>
                         <Param name="uid"><Var name="PARAMS" key="uid"/></Param>
                         <Param name="is_collaborative"><Var name="PARAMS" key="is_collaborative"/></Param>
@@ -193,6 +195,7 @@
                 <Param name="id_person_group_type"/>
                 <Param name="master_designation"/>
                 <Param name="name"/>
+                <Param name="name_communication"/>
                 <Param name="code"/>
                 <Param name="uid"/>
                 <Param name="is_active"/>
@@ -623,6 +626,7 @@
                 <Param name="is_master"/>
                 <Param name="is_main"/>
                 <Param name="is_member"/>
+                <Param name="communication_order"/>
             </Params>
             <Return type="single" doc=""/>
             <Errors>
@@ -664,6 +668,7 @@
                                 <Param name="is_master"><Var name="PARAMS" key="is_master"/></Param>
                                 <Param name="is_main"><Var name="PARAMS" key="is_main"/></Param>
                                 <Param name="is_member"><Var name="PARAMS" key="is_member"/></Param>
+                                <Param name="communication_order"><Var name="PARAMS" key="communication_order"/></Param>
                                 <Param name="_base">true</Param>
                             </DataAccess>
                         </Var>

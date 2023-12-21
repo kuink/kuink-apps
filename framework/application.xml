@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.008.001">
+<Application name="framework" version="2.008.002">
 	<!--
-		v2.008.001
-		*	@date:		2023.11.21
+		v2.008.002
+		*	@date:		2023.12.21
 		*	@author:	jose.rebelo
-		*	@comment:	Feature: framework | fw.person.group | dataaccess | getEnrolledPersons | add getting also id_moodle.
+		*	@comment:	Fix: framework | fw.person.group | Add support to name_communication in fw_person_group and communication_order in fw_person_rel_group.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />
