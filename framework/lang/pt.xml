@@ -76,7 +76,7 @@
 		<String key="is_active"><![CDATA[ Ativo ]]></String>
 		<String key="actions"><![CDATA[ Ações ]]></String>
 		<String key="action"><![CDATA[ Ação ]]></String>
-		<String key="total"><![CDATA[ Total ]]> Total</String>
+		<String key="total"><![CDATA[ Total ]]> </String>
 		<String key="guid"><![CDATA[ GUID ]]></String>
 		<String key="id_file"><![CDATA[ Ficheiro ]]></String>
 		<String key="record"><![CDATA[ Registo ]]></String>
