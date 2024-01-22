@@ -14,6 +14,7 @@
   <Actions>
   </Actions>
   <Library forceinterface="true">
+    <!-- Needs to be reviewd -->
     <Function name="add" doc="Adds a record in table ">
       <Params>
         <Param name="id_company" type="int" required="true"/>
@@ -152,5 +153,6 @@
         </Return>
       </Begin>
     </Function>
+    <!-- / Needs to be reviewd -->
   </Library>
 </Node>
