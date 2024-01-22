@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node inherits="framework,fw">
+  <Domains>
+    <!-- Override domain inherited definitions or add local definitions here -->
+  </Domains>
+  <Templates>
+    <!-- Override template inherited definitions or add local definitions here -->
+  </Templates>
+  <Entities>
+    <Entity name="fw_config" doc="asda">
+      <Attributes>
+        <Attribute name="id" domain="id"/>
+        <Attribute name="code" domain="longCode" required="true"/>
+        <Attribute name="value" domain="longText" required="true"/>
+        <Attribute name="comment" domain="longText" required="true"/>
+        <Template name="fw.base"/>
+      </Attributes>
+    </Entity>
+  </Entities>
+</Node>
