@@ -20,7 +20,7 @@
           <Params>
             <Param name="handler_code" type="string" required="true" doc="Type of the ticket to report"/>
             <Param name="message" type="string" required="true" doc="Where this ticket was started eg. gecol.enroll"/>
-            <Param name="email" type="string" required="true" doc="The user email"/>
+            <!-- <Param name="email" type="string" required="true" doc="The user email"/> -->
             <Param name="url" type="string" required="true" doc="The url of the application when the problem occurred"/>
           </Params>
           <Return type="int" doc="the id of the ticket"/>
@@ -49,13 +49,18 @@
                 <Param name="id"><Var name="USER" key="id"/></Param>
               </Call>
             </Var>
+
+            <!-- SET email param, based on current USER -->
+            <Var name="PARAMS" key="email">
+              <Var name="person" key="email"/>
+            </Var>
             
             <!-- Get the context data to add to the message -->
             <Var name="data" key="context">
               <Core.processOrchestrator method="getContextStackInfo"/>
             </Var>
             <Var name="data" key="context">
-            	<String.parse><![CDATA[$data->context <br/> $SYSTEM->userAgent <br/> $PARAMS->email <br/> $PARAMS->url</String.parse>]]></String.parse>
+            	<String.parse><![CDATA[$data->context <br/> $SYSTEM->userAgent <br/> $PARAMS->email <br/> $PARAMS->url]]></String.parse>
             </Var>
             <Var name="data" key="content">
 	            <String.parse>$message</String.parse>
@@ -94,9 +99,12 @@
 					        <Call library="framework,message,api" function="sendSimpleMessage">
 					          <Param name="template">framework,ticket,ticketSendNew</Param>
 					          <Param name="to_name"><Null/></Param>
-					          <Param name="to_email"><String parse="true">$handler->email,$PARAMS->email</String></Param>
-					          <Param name="from_name"><Config key="authentication.password.fromName"/></Param>
-					          <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>
+                    <!--<Param name="to_email"><String parse="true">$handler->email,$PARAMS->email</String></Param>-->
+					          <Param name="to_email"><String parse="true">$handler->email</String></Param>
+					          <!--<Param name="from_name"><Config key="authentication.password.fromName"/></Param>
+					          <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>-->
+                    <Param name="from_name"><Var name="person" key="email"/></Param>
+					          <Param name="from_email"><Var name="person" key="name"/></Param>
 					          <Param name="guid"><Guid/></Param>
 					          <Param name="data"><Var name="data"/></Param>
 					        </Call>      
@@ -128,6 +136,7 @@
                 <Param name="_attributes">e.id, e.code, l.name, l.description</Param>
                 <!--Param name="id_company"><Var name="USER" key="idCompany"/></Param-->
                 <Param name="_lang"><Var name="USER" key="lang"/></Param>
+                <Param name="_sort">e.id</Param>
               </DataAccess>
              </Return>
           </Begin>

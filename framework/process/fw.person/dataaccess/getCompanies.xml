@@ -14,10 +14,12 @@
                     c.code,
                     c.name,
                     pc.is_default,
-                    pc.is_active
+                    pc.is_active,
+                    cfg.value horizontal_white_logo_url
                 FROM 
                     fw_person_company pc
                     INNER JOIN fw_company c ON (c.id = pc.id_company)
+                    LEFT JOIN fw_config cfg ON (c.id = cfg.id_company and cfg.code = 'logo.horizontal.white')
                 WHERE  
                   pc.id_person = {param->id_person}
                   AND c.is_active = 1
