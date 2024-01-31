@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.008.002">
+<Application name="framework" version="2.009.000">
 	<!--
-		v2.008.002
-		*	@date:		2023.12.21
+		v2.009.000
+		*	@date:		2023.01.31
 		*	@author:	jose.rebelo
-		*	@comment:	Fix: framework | fw.person.group | Add support to name_communication in fw_person_group and communication_order in fw_person_rel_group.
+		*	@comment:	Feature: framework | fw.person | dataaccess | getCompanies | add companies data necessary to support kuink theme refactor; framework | ticket | improve ticket api in order to support new theme bug report form; framework | lang | add some labels
+		
+
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

@@ -45,6 +45,8 @@
 		<String key="invalidEmail"><![CDATA[ O e-mail é inválido ]]></String>
 		<String key="remainingChars"><![CDATA[ Caracteres disponíveis ]]></String>
 		<!--  ::  Actions  -->
+		<String key="exit"><![CDATA[ Sair ]]></String>
+		<String key="close"><![CDATA[ Fechar ]]></String>
 		<String key="send"><![CDATA[ Enviar ]]></String>
 		<String key="show"><![CDATA[ Mostrar ]]></String>
 		<String key="hide"><![CDATA[ Ocultar ]]></String>
@@ -482,9 +484,14 @@
 		<String key="databaseError"><![CDATA[ Erro a concluir operação ]]></String>
 		<!--  ::  Bug Tracking  -->
 		<String key="reportBug"><![CDATA[ Reportar Problema ]]></String>
+		<String key="handler"><![CDATA[ Destinatário ]]></String>
 		<String key="describeProblem"><![CDATA[ Descreva o problema com o maior detalhe possível ]]></String>
+		<String key="enterMessage"><![CDATA[Introduza a sua mensagem]]></String>
+		<String key="emptyMessage"><![CDATA[ A mensagem não pode ser vazia. ]]></String>
 		<String key="requestSuccess"><![CDATA[ Pedido enviado com sucesso ]]></String>
 		<String key="requestError"><![CDATA[ Erro a enviar o pedido. Tente de novo. ]]></String>
+
+		<String key="refresh"><![CDATA[ Atualizar ]]></String>
 	</Strings>
 	<ExceptionStrings>
 		<!-- EXCEPTIONS -->
