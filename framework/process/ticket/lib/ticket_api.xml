@@ -131,7 +131,7 @@
               <DataAccess method="getAll">
                 <Param name="_entity">fw_ticket_handler</Param>
                 <Param name="_attributes">e.id, e.code, l.name, l.description</Param>
-                <!--Param name="id_company"><Var name="USER" key="idCompany"/></Param-->
+                <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
                 <Param name="_lang"><Var name="USER" key="lang"/></Param>
                 <Param name="_sort">e.id</Param>
               </DataAccess>
