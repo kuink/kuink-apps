@@ -491,6 +491,7 @@
 		<String key="requestSuccess"><![CDATA[ Pedido enviado com sucesso ]]></String>
 		<String key="requestError"><![CDATA[ Erro a enviar o pedido. Tente de novo. ]]></String>
 
+		<String key="backToTop"><![CDATA[ Voltar ao topo ]]></String>
 		<String key="refresh"><![CDATA[ Atualizar ]]></String>
 	</Strings>
 	<ExceptionStrings>
