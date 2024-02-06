@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template>
+  <Subject>
+    $subject
+  </Subject>
+  <Content>
+  <![CDATA[
+    Problema reportado com o n.º $id_ticket
+    <br/><br/>
+    Utilizador:<br/>$person->display_name ($person->uid) ($person->id) <br/><br/>
+    Mensagem:<br/>
+    $content
+    <br/><br/>
+    Contexto (a ser processado pelo STI):<br/>
+    $context
+    <br/><br/>
+   ]]>
+  </Content>
+</Template>

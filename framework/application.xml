@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.009.000">
+<Application name="framework" version="2.009.001">
 	<!--
-		v2.009.000
-		*	@date:		2023.01.31
+		v2.009.001
+		*	@date:		2023.02.06
 		*	@author:	jose.rebelo
-		*	@comment:	Feature: framework | fw.person | dataaccess | getCompanies | add companies data necessary to support kuink theme refactor; framework | ticket | improve ticket api in order to support new theme bug report form; framework | lang | add some labels
+		*	@comment:	Fix: framework | ticket | corrections on send message by tickets.
 		
 
 	-->

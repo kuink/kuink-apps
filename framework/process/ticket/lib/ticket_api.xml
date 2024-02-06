@@ -87,7 +87,7 @@
             
             <!-- Send the email -->
             <Var name="data" key="subject">
-              <String parse="true">Ticket::$handler_code::$formattedDate::$USER->id</String>
+              <String parse="true">#$data->id_ticket::$handler_code::$formattedDate::$USER->id</String>
             </Var>
             <Var name="data" key="person">
               <Var name="person"/>
@@ -97,14 +97,11 @@
             	<Instructions>
 		            <Var name="messageResult">
 					        <Call library="framework,message,api" function="sendSimpleMessage">
-					          <Param name="template">framework,ticket,ticketSendNew</Param>
+					          <Param name="template">framework,ticket,ticketSendNewV2</Param>
 					          <Param name="to_name"><Null/></Param>
-                    <!--<Param name="to_email"><String parse="true">$handler->email,$PARAMS->email</String></Param>-->
-					          <Param name="to_email"><String parse="true">$handler->email</String></Param>
-					          <!--<Param name="from_name"><Config key="authentication.password.fromName"/></Param>
-					          <Param name="from_email"><Config key="authentication.password.fromEmail"/></Param>-->
-                    <Param name="from_name"><Var name="person" key="email"/></Param>
-					          <Param name="from_email"><Var name="person" key="name"/></Param>
+					          <Param name="to_email"><Var name="handler" key="email"/></Param>
+                    <Param name="from_name"><Var name="person" key="name"/></Param>
+					          <Param name="from_email"><Var name="person" key="email"/></Param>
 					          <Param name="guid"><Guid/></Param>
 					          <Param name="data"><Var name="data"/></Param>
 					        </Call>      
