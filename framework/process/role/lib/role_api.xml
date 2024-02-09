@@ -186,9 +186,6 @@
       *  
 			*		RETURN
 			*	   - (int) 0 | 1  ::  Returns 1 if the role exists; 0, if it doesn't.
-      *
-			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the company doesn't exist.
 		-->
     <Function name="existsInCompanyByCode" scope="public" doc="Checks if a role exists in a company, given its code.">
       <Params>
@@ -196,42 +193,25 @@
         <Param name="id_company" type="int" required="true" doc="Company's id"/>
       </Params>
       <Return type="int" doc="1 if the role exists; 0, if it doesn't."/>
-      <Errors>
-        <Error code="-1" doc="The company doesn't exist."/>
-      </Errors>
+
 
       <Begin>
-        <!-- Checks if the company exists -->
-				<Var name="companyExists">
-					<Call library="framework,company,api" function="existsById">
-						<Param name="id"><Var name="PARAMS" key="id_company"/></Param>
-					</Call>
-				</Var>
+        <!-- Checks if the role exists in the company -->
+        <Var name="role">
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
+            <Param name="code"><Var name="PARAMS" key="code"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+          </DataAccess>
+        </Var>
 
-        <!-- If it doesn't, returns -1. Else, continues -->
-        <If condition="$companyExists == 0">
-					<Then>
-						<Var name="exists">-1</Var>
-					</Then>
-					<Else>
-            <!-- Checks if the role exists in the company -->
-            <Var name="role">
-              <DataAccess method="load">
-                <Param name="_entity">fw_role</Param>
-                <Param name="code"><Var name="PARAMS" key="code"/></Param>
-                <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-              </DataAccess>
-            </Var>
-    
-            <!-- If it doesn't, returns 0. If it does, returns 1 -->
-            <If condition="$role->__length == 0">
-              <Then>
-                <Var name="exists">0</Var>
-              </Then>
-              <Else>
-                <Var name="exists">1</Var>
-              </Else>
-            </If>
+        <!-- If it doesn't, returns 0. If it does, returns 1 -->
+        <If condition="$role->__length == 0">
+          <Then>
+            <Var name="exists">0</Var>
+          </Then>
+          <Else>
+            <Var name="exists">1</Var>
           </Else>
         </If>
 
@@ -251,9 +231,6 @@
       *  
 			*		RETURN
 			*	   - (int) 0 | 1  ::  Returns 1 if the role exists; 0, if it doesn't.
-      *
-			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the company doesn't exist.
 		-->
     <Function name="existsInCompanyById" scope="public" doc="Checks if a role exists in a company, given its id.">
       <Params>
@@ -261,45 +238,27 @@
         <Param name="id_company" type="int" required="true" doc="Company's id"/>
       </Params>
       <Return type="int" doc="1 if the role exists; 0, if it doesn't."/>
-      <Errors>
-        <Error code="-1" doc="The company doesn't exist."/>
-      </Errors>
 
       <Begin>
-        <!-- Checks if the company exists -->
-				<Var name="companyExists">
-					<Call library="framework,company,api" function="existsById">
-						<Param name="id"><Var name="PARAMS" key="id_company"/></Param>
-					</Call>
-				</Var>
+        <!-- Checks if the role exists in the company -->
+        <Var name="role">
+          <DataAccess method="load">
+            <Param name="_entity">fw_role</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+          </DataAccess>
+        </Var>
 
-        <!-- If it doesn't, returns -1. Else, continues -->
-        <If condition="$companyExists == 0">
-					<Then>
-						<Var name="exists">-1</Var>
-					</Then>
-					<Else>
-            <!-- Checks if the role exists in the company -->
-            <Var name="role">
-              <DataAccess method="load">
-                <Param name="_entity">fw_role</Param>
-                <Param name="id"><Var name="PARAMS" key="id"/></Param>
-                <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-              </DataAccess>
-            </Var>
-    
-            <!-- If it doesn't, returns 0. If it does, returns 1 -->
-            <If condition="$role->__length == 0">
-              <Then>
-                <Var name="exists">0</Var>
-              </Then>
-              <Else>
-                <Var name="exists">1</Var>
-              </Else>
-            </If>
+        <!-- If it doesn't, returns 0. If it does, returns 1 -->
+        <If condition="$role->__length == 0">
+          <Then>
+            <Var name="exists">0</Var>
+          </Then>
+          <Else>
+            <Var name="exists">1</Var>
           </Else>
         </If>
-
+        
         <Return>
           <Var name="exists"/>
         </Return>
@@ -421,17 +380,19 @@
 
 
     <!--
-			*		getByCode  |  Gets a role given the code.
+			*		getByCode  |  Gets a role, in a company, given the code.
 			*
 			*		PARAMS
-			*    - (text) code  ::  Role's code.
+			*    - (text) code       ::  Role's code;
+			*    - (int) id_company  ::  Company's id.
 			*  
 			*		RETURN
 			*	   - (single) fw_role  ::  Returns the corresponding 'fw_role' record. 
 		-->
-    <Function name="getByCode" scope="public" doc="Gets a role given the code.">
+    <Function name="getByCode" scope="public" doc="Gets a role, in a company, given the code.">
       <Params>
-        <Param name="code" type="text" required="true" doc="Role's code."/>
+        <Param name="code" type="text" required="true" doc="Role's code"/>
+        <Param name="id_company" type="int" required="true" doc="Company's id"/>
       </Params>
       <Return type="single" doc="The corresponding 'fw_role' record."/>
 
@@ -440,6 +401,7 @@
           <DataAccess method="load">
             <Param name="_entity">fw_role</Param>
             <Param name="code"><Var name="PARAMS" key="code"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
           </DataAccess>
         </Var>
 
@@ -683,11 +645,6 @@
             <Var name="role"><!-- For an insert and an update -->
               <Call function="getByCode">
                 <Param name="code"><Var name="PARAMS" key="code"/></Param>
-              </Call>
-            </Var>
-            <Var name="existsById"><!-- For an update, only -->
-              <Call function="existsInCompanyById">
-                <Param name="id"><Var name="PARAMS" key="id"/></Param>
                 <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
               </Call>
             </Var>
@@ -703,11 +660,11 @@
               </Then>
             </If>
             <!-- If it's a role update and it doesn't exist, returns -3 -->
-            <If condition="$PARAMS->is_insert == 0 &amp;&amp; $existsById == 0">
+            <!--If condition="$PARAMS->is_insert == 0 &amp;&amp; $existsById == 0">
               <Then>
                 <Var name="error">-3</Var>
               </Then>
-            </If>
+            </If-->
           </Else>
         </If>
         
