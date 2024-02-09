@@ -5,6 +5,7 @@
 	</Doc>
 	<Params>
 		<Param name="code_role_list" type="text" required="true" doc="Roles' codes' list" />
+		<Param name="id_company" type="int" required="true" doc="Company id" />
 	</Params>
 	<Body>
 		<Sql>
@@ -29,6 +30,8 @@
 					<XCondition>
 						<![CDATA[ 
 							r.code IN ({@param->code_role_list})
+							AND r.id_company = {param->id_company}
+							AND (c.id_company = {param->id_company} OR c.is_global = 1)
 						]]>
 					</XCondition>
 				</XWhere>
