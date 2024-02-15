@@ -24,7 +24,9 @@
               fw_person p
               INNER JOIN fw_person_company pc ON (pc.id_person = p.id)
               INNER JOIN fw_company c ON (c.id = pc.id_company)
-              LEFT JOIN fw_person_contact ct ON (ct.id_person_company = pc.id)
+              LEFT JOIN fw_person_contact ct ON (ct.id_person_company = pc.id
+                                                  AND ct.id_contact_type = 1
+                                                  AND ct.is_default = 1)
             ]]>
           </XTable>
         </XFrom>
@@ -33,8 +35,6 @@
             <![CDATA[ 
               c.id = {param->id_company}
               AND p.id = {param->id_person}
-              AND ct.id_contact_type = 1
-              AND ct.is_default = 1
             ]]> 
           </XCondition>
         </XWhere>

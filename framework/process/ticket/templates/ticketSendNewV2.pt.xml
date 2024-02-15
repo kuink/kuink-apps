@@ -7,11 +7,11 @@
   <![CDATA[
     Problema reportado com o n.º $id_ticket
     <br/><br/>
-    Utilizador:<br/>$person->display_name ($person->uid) ($person->id) <br/><br/>
+    Requerente:<br/>$person->name ($person->uid) ($person->id) <br/><br/>
     Mensagem:<br/>
     $content
     <br/><br/>
-    Contexto (a ser processado pelo STI):<br/>
+    Contexto:<br/>
     $context
     <br/><br/>
    ]]>
