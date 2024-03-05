@@ -27,7 +27,7 @@
 		<!-- fw_capability -->
 		<String key="is_global"><![CDATA[Global?]]></String>
 
-
+		<String key="companyConfig"><![CDATA[ Configurações de empresa ]]></String>
 
 		<!--	________________________________________________________________________________________________
 			*
@@ -61,8 +61,15 @@
 		<String key="companyDoesNotExist"><![CDATA[ A empresa indicada não existe. ]]></String>
 		<String key="personAlreadyHaveRoleInCompany"><![CDATA[ O utente já tem a função na empresa. ]]></String>
 
-
-
+		<!--	________________________________________________________________________________________________
+			*
+			*			D A S H B O A R D    ::    Company Configs
+			*		________________________________________________________________________________________________
+		-->
+		<String key="comment"><![CDATA[ Comentário ]]></String> 
+		<String key="value"><![CDATA[ Valor ]]></String> 
+		<String key="configs"><![CDATA[ Configurações ]]></String> 
+		<String key="timezone"><![CDATA[ Fuso Horário ]]></String> 
 
 		<!--	________________________________________________________________________________________________
 			*

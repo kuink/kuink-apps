@@ -33,6 +33,10 @@
       <Menu name="appFiles" label="appFiles" icon="folder-open">
         <Action name="processAction" label="manage" actionvalue="manageAppFiles"/>
       </Menu>
+
+      <Menu name="companyConfig" label="companyConfig" icon="building">
+        <Action name="processAction" label="manage" actionvalue="companyConfig"/>
+      </Menu>
     </Screen>
   </Screens>
   <!--	________________________________________________________________________________________________
