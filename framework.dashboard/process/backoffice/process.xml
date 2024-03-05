@@ -30,5 +30,9 @@
 		<!-- Dashboard Main Page > App Files Management -->
 		<Flow role="Teacher" startnode="main" event="manageAppFiles" endnode="xpAppFilesManagement" />
 		<Flow role="Teacher" startnode="xpAppFilesManagement" event="back" endnode="main" />
+
+		<!-- Dashboard Main Page > Company confguration -->
+		<Flow role="Teacher" startnode="main" event="companyConfig" endnode="xpCompanyConfig" />
+		<Flow role="Teacher" startnode="xpCompanyConfig" event="back" endnode="main" />
 	</Transitions>
 </Process>

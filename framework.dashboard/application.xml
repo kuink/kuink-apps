@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework.dashboard" version="1.001.001">
-  <!--
-		v1.001.001
-		*	@date:		 2023.05.30
-		*	@author:   catarina.fernandes
-		*	@comment:  Fix | Resorting some selects and grids results.
+<Application name="framework.dashboard" version="1.002.000">
+    <!--
+		v1.002.000
+		*	@date:		 2024.03.05
+		*	@author:   jose.rebelo
+		*	@comment:  Feature | framework.dashboard | backoffice / companyConfig | add new functionality to dashboard application to support company configurations (fw_config) to be edited, added or deleted.
 	-->
   <Config/>
   <Databases/>
