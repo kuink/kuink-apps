@@ -1,25 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-  <Permissions>
-  </Permissions>
-  <Doc lang="pt-PT">
-  </Doc>
-  <Libraries>
-    <Use name="DateTimeLib" type="lib"/>
-    <Use name="FileLib" type="lib"/>
-    <Use name="StringLib" type="lib" />
-    <Use name="FormatterLib" type="lib" />
-    <Use name="UtilsLib" type="lib" />
-    <Use name="TemplateLib" type="lib" />
-  </Libraries>
+  <Doc/>
+  <Permissions/>
   <Configuration>
     <Config key="approvalFolder" value="controlled_docs/approval"/>
     <Config key="obsoleteFolder" value="controlled_docs/obsolete"/>
     <Config key="currentFolder" value="controlled_docs/current"/>
     <Config key="rejectedFolder" value="controlled_docs/rejected"/>
-
     <Config key="maxUploadFileSize" value="15000000"/>
-    <Config key="allowedExtensions" value="ott,odt,ots,ods,otp,odp,pdf,odg"/>
+    <Config key="allowedExtensions" value="dotx,docx,ott,odt,ots,ods,otp,odp,odg,pdf"/>
     <Config key="tmpFolder" value="controlled_docs/tmp"/>
 
     <!--Config key="approvalFolder" value="controlled_docs/approval"/>
@@ -27,12 +16,17 @@
     <Config key="currentFolder" value="controlled_docs/current"/>
     <Config key="rejectedFolder" value="controlled_docs/rejected"/-->
   </Configuration>
-  <Screens>
-  </Screens>
-  <Actions>
-  </Actions>
+  <Libraries>
+    <Use name="DateTimeLib" type="lib"/>
+    <Use name="FileLib" type="lib"/>
+    <Use name="StringLib" type="lib"/>
+    <Use name="FormatterLib" type="lib"/>
+    <Use name="UtilsLib" type="lib"/>
+    <Use name="TemplateLib" type="lib"/>
+  </Libraries>
+  <Screens/>
+  <Actions/>
   <Library forceinterface="true">
-
     <Function name="add" doc="Adds a controlled document in table ">
       <Params>
         <Param name="code" type="text" required="true"/>
@@ -406,38 +400,38 @@
     </Function>
     
     <Function scope="public" name="getAllVersionsObs" doc="Get all versions observations">
-    <Params>
-      <Param name="id_controlled_document" type="int" doc="the controlledDocument"/>
-    </Params>
-    <Return type="multiple"/>
-    <Begin>
-      <Var name="PARAMS" dump="true"/>
-      <Var name="versions" dump="true">
-        <DataAccess method="getAll">
-          <Param name="_entity">fw_rm_controlled_document_version</Param>
-          <Param name="id_controlled_document"><Var name="PARAMS" key="id_controlled_document"/></Param>
-          <Param name="_sort">id asc</Param>
-        </DataAccess>
-      </Var>
-      
-      <!-- Build the observations set -->
-      <Var name="obs"><Set/></Var>
-      <ForEach var="versions" item="version">
-        <Var name="comments" dump="true">
-          <Call library="framework,wf.process,api" function="getProcessInstanceHistoryData">
-            <Param name="id_process_instance"><Var name="version" key="id_wf_instance"/></Param>
-            <Param name="id_person"><Var name="USER" key="id"/></Param>
-          </Call>
+      <Params>
+        <Param name="id_controlled_document" type="int" doc="the controlledDocument"/>
+      </Params>
+      <Return type="multiple"/>
+      <Begin>
+        <Var name="PARAMS" dump="true"/>
+        <Var name="versions" dump="true">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_rm_controlled_document_version</Param>
+            <Param name="id_controlled_document"><Var name="PARAMS" key="id_controlled_document"/></Param>
+            <Param name="_sort">id asc</Param>
+          </DataAccess>
         </Var>
-        <!-- Add these observations to the global obs set -->
-        <ForEach var="comments" item="comment">
-          <Var name="comment" key="version_code"><Var name="version" key="code"/></Var>
-          <Var name="obs" key=""><Var name="comment"/></Var>
+        
+        <!-- Build the observations set -->
+        <Var name="obs"><Set/></Var>
+        <ForEach var="versions" item="version">
+          <Var name="comments" dump="true">
+            <Call library="framework,wf.process,api" function="getProcessInstanceHistoryData">
+              <Param name="id_process_instance"><Var name="version" key="id_wf_instance"/></Param>
+              <Param name="id_person"><Var name="USER" key="id"/></Param>
+            </Call>
+          </Var>
+          <!-- Add these observations to the global obs set -->
+          <ForEach var="comments" item="comment">
+            <Var name="comment" key="version_code"><Var name="version" key="code"/></Var>
+            <Var name="obs" key=""><Var name="comment"/></Var>
+          </ForEach>
         </ForEach>
-      </ForEach>
 
-      <Return><Var name="obs"/></Return>
-    </Begin>
+        <Return><Var name="obs"/></Return>
+      </Begin>
     </Function>
 
     <Function name="getAutoContentPdf" doc="Gets a cd auto content based on its current version template_src based on test_data if data is not supplied in a pdf stream ">
@@ -900,44 +894,44 @@
     </Function>
    
     <Function scope="private" name="getFolder" doc="Get the folder complete name to workflow move files">
-    <Params>
-      <Param name="id_class" type="int" doc="Classification id"/>
-      <Param name="workflowTypeConfiguration" type="int" doc="The workflow type configuration"/>
-      <Param name="folder" type="string" doc="The folder name"/>
-    </Params>
-    <Return type="string"/>
-    <Begin>
-        <Var name="class">
-          <Call library="framework,rm.class,api" function="get">
-            <Param name="id"><Var name="PARAMS" key="id_class"/></Param>
-          </Call>          
-        </Var>
-        <Var name="date"><Set/></Var>
-        <Var name="date" key="year">
-          <String><DateTimeLib method="getYear"><Param><Now/></Param></DateTimeLib></String>
-        </Var>
-        <Var name="date" key="month">
-          <String><DateTimeLib method="getMonth"><Param><Now/></Param></DateTimeLib></String>
-        </Var>
-        <Var name="date" key="day">
-          <String><DateTimeLib method="getDay"><Param><Now/></Param></DateTimeLib></String>
-        </Var>
-        <Var name="configFolder">
-          <String.concatenate>
-            <Param><Var name="PARAMS" key="folder"/></Param>
-            <Param>Folder</Param>
-          </String.concatenate>
-        </Var>
-        <Var name="folder">
-          <IsNull>
-            <Param><Var name="workflowTypeConfiguration" key="$PARAMS->folder"/></Param>
-            <Param><Config key="$configFolder"/></Param>
-          </IsNull>
-        </Var>
-        <Var name="folder"><String.parse><String.parse>$folder</String.parse></String.parse></Var>
+      <Params>
+        <Param name="id_class" type="int" doc="Classification id"/>
+        <Param name="workflowTypeConfiguration" type="int" doc="The workflow type configuration"/>
+        <Param name="folder" type="string" doc="The folder name"/>
+      </Params>
+      <Return type="string"/>
+      <Begin>
+          <Var name="class">
+            <Call library="framework,rm.class,api" function="get">
+              <Param name="id"><Var name="PARAMS" key="id_class"/></Param>
+            </Call>          
+          </Var>
+          <Var name="date"><Set/></Var>
+          <Var name="date" key="year">
+            <String><DateTimeLib method="getYear"><Param><Now/></Param></DateTimeLib></String>
+          </Var>
+          <Var name="date" key="month">
+            <String><DateTimeLib method="getMonth"><Param><Now/></Param></DateTimeLib></String>
+          </Var>
+          <Var name="date" key="day">
+            <String><DateTimeLib method="getDay"><Param><Now/></Param></DateTimeLib></String>
+          </Var>
+          <Var name="configFolder">
+            <String.concatenate>
+              <Param><Var name="PARAMS" key="folder"/></Param>
+              <Param>Folder</Param>
+            </String.concatenate>
+          </Var>
+          <Var name="folder">
+            <IsNull>
+              <Param><Var name="workflowTypeConfiguration" key="$PARAMS->folder"/></Param>
+              <Param><Config key="$configFolder"/></Param>
+            </IsNull>
+          </Var>
+          <Var name="folder"><String.parse><String.parse>$folder</String.parse></String.parse></Var>
 
-      <Return><Var name="folder"/></Return>
-    </Begin>
+        <Return><Var name="folder"/></Return>
+      </Begin>
     </Function>
 
     <!-- Workflows.begin -->
@@ -1388,47 +1382,46 @@
       </Begin>
     </Function>
 
-
     <Function scope="public" name="createRecord" doc="Creates a record for the current document version. Converts it if it has to.">
-    <Params>
-      <Param name="id" type="int" doc="Controlled document id"/>
-    </Params>
-    <Return type="int" doc="The record id"/>
-    <Begin>
-      <Var name="controlledDocument">
-        <Call function="getById">
-          <Param name="id"><Var name="PARAMS" key="id"/></Param>
-        </Call>
-      </Var>
-      <Var name="version">
-        <DataAccess method="load">
-          <Param name="_entity">fw_rm_controlled_document_version</Param>
-          <Param name="id"><Var name="controlledDocument" key="id_current_version"/></Param>
-        </DataAccess>
-      </Var>
+      <Params>
+        <Param name="id" type="int" doc="Controlled document id"/>
+      </Params>
+      <Return type="int" doc="The record id"/>
+      <Begin>
+        <Var name="controlledDocument">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </Call>
+        </Var>
+        <Var name="version">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document_version</Param>
+            <Param name="id"><Var name="controlledDocument" key="id_current_version"/></Param>
+          </DataAccess>
+        </Var>
 
-      <!-- Check to see if convertion is needed from the -->
-      <Var name="recordFormat"><String>pdf</String></Var>
-      <If condition="$recordFormat != ''">
-        <Then>
-          <DataSource name="documentConverter" connector="DocumentConverterConnector" bypass="false">
-            <Param name="command"><![CDATA[unoconv -vv -f %s -eSelectPdfVersion=1 '%s' -o '%s']]></Param>
-          </DataSource>
-          <Var name="newIdFile">
-            <DataAccess method="execute" datasource="documentConverter">
-              <Param name="id"><Var name="version" key="id_file"/></Param>
-              <Param name="format"><Var name="recordFormat"/></Param>
-            </DataAccess>					
-          </Var>                  
-        </Then>
-        <Else>
-          <Var name="newIdFile"><Var name="version" key="id_file"/></Var>
-        </Else>
-      </If>
-      <Var name="idRecord"></Var>
+        <!-- Check to see if convertion is needed from the -->
+        <Var name="recordFormat"><String>pdf</String></Var>
+        <If condition="$recordFormat != ''">
+          <Then>
+            <DataSource name="documentConverter" connector="DocumentConverterConnector" bypass="false">
+              <Param name="command"><![CDATA[unoconv -vv -f %s -eSelectPdfVersion=1 '%s' -o '%s']]></Param>
+            </DataSource>
+            <Var name="newIdFile">
+              <DataAccess method="execute" datasource="documentConverter">
+                <Param name="id"><Var name="version" key="id_file"/></Param>
+                <Param name="format"><Var name="recordFormat"/></Param>
+              </DataAccess>					
+            </Var>                  
+          </Then>
+          <Else>
+            <Var name="newIdFile"><Var name="version" key="id_file"/></Var>
+          </Else>
+        </If>
+        <Var name="idRecord"></Var>
 
-      <Return><Var name="idRecord"/></Return>
-    </Begin>
+        <Return><Var name="idRecord"/></Return>
+      </Begin>
     </Function>
 
     <Function name="getByCode" doc="Get a controlled Document record given its code">
@@ -1990,90 +1983,89 @@
     </Function>
 
     <Function scope="public" name="uploadDeploymentFile" doc="Upload a deployment file">
-    <Params>
-      <Param name="id_version" type="int" doc="The version to upload the file"/>
-      <Param name="id_deployment_file" type="int" doc="The id of the uploaded file in the tmp folder"/>
-    </Params>
-    <Return type=""/>
-    <Begin>
-			<!-- The file is uploaded in the tmp folder so move i to the current folder -->
+      <Params>
+        <Param name="id_version" type="int" doc="The version to upload the file"/>
+        <Param name="id_deployment_file" type="int" doc="The id of the uploaded file in the tmp folder"/>
+      </Params>
+      <Return type=""/>
+      <Begin>
+        <!-- The file is uploaded in the tmp folder so move i to the current folder -->
 
-			<!-- Check if the version is approved or not -->
-			<Var name="version" dump="true">
-				<DataAccess method="load">
-					<Param name="_entity">fw_rm_controlled_document_version</Param>
-					<Param name="id"><Var name="PARAMS" key="id_version"/></Param>
-				</DataAccess>
-			</Var>
-			<If condition="$version->id_file == ''">
-				<Then>
-						<Exception name="framework/rm.controlledDocument::fileNotExist">
-							<Param><String parse="true">($version->id $version->id_file)</String></Param>
-						</Exception>
-				</Then>
-			</If>
+        <!-- Check if the version is approved or not -->
+        <Var name="version" dump="true">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document_version</Param>
+            <Param name="id"><Var name="PARAMS" key="id_version"/></Param>
+          </DataAccess>
+        </Var>
+        <If condition="$version->id_file == ''">
+          <Then>
+              <Exception name="framework/rm.controlledDocument::fileNotExist">
+                <Param><String parse="true">($version->id $version->id_file)</String></Param>
+              </Exception>
+          </Then>
+        </If>
 
-			<Var name="controlledDocument">
-				<DataAccess method="load">
-					<Param name="_entity">fw_rm_controlled_document</Param>
-					<Param name="id"><Var name="version" key="id_controlled_document"/></Param>
-				</DataAccess>
-			</Var>
+        <Var name="controlledDocument">
+          <DataAccess method="load">
+            <Param name="_entity">fw_rm_controlled_document</Param>
+            <Param name="id"><Var name="version" key="id_controlled_document"/></Param>
+          </DataAccess>
+        </Var>
 
-			<!-- Load the source file -->
-			<Var name="file">
-				<DataAccess method="load">
-					<Param name="_entity">fw_file</Param>
-					<Param name="id"><Var name="version" key="id_file"/></Param>
-				</DataAccess>
-			</Var>
+        <!-- Load the source file -->
+        <Var name="file">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id"><Var name="version" key="id_file"/></Param>
+          </DataAccess>
+        </Var>
 
-			<!-- Load the deployment file -->
-			<Var name="deploymentFile">
-				<DataAccess method="load">
-					<Param name="_entity">fw_file</Param>
-					<Param name="id"><Var name="PARAMS" key="id_deployment_file"/></Param>
-				</DataAccess>
-			</Var>
+        <!-- Load the deployment file -->
+        <Var name="deploymentFile">
+          <DataAccess method="load">
+            <Param name="_entity">fw_file</Param>
+            <Param name="id"><Var name="PARAMS" key="id_deployment_file"/></Param>
+          </DataAccess>
+        </Var>
 
-			<If condition="$version->is_active == 0">
-				<Then>
-					<Exception name="framework/rm.controlledDocument::versionNotActive"/>
-				</Then>
-			</If>
-			
-			<If condition="$deploymentFile->ext != $controlledDocument->deployment_file_format">
-				<Then>
-					<Exception name="framework/rm.controlledDocument::invalidDeploymentFileFormat">
-						<Param><String.parse>$controlledDocument->deployment_file_format allowed and $deploymentFile->ext was uploaded</String.parse></Param>
-					</Exception>
-				</Then>
-			</If>
-			<Var name="newFileName" dump="true">
-				<String.replace>
-					<Param><String.parse>.$file['ext']</String.parse></Param>
-					<Param><String.parse>.$deploymentFile['ext']</String.parse></Param>
-					<Param><Var name="file" key="name"/></Param>
-				</String.replace>
-			</Var>
+        <If condition="$version->is_active == 0">
+          <Then>
+            <Exception name="framework/rm.controlledDocument::versionNotActive"/>
+          </Then>
+        </If>
+        
+        <If condition="$deploymentFile->ext != $controlledDocument->deployment_file_format">
+          <Then>
+            <Exception name="framework/rm.controlledDocument::invalidDeploymentFileFormat">
+              <Param><String.parse>$controlledDocument->deployment_file_format allowed and $deploymentFile->ext was uploaded</String.parse></Param>
+            </Exception>
+          </Then>
+        </If>
+        <Var name="newFileName" dump="true">
+          <String.replace>
+            <Param><String.parse>.$file['ext']</String.parse></Param>
+            <Param><String.parse>.$deploymentFile['ext']</String.parse></Param>
+            <Param><Var name="file" key="name"/></Param>
+          </String.replace>
+        </Var>
 
-			<!-- Move the file -->
-			<Call library="framework,file,api" function="move">
-				<Param name="id_file"><Var name="deploymentFile" key="id"/></Param>
-				<Param name="dest_path"><Var name="file" key="path"/></Param>
-				<Param name="dest_filename"><String.parse>$newFileName</String.parse></Param>
-			</Call>
+        <!-- Move the file -->
+        <Call library="framework,file,api" function="move">
+          <Param name="id_file"><Var name="deploymentFile" key="id"/></Param>
+          <Param name="dest_path"><Var name="file" key="path"/></Param>
+          <Param name="dest_filename"><String.parse>$newFileName</String.parse></Param>
+        </Call>
 
-			<!-- Update the version -->
-			<DataAccess method="update">
-				<Param name="_entity">fw_rm_controlled_document_version</Param>
-				<Param name="id"><Var name="version" key="id"/></Param>
-				<Param name="id_deployment_file"><Var name="deploymentFile" key="id"/></Param>
-			</DataAccess>
+        <!-- Update the version -->
+        <DataAccess method="update">
+          <Param name="_entity">fw_rm_controlled_document_version</Param>
+          <Param name="id"><Var name="version" key="id"/></Param>
+          <Param name="id_deployment_file"><Var name="deploymentFile" key="id"/></Param>
+        </DataAccess>
 
-      <Return></Return>
-    </Begin>
+        <Return></Return>
+      </Begin>
     </Function>
-
   </Library>
 </Node>
