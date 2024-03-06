@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
-
-<Application name="framework" version="2.009.004">
+<Application name="framework" version="2.009.005">
 	<!--
-		v2.009.004
-		*	@date:		2023.02.15
-		*	@author:	jose.rebelo
-		*	@comment:	Fix: framework | fw.person | dataccess | correction on get, to associate contact fields to ON clause.
+		v2.009.005
+		*	@date:		2023.03.06
+		*	@author:	catarina.fernandes
+		*	@comment:	Fix: framework | rm.controlledDocument | Adding new types to the controlled documents' allowed extensions.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />
