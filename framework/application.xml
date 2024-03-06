@@ -2,9 +2,9 @@
 <Application name="framework" version="2.009.005">
 	<!--
 		v2.009.005
-		*	@date:		2023.03.06
-		*	@author:	catarina.fernandes
-		*	@comment:	Fix: framework | rm.controlledDocument | Adding new types to the controlled documents' allowed extensions.
+		*	@date:		2023.03.05
+		*	@author:	jose.rebelo
+		*	@comment:	Fix: framework | config / company | api | add getByCompany and corrections on add and update.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

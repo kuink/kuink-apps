@@ -31,11 +31,10 @@
 		-->
 		<Function name="add" scope="private" doc="Adds a new company to the system.">
 			<Params>
-				<Param name="uuid" type="text" required="true" doc="Company's uuid"/>
 				<Param name="name" type="text" required="true" doc="Company's name"/>
 				<Param name="code" type="text" required="true" doc="Company's code"/>
 				<Param name="description" type="text" required="false" doc="Company's description"/>
-				<Param name="timezone" type="text" required="false" doc="Company's default timezone"/>
+				<Param name="id_timezone" type="text" required="false" doc="Company's default timezone"/>
 				<Param name="is_active" type="int" required="true" doc="1 if this company is active; 0, otherwise"/>
 			</Params>
 			<Return type="int" doc="The created 'fw_company' record's id."/>
@@ -51,6 +50,7 @@
 					</Call>
 				</Var>
 
+				<Var name="PARAMS" key="uuid"><Uuid/></Var>
 				<!-- If it does, returns -1. Otherwise, proceeds to insert -->
 				<If condition="$companyExists == 1">
 					<Then>
@@ -453,12 +453,12 @@
 				<Param name="id" type="int" required="true" doc="Company's id"/>
 				<Param name="uuid" type="text" required="false" doc="Company's uuid"/>
 				<Param name="name" type="text" required="false" doc="Company's name"/>
-				<Param name="code" type="text" required="true" doc="Company's code"/>
+				<Param name="code" type="text" required="false" doc="Company's code"/>
 				<Param name="description" type="text" required="false" doc="Company's description"/>
-				<Param name="timezone" type="text" required="false" doc="Company's default timezone"/>
+				<Param name="id_timezone" type="text" required="false" doc="Company's default timezone"/>
 				<Param name="is_active" type="int" required="false" doc="1 if this company is active; 0, otherwise"/>
 			</Params>
-      <Return type="int" doc="0 if the company was updated."/>
+      		<Return type="int" doc="0 if the company was updated."/>
 			<Errors>
 				<Error code="-1" doc="The company doesn't exist."/>
 			</Errors>
@@ -480,8 +480,16 @@
 						<Var name="error">-1</Var>
 					</Then>
 					<Else>
+						<Var name="paramData" dump="true">
+							<UtilsLib method="filterNotNull">
+								<Param>
+									<Var name="PARAMS"/>
+								</Param>
+							</UtilsLib>
+						</Var>
+
 						<!-- Updates the record -->
-						<DataAccess method="update" params="PARAMS">
+						<DataAccess method="update" params="paramData">
 							<Param name="_entity">fw_company</Param>
 							<Param name="id"><Var name="PARAMS" key="id"/></Param>
 							<Param name="_id_updater"><Var name="USER" key="id"/></Param>

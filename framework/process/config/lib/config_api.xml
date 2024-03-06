@@ -154,5 +154,20 @@
       </Begin>
     </Function>
     <!-- / Needs to be reviewd -->
+    <Function name="getByCompany" doc="Gets records by id_company from table fw_config">
+      <Params>
+        <Param name="id_company" type="int" required="true"/>
+      </Params>
+      <Return type="multiple" doc=""/>
+      <Begin>
+        <Return>
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_config</Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+          </DataAccess>
+        </Return>
+      </Begin>
+    </Function>
+
   </Library>
 </Node>
