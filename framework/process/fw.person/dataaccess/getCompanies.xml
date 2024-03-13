@@ -19,7 +19,7 @@
                 FROM 
                     fw_person_company pc
                     INNER JOIN fw_company c ON (c.id = pc.id_company)
-                    LEFT JOIN fw_config cfg ON (c.id = cfg.id_company and cfg.code = 'logo.horizontal.white')
+                    LEFT JOIN fw_config cfg ON (c.id = cfg.id_company and cfg.code = 'logo.horizontal.white.svg')
                 WHERE  
                   pc.id_person = {param->id_person}
                   AND c.is_active = 1
