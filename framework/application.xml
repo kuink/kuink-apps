@@ -2,7 +2,7 @@
 <Application name="framework" version="2.009.005">
 	<!-- 
 		v2.009.005
-		*	@date:		2024.03.06
+		*	@date:  	2024.03.06
 		*	@author:	catarina.fernandes
 		*	@comment:	Fix: framework | rm.controlledDocument | Adding new types to the controlled documents' allowed extensions.
 	-->
