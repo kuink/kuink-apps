@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.009.006">
+<Application name="framework" version="2.010.000">
 	<!-- 
-		v2.009.006
-		*	@date:		2024.03.13
+		v2.010.000
+		*	@date:		2024.07.20
 		*	@author:	catarina.fernandes
-		*	@comment:	Fix: framework | company | Adding new function to get a company's logo.
+		*	@comment:	Feature: framework > company | Adding a function to get a company's default location.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

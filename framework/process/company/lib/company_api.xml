@@ -393,6 +393,38 @@
 				</Return>
 			</Begin>
 		</Function>
+		
+			
+		<!--
+			*		getDefaultLocation  |  Gets a company's default location.
+			*  
+			*		PARAMS
+			*		 - (int) id_company  ::  Company id.
+			*
+			*		RETURN
+			*	   - (string) location  ::  Returns the company's default location (set in 'fw_config'). 
+		-->
+		<Function scope="public" name="getDefaultLocation" doc="Gets a company's default location.">
+			<Params>
+				<Param name="id_company" type="int" doc="Company id"/>
+			</Params>
+			<Return type="string" doc="The corresponding company's default location."/>
+
+			<Begin>
+				<!-- Gets the location and returns it -->
+				<Var name="location">
+					<DataAccess method="load">
+						<Param name="_entity">fw_config</Param>
+						<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+						<Param name="code">location.default</Param>
+					</DataAccess>
+				</Var>
+				
+				<Return>
+					<Var name="location" key="value"/>
+				</Return>
+			</Begin>
+		</Function>
 
 
 		<!--
