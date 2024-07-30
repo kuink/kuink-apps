@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework.rm.controlledDocument" version="1.000.001">
+<Application name="framework.rm.controlledDocument" version="1.001.000">
 	<!--
-		v1.000.001
-		*	@date:		 2023.04.13
+		v1.001.000
+		*	@date:		 2024.07.30
 		*	@author:   catarina.fernandes
-		*	@comment:  Fix | person | Renaming functions due to person restructure.
+		*	@comment:  Feature: framework.rm.controlledDocument | Adding MSOffice extensions to the valid ones. | v1.001.000
 	-->
 	<Configuration/>
 	<Databases/>
