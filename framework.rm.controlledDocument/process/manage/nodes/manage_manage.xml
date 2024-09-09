@@ -12,7 +12,7 @@
   </Libraries>
   <Configuration>
     <Config key="maxUploadFileSize" value="15000000"/>
-    <Config key="allowedExtensions" value="ott,odt,ots,ods,otp,odp,pdf,odg"/>
+    <Config key="allowedExtensions" value="dotx,docx,xltx,xlsx,potx,pptx,ott,odt,ots,ods,otp,odp,odg,pdf"/>
     <Config key="tmpFolder" value="controlled_docs/tmp"/>
   </Configuration>
   <Params>
