@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.012.000">
+<Application name="framework" version="2.013.000">
 	<!-- 
-		v2.012.000
+		v2.013.000
 		*	@date:		2024.09.10
 		*	@author:	jose.rebelo
-		*	@comment:	Feature: framework > microsoft > api | Add consent_provided_for_minor attributes to addPerson function.
+		*	@comment:	Feature: framework > microsoft > api | Add domain attributes to addPersonToGroup and getPerson functions.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />
