@@ -20,16 +20,17 @@
 			*		addPerson  |  Creates a new person. 
 			*  
 			*		PARAMS
-			*    - (string) uid		 				::  Person uid;
-			*    - (string) given_name	 		 	::  Person given name;
-			*    - (string) surname	 				::  Person surname;
-			*    - (string) display_name	 	 	::  Person display name;
-			*    - (string) mobile	 	 			::  Person mobile phone number;
-			*    - (string) job_title	 			::  Person job title;
-			*    - (string) office_location			::	 Person office location.
-			*    - (string) domain			 		::	 Person email domain.
-			*    - (string) password			 	::	 Person password.
-			*    - (string) age_group			 	::	 Person age group.
+			*    - (string) uid		 					::  Person uid;
+			*    - (string) given_name	 		 		::  Person given name;
+			*    - (string) surname	 					::  Person surname;
+			*    - (string) display_name	 	 		::  Person display name;
+			*    - (string) mobile	 	 				::  Person mobile phone number;
+			*    - (string) job_title	 				::  Person job title;
+			*    - (string) office_location				::	Person office location;
+			*    - (string) domain			 			::	Person email domain;
+			*    - (string) password			 		::	Person password;
+			*    - (string) age_group			 		::	Person age group ('Minor', 'NotAdult' or 'Adult');
+			*    - (string) consent_provided_for_minor 	::	Person consent provided for minor ('Granted', 'Denied' or 'NotRequired').
 			*
 			*		RETURN
 			*	   - (int) 0 | 1  ::  Returns 0 if the person was successfully created. Otherwise, returns 1. 
@@ -45,7 +46,8 @@
 				<Param name="office_location" type="string" required="false" doc="Person office location"/>
 				<Param name="domain" type="string" required="false" doc="Person email domain"/>
 				<Param name="password" type="string" required="false" doc="Person password"/>
-				<Param name="age_group" type="string" required="true" doc="Person age group"/>
+				<Param name="age_group" type="string" required="true" doc="Person age group ('Minor', 'NotAdult' or 'Adult')"/>
+				<Param name="consent_provided_for_minor" type="string" required="true" doc="Person consent provided for minor ('Granted', 'Denied' or 'NotRequired')"/>
 			</Params>
 			<Return type="int" doc="0 if the person was successfully created; 1, otherwise."/>
 
