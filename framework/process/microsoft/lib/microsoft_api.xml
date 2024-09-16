@@ -815,10 +815,10 @@
 
 		<!--   ________________________________________________________________________________________________
 			*
-			*			T E A M S  > C H A N N E L S
+			*			T E A M S  >  C H A N N E L S
 			*  ________________________________________________________________________________________________
 		-->
-		<!--<Function name="getTeamChannels" doc="Gets a group given its id or uid.">
+		<Function name="getTeamChannels" doc="Gets the channels of a group, given group id or uid.">
 			<Params>
 				<Param name="id" type="string" required="false" doc="Group id"/>
 				<Param name="uid" type="string" required="false" doc="Group uid"/>
@@ -834,12 +834,31 @@
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
-				
 				<Return>
 					<Var name="channels"/>
 				</Return>
 			</Begin>
-		</Function>-->
+		</Function>
+		<Function name="addChannels" doc="Gets a group given its id or uid.">
+			<Params>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>
+			</Params>
+			<Return type="multiple" doc="Set of channels records."/>
 
+			<Begin>
+				<Var name="channels">
+					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="_method">listChannels</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</DataAccess>
+				</Var>
+				<Return>
+					<Var name="channels"/>
+				</Return>
+			</Begin>
+		</Function>
 	</Library>
 </Node>
