@@ -826,7 +826,7 @@
 			<Return type="multiple" doc="Set of channels records."/>
 
 			<Begin>
-				<Var name="channels">
+				<Var name="result">
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">team</Param>
 						<Param name="_method">listChannels</Param>
@@ -835,28 +835,59 @@
 					</DataAccess>
 				</Var>
 				<Return>
-					<Var name="channels"/>
+					<Var name="result"/>
 				</Return>
 			</Begin>
 		</Function>
-		<Function name="addChannels" doc="Gets a group given its id or uid.">
+		<Function name="addTeamChannel" doc="Creates a channel on a team.">
 			<Params>
 				<Param name="id" type="string" required="false" doc="Group id"/>
 				<Param name="uid" type="string" required="false" doc="Group uid"/>
+				<Param name="display_name" type="string" required="true" doc="Channel name"/>			
+				<Param name="description" type="string" required="true" doc="Channel description"/>
+				<Param name="membership_type" type="string" required="true" doc="Channel membersip type ('standard' or 'private')"/>
+				<Param name="is_favorite_by_default" type="bool" required="true" doc="Is favorite by default?"/>
+			</Params>
+			<Return type="int" doc="0 if the group was successfully created; 1, otherwise."/>
+
+			<Begin>
+				<Var name="result">
+					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="_method">addChannel</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="display_name"><Var name="PARAMS" key="display_name"/></Param>
+						<Param name="description"><Var name="PARAMS" key="description"/></Param>
+						<Param name="membership_type"><Var name="PARAMS" key="membership_type"/></Param>
+						<Param name="is_favorite_by_default"><Var name="PARAMS" key="is_favorite_by_default"/></Param>
+					</DataAccess>
+				</Var>
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+		<Function name="deleteTeamChannel" doc="Gets the channels of a team, given group id or uid.">
+			<Params>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
+				<Param name="id" type="string" required="true" doc="Channel id"/>
 			</Params>
 			<Return type="multiple" doc="Set of channels records."/>
 
 			<Begin>
-				<Var name="channels">
+				<Var name="result">
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
 						<Param name="_entity">team</Param>
-						<Param name="_method">listChannels</Param>
+						<Param name="_method">deleteChannel</Param>
+						<Param name="id_group"><Var name="PARAMS" key="id_group"/></Param>
+						<Param name="uid_group"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="id"><Var name="PARAMS" key="id"/></Param>
-						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
 					</DataAccess>
 				</Var>
 				<Return>
-					<Var name="channels"/>
+					<Var name="result"/>
 				</Return>
 			</Begin>
 		</Function>
