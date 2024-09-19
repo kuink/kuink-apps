@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.016.000">
+<Application name="framework" version="2.017.000">
 	<!-- 
-		v2.016.000
-		*	@date:		2024.09.18
+		v2.017.000
+		*	@date:		2024.09.19
 		*	@author:	jose.rebelo
-		*	@comment:	Feature: framework > microsoft > api | Add updateTeamChannel and getTeamChannel and deleteTeamChannel functions.
+		*	@comment:	Feature: framework > microsoft > api | Add addTeamChannelMember and getTeamChannelMembers functions.
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />
