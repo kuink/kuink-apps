@@ -822,6 +822,7 @@
 			<Params>
 				<Param name="id" type="string" required="false" doc="Group id"/>
 				<Param name="uid" type="string" required="false" doc="Group uid"/>
+				<Param name="_attributes" type="string" required="false" doc="Group attributes to get (separated by a comma)"/>
 			</Params>
 			<Return type="multiple" doc="Set of channels records."/>
 
@@ -832,6 +833,7 @@
 						<Param name="_method">listChannels</Param>
 						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
 					</DataAccess>
 				</Var>
 				<Return>
@@ -844,6 +846,7 @@
 				<Param name="id_group" type="string" required="false" doc="Group id"/>
 				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
 				<Param name="id" type="string" required="true" doc="Channel id"/>
+				<Param name="_attributes" type="string" required="false" doc="Group attributes to get (separated by a comma)"/>
 			</Params>
 			<Return type="single" doc="The corresponding 'channel' record."/>
 
@@ -855,6 +858,7 @@
 						<Param name="id_group"><Var name="PARAMS" key="id_group"/></Param>
 						<Param name="uid_group"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
 					</DataAccess>
 				</Var>
 				<Return>
@@ -893,7 +897,7 @@
 				</Return>
 			</Begin>
 		</Function>
-		<Function name="deleteTeamChannel" doc="Deketes the channels of a team, given group id or uid.">
+		<Function name="deleteTeamChannel" doc="Deletes the channels of a team, given group id or uid.">
 			<Params>
 				<Param name="id_group" type="string" required="false" doc="Group id"/>
 				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
@@ -914,6 +918,27 @@
 				<Return>
 					<Var name="result"/>
 				</Return>
+			</Begin>
+		</Function>
+		<Function name="deleteAllChannel" doc="Deletes all the channels of a team, given group id or uid.">
+			<Params>
+				<Param name="id" type="string" required="false" doc="Group id"/>
+				<Param name="uid" type="string" required="false" doc="Group uid"/>
+			</Params>
+			<Begin>
+				<Var name="allChannels">
+					<Call function="getAllTeamChannels">
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="uid"><Var name="PARAMS" key="uid"/></Param>
+					</Call>
+				</Var>
+				<ForEach var="allChannels" item="channel">
+					<Call function="deleteTeamChannel">
+						<Param name="id_group"><Var name="PARAMS" key="id"/></Param>
+						<Param name="uid_group"><Var name="PARAMS" key="uid"/></Param>
+						<Param name="id"><Var name="channel" key="id"/></Param>
+					</Call>
+				</ForEach>
 			</Begin>
 		</Function>
 		<Function name="updateTeamChannel" doc="Updates a channel on a team.">
@@ -966,7 +991,7 @@
 				</Return>
 			</Begin>
 		</Function>
-		<Function name="addTeamChannelMember" doc="Gets the members of a team chennel, given group id or uid and channel id.">
+		<Function name="addTeamChannelMember" doc="Adds a member to a team chennel, given group id or uid and channel id.">
 			<Params>
 				<Param name="id_group" type="string" required="false" doc="Group id"/>
 				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
@@ -993,6 +1018,38 @@
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
 						<Param name="domain"><Var name="PARAMS" key="domain"/></Param>
 						<Param name="roles"><Var name="roles"/></Param>
+					</DataAccess>
+				</Var>
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+		<Function name="removeTeamChannelMember" doc="Removes a member of a team chennel, given group id or uid and channel id.">
+			<Params>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
+				<Param name="id" type="string" required="true" doc="Channel id"/>
+				<Param name="id_person" type="string" required="false" doc="Person id"/>
+				<Param name="uid_person" type="string" required="false" doc="Person uid"/>
+				<Param name="domain" type="string" required="false" doc="Person email domain"/>
+			</Params>
+			<Return type="int" doc="0 if the member was successfully added; 1, otherwise."/>
+
+			<Begin>
+				<Var name="roles"><Set/></Var>
+				<Var name="roles" key=""><Var name="PARAMS" key="role"/></Var>
+
+				<Var name="result">
+					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="_method">removeChannelMember</Param>
+						<Param name="id_group"><Var name="PARAMS" key="id_group"/></Param>
+						<Param name="uid_group"><Var name="PARAMS" key="uid_group"/></Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="id_user"><Var name="PARAMS" key="id_person"/></Param>
+						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
+						<Param name="domain"><Var name="PARAMS" key="domain"/></Param>
 					</DataAccess>
 				</Var>
 				<Return>
