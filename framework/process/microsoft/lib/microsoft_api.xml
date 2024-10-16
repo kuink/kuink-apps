@@ -846,10 +846,11 @@
 				<Param name="id_group" type="string" required="false" doc="Group id"/>
 				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
 				<Param name="id" type="string" required="true" doc="Channel id"/>
+				<!--<Param name="display_name" type="string" required="false" doc="Channel name"/>			-->
 				<Param name="_attributes" type="string" required="false" doc="Group attributes to get (separated by a comma)"/>
 			</Params>
 			<Return type="single" doc="The corresponding 'channel' record."/>
-
+					<!-- Add get by display name -->
 			<Begin>
 				<Var name="result">
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
@@ -858,6 +859,7 @@
 						<Param name="id_group"><Var name="PARAMS" key="id_group"/></Param>
 						<Param name="uid_group"><Var name="PARAMS" key="uid_group"/></Param>
 						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<!--<Param name="display_name"><Var name="PARAMS" key="display_name"/></Param>-->
 						<Param name="_attributes"><Var name="PARAMS" key="_attributes"/></Param>
 					</DataAccess>
 				</Var>
@@ -877,7 +879,7 @@
 				<Param name="members" type="set" required="false" doc="In case of 'private' or 'shared' channels, a set of associative arrays of members and corresponding roles"/>
 			</Params>
 			<Return type="int" doc="0 if the group was successfully created; 1, otherwise."/>
-
+			
 			<Begin>
 				<Var name="result">
 					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
@@ -945,8 +947,8 @@
 			<Params>
 				<Param name="id_group" type="string" required="false" doc="Group id"/>
 				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
-				<Param name="id" type="string" required="true" doc="Channel id"/>
-				<Param name="display_name" type="string" required="false" doc="Channel name"/>			
+				<Param name="id" type="string" required="false" doc="Channel id"/>
+				<Param name="display_name" type="string" required="false" doc="Channel name"/>	
 				<Param name="description" type="string" required="false" doc="Channel description"/>
 			</Params>
 			<Return type="int" doc="0 if the group was successfully created; 1, otherwise."/>
@@ -1050,6 +1052,83 @@
 						<Param name="id_user"><Var name="PARAMS" key="id_person"/></Param>
 						<Param name="uid_user"><Var name="PARAMS" key="uid_person"/></Param>
 						<Param name="domain"><Var name="PARAMS" key="domain"/></Param>
+					</DataAccess>
+				</Var>
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function name="getAllTeamAssignments" doc="Gets the assignments of a team, given group id or uid.">
+			<Params>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
+			</Params>
+			<Return type="set" doc="Set of team assignments"/>
+
+			<Begin>
+
+				<Var name="result">
+					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="_method">listTeamAssignments</Param>
+						<Param name="id_group"><Var name="PARAMS" key="id_group"/></Param>
+						<Param name="uid_group"><Var name="PARAMS" key="uid_group"/></Param>
+					</DataAccess>
+				</Var>
+				<Return>
+					<Var name="result" dump="true"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function name="addTeamAssignment" doc="Gets the assignments of a team, given group id or uid.">
+			<Params>
+				<Param name="id_group" type="string" required="false" doc="Group id"/>
+				<Param name="uid_group" type="string" required="false" doc="Group uid"/>
+				<Param name="display_name" type="string" required="true" doc="Name of assignment."/>
+				<Param name="instructions" type="text" required="false" doc="Assignment instructions for the assignment using plain text or HTML."/>
+				<Param name="recipients" type="set" required="false" doc="Assignment instructions for the assignment using plain text or HTML."/>
+				<Param name="max_points" type="int" required="false" doc="Max value of point scale."/>
+				<Param name="allow_late_submissions" type="bool" required="true" doc="True if students can send submission after the due date."/>
+				<Param name="due_datetime" type="datetime" required="true" doc="Date assignment is due."/>
+				<Param name="close_datetime" type="datetime" required="false" doc="Date when the assignment is closed for submissions. This is an optional field that can be null if the assignment doesn't allow late submissions. If specified, it must be greater than or equal to the dueDateTime."/>
+				<Param name="assign_datetime" type="datetime" required="false" doc="Date to publish the assignment to students. Can't be edited when the assignment is published."/>
+				<Param name="allow_students_to_add_resources_to_submission" type="bool" required="true" doc="True if students can add their own resources to a submission. False if they can only modify resources added by the teacher."/>
+				<Param name="added_student_action" type="string" required="false" doc="Actions for students added after the assignment publication date ('none' or 'assignIfOpen')"/>
+				<!--<Param name="notification_channel_id" type="string" required="false" doc=""/>-->
+				<!--<Param name="add_to_calendar_action" type="string" required="false" doc=""/>-->
+				<!--<Param name="publish_now" type="bool" required="true" doc="True if the assignment is intended to be published now. False if it should remain as 'draft'."/>-->
+			</Params>
+			<Return type="int" doc="0 if the assignment was successfully added and published (if required); 1, otherwise."/>
+
+			<Begin>
+				<Var name="PARAMS" dump="true">
+					<UtilsLib method="filterNotNull">
+						<Param><Var name="PARAMS"/></Param>
+					</UtilsLib>
+				</Var>
+				
+				<Var name="result">
+					<DataAccess method="execute" datasource="microsoftAPIAdminSDK">
+						<Param name="_entity">team</Param>
+						<Param name="_method">addTeamAssignment</Param>
+						<Param name="id_group"><Var name="PARAMS" key="id_group"/></Param>
+						<Param name="uid_group"><Var name="PARAMS" key="uid_group"/></Param>
+						<Param name="display_name"><Var name="PARAMS" key="display_name"/></Param>
+						<Param name="instructions"><Var name="PARAMS" key="instructions"/></Param>
+						<Param name="recipients"><Var name="PARAMS" key="recipients"/></Param>
+						<Param name="max_points"><Var name="PARAMS" key="max_points"/></Param>
+						<Param name="allow_late_submissions"><Var name="PARAMS" key="allow_late_submissions"/></Param>
+						<Param name="due_datetime"><Var name="PARAMS" key="due_datetime"/></Param>
+						<Param name="close_datetime"><Var name="PARAMS" key="close_datetime"/></Param>
+						<Param name="assign_datetime"><Var name="PARAMS" key="assign_datetime"/></Param>
+						<Param name="allow_students_to_add_resources_to_submission"><Var name="PARAMS" key="allow_students_to_add_resources_to_submission"/></Param>
+						<Param name="added_student_action"><Var name="PARAMS" key="added_student_action"/></Param>
+						<!--<Param name="notification_channel_id"><Var name="PARAMS" key="notification_channel_id"/></Param>-->
+						<!--<Param name="add_to_calendar_action"><Var name="PARAMS" key="add_to_calendar_action"/></Param>-->
+						<!--<Param name="publish_now"><Var name="PARAMS" key="publish_now"/></Param>-->
 					</DataAccess>
 				</Var>
 				<Return>
