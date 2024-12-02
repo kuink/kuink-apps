@@ -24,7 +24,7 @@
 			*   mainScreen  |  Main page of capabilities management. Shows a list of capabilities, according to the defined search criteria.
 			* 
 		-->
-    <Screen name="mainScreen" title="capabilitiesManagement">
+    <Screen name="mainScreen" title="capabilities">
       <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       <Menu name="add" label="add" icon="plus" action="add"/>
@@ -44,14 +44,14 @@
       
       <!-- Capabilities -->
       <HtmlContainer name="break"/>
-      <Grid name="capabilitiesGrid" pageable="true" pagesize="50" pagingaction="search">
+      <Grid name="capabilitiesGrid" pageable="true" pagesize="100" pagingaction="search">
         <Template>
           <Columns>
-            <Column name="id"/>
+            <Column name="id" headeralign="center" horizontalalign="center"/>
             <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" visible="false"/>
             <Column name="name"/>
             <Column name="code"/>
-            <Column name="description" colsize="3"/>
+            <Column name="description" colsize="4"/>
             <Column name="is_global" headeralign="center" horizontalalign="center">
 							<Formatter name="Icon" size="18" method="simpleIcon">
 								<Param name="0">times-circle-o</Param>

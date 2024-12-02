@@ -24,7 +24,7 @@
 			*   mainScreen  |  Main page of allocations management. Shows a list of allocations, according to the defined search criteria.
 			* 
 		-->
-    <Screen name="mainScreen" title="allocationsManagement">
+    <Screen name="mainScreen" title="allocations">
       <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       <Menu name="add" label="add" icon="plus" action="add"/>
@@ -45,18 +45,18 @@
 
       <!-- Allocations -->
       <HtmlContainer name="break"/>
-      <Grid name="allocationsGrid" pageable="true" pagesize="50" pagingaction="search">
+      <Grid name="allocationsGrid" pageable="true" pagesize="100" pagingaction="search">
         <Template>
           <Columns>
-            <Column name="id"/>
-            <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+            <Column name="id" headeralign="center" horizontalalign="center"/>
+            <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" visible="false"/>
             <Column name="id_person_group" datasource="call:framework,fw.person.group,api,getAll" bindid="id" bindvalue="code"/>
             <Column name="person_display_name" label="id_person">
               <Formatter name="Separator" method="pipe"/>
             </Column>
             <Column name="id_person" inline="true"/>
             <Column name="id_role" datasource="call:framework,role,api,getAll" bindid="id" bindvalue="code"/>
-            <Column name="_modification">
+            <Column name="_modification" colsize="2">
               <Formatter name="DateTime" method="shortDateTime"/>
               <Formatter name="Separator" method="space"/>
               <Formatter name="Separator" method="pipe"/>
@@ -64,7 +64,7 @@
             </Column>
             <Column name="_id_updater" inline="true"/>
           </Columns>
-          <Actions separator="true">
+          <Actions separator="true" headeralign="center" horizontalalign="center">
             <Action name="edit" icon="edit" actionvalue="id"/>
             <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
           </Actions>
@@ -88,7 +88,7 @@
         <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
         <Select name="id_role" datasource="call:framework,role,api,getAll" datasource-params="id_company=$id_company,is_active=1" bindid="id" bindvalue="code" required="true"/>
         <Select name="id_person_group" datasource="call:framework,fw.person.group,api,getAllByCompany" datasource-params="id_company=$id_company,is_active=1" bindid="id" bindvalue="name"/>
-        <Select name="id_person" datasource="call:framework,fw.person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="id,display_name" searchable="dynamic" datasource-params="text,pagenum"/>
+        <Select name="id_person" datasource="call:framework,fw.person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="id,display_name" searchable="dynamic" datasource-params="text,pagenum" datasource-initial="call:gecol.core,person,api,getSimple"/>
         
         <ButtonGroup>
           <Button name="save" type="save" action="save"/>

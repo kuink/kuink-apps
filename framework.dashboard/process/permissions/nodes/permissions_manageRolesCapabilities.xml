@@ -24,7 +24,7 @@
 			*   mainScreen  |  Main page of roles_capabilities management. Shows a list of assignments, according to the defined search criteria.
 			* 
 		-->
-    <Screen name="mainScreen" title="rolesCapabilitiesManagement">
+    <Screen name="mainScreen" title="rolesCapabilities">
       <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       <Menu name="add" label="add" icon="plus" action="add"/>
@@ -44,10 +44,10 @@
 
       <!-- Roles_Capabilities -->
       <HtmlContainer name="break"/>
-      <Grid name="rolesCapabilitiesGrid" pageable="true" pagesize="50" pagingaction="search">
+      <Grid name="rolesCapabilitiesGrid" pageable="true" pagesize="100" pagingaction="search">
         <Template>
           <Columns>
-            <Column name="id"/>
+            <Column name="id" headeralign="center" horizontalalign="center"/>
             <Column name="id_role" datasource="call:framework,role,api,getAll" bindid="id" bindvalue="code"/>
             <Column name="id_capability" datasource="call:framework,capability,api,getAll" bindid="id" bindvalue="code"/>
             <Column name="_modification" colsize="2">
@@ -58,7 +58,7 @@
             </Column>
             <Column name="_id_updater" inline="true"/>
           </Columns>
-          <Actions separator="true">
+          <Actions separator="true" headeralign="center" horizontalalign="center">
             <Action name="edit" icon="edit" actionvalue="id"/>
             <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
           </Actions>

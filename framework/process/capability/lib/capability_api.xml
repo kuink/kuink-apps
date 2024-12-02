@@ -733,12 +733,8 @@
               OR
               . It's an update and it exists another one with the given code;
             -->
-            <If condition="$capability->id != ''">
-              <Then>
-                <If condition="($PARAMS->is_insert == 1) || ($PARAMS->is_insert == 0 &amp;&amp; $capability->id != $PARAMS->id)">
-                  <Then><Var name="error">-2</Var></Then>
-                </If>
-              </Then>
+            <If condition="($capability->id != '') &amp;&amp; (($PARAMS->is_insert == 1) || ($PARAMS->is_insert == 0 &amp;&amp; $capability->id != $PARAMS->id))">
+              <Then><Var name="error">-2</Var></Then>
             </If>
           </Else>
         </If>

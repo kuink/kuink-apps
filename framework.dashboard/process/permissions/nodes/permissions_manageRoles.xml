@@ -24,7 +24,7 @@
 			*   mainScreen  |  Main page of roles management. Shows a list of roles, according to the defined search criteria.
 			* 
 		-->
-    <Screen name="mainScreen" title="rolesManagement">
+    <Screen name="mainScreen" title="roles">
       <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       <Menu name="add" label="add" icon="plus" action="add"/>
@@ -44,13 +44,13 @@
 
       <!-- Roles -->
       <HtmlContainer name="break"/>
-      <Grid name="rolesGrid" pageable="true" pagesize="50" pagingaction="search">
+      <Grid name="rolesGrid" pageable="true" pagesize="100" pagingaction="search">
         <Template>
           <Columns>
             <Column name="id" headeralign="center" horizontalalign="center"/>
-            <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" colsize="1"/>
-            <Column name="name"/>
-            <Column name="code"/>
+            <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" visible="false"/>
+            <Column name="name" colsize="5"/>
+            <Column name="code" colsize="5"/>
             <Column name="is_active" headeralign="center" horizontalalign="center">
               <Formatter name="Icon" size="18">
 								<Param name="0">error.png</Param>

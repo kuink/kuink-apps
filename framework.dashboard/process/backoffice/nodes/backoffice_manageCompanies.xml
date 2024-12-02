@@ -24,7 +24,7 @@
       *		mainScreen  |  Main page of companies management. Shows a list of companies, allowing to edit their details.
       *
     -->
-    <Screen name="mainScreen" title="companiesManagement">
+    <Screen name="mainScreen" title="companies">
       <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       

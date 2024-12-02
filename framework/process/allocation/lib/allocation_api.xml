@@ -59,6 +59,7 @@
             <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
             <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
             <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="is_insert">1</Param>
           </Call>
         </Var>
 
@@ -391,10 +392,13 @@
       <Begin>
         <!-- Validates the params of the allocation -->
         <Var name="error">
-          <Call library="framework,allocation,api" function="validateAllocation">
+          <Call function="validateAllocation">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
             <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+            <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
             <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
             <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="is_insert">0</Param>
           </Call>
         </Var>
 
@@ -405,6 +409,7 @@
               <Param name="_entity">fw_allocation</Param>
               <Param name="id"><Var name="PARAMS" key="id"/></Param>
               <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+              <Param name="id_person_group"><Var name="PARAMS" key="id_person_group"/></Param>
               <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
               <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
               <Param name="_id_updater"><Var name="USER" key="id"/></Param>
@@ -446,10 +451,12 @@
 			*		validateAllocation  |  Validates the parameters of an allocation.
 			*
 			*		PARAMS
+			*    - (int) id               ::  Allocation's id;
 			*    - (int) id_person        ::  Person's id;
 			*    - (int) id_person_group  ::  Group's id;
 			*    - (int) id_role          ::  Role's id;
-			*    - (int) id_company       ::  Company's id.
+			*    - (int) id_company       ::  Company's id;
+      *    - (int) is_insert        ::  1 if it's a new allocation; 0 if it's an update.
 			*
 			*		RETURN
 			*    - (int) 0  ::  Returns 0 if all the params are valid.
@@ -461,10 +468,12 @@
     -->
     <Function scope="private" name="validateAllocation" doc="Validates the parameters of an allocation.">
       <Params>
+        <Param name="id" type="int" required="false" doc="Allocation's id"/>
         <Param name="id_person" type="int" required="false" doc="Person's id"/>
         <Param name="id_person_group" type="int" required="false" doc="Group's id"/>
         <Param name="id_role" type="int" required="true" doc="Role's id"/>
         <Param name="id_company" type="int" required="true" doc="Company's id"/>
+        <Param name="is_insert" type="int" required="true" doc="1 if it's a new allocation; 0 if it's an update"/>
       </Params>
 			<Return type="int" doc="0 if all the params are valid."/>
       <Errors>
@@ -525,7 +534,7 @@
         </If>
         
         <!-- Returns -3 if the role was already assigned to the person/group -->  
-        <If condition="$allocation->id != ''">
+        <If condition="($allocation->id != '') &amp;&amp; (($PARAMS->is_insert == 1) || ($PARAMS->is_insert == 0 &amp;&amp; $allocation->id != $PARAMS->id))">
           <Then><Var name="error">-3</Var></Then>
         </If>
 
