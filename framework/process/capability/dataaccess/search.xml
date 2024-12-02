@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of capabilities that meet the given search criteria. ]]>
+    <![CDATA[ Gets a list of capabilities that meet the given criteria. Can be filtered by company, global and/or active. ]]>
   </Doc>
 	<Params>
-		<Param name="id" type="int" required="false" doc="Capability's id"/>
-		<Param name="name" type="text" required="false" doc="Capability's name"/>
-		<Param name="code" type="text" required="false" doc="Capability's code"/>
-		<Param name="is_global" type="int" required="false" doc="1 to filter by the capabilities that exists for all companies"/>
+		<Param name="filter" type="text" required="true" doc="The filter to apply (all, company or global)"/>
+		<Param name="text" type="text" required="false" doc="Capability's id, name or code"/>
+		<Param name="id_company" type="int" required="false" doc="Company where the capability are applicable"/>
+		<Param name="is_active" type="int" required="false" doc="1 if the capability is active; 0, otherwise"/>
 	</Params>
+	
 	<Body>
 		<SqlPaginated>
 			<XSql>
@@ -28,29 +29,40 @@
 				</XFrom>
 				<XWhere>
 					<XCondition><![CDATA[ 1 = 1 ]]></XCondition>
-					<XCondition optional="id">
+					<XCondition optional="text">
+	          <![CDATA[
+							AND (
+								c.id LIKE '{param->text}'
+								OR c.code LIKE '{param->text}'
+								OR c.name LIKE '{param->text}'
+							)  
+						]]>
+	        </XCondition>
+					<XCondition condition="$filter == 'all'">
 						<![CDATA[ 
-							AND c.id = {param->id}
+							AND (
+								c.id_company = {param->id_company}
+								OR c.is_global = 1
+							)
+							AND c.is_active = {param->is_active}
 						]]>
 					</XCondition>
-					<XCondition optional="name">
+					<XCondition condition="$filter == 'company'">
 						<![CDATA[ 
-							AND c.name LIKE {param->name}
+							AND c.id_company = {param->id_company}
+							AND c.is_global = 0
+							AND c.is_active = {param->is_active}
 						]]>
 					</XCondition>
-					<XCondition optional="code">
+					<XCondition condition="$filter == 'global'">
 						<![CDATA[ 
-							AND c.code LIKE {param->code}
-						]]>
-					</XCondition>
-					<XCondition optional="is_global">
-						<![CDATA[ 
-							AND c.is_global = {param->is_global}
+							AND c.is_global = 1
+							AND c.is_active = {param->is_active}
 						]]>
 					</XCondition>
 				</XWhere>
 				<XOrderBy>
-					<XOrder><![CDATA[ c.code ASC, c.name ASC ]]></XOrder>
+					<XOrder><![CDATA[ c.name ASC, c.code ASC ]]></XOrder>
 				</XOrderBy>
 			</XSql>
 		</SqlPaginated>

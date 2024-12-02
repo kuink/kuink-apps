@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of the capabilities that a role have, given its code. ]]>
+    <![CDATA[ Gets a list of all the capabilities that a role have (always in the context of a company). ]]>
 	</Doc>
 	<Params>
-		<Param name="code_role" type="text" required="true" doc="Role's code"/>
+		<Param name="code" type="text" required="true" doc="Role's code"/>
+		<Param name="id_company" type="int" required="true" doc="Company's id"/>
 	</Params>
+	
 	<Body>
-		<SqlPaginated>
+		<Sql>
 			<XSql>
 				<XSelect>
 					<XField>
@@ -29,6 +31,8 @@
 					<XCondition>
 						<![CDATA[ 
 							r.code = '{param->code_role}'
+							AND r.id_company = {param->id_company}
+							AND (c.id_company = {param->id_company} OR c.is_global = 1)
 						]]>
 					</XCondition>
 				</XWhere>
@@ -36,6 +40,6 @@
 					<XOrder><![CDATA[ c.code ASC ]]></XOrder>
 				</XOrderBy>
 			</XSql>
-		</SqlPaginated>
+		</Sql>
 	</Body>
 </Method>

@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+    <![CDATA[ Permissions Management  >  Capabilities Management  ::  Allows to view, edit and delete capabilities of a company. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+  <Libraries/>
+  <Params/>
+  
+  
+  
+  
+	<!--	__________________________________________________________________________________________________________________________
+		*
+		*
+		*			  S C R E E N S    ::    mainScreen  |  detailsScreen
+		*
+		*		__________________________________________________________________________________________________________________________
+	-->
+  <Screens>
+    <!--
+			*
+			*   mainScreen  |  Main page of capabilities management. Shows a list of capabilities, according to the defined search criteria.
+			* 
+		-->
+    <Screen name="mainScreen" title="capabilitiesManagement">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="back"/>
+      <Menu name="add" label="add" icon="plus" action="add"/>
+
+      <!-- Search -->
+      <Form name="searchForm" persist="true">
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Text name="text" label="searchText"/>
+        <Checkbox name="is_global"/>
+        <Checkbox name="is_active"/>
+       
+        <ButtonGroup>
+          <Button name="search" type="search" action="search"/>
+          <Button name="add" type="add" action="add"/>
+        </ButtonGroup>
+      </Form>
+      
+      <!-- Capabilities -->
+      <HtmlContainer name="break"/>
+      <Grid name="capabilitiesGrid" pageable="true" pagesize="50" pagingaction="search">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" visible="false"/>
+            <Column name="name"/>
+            <Column name="code"/>
+            <Column name="description" colsize="3"/>
+            <Column name="is_global" headeralign="center" horizontalalign="center">
+							<Formatter name="Icon" size="18" method="simpleIcon">
+								<Param name="0">times-circle-o</Param>
+								<Param name="1">check-circle</Param>
+							</Formatter>
+						</Column>
+            <Column name="is_active" headeralign="center" horizontalalign="center">
+							<Formatter name="Icon" size="18">
+								<Param name="0">error.png</Param>
+								<Param name="1">success.png</Param>
+							</Formatter>
+						</Column>
+          </Columns>
+          <Actions separator="true" headeralign="center" horizontalalign="center">
+            <Action name="edit" icon="edit" actionvalue="id"/>
+            <Action name="duplicate" icon="clone" actionvalue="id"/>
+            <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+
+    <!--
+			*
+			*  detailsScreen  |  Allows to view/edit a capability's details.
+			* 
+		-->    
+    <Screen name="detailsScreen" title="details">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="search"/>
+
+      <!-- Details -->
+      <Form name="detailsForm">
+        <Static name="id"/>
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" required="false"/>
+        <Text name="name" required="true"/>
+        <Text name="code" required="true"/>
+        <Text name="description" required="true"/>
+        <Checkbox name="is_global" required="false"/>
+        <Checkbox name="is_active" required="true"/>
+
+        <ButtonGroup>
+          <Button name="save" type="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  A C T I O N S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
+  <Actions>
+    <!--
+			*
+			*   init  |  Redirects to the main page.
+			*
+		-->
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+
+
+    <!--
+			*
+			*   search  |  Configuration of mainScreen, according to the defined search criteria.
+			*
+		-->
+    <Action name="search" screen="mainScreen">
+      <!-- Sets form's data -->
+      <Var name="defaultData" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Var name="defaultData" key="is_global">1</Var>
+      <Var name="defaultData" key="is_active">1</Var>
+			<Control method="setDefaultData" object="searchForm">
+				<Param><Var name="defaultData"/></Param>
+			</Control>
+      
+      <!-- Gets current search criteria -->
+      <Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
+
+      <!-- Gets capabilities' search results -->
+      <Var name="capabilities">
+        <Call library="framework,capability,api" function="search">
+          <Param name="text"><Var name="currentData" key="text"/></Param>
+          <Param name="is_global"><Var name="currentData" key="is_global"/></Param>
+          <Param name="is_active"><Var name="currentData" key="is_active"/></Param>
+          <Param name="id_company"><Var name="currentData" key="id_company"/></Param>
+          <Param name="pageNum"><Control method="getCurrentPage" object="capabilitiesGrid"/></Param>
+          <Param name="pageSize"><Control method="getPageSize" object="capabilitiesGrid"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="capabilitiesGrid">
+        <Param><Var name="capabilities"/></Param>
+      </Control>
+      <Control method="bind" object="break">
+				<Param><Lang key="break"/></Param>
+			</Control>
+    </Action>
+
+  
+    <!--
+			*
+			*   add  |  Configuration of detailsScreen, to create a new capability.
+			*
+		-->
+    <Action name="add" screen="detailsScreen"> 
+      <!-- Clears current capability -->
+      <Var name="idCapability" process="true"><Null/></Var>
+      
+      <!-- Sets the company to the current one -->
+      <Var name="capability" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="capability"/></Param>
+      </Control>
+    </Action>
+    
+    
+    <!--
+			*
+			*   delete  |  Deletes a capability.
+			*
+		-->
+    <Action name="delete">
+      <!-- Deletes the current capability from the system -->
+      <Call library="framework,capability,api" function="delete">
+        <Param name="id"><ActionValue/></Param>
+      </Call>
+
+      <!-- Redirects to main page -->
+      <Action name="search"/>
+    </Action>
+    
+    
+    <!--
+			*
+			*   duplicate  |  Duplicates a capability, allowing to edit its details (to create a new one).
+			*
+		-->
+    <Action name="duplicate" screen="detailsScreen">
+      <!-- Clears current capability -->
+      <Var name="idCapability" process="true"><Null/></Var>
+      
+      <!-- Gets capability's data -->
+      <Var name="capability">
+        <Call library="framework,capability,api" function="getById">
+          <Param name="id"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Var name="capability" key="id"><Null/></Var>
+      <Var name="capability" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="capability"/></Param>
+      </Control>
+    </Action>
+
+
+    <!--
+			*
+			*   edit  |  Configuration of detailsScreen, to edit a capability.
+			*
+		-->
+    <Action name="edit" screen="detailsScreen">
+      <!-- Sets current capability -->
+      <Var name="idCapability" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="idCapability" process="true"/></Param>
+        </IsNull>
+      </Var>
+
+      <!-- Gets capability's data -->
+      <Var name="capability">
+        <Call library="framework,capability,api" function="getById">
+          <Param name="id"><Var name="idCapability" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="capability"/></Param>
+      </Control>
+    </Action>
+
+
+    <!--
+			*
+			*   save [detailsScreen]  |  Saves a capability's details or creates a new one.
+			*
+		-->
+    <Action name="save">
+      <!-- Checks if the capability is set as global:
+        . If so, clears the company;
+      -->
+      <If condition="$POSTDATA->id_company != '' &amp;&amp; $POSTDATA->is_global == 1">
+        <Then><Var name="POSTDATA" key="id_company">0</Var></Then>
+      </If>
+            
+      <!-- Saves a capability's details, accordingly:
+        . Creates a new capability;
+        OR
+        . Updates the current one;
+      -->
+      <If condition="@idCapability == ''">
+        <Then>
+          <Var name="result">
+            <Call library="framework,capability,api" function="add">
+              <Param name="name"><Var name="POSTDATA" key="name"/></Param>
+              <Param name="code"><Var name="POSTDATA" key="code"/></Param>
+              <Param name="description"><Var name="POSTDATA" key="description"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+              <Param name="is_global"><Var name="POSTDATA" key="is_global"/></Param>
+              <Param name="is_active"><Var name="POSTDATA" key="is_active"/></Param>
+            </Call>
+          </Var>
+        </Then>
+        <Else>
+          <Var name="result">
+            <Call library="framework,capability,api" function="update">
+              <Param name="id"><Var name="POSTDATA" key="id"/></Param>
+              <Param name="name"><Var name="POSTDATA" key="name"/></Param>
+              <Param name="code"><Var name="POSTDATA" key="code"/></Param>
+              <Param name="description"><Var name="POSTDATA" key="description"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+              <Param name="is_global"><Var name="POSTDATA" key="is_global"/></Param>
+              <Param name="is_active"><Var name="POSTDATA" key="is_active"/></Param>
+            </Call>  
+          </Var>
+        </Else>
+      </If>
+          
+      <!-- Checks if there were errors:
+        . If so, redirects to the edit page again;
+        . If not, redirects to main page;
+      -->
+      <If condition="$result == -1">
+        <Then>
+          <UserMessage type="error"><Lang key="capabilityAlreadyExists"/></UserMessage>
+          <Action name="edit"/>
+        </Then>
+        <Else>
+          <Action name="search"/>
+        </Else>
+      </If>
+    </Action>
+
+
+    <!--
+			*
+			*   back  |  Returns to the permissions management main page.
+			*
+		-->
+    <Action name="back">
+      <!-- Redirects to 'main' node -->
+      <RaiseEvent name="back"/>
+    </Action>
+  </Actions>
+</Node>

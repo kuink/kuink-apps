@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of allocations that meet the given search criteria. ]]>
+    <![CDATA[ Gets a list of allocations that meet the given criteria. ]]>
   </Doc>
 	<Params>
-		<Param name="id" type="int" required="false" doc="Allocation's id"/>
+		<Param name="text" type="text" required="false" doc="Allocation's id or role's id, name or code"/>
 		<Param name="id_person" type="int" required="false" doc="Person's id"/>
+		<Param name="id_person_group" type="int" required="false" doc="Group's id"/>
 		<Param name="id_role" type="int" required="false" doc="Role's id"/>
-		<Param name="id_company" type="int" required="false" doc="Company's id"/>
+		<Param name="id_company" type="int" required="true" doc="Allocation's company"/>
 	</Params>
+	
 	<Body>
 		<SqlPaginated>
 			<XSql>
@@ -16,7 +18,9 @@
 					<XField>
 						<![CDATA[ 
 							a.*,
-							p.display_name AS "person_display_name",
+							IF(a.id_person = 0, '-', a.id_person) AS "id_person",
+							IF(a.id_person = 0, '-', p.display_name) AS "person_display_name",
+							IF(a.id_person_group = 0, '-', a.id_person_group) AS "id_person_group",
 							r.code
 						]]>
 					</XField>
@@ -25,21 +29,32 @@
 					<XTable>
 						<![CDATA[ 
 							fw_allocation a
-							INNER JOIN fw_person p ON (p.id = a.id_person)
 							INNER JOIN fw_role r ON (r.id = a.id_role)
+							LEFT OUTER JOIN fw_person p ON (p.id = a.id_person)
+							LEFT OUTER JOIN fw_person_group pg ON (pg.id = a.id_person_group)
 						]]>
 					</XTable>
 				</XFrom>
 				<XWhere>
-					<XCondition><![CDATA[ 1 = 1 ]]></XCondition>
-					<XCondition optional="id">
-						<![CDATA[ 
-							AND a.id = {param->id}
+					<XCondition><![CDATA[ a.id_company = {param->id_company} ]]></XCondition>
+					<XCondition optional="text">
+	          <![CDATA[
+							AND (
+								a.id LIKE '{param->text}'
+								OR r.id LIKE '{param->text}'
+								OR r.code LIKE '{param->text}'
+								OR r.name LIKE '{param->text}'
+							)  
 						]]>
-					</XCondition>
+	        </XCondition>
 					<XCondition optional="id_person">
 						<![CDATA[ 
 							AND a.id_person = {param->id_person}
+						]]>
+					</XCondition>
+					<XCondition optional="id_person_group">
+						<![CDATA[ 
+							AND a.id_person_group = {param->id_person_group}
 						]]>
 					</XCondition>
 					<XCondition optional="id_role">
@@ -47,14 +62,9 @@
 							AND a.id_role = {param->id_role}
 						]]>
 					</XCondition>
-					<XCondition optional="id_company">
-						<![CDATA[ 
-							AND a.id_company = {param->id_company}
-						]]>
-					</XCondition>
 				</XWhere>
 				<XOrderBy>
-					<XOrder><![CDATA[ p.display_name ASC, r.code ASC ]]></XOrder>
+					<XOrder><![CDATA[ p.display_name ASC, pg.name ASC, r.code ASC ]]></XOrder>
 				</XOrderBy>
 			</XSql>
 		</SqlPaginated>

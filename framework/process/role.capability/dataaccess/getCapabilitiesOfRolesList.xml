@@ -1,12 +1,13 @@
 <?xml version='1.0'?>
 <Method>
 	<Doc>
-		<![CDATA[ Gets a list of all the capabilities that a set of roles have, given its code. ]]>
+		<![CDATA[ Gets a list of all the capabilities that a set of roles have (always in the context of a company). ]]>
 	</Doc>
 	<Params>
-		<Param name="code_role_list" type="text" required="true" doc="Roles' codes' list" />
-		<Param name="id_company" type="int" required="true" doc="Company id" />
+		<Param name="code_role_list" type="text" required="true" doc="Roles' codes' list"/>
+		<Param name="id_company" type="int" required="true" doc="Company's id"/>
 	</Params>
+	
 	<Body>
 		<Sql>
 			<XSql>
@@ -21,8 +22,8 @@
 					<XTable>
 						<![CDATA[ 
 							fw_capability c
-							INNER JOIN fw_role_capability rc on (rc.id_capability = c.id)
-							INNER JOIN fw_role r on (rc.id_role = r.id)
+							INNER JOIN fw_role_capability rc ON (rc.id_capability = c.id)
+							INNER JOIN fw_role r ON (r.id = rc.id_role)
 						]]>
 					</XTable>
 				</XFrom>

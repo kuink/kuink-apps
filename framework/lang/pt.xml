@@ -3,7 +3,9 @@
 	<Strings>
 		<!--	________________________________________________________________________________________________
 			*
-			*			G E N E R A L    ::    General strings | Actions | Fields | Records | Permissions
+			*
+			*			G E N E R A L    ::    General strings  |  Actions  |  Fields  |  Records  |  Permissions
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<String key="home"><![CDATA[ Home ]]></String>
@@ -92,90 +94,15 @@
 		<String key="_submission"><![CDATA[ Submissão ]]></String>
 		<!--  ::  Permissions  -->
 		<String key="noPermission"><![CDATA[ Não tem permissão para executar a ação. ]]></String>
-
-
-
-
-		<!--	________________________________________________________________________________________________
-			*
-			*			L O G S    ::    Log messages
-			*		________________________________________________________________________________________________
-		-->
-		<!--  ::  Company  -->
-		<String key="logCompanyInsert"><![CDATA[ fw_company | Adicionada nova empresa '{0}'. ]]></String>
-		<String key="logCompanyUpdate"><![CDATA[ fw_company | Atualizada empresa '{0}'. ]]></String>
-		<String key="logCompanyDelete"><![CDATA[ fw_company | Eliminada empresa '{0}'. ]]></String>
-		<!--  ::  Document Type  -->
-		<String key="logDocTypeInsert"><![CDATA[ fw_company | Adicionado novo tipo de documento '{0}'. ]]></String>
-		<String key="logDocTypeUpdate"><![CDATA[ fw_company | Atualizado tipo de documento '{0}'. ]]></String>
-		<String key="logDocTypeDelete"><![CDATA[ fw_company | Eliminado tipo de documento '{0}'. ]]></String>
-		<!--  ::  Entity Management  >  Data Source  -->
-		<String key="logDataSourceInsert"><![CDATA[ data_source | Adicionado utente '{0}' ao sistema '{1}'. ]]></String>
-		<String key="logDataSourceUpdate"><![CDATA[ data_source | Atualizado utente '{0}' no sistema '{1}'. ]]></String>
-		<String key="logDataSourceDelete"><![CDATA[ data_source | Eliminado utente '{0}' do sistema '{1}'. ]]></String>
-		<!--  ::  Entity Management  >  System  -->
-		<String key="logExternalSystemInsert"><![CDATA[ fw_system_entity | Adicionado novo sistema '{0}' à Gestão de Entidades. ]]></String>
-		<String key="logExternalSystemUpdate"><![CDATA[ fw_system_entity | Atualizado sistema '{0}' na Gestão de Entidades. ]]></String>
-		<String key="logExternalSystemDelete"><![CDATA[ fw_system_entity | Eliminado sistema '{0}' da Gestão de Entidades. ]]></String>
-		<!--  ::  Entity Management  >  System  >  Status Cache  -->
-		<String key="logSystemCacheInsert"><![CDATA[ fw_system_entity_status_cache | Adicionada nova relação utente-sistema '{0}'. ]]></String>
-		<String key="logSystemCacheUpdate"><![CDATA[ fw_system_entity_status_cache | Atualizada relação utente-sistema '{0}'. ]]></String>
-		<String key="logSystemCacheDelete"><![CDATA[ fw_system_entity_status_cache | Eliminada relação utente-sistema '{0}'. ]]></String>
-		<!--  ::  Jobs  -->
-		<String key="logJobInsert"><![CDATA[ fw_job | Adicionada nova profissão '{0}'. ]]></String>
-		<String key="logJobUpdate"><![CDATA[ fw_job | Atualizada profissão '{0}'. ]]></String>
-		<String key="logJobDelete"><![CDATA[ fw_job | Eliminada profissão '{0}'. ]]></String>
-		<!--  ::  Person  -->
-		<String key="logPersonInsert"><![CDATA[ fw_person | Adicionado novo utente '{0}'. ]]></String>
-		<String key="logPersonUpdate"><![CDATA[ fw_person | Atualizado utente '{0}'. ]]></String>
-		<String key="logPersonDelete"><![CDATA[ fw_person | Eliminado utente '{0}'. ]]></String>
-		<!--  ::  Person  >  Company  -->
-		<String key="logPersonCompanyInsert"><![CDATA[ fw_person_company | Adicionado utente '{0}' à empresa '{1}'. | {2} ]]></String>
-		<String key="logPersonCompanyUpdate"><![CDATA[ fw_person_company | Atualizada relação utente-empresa '{0}-{1}'. | {2} ]]></String>
-		<String key="logPersonCompanyDelete"><![CDATA[ fw_person_company | Removido utente '{0}' da empresa '{1}'. | {2} ]]></String>
-		<!--  ::  Person  >  Contacts  -->
-		<String key="logPersonContactInsert"><![CDATA[ fw_person_contact | Adicionado novo contacto '{0}' ao utente-empresa '{1}'. ]]></String>
-		<String key="logPersonContactUpdate"><![CDATA[ fw_person_contact | Atualizado contacto '{0}' do utente-empresa '{1}'. ]]></String>
-		<String key="logPersonContactDelete"><![CDATA[ fw_person_contact | Eliminado contacto '{0}' do utente-empresa '{1}'. ]]></String>
-		<!--  ::  Person  >  Contacts  >  Contact Type  -->
-		<String key="logContactTypeInsert"><![CDATA[ fw_contact_type | Adicionado novo tipo de contacto '{0} - {1}'. ]]></String>
-		<String key="logContactTypeUpdate"><![CDATA[ fw_contact_type | Atualizado tipo de contacto '{0} - {1}'. ]]></String>
-		<String key="logContactTypeDelete"><![CDATA[ fw_contact_type | Eliminado tipo de contacto '{0} - {1}'. ]]></String>
-		<!--  ::  Role  -->
-		<String key="logRoleInsert"><![CDATA[ fw_role | Adicionada função '{0}' à empresa '{1}'. ]]></String>
-		<String key="logRoleUpdate"><![CDATA[ fw_role | Atualizada função '{0}' da empresa '{1}'. ]]></String>
-		<String key="logRoleDelete"><![CDATA[ fw_role | Eliminada função '{0}' da empresa '{1}'. ]]></String>
-		<!--  ::  Role  >  Allocation  -->
-		<String key="logAllocationInsert"><![CDATA[ fw_allocation | Atribuída função '{0}' ao utente '{1}' na empresa '{2}'. | {3} ]]></String>
-		<String key="logAllocationUpdate"><![CDATA[ fw_allocation | Atualizada função '{0}' do utente '{1}' na empresa '{2}'. | {3} ]]></String>
-		<String key="logAllocationDelete"><![CDATA[ fw_allocation | Removida função '{0}' do utente '{1}' na empresa '{2}'. | {3} ]]></String>
-		<!--  ::  Role  >  Capability  -->
-		<String key="logCapabilityInsert"><![CDATA[ fw_capability | Adicionada nova capacidade '{0}'. ]]></String>
-		<String key="logCapabilityUpdate"><![CDATA[ fw_capability | Atualizada a capacidade '{0}'. ]]></String>
-		<String key="logCapabilityDelete"><![CDATA[ fw_capability | Removida a capacidade '{0}'. ]]></String>
-		<!--  ::  Role  >  Role_Capability  -->
-		<String key="logRoleCapabilityInsert"><![CDATA[ fw_role_capability | Atribuída a capacidade '{0}' à função '{1}'. | {2} ]]></String>
-		<String key="logRoleCapabilityUpdate"><![CDATA[ fw_role_capability | Atualizada a capacidade '{0}' da função '{1}'. | {2} ]]></String>
-		<String key="logRoleCapabilityDelete"><![CDATA[ fw_role_capability | Removida a capacidade '{0}' da função '{1}'. | {2} ]]></String>
-		<!--  ::  Person Group  >  Type   -->
-		<String key="logPersonGroupTypeInsert"><![CDATA[ fw_person_group_type | Adicionado novo registo '{0}'. ]]></String>
-		<String key="logPersonGroupTypeUpdate"><![CDATA[ fw_person_group_type | Atualizado registo '{0}'.  ]]></String>
-		<String key="logPersonGroupTypeDelete"><![CDATA[ fw_person_group_type | Eliminado registo '{0}'.  ]]></String>
-		<!--  ::  Person Group   -->
-		<String key="logPersonGroupInsert"><![CDATA[ fw_person_group | Adicionado novo registo '{0}'. ]]></String>
-		<String key="logPersonGroupUpdate"><![CDATA[ fw_person_group | Atualizado registo '{0}'.  ]]></String>
-		<String key="logPersonGroupDelete"><![CDATA[ fw_person_group | Eliminado registo '{0}'.  ]]></String>
-		<!--  ::  Person Group > Person Rel Group  -->
-		<String key="logPersonRelGroupInsert"><![CDATA[ fw_person_rel_group | Adicionado novo registo '{0}'. ]]></String>
-		<String key="logPersonRelGroupUpdate"><![CDATA[ fw_person_rel_group | Atualizado registo '{0}'.  ]]></String>
-		<String key="logPersonRelGroupDelete"><![CDATA[ fw_person_rel_group | Eliminado registo '{0}'.  ]]></String>
-
-
-
+		
+		
+		
 		
 		<!--	________________________________________________________________________________________________
 			*
-			*			D A T E    ::    General date strings | Months | Week days
+			*
+			*			D A T E    ::    General date strings  |  Months  |  Week days
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<!--  ::  General date strings  -->
@@ -301,11 +228,99 @@
 		<String key="dow_6"><![CDATA[ sáb ]]></String>
 		<String key="dow_7"><![CDATA[ dom ]]></String>
 		
-
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<!--	________________________________________________________________________________________________
+			*
+			*
+			*			  L O G S    ::    Log messages
+			*
+			*		________________________________________________________________________________________________
+		-->
+		<!--  ::  Company  -->
+		<String key="logCompanyInsert"><![CDATA[ fw_company | Adicionada nova empresa '{0}'. ]]></String>
+		<String key="logCompanyUpdate"><![CDATA[ fw_company | Atualizada empresa '{0}'. ]]></String>
+		<String key="logCompanyDelete"><![CDATA[ fw_company | Eliminada empresa '{0}'. ]]></String>
+		<!--  ::  Document Type  -->
+		<String key="logDocTypeInsert"><![CDATA[ fw_doc_type | Adicionado novo tipo de documento '{0}'. ]]></String>
+		<String key="logDocTypeUpdate"><![CDATA[ fw_doc_type | Atualizado tipo de documento '{0}'. ]]></String>
+		<String key="logDocTypeDelete"><![CDATA[ fw_doc_type | Eliminado tipo de documento '{0}'. ]]></String>
+		<!--  ::  Entity Management  >  Data Source  -->
+		<String key="logDataSourceInsert"><![CDATA[ data_source | Adicionado utente '{0}' ao sistema '{1}'. ]]></String>
+		<String key="logDataSourceUpdate"><![CDATA[ data_source | Atualizado utente '{0}' no sistema '{1}'. ]]></String>
+		<String key="logDataSourceDelete"><![CDATA[ data_source | Eliminado utente '{0}' do sistema '{1}'. ]]></String>
+		<!--  ::  Entity Management  >  System  -->
+		<String key="logExternalSystemInsert"><![CDATA[ fw_system_entity | Adicionado novo sistema '{0}' à Gestão de Entidades. ]]></String>
+		<String key="logExternalSystemUpdate"><![CDATA[ fw_system_entity | Atualizado sistema '{0}' na Gestão de Entidades. ]]></String>
+		<String key="logExternalSystemDelete"><![CDATA[ fw_system_entity | Eliminado sistema '{0}' da Gestão de Entidades. ]]></String>
+		<!--  ::  Entity Management  >  System  >  Status Cache  -->
+		<String key="logSystemCacheInsert"><![CDATA[ fw_system_entity_status_cache | Adicionada nova relação utente-sistema '{0}'. ]]></String>
+		<String key="logSystemCacheUpdate"><![CDATA[ fw_system_entity_status_cache | Atualizada relação utente-sistema '{0}'. ]]></String>
+		<String key="logSystemCacheDelete"><![CDATA[ fw_system_entity_status_cache | Eliminada relação utente-sistema '{0}'. ]]></String>
+		<!--  ::  Jobs  -->
+		<String key="logJobInsert"><![CDATA[ fw_job | Adicionada nova profissão '{0}'. ]]></String>
+		<String key="logJobUpdate"><![CDATA[ fw_job | Atualizada profissão '{0}'. ]]></String>
+		<String key="logJobDelete"><![CDATA[ fw_job | Eliminada profissão '{0}'. ]]></String>
+		<!--  ::  Permissions  >  Allocation  -->
+		<String key="logAllocationInsert"><![CDATA[ fw_allocation | Adicionado registo '{0}'. ]]></String>
+		<String key="logAllocationUpdate"><![CDATA[ fw_allocation | Atualizado registo '{0}'.  ]]></String>
+		<String key="logAllocationDelete"><![CDATA[ fw_allocation | Eliminado registo '{0}'. ]]></String>
+		<!--  ::  Permissions  >  Capability  -->
+		<String key="logCapabilityInsert"><![CDATA[ fw_capability | Adicionada capability '{0}'. ]]></String>
+		<String key="logCapabilityUpdate"><![CDATA[ fw_capability | Atualizada capability '{0}'. ]]></String>
+		<String key="logCapabilityDelete"><![CDATA[ fw_capability | Eliminada capability '{0}'. ]]></String>
+		<!--  ::  Permissions  >  Role  -->
+		<String key="logRoleInsert"><![CDATA[ fw_role | Adicionada role '{0}'. ]]></String>
+		<String key="logRoleUpdate"><![CDATA[ fw_role | Atualizada role '{0}'. ]]></String>
+		<String key="logRoleDelete"><![CDATA[ fw_role | Eliminada role '{0}'. ]]></String>
+		<!--  ::  Permissions  >  Role_Capability  -->
+		<String key="logRoleCapabilityInsert"><![CDATA[ fw_role_capability | Adicionada role-capability '{0}'. ]]></String>
+		<String key="logRoleCapabilityUpdate"><![CDATA[ fw_role_capability | Atualizada role-capability '{0}' ]]></String>
+		<String key="logRoleCapabilityDelete"><![CDATA[ fw_role_capability | Removida role-capability '{0}'. ]]></String>
+		<!--  ::  Person  -->
+		<String key="logPersonInsert"><![CDATA[ fw_person | Adicionado novo utente '{0}'. ]]></String>
+		<String key="logPersonUpdate"><![CDATA[ fw_person | Atualizado utente '{0}'. ]]></String>
+		<String key="logPersonDelete"><![CDATA[ fw_person | Eliminado utente '{0}'. ]]></String>
+		<!--  ::  Person  >  Company  -->
+		<String key="logPersonCompanyInsert"><![CDATA[ fw_person_company | Adicionado utente '{0}' à empresa '{1}'. | {2} ]]></String>
+		<String key="logPersonCompanyUpdate"><![CDATA[ fw_person_company | Atualizada relação utente-empresa '{0}-{1}'. | {2} ]]></String>
+		<String key="logPersonCompanyDelete"><![CDATA[ fw_person_company | Removido utente '{0}' da empresa '{1}'. | {2} ]]></String>
+		<!--  ::  Person  >  Contacts  -->
+		<String key="logPersonContactInsert"><![CDATA[ fw_person_contact | Adicionado novo contacto '{0}' ao utente-empresa '{1}'. ]]></String>
+		<String key="logPersonContactUpdate"><![CDATA[ fw_person_contact | Atualizado contacto '{0}' do utente-empresa '{1}'. ]]></String>
+		<String key="logPersonContactDelete"><![CDATA[ fw_person_contact | Eliminado contacto '{0}' do utente-empresa '{1}'. ]]></String>
+		<!--  ::  Person  >  Contacts  >  Contact Type  -->
+		<String key="logContactTypeInsert"><![CDATA[ fw_contact_type | Adicionado novo tipo de contacto '{0} - {1}'. ]]></String>
+		<String key="logContactTypeUpdate"><![CDATA[ fw_contact_type | Atualizado tipo de contacto '{0} - {1}'. ]]></String>
+		<String key="logContactTypeDelete"><![CDATA[ fw_contact_type | Eliminado tipo de contacto '{0} - {1}'. ]]></String>
+		<!--  ::  Person Group  -->
+		<String key="logPersonGroupInsert"><![CDATA[ fw_person_group | Adicionado novo registo '{0}'. ]]></String>
+		<String key="logPersonGroupUpdate"><![CDATA[ fw_person_group | Atualizado registo '{0}'.  ]]></String>
+		<String key="logPersonGroupDelete"><![CDATA[ fw_person_group | Eliminado registo '{0}'.  ]]></String>
+		<!--  ::  Person Group  >  Type  -->
+		<String key="logPersonGroupTypeInsert"><![CDATA[ fw_person_group_type | Adicionado novo registo '{0}'. ]]></String>
+		<String key="logPersonGroupTypeUpdate"><![CDATA[ fw_person_group_type | Atualizado registo '{0}'.  ]]></String>
+		<String key="logPersonGroupTypeDelete"><![CDATA[ fw_person_group_type | Eliminado registo '{0}'.  ]]></String>
+		<!--  ::  Person Group  >  Person Rel Group  -->
+		<String key="logPersonRelGroupInsert"><![CDATA[ fw_person_rel_group | Adicionado novo registo '{0}'. ]]></String>
+		<String key="logPersonRelGroupUpdate"><![CDATA[ fw_person_rel_group | Atualizado registo '{0}'.  ]]></String>
+		<String key="logPersonRelGroupDelete"><![CDATA[ fw_person_rel_group | Eliminado registo '{0}'.  ]]></String>
+		
+		
+		
 
 		<!--	________________________________________________________________________________________________
 			*
+			*
 			*			P A S S W O R D    ::    Password policies
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<String key="passwordPoliciesHead"><![CDATA[ A alteração de senha deve contemplar no mínimo:<ul> ]]></String>
@@ -327,7 +342,9 @@
 		
 		<!--	________________________________________________________________________________________________
 			*
+			*
 			*			V A L I D A T I O N S    ::    General validation strings | Invalid fields messages
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<String key="requiredString"><![CDATA[ * ]]></String>
@@ -375,7 +392,9 @@
 
 		<!--	________________________________________________________________________________________________
 			*
+			*
 			*			R E C O R D S   M A N A G E M E N T    ::    
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<String key="localFileMedium"><![CDATA[Ficheiro Digital]]> </String>
@@ -392,7 +411,9 @@
 
 		<!--	________________________________________________________________________________________________
 			*
+			*
 			*			E X T E N S I O N S    ::    
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<String key="ext:error">
@@ -404,7 +425,6 @@
 		<String key="ext:success">
 			<![CDATA[ Instalada ]]>
 		</String>
-		<!-- -->
 		<String key="ext:libxml:doc">
 			<![CDATA[Permite que o KuinkFramework consiga processar documentos XML. Se não estiver instalada o KuinkFramework não funcionará. <a href="https://www.php.net/manual/pt_BR/book.{0}.php" target="_blank">Manual PHP</a>]]>
 		</String>
@@ -425,7 +445,9 @@
 
 		<!--	________________________________________________________________________________________________
 			*
+			*
 			*			C O N F I G S   (I N I)    ::    
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<String key="ini:error">
@@ -439,21 +461,13 @@
 		</String>
 
 
-	
+
+
 		<!--	________________________________________________________________________________________________
 			*
-			*			A D M I N . L T E    ::    Theme adminLTE2 Modal_embed
-			*		________________________________________________________________________________________________
-		-->
-		<String key="noLabel"><![CDATA[ Sem Etiqueta ]]></String>
-		<String key="toggleApp"><![CDATA[ Alternar Aplicação ]]></String>
-		<String key="toggleMenu"><![CDATA[ Alternar Menu ]]></String>
-
-
-
-		<!--	________________________________________________________________________________________________
 			*
 			*			F R A M E W O R K    ::    General framework strings
+			*
 			*		________________________________________________________________________________________________
 		-->
 		<String key="framework"><![CDATA[ Framework ]]></String>
@@ -467,22 +481,19 @@
 		<String key="frameworkVersion"><![CDATA[ KuinK Framework ]]></String>
 		<String key="applicationIsInactive"><![CDATA[Esta aplicação encontra-se <strong>inativa</strong>. Por favor contacte o Administrador de Sistemas.]]></String>
 		<String key="applicationInMaintenance"><![CDATA[Esta aplicação encontra-se em <strong>manutenção</strong/>. Esperamos ser breves...]]> </String>
-		<!--  -->
+		<String key="noLabel"><![CDATA[ Sem Etiqueta ]]></String>
+		<String key="toggleApp"><![CDATA[ Alternar Aplicação ]]></String>
+		<String key="toggleMenu"><![CDATA[ Alternar Menu ]]></String>
 		<String key="backToMoodleCourse"><![CDATA[ Voltar à disciplina ]]></String>
-		<!--  -->
 		<String key="erro_ficheiro"><![CDATA[ O ficheiro é obrigatório. ]]></String>
 		<String key="empty_field"><![CDATA[ Aqui deverá conter um valor. ]]></String>
-		<!--  -->
 		<String key="update"><![CDATA[ Atualizar ]]></String>
 		<String key="updated"><![CDATA[ Atualizada ]]></String>
-		<!--  -->
 		<String key="source"><![CDATA[ Código Fonte ]]></String>
 		<String key="screen"><![CDATA[ Ecrã ]]></String>
 		<String key="actionSources"><![CDATA[ Código fonte das ações ]]></String>
-		<!--  ::  Database  -->
 		<String key="databaseSuccess"><![CDATA[ Operação concluída com sucesso ]]></String>
 		<String key="databaseError"><![CDATA[ Erro a concluir operação ]]></String>
-		<!--  ::  Bug Tracking  -->
 		<String key="reportBug"><![CDATA[ Reportar Problema ]]></String>
 		<String key="handler"><![CDATA[ Destinatário ]]></String>
 		<String key="describeProblem"><![CDATA[ Descreva o problema com o maior detalhe possível ]]></String>
@@ -490,16 +501,22 @@
 		<String key="emptyMessage"><![CDATA[ A mensagem não pode ser vazia. ]]></String>
 		<String key="requestSuccess"><![CDATA[ Pedido enviado com sucesso ]]></String>
 		<String key="requestError"><![CDATA[ Erro a enviar o pedido. Tente de novo. ]]></String>
-
 		<String key="backToTop"><![CDATA[ Voltar ao topo ]]></String>
 		<String key="refresh"><![CDATA[ Atualizar ]]></String>
 	</Strings>
-	<ExceptionStrings>
-		<!-- EXCEPTIONS -->
-		<Exception name="framework/generic::unitTest">Exceção de Testes Unitários com os dados: {0}</Exception>
-	</ExceptionStrings>
+	
+
+	
+	
+	<!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  H E L P    S T R I N G S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
 	<HelpStrings>
-		<Help key="install">Instala uma aplicação no sistema.</Help>
-		<Help key="application">Aplicação a instalar.</Help>
+		<Help key="install"><![CDATA[ Instala uma aplicação no sistema. ]]></Help>
+		<Help key="application"><![CDATA[ Aplicação a instalar. ]]></Help>
 	</HelpStrings>
 </Lang>
