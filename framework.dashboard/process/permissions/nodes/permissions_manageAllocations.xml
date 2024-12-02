@@ -67,8 +67,8 @@
             <Column name="_id_updater" inline="true"/>
           </Columns>
           <Actions separator="true">
-            <Action name="edit" label="edit" icon="pencil" actionvalue="id"/>
-            <Action name="delete" label="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+            <Action name="edit" icon="edit" actionvalue="id"/>
+            <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
           </Actions>
         </Template>
       </Grid>
