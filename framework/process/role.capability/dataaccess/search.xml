@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
   <Doc>
-    <![CDATA[ Gets a list of roles-capabilities relations that meet the given search criteria. ]]>
+    <![CDATA[ Gets a list of role_capability assignments that meet the given criteria. ]]>
 	</Doc>
   <Params>
-    <Param name="id" type="int" required="false" doc="Role_capability's id"/>
+    <Param name="id_company" type="int" required="true" doc="Company's id"/>
+    <Param name="text" type="text" required="false" doc="Role/Capability's id, name or code"/>
     <Param name="id_role" type="int" required="false" doc="Role's id"/>
     <Param name="id_capability" type="int" required="false" doc="Capability's id"/>
   </Params>
+  
   <Body>
     <SqlPaginated>
       <XSql>
@@ -28,12 +30,23 @@
           </XTable>
         </XFrom>
         <XWhere>
-          <XCondition><![CDATA[ 1 = 1 ]]></XCondition>
-					<XCondition optional="id">
-						<![CDATA[
-							AND rc.id = {param->id}
+          <XCondition>
+            <![CDATA[
+              r.id_company = {param->id_company}
+              AND (c.id_company = {param->id_company} OR c.is_global = 1) 
 						]]>
-					</XCondition>
+	        </XCondition>
+          <XCondition optional="text">
+	          <![CDATA[
+							AND (
+								r.id LIKE '{param->text}'
+								OR r.code LIKE '{param->text}'
+								OR r.name LIKE '{param->text}'
+                OR c.code LIKE '{param->text}'
+								OR c.name LIKE '{param->text}'
+							)  
+						]]>
+	        </XCondition>
           <XCondition optional="id_role">
 						<![CDATA[
 							AND rc.id_role = {param->id_role}

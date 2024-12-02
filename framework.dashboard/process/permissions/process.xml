@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<Process>
+	<Transitions>
+		<!-- Enters into permissions main page -->
+		<Flow role="Teacher,Student" startnode="" event="init" endnode="main"/>
+
+		<!-- Main Page  >  Allocations Management -->
+		<Flow role="Teacher,Student" startnode="main" event="manageAllocations" endnode="manageAllocations"/>
+		<Flow role="Teacher,Student" startnode="manageAllocations" event="back" endnode="main"/>
+
+		<!-- Main Page  >  Capabilities Management -->
+		<Flow role="Teacher,Student" startnode="main" event="manageCapabilities" endnode="manageCapabilities"/>
+		<Flow role="Teacher,Student" startnode="manageCapabilities" event="back" endnode="main"/>
+
+		<!-- Main Page  >  Roles Management -->
+		<Flow role="Teacher,Student" startnode="main" event="manageRoles" endnode="manageRoles"/>
+		<Flow role="Teacher,Student" startnode="manageRoles" event="back" endnode="main"/>
+		
+		<!-- Main Page  >  Roles-Capabilities Management -->
+		<Flow role="Teacher,Student" startnode="main" event="manageRolesCapabilities" endnode="manageRolesCapabilities"/>
+		<Flow role="Teacher,Student" startnode="manageRolesCapabilities" event="back" endnode="main"/>
+	</Transitions>
+</Process>

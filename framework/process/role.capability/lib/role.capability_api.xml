@@ -1,42 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Doc>
-    <![CDATA[ Role_Capability API  ::  Allows the communication with 'fw_role_capability' table. ]]>
+    <![CDATA[ Role_Capability API  ::  Allows the communication with 'fw_role_capability' table and all the related ones. ]]>
   </Doc>
   <Permissions/>
   <Configuration/>
   <Libraries>
     <Use name="UtilsLib" type="lib"/>
   </Libraries>
-  <Params/>
-  <Screens/>
-  <Actions/>
-  <Library forceinterface="true">
+
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+		*
+		*
+		*			  L I B R A R Y
+		*
+    *		__________________________________________________________________________________________________________________________
+	--> 
+  <Library>
     <!--
-			*		add  |  Adds a new capability to a role.
+			*		add  |  Assigns a capability to a role.
 			*
 			*		PARAMS
 			*    - (int) id_role        ::  Role's id;
-			*    - (int) id_capability  ::  Capability's id.
+			*    - (int) id_capability  ::  Capability's id;
+      *    - (int) id_company     ::  Role/capability's company.
 			*
 			*		RETURN
 			*    - (int) id_role_capability  ::  Returns the created 'fw_role_capability' record's id.
       *
 			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the role doesn't exist.
-      *    - (code) -2  ::  Returns -2 if the capability doesn't exist.
-      *    - (code) -3  ::  Returns -3 if the capability was already assigned to the role.
+      *    - (code) -1  ::  Returns -1 if the capability was already assigned to the role.
+      *    - (code) -2  ::  Returns -2 if the capability isn't global or isn't applicable to the same company of the role.
 		-->
-    <Function name="add" doc="Adds a new capability to a role.">
+    <Function scope="public" name="add" doc="Assigns a capability to a role.">
       <Params>
         <Param name="id_role" type="int" required="true" doc="Role's id"/>
         <Param name="id_capability" type="int" required="true" doc="Capability's id"/>
+        <Param name="id_company" type="int" required="true" doc="Role/capability's company"/>
       </Params>
 			<Return type="int" doc="The created 'fw_role_capability' record's id."/>
       <Errors>
-        <Error code="-1" doc="The role doesn't exist."/>
-        <Error code="-2" doc="The capability doesn't exist."/>
-        <Error code="-3" doc="The capability was already assigned to the role."/>
+        <Error code="-1" doc="The capability was already assigned to the role."/>
+        <Error code="-2" doc="The capability isn't global or isn't applicable to the same company of the role."/>
       </Errors>
 
       <Begin>
@@ -45,11 +53,12 @@
           <Call function="validateRoleCapability">
             <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
             <Param name="id_capability"><Var name="PARAMS" key="id_capability"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
             <Param name="is_insert">1</Param>
           </Call>
         </Var>
 
-        <!-- If everything is in order, proceeds to insert -->
+        <!-- If validation's ok, proceeds to insert -->
         <If condition="$result == 0">
           <Then>
             <!-- Creates the record -->
@@ -66,13 +75,12 @@
                 <Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
               </DataAccess>
             </Var>
-            <!-- Gets the record just created -->
+            <!-- Logs this action (with the newly created record) -->
             <Var name="roleCapability">
-              <Call function="getById">
+              <Call function="get">
                 <Param name="id"><Var name="roleCapability" key="id"/></Param>
               </Call>
             </Var>
-            <!-- Logs this action -->
             <Call library="framework,log,api" function="add">
               <Param name="type">framework,role.capability,api</Param>
               <Param name="action">insert</Param>
@@ -84,8 +92,6 @@
               </Param>
               <Param name="message">
                 <Lang key="logRoleCapabilityInsert">
-                  <Param><Var name="PARAMS" key="id_capability"/></Param>
-                  <Param><Var name="PARAMS" key="id_role"/></Param>
                   <Param><Var name="roleCapability" key="id"/></Param>
                 </Lang>
               </Param>
@@ -104,34 +110,34 @@
 
 
     <!--
-			*		addByCode  |  Adds a new capability to a role given the codes.
+			*		addByCode  |  Assigns a capability to a role, given the codes.
 			*
 			*		PARAMS
 			*		 - (text) code_role			   ::  Role's code;
-			*		 - (text) code_capability  ::  Capability's code.
+			*		 - (text) code_capability  ::  Capability's code;
+      *		 - (int) id_company        ::  Role/capability's company.
 			*
 			*		RETURN
 			*    - (int) id_role_capability  ::  Returns the created 'fw_role_capability' record's id.
       *
 			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the role doesn't exist.
-      *    - (code) -2  ::  Returns -2 if the capability doesn't exist.
-      *    - (code) -3  ::  Returns -3 if the capability was already assigned to the role.
+      *    - (code) -1  ::  Returns -1 if the capability was already assigned to the role.
+      *    - (code) -2  ::  Returns -2 if the capability isn't global or isn't applicable to the same company of the role.
 		-->
-    <Function name="addByCode" doc="Adds a new capability to a role given the codes.">
+    <Function scope="public" name="addByCode" doc="Assigns a capability to a role, given the codes.">
       <Params>
         <Param name="code_role" type="text" required="true" doc="Role's code"/>
         <Param name="code_capability" type="text" required="true" doc="Capability's code"/>
+        <Param name="id_company" type="int" required="true" doc="Role/capability's company"/>
       </Params>
       <Return type="int" doc="The created 'fw_role_capability' record's id."/>
       <Errors>
-        <Error code="-1" doc="The role doesn't exist."/>
-        <Error code="-2" doc="The capability doesn't exist."/>
-        <Error code="-3" doc="The capability was already assigned to the role."/>
+        <Error code="-1" doc="The capability was already assigned to the role."/>
+        <Error code="-2" doc="The capability isn't global or isn't applicable to the same company of the role."/>
       </Errors>
 
       <Begin>
-        <!-- Gets the role and the capability -->
+        <!-- Gets the role and the capability, through the codes -->
         <Var name="role">
           <Call library="framework,role,api" function="getByCode">
             <Param name="code"><Var name="PARAMS" key="code_role"/></Param>
@@ -142,9 +148,8 @@
             <Param name="code"><Var name="PARAMS" key="code_capability"/></Param>
           </Call>
         </Var>
-
-        <!-- Adds the capability to the role -->
-        <Var name="idRoleCapability">
+        <!-- Proceeds to insert -->
+        <Var name="result">
           <Call function="add">
             <Param name="id_role"><Var name="role" key="id"/></Param>
             <Param name="id_capability"><Var name="capability" key="id"/></Param>
@@ -152,25 +157,25 @@
         </Var>
 
         <Return>
-          <Var name="idRoleCapability"/>
+          <Var name="result"/>
         </Return>
       </Begin>
     </Function>
 
 
     <!--
-			*		delete  |  Removes a capability from a role.
+			*		delete  |  Unassigns a capability from a role.
 			*  
 			*		PARAMS
 			*		 - (int) id  ::  Role_capability's id.
       *
 			*		RETURN
-			*    - (int) 0  ::  Returns 0 if the capability was removed.
+			*    - (int) 0  ::  Returns 0 if the capability was unassigned.
       *
 			*		ERRORS
 			*	   - (code) -1  ::  Returns -1 if the role_capability assignment doesn't exist.
 		-->
-    <Function name="delete" doc="Removes a capability from a role.">
+    <Function scope="public" name="delete" doc="Unassigns a capability from a role.">
       <Params>
         <Param name="id" type="int" required="true" doc="Role_capability's id"/>
       </Params>
@@ -180,24 +185,22 @@
       </Errors>
 
       <Begin>
-        <!-- Sets default error value -->
         <Var name="error">0</Var>
 
-        <!--  Gets the record -->
+        <!-- Checks if the role_capability exists:
+          . If it doesn't, returns -1;
+          . If it does, proceeds to delete;
+        -->
         <Var name="roleCapability">
-          <Call function="getById">
+          <Call function="get">
             <Param name="id"><Var name="PARAMS" key="id"/></Param>
           </Call>
         </Var>
-
-        <!-- Checks if the role_capability exists: if it doesn't, returns -1 -->
-        <If condition="$roleCapability->__length == 0">
+        <If condition="$roleCapability->id == ''">
           <Then>
             <Var name="error">-1</Var>
           </Then>
           <Else>
-            <!-- Everything is in order, proceeds to delete -->
-            <!-- Deletes the record -->
             <DataAccess method="delete">
               <Param name="_entity">fw_role_capability</Param>
               <Param name="id"><Var name="PARAMS" key="id"/></Param>
@@ -214,8 +217,6 @@
               </Param>
               <Param name="message">
                 <Lang key="logRoleCapabilityDelete">
-                  <Param><Var name="roleCapability" key="id_capability"/></Param>
-                  <Param><Var name="roleCapability" key="id_role"/></Param>
                   <Param><Var name="PARAMS" key="id"/></Param>
                 </Lang>
               </Param>
@@ -231,31 +232,48 @@
 
 
     <!--
-			*		getAll  |  Gets a list of all existing role_capability assignments.
-      *
+			*		getAll  |  Gets a list of all the existing role_capability assignments. Can be filtered by company.
+			*
+			*		PARAMS
+			*    - (int) id_company  ::  Company's id.
+			*  
 			*		RETURN
-			*	   - (multiple) fw_role_capability  ::  Returns all 'fw_role_capability' records.
+			*	   - (multiple) fw_role_capability  ::  Returns a set of 'fw_role_capability' records.
 		-->
-    <Function name="getAll" scope="public" doc="Gets a list of all existing role_capability assignments.">
-      <Params/>
-			<Return type="multiple" doc="All 'fw_role_capability' records."/>
+    <Function scope="public" name="getAll" doc="Gets a list of all the existing role_capability assignments. Can be filtered by company.">
+      <Params>
+        <Param name="id_company" type="int" required="false" doc="Company's id"/>
+      </Params>
+			<Return type="multiple" doc="Set of 'fw_role_capability' records."/>
 
       <Begin>
-        <Var name="roleCapabilities">
-					<DataAccess method="getAll">
-						<Param name="_entity">fw_role_capability</Param>
-					</DataAccess>
-				</Var>
+        <If condition="$PARAMS->id_company != ''">
+          <Then>
+            <Var name="roleCapabilities">
+              <DataAccess method="this,this,getAllByCompany">
+                <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+              </DataAccess>
+            </Var>
+          </Then>
+          <Else>
+            <Var name="roleCapabilities">
+              <DataAccess method="getAll">
+                <Param name="_entity">fw_role_capability</Param>
+              </DataAccess>
+            </Var>
+          </Else>
+        </If>
+        
 
 				<Return>
 					<Var name="roleCapabilities"/>
 				</Return>
       </Begin>
     </Function>
-
+    
 
     <!--
-			*		getById  |  Gets a role_capability assignment, given the id.
+			*		get  |  Gets a role_capability assignment, given its id.
 			*
 			*		PARAMS
 			*    - (int) id  ::  Role_capability's id.
@@ -263,7 +281,7 @@
 			*		RETURN
 			*	   - (single) fw_role_capability  ::  Returns the corresponding 'fw_role_capability' record. 
 		-->
-    <Function name="getById" scope="public" doc="Gets a role_capability assignment, the id.">
+    <Function scope="public" name="get" doc="Gets a role_capability assignment, given its id.">
       <Params>
         <Param name="id" type="int" required="true" doc="Role_capability's id"/>
       </Params>
@@ -285,24 +303,27 @@
 
 
     <!--
-			*		getCapabilitiesByRoleCode  |  Gets a list of all capabilities that a role have, given its code.
+			*		getCapabilitiesByRole  |  Gets a list of all the capabilities that a role have, given its code (always in the context of a company).
 			*
 			*		PARAMS
-			*    - (text) code_role  ::  Role's code.
+			*    - (text) code_role  ::  Role's code;
+      *    - (int) id_company  ::  Company's id.
       *
 			*		RETURN
 			*	   - (multiple) fw_capability  ::  Returns a set of 'fw_capability' records.
 		-->
-    <Function name="getCapabilitiesByRoleCode" scope="public" doc="Gets a list of all capabilities that a role have, given its code.">
+    <Function scope="public" name="getCapabilitiesByRole" doc="Gets a list of all the capabilities that a role have, given its code (always in the context of a company).">
       <Params>
         <Param name="code_role" type="text" required="true" doc="Role's code"/>
+        <Param name="id_company" type="int" required="true" doc="Company's id"/>
       </Params>
       <Return type="multiple" doc="Set of 'fw_capability' records."/>
 
       <Begin>
         <Var name="capabilities">
-					<DataAccess method="this,this,getCapabilitiesByRoleCode">
-            <Param name="code_role"><Var name="PARAMS" key="code_role"/></Param>
+					<DataAccess method="this,this,getCapabilitiesByRole">
+            <Param name="code"><Var name="PARAMS" key="code_role"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
 					</DataAccess>
 				</Var>
 
@@ -314,17 +335,19 @@
   
 
     <!--
-			*		getCapabilitiesOfRolesList  |  Gets a list of all the capabilities that a set of roles have, given its code.
+			*		getCapabilitiesOfRolesList  |  Gets a list of all the capabilities that a set of roles have (always in the context of a company).
 			*
 			*		PARAMS
-			*    - (text) code_role_list  ::  Roles' codes' list (separated by comma).
+			*    - (text) code_role_list  ::  Roles' codes' list (separated by comma);
+      *    - (int) id_company       ::  Company's id.
       *
 			*		RETURN
 			*	   - (multiple) fw_role_capability  ::  Returns a set of 'fw_role_capability' records.
 		-->
-    <Function name="getCapabilitiesOfRolesList" scope="public" doc="Gets a list of all the capabilities that a set of roles have, given its code.">
+    <Function scope="public" name="getCapabilitiesOfRolesList" doc="Gets a list of all the capabilities that a set of roles have (always in the context of a company).">
       <Params>
         <Param name="code_role_list" type="text" required="true" doc="Roles' codes' list (separated by comma)"/>
+        <Param name="id_company" type="int" required="true" doc="Company's id"/>
       </Params>
 			<Return type="multiple" doc="Set of 'fw_role_capability' records."/>
 
@@ -332,6 +355,7 @@
         <Var name="capabilities">
 					<DataAccess method="this,this,getCapabilitiesOfRolesList">
             <Param name="code_role_list"><Var name="PARAMS" key="code_role_list"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
 					</DataAccess>
 				</Var>
 
@@ -343,147 +367,223 @@
 
 
     <!--
-			*		search  |  Gets a list of roles_capabilities relations that meet the given search criteria.
+			*		search  |  Gets a list of role_capability assignments that meet the given criteria.
 			*
       *		PARAMS
-      *    - (int) id             ::  Role_capability's id;
+			*    - (text) text          ::  Role/Capability's name or code;
 			*    - (int) id_role        ::  Role's id;
-			*    - (int) id_capability  ::  Capability's id.
+			*    - (int) id_capability  ::  Capability's id;
+      *    - (int) id_company     ::  Role/capability's company;
+      *		 - (int) pageNum        ::  Page to get;
+      *		 - (int) pageSize       ::  Number of records per page.
 			*
 			*		RETURN
 			*	   - (multiple) fw_role_capability  ::  Returns a set of 'fw_role_capability' records.
 		--> 
-    <Function name="search" scope="public" doc="Gets a list of roles_capabilities relations that meet the given search criteria.">
+    <Function scope="public" name="search" doc="Gets a list of role_capability assignments that meet the given criteria.">
       <Params>
-        <Param name="id" type="int" required="false" doc="Role_capability's id"/>
-        <Param name="id_role" type="int" required="true" doc="Role's id"/>
-        <Param name="id_capability" type="int" required="true" doc="Capability's id"/>
-        <Param name="pageNum" type="int" required="false" doc="Current page's number"/>
-        <Param name="pageSize" type="int" required="false" doc="Current page's size"/>
+        <Param name="text" type="text" required="false" doc="Role/Capability's name or code"/>
+        <Param name="id_role" type="int" required="false" doc="Role's id"/>
+        <Param name="id_capability" type="int" required="false" doc="Capability's id"/>
+        <Param name="id_company" type="int" required="false" doc="Role/capability's company"/>
+        <Param name="pageNum" type="int" required="false" doc="Page to get"/>
+        <Param name="pageSize" type="int" required="false" doc="Number of records per page"/>
       </Params>
       <Return type="multiple" doc="Set of 'fw_role_capability' records"/>
 
       <Begin>
-        <Var name="roles_capabilities">
+        <Var name="rolesCapabilities">
           <DataAccess method="this,this,search">
-            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="text" wildcard="fullSplit"><Var name="PARAMS" key="text"/></Param>
             <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
-            <Param name="id_capability" wildcard="full"><Var name="PARAMS" key="id_capability"/></Param>
+            <Param name="id_capability"><Var name="PARAMS" key="id_capability"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
             <Param name="_pageNum"><Var name="PARAMS" key="pageNum"/></Param>
             <Param name="_pageSize"><Var name="PARAMS" key="pageSize"/></Param>
           </DataAccess>
         </Var>
          
         <Return>
-          <Var name="roles_capabilities"/>  
+          <Var name="rolesCapabilities"/>  
+        </Return>
+      </Begin>
+    </Function>
+       
+
+    <!--
+			*		update  |  Updates a role_capability assignment.
+			*
+			*		PARAMS
+			*		 - (int) id    			    ::  Role_capability's id;
+			*    - (int) id_role        ::  Role's id;
+			*    - (int) id_capability  ::  Capability's id;
+      *    - (int) id_company     ::  Role/capability's company.
+			*
+			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the capability was updated.
+      *
+			*		ERRORS
+      *    - (code) -1  ::  Returns -1 if the capability was already assigned to the role.
+      *    - (code) -2  ::  Returns -2 if the capability isn't global or isn't applicable to the same company of the role.
+    -->
+    <Function scope="public" name="update" doc="Updates a role_capability assignment.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Roles_capability's id"/>
+        <Param name="id_role" type="int" required="true" doc="Role's id"/>
+        <Param name="id_capability" type="int" required="true" doc="Capability's id"/>
+        <Param name="id_company" type="int" required="true" doc="Role/capability's company"/>
+      </Params>
+      <Return type="int" doc="0 if the capability was updated."/>
+      <Errors>
+        <Error code="-1" doc="The capability was already assigned to the role."/>
+        <Error code="-2" doc="The capability isn't global or isn't applicable to the same company of the role."/>
+      </Errors>
+
+      <Begin>
+        <!-- Validates the received parameters -->
+        <Var name="result">
+          <Call function="validateRoleCapability">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+            <Param name="id_capability"><Var name="PARAMS" key="id_capability"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="is_insert">0</Param>
+          </Call>
+        </Var>
+
+        <!-- If validation's ok, proceeds to update -->
+        <If condition="$result == 0">
+          <Then>
+            <DataAccess method="update">
+              <Param name="_entity">fw_role_capability</Param>
+              <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
+              <Param name="id_capability"><Var name="PARAMS" key="id_capability"/></Param>
+              <Param name="_id_updater"><Var name="USER" key="id"/></Param>
+              <Param name="_modification"><Now/></Param>
+              <Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+            </DataAccess>
+            <!-- Logs this action (with the updated record) -->
+            <Var name="updatedRoleCapability">
+              <DataAccess method="load">
+                <Param name="_entity">fw_role_capability</Param>
+                <Param name="id"><Var name="PARAMS" key="id"/></Param>
+              </DataAccess>
+            </Var>
+            <Call library="framework,log,api" function="add">
+              <Param name="type">framework,role.capability,api</Param>
+              <Param name="action">update</Param>
+              <Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+              <Param name="context_data">
+                <UtilsLib method="jsonEncode">
+                  <Param><Var name="updatedRoleCapability"/></Param>
+                </UtilsLib>
+              </Param>
+              <Param name="message">
+                <Lang key="logRoleCapabilityUpdate">
+                  <Param><Var name="PARAMS" key="id"/></Param>
+                </Lang>
+              </Param>
+            </Call>
+          </Then>
+        </If>
+
+        <Return>
+          <Var name="result"/>
         </Return>
       </Begin>
     </Function>
     
     
     <!--
-			*		validateRoleCapability  |  Validates the parameters of a capability assignment to a role.
+			*		validateRoleCapability  |  Validates the parameters of a role_capability assignment.
 			*
 			*		PARAMS
+			*		 - (int) id      			     ::  Role_capability's id;
 			*		 - (int) id_role			     ::  Role's id;
 			*		 - (int) id_capability     ::  Capability's id;
 			*		 - (text) code_role			   ::  Role's code;
 			*		 - (text) code_capability  ::  Capability's code;
-      *    - (int) is_insert         ::  1 if this is a new assignment; 0 or NULL if it's an update.
+      *		 - (int) id_company        ::  Role/capability's company;
+      *    - (int) is_insert         ::  1 if it's a new assignment; 0 if it's an update.
 			*
 			*		RETURN
-			*    - (int) 0  ::  Returns 0 if all params are valid.
+			*    - (int) 0  ::  Returns 0 if all the params are valid.
       *
 			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the role doesn't exist.
-			*	   - (code) -2  ::  Returns -2 if the capability doesn't exist.
-      *    - (code) -3  ::  Returns -3 if the capability was already assigned to the role.
+      *    - (code) -1  ::  Returns -1 if the capability was already assigned to the role.
+      *    - (code) -2  ::  Returns -2 if the capability isn't global or isn't applicable to the same company of the role.
     -->
-    <Function name="validateRoleCapability" scope="private" doc="Validates the parameters of a capability assignment to a role.">
+    <Function scope="private" name="validateRoleCapability" doc="Validates the parameters of a role_capability assignment.">
       <Params>
-        <Param name="id_role" type="int" required="false" doc="Company's id"/>
-        <Param name="id_capability" type="int" required="false" doc="Company's id"/>
+        <Param name="id" type="int" required="false" doc="Role_capability's id"/>
+        <Param name="id_role" type="int" required="false" doc="Role's id"/>
+        <Param name="id_capability" type="int" required="false" doc="Capability's id"/>
         <Param name="code_role" type="text" required="false" doc="Role's code"/>
         <Param name="code_capability" type="text" required="false" doc="Capability's code"/>
-        <Param name="is_insert" type="int" required="false" doc="1 if this is a new assignment; 0 or NULL if it's an update"/>
+        <Param name="id_company" type="int" required="true" doc="Role/capability's company"/>
+        <Param name="is_insert" type="int" required="true" doc="1 if it's a new assignment; 0 if it's an update"/>
       </Params>
-			<Return type="int" doc="0 if all params are valid."/>
+			<Return type="int" doc="0 if all the params are valid."/>
       <Errors>
-        <Error code="-1" doc="The role doesn't exist."/>
-        <Error code="-2" doc="The capability doesn't exist."/>
-        <Error code="-3" doc="The capability was already assigned to the role."/>
+        <Error code="-1" doc="The capability was already assigned to the role."/>
+        <Error code="-2" doc="The capability isn't global or isn't applicable to the same company of the role."/>
       </Errors>
       
       <Begin>
-        <!-- Sets default value -->
         <Var name="error">0</Var>
 
-        <!-- If no ids were provided, gets them through the codes -->
+        <!-- According to the params, gets the capabilities by one of the following options:
+          . The role's and capability's code and company;
+          . The role's and capability's id;
+        -->
         <If condition="$PARAMS->id_role == '' || $PARAMS->id_capability == ''">
           <Then>
-            <Var name="roleExists">
-              <Call library="framework,role,api" function="existsByCode">
+            <Var name="role">
+              <Call library="framework,role,api" function="getByCode">
                 <Param name="code"><Var name="PARAMS" key="code_role"/></Param>
+                <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
               </Call>
             </Var>
-            <Var name="capabilityExists">
-              <Call library="framework,capability,api" function="existsByCode">
+            <Var name="capability">
+              <Call library="framework,capability,api" function="getByCode">
                 <Param name="code"><Var name="PARAMS" key="code_capability"/></Param>
+                <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
               </Call>
             </Var>
           </Then>
           <Else>
-            <Var name="roleExists">
-              <Call library="framework,role,api" function="existsInCompanyById">
+            <Var name="role">
+              <Call library="framework,role,api" function="getById">
                 <Param name="id"><Var name="PARAMS" key="id_role"/></Param>
-                <Param name="id_company"><Var name="USER" key="idCompany"/></Param>
               </Call>
             </Var>
-            <Var name="capabilityExists">
-              <Call library="framework,capability,api" function="existsById">
+            <Var name="capability">
+              <Call library="framework,capability,api" function="getById">
                 <Param name="id"><Var name="PARAMS" key="id_capability"/></Param>
               </Call>
             </Var>
           </Else>
         </If>
 
-        <!-- ______________  1) Role's validation    ______________ -->
-        <!-- Checks if the role exists: if not, returns -1 -->
-        <If condition="$roleExists == 0">
+        <!-- Checks for errors -->
+        <Var name="roleCapability">
+          <DataAccess method="load">
+            <Param name="_entity">fw_role_capability</Param>
+            <Param name="id_role"><Var name="role" key="id"/></Param>
+            <Param name="id_capability"><Var name="capability" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        <!-- Returns -1 if the capability was already assigned to the role -->
+        <If condition="($roleCapability->id != '') &amp;&amp; (($PARAMS->is_insert == 1) || ($PARAMS->is_insert == 0 &amp;&amp; $roleCapability->id != $PARAMS->id))">
           <Then>
             <Var name="error">-1</Var>
           </Then>
-          <Else>
-            <!-- ______________  2) Capability's validation    ______________ -->
-            <!-- Checks if the capability exists: if not, returns -2 -->
-            <If condition="$capabilityExists == 0">
-              <Then>
-                <Var name="error">-2</Var>
-              </Then>
-              <Else>
-                <!-- ______________  3) Role_Capability's validation    ______________ -->
-                <!-- If it's an insert, checks if the capability was already assigned to the role: if so, returns -3 -->
-                <If condition="$PARAMS->is_insert == 1">
-                  <Then>
-                    <Var name="roleCapability">
-                      <DataAccess method="load">
-                        <Param name="_entity">fw_role_capability</Param>
-                        <Param name="id_role"><Var name="PARAMS" key="id_role"/></Param>
-                        <Param name="id_capability"><Var name="PARAMS" key="id_capability"/></Param>
-                      </DataAccess>
-                    </Var>
-                    <If condition="$roleCapability->__length != 0">
-                      <Then>
-                        <Var name="error">-3</Var>
-                      </Then>
-                    </If>
-                  </Then>
-                </If>
-              </Else>
-            </If>
-          </Else>
         </If>
-
+        <!-- Returns -2 if the capability isn't global or isn't applicable to the role's company -->
+        <If condition="$capability->is_global != 1 &amp;&amp; ($PARAMS->id_company != ($capability->id_company || $role->id_company)) &amp;&amp; ($capability->id_company != $role->id_company)">
+          <Then><Var name="error">-2</Var></Then>
+        </If>
 
         <Return>
           <Var name="error"/>

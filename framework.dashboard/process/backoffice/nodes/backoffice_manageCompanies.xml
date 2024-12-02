@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+    <![CDATA[ Framework Dashboard  >  Companies Management  ::  Allows to view, edit and delete a company's data. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+  <Libraries/>
+  <Params/>
+  
+  
+  
+  
+	<!--	__________________________________________________________________________________________________________________________
+		*
+		*
+		*			  S C R E E N S    ::    mainScreen  |  editConfigsScreen
+		*
+		*		__________________________________________________________________________________________________________________________
+	-->
+  <Screens>
+    <!--
+      *
+      *		mainScreen  |  Main page of companies management. Shows a list of companies, allowing to edit their details.
+      *
+    -->
+    <Screen name="mainScreen" title="companiesManagement">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="back"/>
+      
+      <!-- Companies -->
+      <Grid name="companiesGrid" title=" " freeze="false">
+        <Template>
+          <Columns>
+            <Column name="id" headeralign="center" verticalalign="middle" horizontalalign="center"/>
+            <Column name="uuid" verticalalign="middle"/>
+            <Column name="name" type="text" verticalalign="middle" colsize="2" required="true"/>
+            <Column name="code" type="text" verticalalign="middle" required="true"/>
+            <Column name="description" type="text" verticalalign="middle" colsize="2"/>
+            <Column name="id_timezone" type="select" verticalalign="middle" label="timezone" datasource="table:fw_timezone" bindid="id" bindvalue="code"/>
+            <Column name="is_active" type="checkbox" headeralign="center" verticalalign="middle" horizontalalign="center"/>
+            <Column name="id_company" type="select" verticalalign="middle" datasource="table:fw_company" bindid="id" bindvalue="name"/>
+          </Columns>
+          <Actions separator="true" headeralign="center" verticalalign="middle">
+            <Action name="selectCompanyEditConfigs" label="configs" icon="cog" actionvalue="id" condition="$id!=''||$id=='0'"/>
+            <Action name="deleteCompany" label="delete" icon="trash-o" actionvalue="id" confirm="true" condition="$id!=''||$id=='0'"/>
+          </Actions>
+        </Template>
+        <Actions>
+          <Action name="saveCompanies" label="save" type="save"/>
+        </Actions>
+      </Grid>
+    </Screen>
+
+    
+    <!--
+			*
+			*		editConfigsScreen  |  Allows to view/edit a company's configurations.
+			* 
+		-->    
+    <Screen name="editConfigsScreen" title="configs">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="list"/>
+      
+      <!-- Configurations -->
+      <Grid name="configsGrid" freeze="false" title=" ">
+        <Template>
+          <Columns>
+            <Column name="id" headeralign="center" verticalalign="middle"/>
+            <Column name="code" type="text" verticalalign="middle" colsize="2" required="true"/>
+            <Column name="value" type="text" verticalalign="middle" colsize="4" required="true"/>
+            <Column name="comment" type="text" verticalalign="middle"/>
+          </Columns>
+          <Actions separator="true" verticalalign="middle">
+            <Action name="deleteConfig" label="delete" icon="trash-o" actionvalue="id" confirm="true" condition="$id!=''||$id=='0'"/>
+          </Actions>
+        </Template>
+        <Actions>
+          <Action name="saveConfigs" label="save" type="save"/>
+        </Actions>
+      </Grid>
+    </Screen>
+  </Screens>
+
+  
+
+
+  <!-- _________________________________________________________________________________________________________________________________
+    *
+    *
+    *		    A C T I O N S    ::    
+    *
+    *		_________________________________________________________________________________________________________________________________
+  -->
+  <Actions>
+    <!--
+			*
+			*		init  |  Redirects to 'list'.
+			*
+		-->
+    <Action name="init">
+      <Action name="list"/>
+    </Action>
+
+
+    <!--
+			*
+			*		list  |  Configuration of mainScreen, to view/edit data of all the companies.
+			*
+		-->
+    <Action name="list" screen="mainScreen">
+      <!-- Clears the current company -->
+      <Var name="selectedCompanyId" process="true" clear="true"/>
+      
+      <!-- Gets all the companies and a blank row at the end, to add a new one, if wanted -->
+      <Var name="companies"><Call library="framework,company,api" function="getAll"/></Var>
+      <Var name="companies" key=""><Null/></Var>
+      <Control method="bind" object="companiesGrid">
+        <Param><Var name="companies"/></Param>
+      </Control>
+    </Action>
+    
+
+    <!--
+			*
+			*		deleteCompany  |  Deletes a company.
+			*
+		-->
+    <Action name="deleteCompany">
+      <!-- Deletes the company -->
+      <Call library="framework,company,api" function="delete">
+        <Param name="id"><ActionValue/></Param>
+      </Call>
+      
+      <!-- Redirects to main page -->
+      <Action name="list"/>
+    </Action>
+    
+    
+    <!--
+			*
+			*		deleteConfig [editConfigsScreen]  |  Deletes a company's configuration.
+			*
+		-->
+    <Action name="deleteConfig">
+      <!-- Deletes the config -->
+      <Call library="framework,config,api" function="delete">
+        <Param name="id"><ActionValue/></Param>
+      </Call>
+      
+      <!-- Redirects to configs' page -->
+      <Action name="editConfigs"/>
+    </Action>
+    
+    
+    <!--
+			*
+			*		editConfigs  |  Configuration of editConfigsScreen, to edit a company's configurations.
+			*
+		-->
+    <Action name="editConfigs" screen="editConfigsScreen">
+      <!-- Gets the configs and a blank row at the end, to add a new one, if wanted -->
+      <Var name="configs">
+        <Call library="framework,config,api" function="getByCompany">
+          <Param name="id_company"><Var name="selectedCompanyId" process="true"/></Param>
+        </Call>
+      </Var>
+      <Var name="configs" key=""><Null/></Var>
+      <Control method="bind" object="configsGrid">
+        <Param><Var name="configs"/></Param>
+      </Control>
+    </Action>
+  
+
+    <!--
+      *
+      *		saveCompanies  |  Saves a company's details or creates a new one.
+      *
+    -->
+    <Action name="saveCompanies">
+      <!-- Saves companies' details, accordingly:
+        . Creates a new company;
+        OR
+        . Updates the selected ones;
+      -->
+      <ForEach var="POSTDATA" item="item" key="key">
+        <Var name="key" dump="true"/>
+        <Var name="item" dump="true"/>
+        <!-- New company row identified by empty key. If name and code not empty, needs to be added -->
+        <If condition="($key=='' &amp;&amp; $key!='0') &amp;&amp; ($item->name != '' &amp;&amp; $item->code != '')">
+          <Then>
+            <Call library="framework,company,api" function="add">
+              <Param name="name"><Var name="item" key="name"/></Param>
+              <Param name="code"><Var name="item" key="code"/></Param>
+              <Param name="description"><Var name="item" key="description"/></Param>
+              <Param name="id_timezone"><Var name="item" key="id_timezone"/></Param>
+              <Param name="is_active"><Var name="item" key="is_active"/></Param>
+              <Param name="id_company"><Var name="item" key="id_company"/></Param>
+            </Call>
+          </Then>
+          <Else>
+            <!-- Every other row, if changed, it's a company update -->
+            <If condition="$item->CHANGED">
+              <Then>
+                <Call library="framework,company,api" function="update">
+                  <Param name="id"><String.parse><Var name="key"/></String.parse></Param>
+                  <Param name="name"><Var name="item" key="name"/></Param>
+                  <Param name="code"><Var name="item" key="code"/></Param>
+                  <Param name="description"><Var name="item" key="description"/></Param>
+                  <Param name="id_timezone"><Var name="item" key="id_timezone"/></Param>
+                  <Param name="is_active"><Var name="item" key="is_active"/></Param>
+                  <Param name="id_company"><Var name="item" key="id_company"/></Param>
+                </Call>
+              </Then>
+            </If>
+          </Else>
+        </If>
+      </ForEach>
+      
+      <!-- Redirects to the main page -->
+      <Action name="list"/>
+    </Action>
+    
+    
+    <!--
+			*
+    	*   saveConfigs [editConfigsScreen]  |  Saves a company's configurations or creates a new one.
+			*
+		-->
+    <Action name="saveConfigs">
+      <!-- Saves the company's configurations, accordingly:
+        . Creates a new config;
+        OR
+        . Updates the selected ones;
+      -->
+      <ForEach var="POSTDATA" item="item" key="key">
+        <!-- New config row identified by empty key. If name and code not empty, needs to be added -->
+        <If condition="($key=='' &amp;&amp; $key!='0') &amp;&amp; ($item->code != '' &amp;&amp; $item->value != '')">
+          <Then>
+            <Call library="framework,config,api" function="add">
+              <Param name="id_company"><Var name="selectedCompanyId" process="true"/></Param>
+              <Param name="code"><Var name="item" key="code"/></Param>
+              <Param name="value"><Var name="item" key="value"/></Param>
+              <Param name="comment"><Var name="item" key="comment"/></Param>
+            </Call>
+          </Then>
+          <Else>
+            <!-- Every other row, if changed, it's a config update -->
+            <If condition="$item->CHANGED">
+              <Then>
+                <Call library="framework,config,api" function="update">
+                  <Param name="id"><String.parse><Var name="key"/></String.parse></Param>
+                  <Param name="code"><Var name="item" key="code"/></Param>
+                  <Param name="value"><Var name="item" key="value"/></Param>
+                  <Param name="comment"><Var name="item" key="comment"/></Param>
+                </Call>
+              </Then>
+            </If>
+          </Else>
+        </If>
+      </ForEach>
+      
+      <!-- Redirects to configs' page  -->
+      <Action name="editConfigs"/>
+    </Action>
+
+
+    <!--
+			*
+			*		selectCompanyEditConfigs  |  Changes the current company to the selected one, to edit its configurations.
+			*
+		-->
+    <Action name="selectCompanyEditConfigs">
+      <!-- Updates the current company -->
+      <Var name="selectedCompanyId" process="true"><ActionValue/></Var>
+      
+      <!-- Redirects to configs' page -->
+      <Action name="editConfigs"/>
+    </Action>
+
+
+    <!--
+			*
+			*		back  |  Returns to the backoffice main page.
+			*
+		-->
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+  </Actions>
+</Node>

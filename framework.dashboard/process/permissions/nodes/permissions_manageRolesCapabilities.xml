@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+    <![CDATA[ Permissions Management  >  Roles_Capabilities Management  ::  Allows to view, edit and delete the assignment of capabilities to roles. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+  <Libraries/>
+  <Params/>
+  
+  
+  
+  
+	<!--	__________________________________________________________________________________________________________________________
+		*
+		*
+		*			  S C R E E N S    ::    mainScreen  |  detailsScreen
+		*
+		*		__________________________________________________________________________________________________________________________
+	-->
+  <Screens>
+    <!--
+			*
+			*   mainScreen  |  Main page of roles_capabilities management. Shows a list of assignments, according to the defined search criteria.
+			* 
+		-->
+    <Screen name="mainScreen" title="rolesCapabilitiesManagement">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="back"/>
+      <Menu name="add" label="add" icon="plus" action="add"/>
+
+      <!-- Search -->
+      <Form name="searchForm" persist="true">
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Text name="text" label="searchText"/>
+        <Select name="id_role" datasource="call:framework,role,api,getAll" datasource-params="id_company=$id_company,is_active=1" bindid="id" bindvalue="code"/>
+        <Select name="id_capability" datasource="call:framework,capability,api,getAllByCompany" datasource-params="id_company=$id_company" bindid="id" bindvalue="code"/>
+        
+        <ButtonGroup>
+          <Button name="search" type="search" action="search"/>
+          <Button name="add" type="add" action="add"/>
+        </ButtonGroup>
+      </Form>
+
+      <!-- Roles_Capabilities -->
+      <HtmlContainer name="break"/>
+      <Grid name="rolesCapabilitiesGrid" pageable="true" pagesize="50" pagingaction="search">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="id_role" datasource="call:framework,role,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="id_capability" datasource="call:framework,capability,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="_modification" colsize="2">
+              <Formatter name="DateTime" method="shortDateTime"/>
+              <Formatter name="Separator" method="space"/>
+              <Formatter name="Separator" method="pipe"/>
+              <Formatter name="Separator" method="space"/>
+            </Column>
+            <Column name="_id_updater" inline="true"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="edit" icon="edit" actionvalue="id"/>
+            <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+
+    <!--
+			*
+			*   detailsScreen  |  Allows to edit a role_capability's details.
+			* 
+		-->
+    <Screen name="detailsScreen" title="details">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="search"/>
+
+      <!-- Details -->
+      <Form name="detailsForm">
+        <Static name="id"/>
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Select name="id_role" datasource="call:framework,role,api,getAll" datasource-params="id_company=$id_company,is_active=1" bindid="id" bindvalue="code"/>
+        <Select name="id_capability" datasource="call:framework,capability,api,getAllByCompany" datasource-params="id_company=$id_company" bindid="id" bindvalue="code"/>
+        
+        <ButtonGroup>
+          <Button name="save" type="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  A C T I O N S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  --> 
+  <Actions>
+    <!--
+			*
+			*   init  |  Redirects to the main page.
+			*
+		-->
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+
+
+    <!--
+			*
+			*   search  |  Configuration of mainScreen, according to the defined search criteria.
+			*
+		-->
+    <Action name="search" screen="mainScreen">
+      <!-- Sets form's data -->
+      <Var name="defaultData" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="setDefaultData" object="searchForm">
+        <Param><Var name="defaultData"/></Param>
+      </Control>
+      
+      <!-- Gets current search criteria -->
+      <Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
+
+      <!-- Gets roles_capabilities' search results -->
+      <Var name="rolesCapabilities">
+        <Call library="framework,role.capability,api" function="search">
+          <Param name="id"><Var name="currentData" key="id"/></Param>
+          <Param name="text"><Var name="currentData" key="text"/></Param>
+          <Param name="id_role"><Var name="currentData" key="id_role"/></Param>
+          <Param name="id_capability"><Var name="currentData" key="id_capability"/></Param>
+          <Param name="id_company"><Var name="currentData" key="id_company"/></Param>
+          <Param name="pageNum"><Control method="getCurrentPage" object="rolesCapabilitiesGrid"/></Param>
+          <Param name="pageSize"><Control method="getPageSize" object="rolesCapabilitiesGrid"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="rolesCapabilitiesGrid">
+        <Param><Var name="rolesCapabilities"/></Param>
+      </Control>
+      <Control method="bind" object="break">
+				<Param><Lang key="break"/></Param>
+			</Control>
+    </Action>
+
+  
+    <!--
+			*
+			*   add  |  Configuration of detailsScreen, to create a new assignment.
+			*
+		-->
+    <Action name="add" screen="detailsScreen"> 
+      <!-- Clears current role_capability -->
+      <Var name="idRoleCapability" process="true"><Null/></Var>
+      
+      <!-- Sets the company to the current one -->
+      <Var name="roleCapability" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="roleCapability"/></Param>
+      </Control>
+    </Action>
+    
+    
+    <!--
+			*
+			*   delete  |  Removes a capability from a role.
+			*
+		-->
+    <Action name="delete">
+      <!-- Deletes the assignment of the capability to the role -->
+      <Call library="framework,role.capability,api" function="delete">
+        <Param name="id"><ActionValue/></Param>
+      </Call>
+
+      <!-- Redirects to main page -->
+      <Action name="search"/>
+    </Action>
+
+
+    <!--
+			*
+			*   edit  |  Configuration of detailsScreen, to edit a role_capability.
+			*
+		-->
+    <Action name="edit" screen="detailsScreen">
+      <!-- Sets current role_capability -->
+      <Var name="idRoleCapability" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="idRoleCapability" process="true"/></Param>
+        </IsNull>
+      </Var>
+
+      <!-- Gets role_capability's data -->
+      <Var name="roleCapability">
+        <Call library="framework,role.capability,api" function="get">
+          <Param name="id"><Var name="idRoleCapability" process="true"/></Param>
+        </Call>
+      </Var>
+      <Var name="roleCapability" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="roleCapability"/></Param>
+      </Control>
+    </Action>
+
+
+
+    <!--
+			*
+			*   save [detailsScreen]  |  Saves a role_capability's details or creates a new one.
+			*
+		-->
+    <Action name="save">
+      <!-- Saves a role_capability's details, accordingly:
+        . Creates a new assignment;
+        OR
+        . Updates the current one;
+      -->
+      <If condition="@idRoleCapability == ''">
+        <Then>
+          <Var name="result">
+            <Call library="framework,role.capability,api" function="add">
+              <Param name="id_role"><Var name="POSTDATA" key="id_role"/></Param>
+              <Param name="id_capability"><Var name="POSTDATA" key="id_capability"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+            </Call>
+          </Var>
+        </Then>
+        <Else>
+          <Var name="result" dump="true">
+            <Call library="framework,role.capability,api" function="update">
+              <Param name="id"><Var name="POSTDATA" key="id"/></Param>
+              <Param name="id_role"><Var name="POSTDATA" key="id_role"/></Param>
+              <Param name="id_capability"><Var name="POSTDATA" key="id_capability"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+            </Call>
+          </Var>
+        </Else>
+      </If>
+      
+      <!-- Checks if there were errors:
+        . If so, redirects to the edit page again;
+        . If not, redirects to main page;
+      -->
+      <If condition="$result == -1">
+        <Then>
+          <UserMessage type="error"><Lang key="capabilityAlreadyAssignedToRole"/></UserMessage>
+          <Action name="edit"/>
+        </Then>
+        <Else>
+          <Action name="search"/>
+        </Else>
+      </If>
+    </Action>
+
+
+    <!--
+			*
+			*   back  |  Returns to the permissions management main page.
+			*
+		-->
+    <Action name="back">
+      <!-- Switches to 'main' node -->
+      <RaiseEvent name="back"/>
+    </Action>
+  </Actions>
+  <Library/>
+</Node>

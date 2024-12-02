@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of roles that meet the given search criteria. ]]>
+    <![CDATA[ Gets a list of roles that meet the given criteria. ]]>
 	</Doc>
 	<Params>
-		<Param name="id" type="int" required="false" doc="Role's id"/>
-		<Param name="name" type="text" required="false" doc="Role's name"/>
-		<Param name="code" type="text" required="false" doc="Role's code"/>
-		<Param name="id_company" type="int" required="false" doc="Company's id"/>
-		<Param name="is_active" type="int" required="false" doc="1 to filter by just the active roles"/>
+		<Param name="id_company" type="int" required="true" doc="Role's company"/>
+		<Param name="text" type="text" required="false" doc="Role's id, name or code"/>
+		<Param name="is_active" type="int" required="false" doc="1 if the role is active; 0, otherwise"/>
 		<Param name="capabilities" type="text" required="false" doc="Role's capabilities' list"/>
 	</Params>
+	
 	<Body>
 		<SqlPaginated>
 			<XSql>
@@ -35,43 +34,27 @@
 					</XTable>
 				</XFrom>
 				<XWhere>
-					<XCondition><![CDATA[ 1 = 1 ]]></XCondition>
-					<XCondition optional="id">
-						<![CDATA[
-							AND r.id = {param->id}
+					<XCondition><![CDATA[ r.id_company = {param->id_company} ]]></XCondition>
+					<XCondition optional="text">
+	          <![CDATA[
+							AND (
+								r.id LIKE '{param->text}'
+								OR r.code LIKE '{param->text}'
+								OR r.name LIKE '{param->text}'
+							)  
 						]]>
-					</XCondition>
-					<XCondition optional="name">
-						<![CDATA[ 
-							AND r.name LIKE '{param->name}'
-						]]>
-					</XCondition>
-					<XCondition optional="code">
-						<![CDATA[ 
-							AND r.code LIKE '{param->code}' 
-						]]>
-					</XCondition>
-					<XCondition optional="id_company">
-						<![CDATA[ 
-							AND r.id_company = '{param->id_company}'
-						]]>
-					</XCondition>
+	        </XCondition>
 					<XCondition optional="is_active">
 						<![CDATA[ 
 							AND r.is_active = {param->is_active}
-						]]>				
+						]]>
 					</XCondition>
 					<XCondition optional="capabilities">
 						<![CDATA[ 
-							AND c.code IN ({@param->capabilities})
+							AND c.code IN ({param->capabilities})
 						]]>
 					</XCondition>
 				</XWhere>
-				<XGroupBy>
-					<XCondition>
-						<![CDATA[ r.id ASC ]]>
-					</XCondition>
-				</XGroupBy>
 				<XOrderBy>
 					<XOrder><![CDATA[ r.name ASC ]]></XOrder>
 				</XOrderBy>

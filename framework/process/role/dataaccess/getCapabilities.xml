@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    <![CDATA[ Gets the list of capabilities that a role have. ]]>
+  </Doc>
+	<Params>
+		<Param name="id_company" type="int" required="true" doc="Role's and capability's company"/>
+		<Param name="id" type="int" required="false" doc="Role's id"/>
+		<Param name="code" type="text" required="false" doc="Role's code"/>
+	</Params>
+	
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[
+							r.code AS "role",
+							c.*
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[
+							fw_role r
+							INNER JOIN fw_role_capability rc ON (rc.id_role = r.id)
+							INNER JOIN fw_capability c ON (c.id = rc.id_capability)
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[ 
+							r.id_company = {param->id_company}
+							AND (c.id_company = {param->id_company} OR c.is_global = 1)
+						]]>
+					</XCondition>
+					<XCondition optional="id">
+						<![CDATA[ AND r.id = {param->id} ]]>
+					</XCondition>
+					<XCondition optional="code">
+						<![CDATA[ AND r.code LIKE '{param->code}' ]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ c.code ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

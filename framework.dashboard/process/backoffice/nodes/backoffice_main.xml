@@ -1,67 +1,120 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-  <Doc><![CDATA[ Framework Dashboard Backoffice  ::  Main page  ]]></Doc>
+  <Doc>
+    <![CDATA[ Framework Dashboard | Backoffice  >  Main Page  ::  Shows the main menu and redirects to the corresponding node. ]]>
+  </Doc>
 	<Permissions/>
   <Configuration/>
-	<Libraries>
-		<Use name="UtilsLib" type="lib"/>
-	</Libraries>
+	<Libraries/>
 	<Params/>
-  <!--	________________________________________________________________________________________________
-    *
-    *			S C R E E N S    ::    mainScreen
-    *		________________________________________________________________________________________________
-  -->
+  
+  
+  
+  
+	<!--	__________________________________________________________________________________________________________________________
+		*
+		*
+		*			  S C R E E N S    ::    mainScreen
+		*
+		*		__________________________________________________________________________________________________________________________
+	-->
   <Screens>
     <!--
 			*
-			*  mainScreen  |  Shows the framework dashboard menu.
+			*   mainScreen  |  Main page of Framework Dashboard Backoffice. 
+      *                  Shows the menu options: permissions's, companies's and app files's management.
 			* 
 		-->
-    <Screen name="mainScreen" template="1col_LeftMenu">
-      <Menu name="permissions" label="permissions" icon="lock">
-        <Action name="processAction" label="roles" actionvalue="manageRoles"/>
-        <Action name="processAction" label="capabilities" actionvalue="manageCapabilities"/>
-        <Action name="processAction" label="allocations" actionvalue="manageAllocations"/>
-        <Action name="processAction" label="roleCapabilities" actionvalue="manageRoleCapabilities"/>
-      </Menu>
-
-      <Menu name="records" label="records" icon="file">
-        <Action name="processAction" label="listRecords" actionvalue="records"/>
-      </Menu>
-
-      <Menu name="appFiles" label="appFiles" icon="folder-open">
-        <Action name="processAction" label="manage" actionvalue="manageAppFiles"/>
-      </Menu>
-
-      <Menu name="companyConfig" label="companyConfig" icon="building">
-        <Action name="processAction" label="manage" actionvalue="companyConfig"/>
-      </Menu>
+    <Screen name="mainScreen" title="framework.dashboard">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="back"/>
+      <Menu name="permissions" label="permissions" icon="building-lock" action="managePermissions"/>
+      <Menu name="companies" label="companies" icon="building" action="manageCompanies"/>
+      <Menu name="appFiles" label="appFiles" icon="folder-tree" action="manageAppFiles"/>
+      
+      <!-- Actions -->
+      <Form name="actions" buttonsalign="center">      
+        <ButtonGroup>
+          <Button name="permissions" type="submit" icon="building-lock" action="managePermissions"/>
+          <Button name="companies" type="submit" icon="building" action="manageCompanies"/>
+          <Button name="appFiles" type="submit" icon="folder-tree" action="manageAppFiles"/>
+        </ButtonGroup>
+      </Form>
     </Screen>
   </Screens>
-  <!--	________________________________________________________________________________________________
+  
+  
+  
+  
+  <!--	________________________________________________________________________________________________________________________________________________________________________________________________
     *
-    *			A C T I O N S    ::    
-    *		________________________________________________________________________________________________
+    *
+    *			A C T I O N S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________________________________________________________________________________
   -->
   <Actions>
     <!--
 			*
-			*  init  |  Shows mainScreen.
+			*   init  |  Shows the backoffice main page.
 			*
 		-->
     <Action name="init" screen="mainScreen"/>
 
+    
+    <!--
+      *
+      *		managePermissions  |  Redirects to the permissions management.
+      *
+    -->
+    <Action name="managePermissions">
+      <Permissions>
+        <Allow>
+          <Role name="framework.admin"/>
+          <Capability name="framework/permissions::manage.all"/>
+          <Capability name="framework/permissions::manage.capability"/>
+          <Capability name="framework/permissions::manage.role"/>
+        </Allow>
+      </Permissions>
+      
+      <RaiseEvent name="managePermissions"/>
+    </Action>
+    
+    
+    <!--
+      *
+      *		manageCompanies  |  Redirects to the companies management.
+      *
+    -->
+    <Action name="manageCompanies">
+      <Permissions>
+        <Allow>
+          <Role name="framework.admin"/>
+          <Capability name="framework/company::manage"/>
+        </Allow>
+      </Permissions>
+      
+      <RaiseEvent name="manageCompanies"/>
+    </Action>
+        
+    
+    <!--
+      *
+      *		manageAppFiles  |  Redirects to the app files management.
+      *
+    -->
+    <Action name="manageAppFiles">
+      <RaiseEvent name="manageAppFiles"/>
+    </Action>
+    
+    
 		<!--
 			*
-			*  back  |  Switches to another node, according to the chosen action.
+			*   back  |  Returns to the previous process.
 			*
 		-->
-    <Action name="processAction">
-      <Var name="eventName"><ActionValue/></Var>
-
-      <RaiseEvent name="$eventName"/>
+    <Action name="back">
+      <RaiseEvent name="back"/>
     </Action>
   </Actions>
-  <Library/>
 </Node>

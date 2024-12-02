@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+    <![CDATA[ Permissions Management  >  Roles Management  ::  Allows to view, edit and delete roles. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+  <Libraries/>
+  <Params/>
+  
+  
+  
+  
+	<!--	__________________________________________________________________________________________________________________________
+		*
+		*
+		*			  S C R E E N S    ::    mainScreen  |  detailsScreen
+		*
+		*		__________________________________________________________________________________________________________________________
+	-->
+  <Screens>
+    <!--
+			*
+			*   mainScreen  |  Main page of roles management. Shows a list of roles, according to the defined search criteria.
+			* 
+		-->
+    <Screen name="mainScreen" title="rolesManagement">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="back"/>
+      <Menu name="add" label="add" icon="plus" action="add"/>
+
+      <!-- Search -->
+      <Form name="searchForm" persist="true">
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Text name="text" label="searchText"/>
+        <Text name="capability" label="searchCapability"/>
+        <Checkbox name="is_active"/>
+
+        <ButtonGroup>
+          <Button name="search" type="search" action="search"/>
+          <Button name="add" type="add" action="add"/>
+        </ButtonGroup>
+      </Form>
+
+      <!-- Roles -->
+      <HtmlContainer name="break"/>
+      <Grid name="rolesGrid" pageable="true" pagesize="50" pagingaction="search">
+        <Template>
+          <Columns>
+            <Column name="id" headeralign="center" horizontalalign="center"/>
+            <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" colsize="1"/>
+            <Column name="name"/>
+            <Column name="code"/>
+            <Column name="is_active" headeralign="center" horizontalalign="center">
+              <Formatter name="Icon" size="18">
+								<Param name="0">error.png</Param>
+								<Param name="1">success.png</Param>
+							</Formatter>
+            </Column>
+          </Columns>
+          <Actions separator="true" headeralign="center" horizontalalign="center">
+            <Action name="edit" icon="edit" actionvalue="id"/>
+            <Action name="duplicate" icon="clone" actionvalue="id"/>
+            <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+
+    <!--
+			*
+			*   detailsScreen  |  Allows to edit a role's details.
+			* 
+		-->
+    <Screen name="detailsScreen" title="details">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="search"/>
+
+      <!-- Details -->
+      <Form name="detailsForm">
+        <Static name="id"/>
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code" required="true"/>
+        <Text name="name" required="true"/>
+        <Text name="code" required="true"/>
+        <Checkbox name="is_active"/>
+
+        <ButtonGroup>
+          <Button name="save" type="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  A C T I O N S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  --> 
+  <Actions>
+    <!--
+			*
+			*   init  |  Redirects to the main page.
+			*
+		-->
+    <Action name="init"> 
+      <Action name="search"/>
+    </Action>
+
+
+    <!--
+			*
+			*   search  |  Configuration of mainScreen, according to the defined search criteria.
+			*
+		-->
+    <Action name="search" screen="mainScreen">
+      <!-- Sets form's data -->
+      <Var name="defaultData" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Var name="defaultData" key="is_active">1</Var>
+      <Control method="setDefaultData" object="searchForm">
+        <Param><Var name="defaultData"/></Param>
+      </Control>
+      
+      <!-- Gets current search criteria -->
+      <Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
+      
+      <!-- Gets roles' search results -->
+      <Var name="roles">
+        <Call library="framework,role,api" function="search">
+          <Param name="text"><Var name="currentData" key="text"/></Param>
+          <Param name="capabilities"><Var name="currentData" key="capability"/></Param>
+          <Param name="id_company"><Var name="currentData" key="id_company"/></Param>
+          <Param name="is_active"><Var name="currentData" key="is_active"/></Param>
+          <Param name="pageNum"><Control method="getCurrentPage" object="rolesGrid"/></Param>
+          <Param name="pageSize"><Control method="getPageSize" object="rolesGrid"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="rolesGrid">
+        <Param><Var name="roles"/></Param>
+      </Control>
+      <Control method="bind" object="break">
+				<Param><Lang key="break"/></Param>
+			</Control>
+    </Action>
+
+  
+    <!--
+			*
+			*   add  |  Configuration of detailsScreen, to create a new role.
+			*
+		-->
+    <Action name="add" screen="detailsScreen">
+      <!-- Clears current role -->
+      <Var name="idRole" process="true"><Null/></Var>
+      
+      <!-- Sets the company to the current one -->
+      <Var name="role" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="role"/></Param>
+      </Control>
+    </Action>
+
+
+    <!--
+			*
+			*   delete  |  Deletes a role.
+			*
+		-->
+    <Action name="delete">
+      <!-- Deletes the current role from the system -->
+      <Call library="framework,role,api" function="delete">
+        <Param name="id"><ActionValue/></Param>
+      </Call>
+      
+      <!-- Redirects to main page -->
+      <Action name="search"/>
+    </Action>
+   
+    
+    <!--
+			*
+			*   duplicate  |  Duplicates a role, allowing to edit its details (to create a new one).
+			*
+		-->
+    <Action name="duplicate"  screen="detailsScreen">
+      <!-- Clears current role -->
+      <Var name="idRole" process="true"><Null/></Var>
+      
+      <!-- Gets role's data -->
+      <Var name="role">
+        <Call library="framework,role,api" function="getById">
+          <Param name="id"><ActionValue/></Param>
+        </Call>
+      </Var>
+      <Var name="role" key="id"><Null/></Var>
+      <Var name="role" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="role"/></Param>
+      </Control>
+    </Action>
+    
+
+
+    <!--
+			*
+			*   edit  |  Configuration of detailsScreen, to edit a role.
+			*
+		-->
+    <Action name="edit" screen="detailsScreen">
+      <!-- Sets current role -->
+      <Var name="idRole" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="idRole" process="true"/></Param>
+        </IsNull>
+      </Var>
+      
+      <!-- Gets role's data -->
+      <Var name="role"> 
+        <Call library="framework,role,api" function="getById">
+          <Param name="id"><Var name="idRole" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="role"/></Param>
+      </Control>
+    </Action>
+
+
+    <!--
+			*
+			*   save [detailsScreen]  |  Saves a role's details or creates a new one.
+			*
+		-->
+    <Action name="save">
+      <!-- Saves a role's details, accordingly:
+        . Creates a new role;
+        OR
+        . Updates the current one;
+      -->
+      <If condition="@idRole == ''">
+        <Then>
+          <Var name="result">
+            <Call library="framework,role,api" function="add">
+              <Param name="name"><Var name="POSTDATA" key="name"/></Param>
+              <Param name="code"><Var name="POSTDATA" key="code"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+              <Param name="is_active"><Var name="POSTDATA" key="is_active"/></Param>
+            </Call>
+          </Var>
+        </Then>
+        <Else>
+          <Var name="result">
+            <Call library="framework,role,api" function="update">
+              <Param name="id"><Var name="idRole" process="true"/></Param>
+              <Param name="name"><Var name="POSTDATA" key="name"/></Param>
+              <Param name="code"><Var name="POSTDATA" key="code"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+              <Param name="is_active"><Var name="POSTDATA" key="is_active"/></Param>
+            </Call>
+          </Var>
+        </Else>
+      </If>
+      
+      <!-- Checks if there were errors:
+        . If so, redirects to the edit page again;
+        . If not, redirects to main page;
+      -->
+      <If condition="$result == -1">
+        <Then>
+          <UserMessage type="error"><Lang key="roleAlreadyExistsError"/></UserMessage>
+          <Action name="edit"/>
+        </Then>
+        <Else>
+          <Action name="search"/>
+        </Else>
+      </If>
+    </Action>
+
+
+    <!--
+			*
+			*   back  |  Returns to the permissions management main page.
+			*
+		-->
+    <Action name="back">
+      <RaiseEvent name="back"/>
+    </Action>
+  </Actions>
+</Node>

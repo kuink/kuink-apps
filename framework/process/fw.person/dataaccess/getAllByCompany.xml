@@ -1,0 +1,41 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<![CDATA[ Gets a list of all the people belonging to a company. ]]>
+	</Doc>
+	<Params>
+		<Param name="id_company" type="int" required="true" doc="Company's id"/>
+	</Params>
+  
+	<Body>
+		<Sql>
+			<XSql>
+        <XSelect>
+          <XField>
+            <![CDATA[ 
+							p.*
+            ]]>
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            <![CDATA[ 
+							fw_person p  
+							INNER JOIN fw_person_company pc ON (pc.id_person = p.id)
+            ]]>
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition> 
+            <![CDATA[ 
+							pc.id_company = '{param->id_company}'
+            ]]> 
+          </XCondition>
+        </XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ p.display_name ASC ]]></XOrder>
+				</XOrderBy>
+      </XSql>
+		</Sql>
+	</Body>
+</Method>

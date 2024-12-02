@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+    <![CDATA[ Main page of Role's Allocation Management  ::  Shows and allows to edit the allocations of a role to a user. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+  <Libraries/>
+  <Params/>
+  
+  
+  
+  
+	<!--	__________________________________________________________________________________________________________________________
+		*
+		*
+		*			  S C R E E N S    ::    mainScreen  |  detailsScreen
+		*
+		*		__________________________________________________________________________________________________________________________
+	-->
+  <Screens>
+    <!--
+			*
+			*   mainScreen  |  Main page of allocations management. Shows a list of allocations, according to the defined search criteria.
+			* 
+		-->
+    <Screen name="mainScreen" title="allocationsManagement">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="back"/>
+      <Menu name="add" label="add" icon="plus" action="add"/>
+
+      <!-- Search -->
+      <Form name="searchForm" persist="true">
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Text name="searchText"/>
+        <Select name="id_person_group" datasource="call:framework,fw.person.group,api,getAllByCompany" datasource-params="id_company=$id_company,is_active=1" bindid="id" bindvalue="code"/>
+        <Select name="id_person" datasource="call:framework,fw.person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="id,display_name" searchable="dynamic" datasource-params="text,pagenum" action="search"/>
+        <Select name="id_role" bindid="id" bindvalue="code">
+          <Rule runat="client" attr="value" datasourceparams="id_company=$id_company" datasource="framework,role,api,getByCompany"/>
+        </Select>
+        
+        <ButtonGroup>
+          <Button name="search" type="search" action="search"/>
+          <Button name="add" type="add" action="add"/>
+        </ButtonGroup>
+      </Form>
+
+      <!-- Allocations -->
+      <HtmlContainer name="break"/>
+      <Grid name="allocationsGrid" pageable="true" pagesize="50" pagingaction="search">
+        <Template>
+          <Columns>
+            <Column name="id"/>
+            <Column name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+            <Column name="id_person_group" datasource="call:framework,fw.person.group,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="person_display_name" label="id_person">
+              <Formatter name="Separator" method="pipe"/>
+            </Column>
+            <Column name="id_person" inline="true"/>
+            <Column name="id_role" datasource="call:framework,role,api,getAll" bindid="id" bindvalue="code"/>
+            <Column name="_modification">
+              <Formatter name="DateTime" method="shortDateTime"/>
+              <Formatter name="Separator" method="space"/>
+              <Formatter name="Separator" method="pipe"/>
+              <Formatter name="Separator" method="space"/>
+            </Column>
+            <Column name="_id_updater" inline="true"/>
+          </Columns>
+          <Actions separator="true">
+            <Action name="edit" label="edit" icon="pencil" actionvalue="id"/>
+            <Action name="delete" label="delete" icon="trash-o" actionvalue="id" confirm="true"/>
+          </Actions>
+        </Template>
+      </Grid>
+    </Screen>
+
+
+    <!--
+			*
+			*   detailsScreen  |  Allows to view/edit an allocation's details.
+			* 
+		-->
+    <Screen name="detailsScreen" title="details">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="search"/>
+      
+      <!-- Details -->
+      <Form name="detailsForm">
+        <Static name="id"/>
+        <Static name="id_company" datasource="call:framework,company,api,getActiveCompanies" bindid="id" bindvalue="code"/>
+        <Select name="id_role" datasource="call:framework,role,api,getAll" datasource-params="id_company=$id_company,is_active=1" bindid="id" bindvalue="code" required="true"/>
+        <Select name="id_person_group" datasource="call:framework,fw.person.group,api,getAllByCompany" datasource-params="id_company=$id_company,is_active=1" bindid="id" bindvalue="name"/>
+        <Select name="id_person" datasource="call:framework,fw.person,api,searchFullText" bindid="id" bindvalue="display_name" bindimage="public_key" bindresults="id,display_name" searchable="dynamic" datasource-params="text,pagenum"/>
+        
+        <ButtonGroup>
+          <Button name="save" type="save" action="save"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+  
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  A C T I O N S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
+  <Actions>
+    <!--
+			*
+			*   init  |  Redirects to the main page.
+			*
+		-->
+    <Action name="init">
+      <Action name="search"/>
+    </Action>
+    
+    
+    <!--
+			*
+			*   search  |  Configuration of mainScreen, according to the defined search criteria.
+			*
+		-->
+    <Action name="search" screen="mainScreen">
+      <!-- Sets form's data -->
+      <Var name="defaultData" key="id_company"><Var name="idCompany" process="true"/></Var>
+			<Control method="setDefaultData" object="searchForm">
+				<Param><Var name="defaultData"/></Param>
+			</Control>
+      
+      <!-- Gets current search criteria -->
+      <Var name="currentData">
+        <Control method="getCurrentData" object="searchForm"/>
+      </Var>
+
+      <!-- Gets allocations' search results -->
+      <Var name="allocations">
+        <Call library="framework,allocation,api" function="search">
+          <Param name="id"><Var name="currentData" key="id"/></Param>
+            <Param name="text"><Var name="currentData" key="searchText"/></Param>
+            <Param name="id_company"><Var name="currentData" key="id_company"/></Param>
+            <Param name="id_person"><Var name="currentData" key="id_person"/></Param>
+            <Param name="id_person_group"><Var name="currentData" key="id_person_group"/></Param>
+            <Param name="id_role"><Var name="currentData" key="id_role"/></Param>
+            <Param name="pageSize"><Control method="getPageSize" object="allocationsGrid"/></Param>
+            <Param name="pageNum"><Control method="getCurrentPage" object="allocationsGrid"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="allocationsGrid">
+        <Param><Var name="allocations"/></Param>
+      </Control>
+    </Action>
+
+
+  
+    <!--
+			*
+			*   add  |  Configuration of detailsScreen, to create a new allocation.
+			*
+		-->
+    <Action name="add" screen="detailsScreen">
+      <!-- Clears current allocation -->
+      <Var name="idAllocation" process="true"><Null/></Var>
+      
+      <!-- Sets the company to the current one -->
+      <Var name="allocation" key="id_company"><Var name="idCompany" process="true"/></Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="allocation"/></Param>
+      </Control>
+    </Action>
+    
+
+    <!--
+			*
+			*   delete  |  Unassigns a role from a person/group.
+			*
+		-->
+    <Action name="delete">
+      <!-- Deletes the current allocation -->
+      <Call library="framework,allocation,api" function="delete">
+        <Param name="id"><Var name="idAllocation" process="true"/></Param>
+      </Call>
+      
+      <!-- Redirects to the main page -->
+      <Action name="search"/>
+    </Action>
+
+
+    <!--
+			*
+			*   edit  |  Configuration of detailsScreen, to edit an allocation.
+			*
+		-->
+    <Action name="edit" screen="detailsScreen">
+      <!-- Sets current allocation -->
+      <Var name="idAllocation" process="true">
+        <IsNull>
+          <Param><ActionValue/></Param>
+          <Param><Var name="idAllocation" process="true"/></Param>
+        </IsNull>
+      </Var>
+
+      <!-- Gets allocation's data -->
+      <Var name="allocation">
+        <Call library="framework,allocation,api" function="get">
+          <Param name="id"><Var name="idAllocation" process="true"/></Param>
+        </Call>
+      </Var>
+      <Control method="bind" object="detailsForm">
+        <Param><Var name="allocation"/></Param>
+      </Control>
+    </Action>
+
+
+    <!--
+			*
+			*   save [detailsScreen]  |  Saves an allocation's details or creates a new one.
+			*
+		-->
+    <Action name="save">
+      <!-- Saves an allocation's details, accordingly:
+        . Creates a new allocation;
+        OR
+        . Updates the current one;
+      -->
+      <If condition="@idAllocation == ''">
+        <Then>
+          <Var name="result">
+            <Call library="framework,allocation,api" function="add">
+              <Param name="id_person"><Var name="POSTDATA" key="id_person"/></Param>
+              <Param name="id_person_group"><Var name="POSTDATA" key="id_person_group"/></Param>
+              <Param name="id_role"><Var name="POSTDATA" key="id_role"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+            </Call>
+          </Var>
+        </Then>
+        <Else>
+          <Var name="result">
+            <Call library="framework,allocation,api" function="update">
+              <Param name="id"><Var name="POSTDATA" key="id"/></Param>
+              <Param name="id_person"><Var name="POSTDATA" key="id_person"/></Param>
+              <Param name="id_person_group"><Var name="POSTDATA" key="id_person_group"/></Param>
+              <Param name="id_role"><Var name="POSTDATA" key="id_role"/></Param>
+              <Param name="id_company"><Var name="POSTDATA" key="id_company"/></Param>
+            </Call>  
+          </Var>
+        </Else>
+      </If>
+      
+      <!-- Checks if there were errors:
+        . If so, redirects to the edit page again;
+        . If not, redirects to main page;
+      -->
+      <If condition="$result == -1">
+        <Then>
+          <UserMessage type="error"><Lang key="allocationDuplicateAssignment"/></UserMessage>
+          <Action name="edit"/>
+        </Then>
+        <Else>
+          <If condition="$result == -2">
+            <Then>
+              <UserMessage type="error"><Lang key="personDoesNotBelongToCompany"/></UserMessage>
+              <Action name="edit"/>
+            </Then>
+            <Else>
+              <If condition="$result == -3">
+                <Then>
+                  <UserMessage type="error"><Lang key="allocationAlreadyExists"/></UserMessage>
+                  <Action name="edit"/>
+                </Then>
+                <Else>
+                  <Action name="search"/>
+                </Else>
+              </If>
+            </Else>
+          </If>
+        </Else>
+      </If>
+    </Action>
+
+
+    <!--
+			*
+			*   back  |  Returns to the permissions management main page.
+			*
+		-->
+    <Action name="back">
+      <!-- Redirects to 'main' node -->
+      <RaiseEvent name="back"/>
+    </Action>
+  </Actions>
+</Node>

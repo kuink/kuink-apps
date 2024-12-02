@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+	<Doc>
+    <![CDATA[ Gets a list of all the role_capability assignments of a company. ]]>
+	</Doc>
+	<Params>
+		<Param name="id_company" type="int" required="true" doc="Company's id"/>
+	</Params>
+	
+	<Body>
+		<Sql>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[ 
+							rc.*,
+							c.code AS "capability",
+							r.code AS "role"
+						]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[ 
+							fw_role_capability rc
+							INNER JOIN fw_role r ON (r.id = rc.id_role)
+							INNER JOIN fw_capability c ON (c.id = rc.id_capability)
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition>
+						<![CDATA[ 
+							r.id_company = '{param->id_company}'
+							AND (c.id_company = '{param->id_company}' OR c.is_global = 1)
+						]]>
+					</XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ rc.id ASC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</Sql>
+	</Body>
+</Method>

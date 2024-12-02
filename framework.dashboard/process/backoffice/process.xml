@@ -1,38 +1,19 @@
 <?xml version="1.0"?>
 <Process>
 	<Transitions>
-		<Flow role="Teacher" startnode="" event="init" endnode="main"/>
-
-		<!-- Dashboard Main Page > Users management -->
-		<Flow role="Teacher" startnode="main" event="managePersons" endnode="xpPersonsManagement"/>
-		<Flow role="Teacher" startnode="xpPersonsManagement" event="back" endnode="main"/>
-
-		<!-- Dashboard Main Page > Capabilities management -->
-		<Flow role="Teacher" startnode="main" event="manageCapabilities" endnode="xpCapabilitiesManagement" />
-		<Flow role="Teacher" startnode="xpCapabilitiesManagement" event="back" endnode="main" />
-
-		<!-- Dashboard Main Page > Roles management -->
-		<Flow role="Teacher" startnode="main" event="manageRoles" endnode="xpRolesManagement" />
-		<Flow role="Teacher" startnode="xpRolesManagement" event="back" endnode="main" />
-
-		<!-- Dashboard Main Page > Roles-Capabilities management -->
-		<Flow role="Teacher" startnode="main" event="manageRoleCapabilities" endnode="xpRoleCapabilitiesManagement" />
-		<Flow role="Teacher" startnode="xpRoleCapabilitiesManagement" event="back" endnode="main" />
-
-		<!-- Dashboard Main Page > Allocations management -->
-		<Flow role="Teacher" startnode="main" event="manageAllocations" endnode="xpAllocationsManagement" />
-		<Flow role="Teacher" startnode="xpAllocationsManagement" event="back" endnode="main" />
-
-		<!-- Dashboard Main Page > Records management -->
-		<Flow role="Teacher" startnode="main" event="records" endnode="xpRecords" />
-		<Flow role="Teacher" startnode="xpRecords" event="back" endnode="main" />
-
-		<!-- Dashboard Main Page > App Files Management -->
-		<Flow role="Teacher" startnode="main" event="manageAppFiles" endnode="xpAppFilesManagement" />
-		<Flow role="Teacher" startnode="xpAppFilesManagement" event="back" endnode="main" />
-
-		<!-- Dashboard Main Page > Company confguration -->
-		<Flow role="Teacher" startnode="main" event="companyConfig" endnode="xpCompanyConfig" />
-		<Flow role="Teacher" startnode="xpCompanyConfig" event="back" endnode="main" />
+		<!-- Enters into main page -->
+		<Flow role="Teacher,Student" startnode="" event="init" endnode="main"/>
+		
+		<!-- Main Page  >  App Files Management -->
+		<Flow role="Teacher,Student" startnode="main" event="manageAppFiles" endnode="manageAppFiles"/>
+		<Flow role="Teacher,Student" startnode="manageAppFiles" event="back" endnode="main"/>
+		
+		<!-- Main Page  >  Companies Management -->
+		<Flow role="Teacher,Student" startnode="main" event="manageCompanies" endnode="manageCompanies"/>
+		<Flow role="Teacher,Student" startnode="manageCompanies" event="back" endnode="main"/>
+		
+		<!-- Main Page  >  Permissions Management -->
+		<Flow role="Teacher,Student" startnode="main" event="managePermissions" endnode="xpPermissionsManagement"/>
+		<Flow role="Teacher,Student" startnode="xpPermissionsManagement" event="back" endnode="main"/>
 	</Transitions>
 </Process>

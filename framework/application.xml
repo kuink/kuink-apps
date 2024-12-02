@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.019.000">
+<Application name="framework" version="2.020.000">
 	<!-- 
-		v2.019.000
-		*	@date:		2024.10.16
-		*	@author:	jose.rebelo
-		*	@comment:	Feature: framework > microsoft > api | Add add addTeamAssignment and getAllTeamAssignments functions.
+		2.020.000
+		*	@date:		2024.12.02
+		*	@author:	catarina.fernandes
+		*	@comment:	Feature: permissions | Adding the option to set permissions to a group and not only a single user. Reviewing all the permission's related APIs (allocation, capability, role, role.capability).
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

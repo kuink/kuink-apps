@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Node>
+  <Doc>
+    <![CDATA[ Framework Dashboard  >  Permissions Management  >  Main Page  ::  Allows to manage capabilities, roles, roles-capabilities relations and allocations for a company. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+	<Libraries/>
+	<Params/>
+  
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *		    S C R E E N S    ::    mainScreen
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
+  <Screens>  
+    <!--
+			*
+			*		mainScreen  |  Main page of the permissions management. Shows the menu: capabilities, roles, roles-capabilities and allocations.
+			* 
+		-->
+    <Screen name="mainScreen" title="permissions">
+      <!-- Menu -->
+      <Menu name="back" label="back" icon="arrow-left" action="back"/>
+      <Menu name="capabilitiesManagement" label="capabilities" icon="lock-keyhole" action="manageCapabilities"/>
+      <Menu name="rolesManagement" label="roles" icon="lock-keyhole" action="manageRoles"/>
+      <Menu name="rolesCapabilitiesManagement" label="rolesCapabilities" icon="lock-keyhole-open" action="manageRolesCapabilities"/>
+      <Menu name="allocationsManagement" label="allocations" icon="user-unlock" action="manageAllocations"/>
+      
+      <!-- Actions -->
+      <Form name="actions" buttonsalign="center">
+        <ButtonGroup>
+          <Button name="capabilities" type="submit" icon="lock-keyhole" action="manageCapabilities"/>
+          <Button name="roles" type="submit" icon="lock-keyhole" action="manageRoles"/>
+          <Button name="rolesCapabilities" type="submit" icon="lock-keyhole-open" action="manageRolesCapabilities"/>
+          <Button name="allocations" type="submit" icon="user-unlock" action="manageAllocations"/>
+        </ButtonGroup>
+      </Form>
+    </Screen>
+  </Screens>
+
+  
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  A C T I O N S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
+  <Actions>
+    <!--
+			*
+			*		init  |  Configuration of mainScreen.
+			*
+		-->
+    <Action name="init" screen="mainScreen">
+      <Var name="idCompany" process="true"><Var name="USER" key="idCompany"/></Var>
+    </Action>
+
+    
+    <!--
+      *
+      *		manageCapabilities  |  Redirects to the capabilities management node.
+      *
+    -->
+    <Action name="manageCapabilities">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/permissions::manage.all"/>
+          <Capability name="framework/permissions::manage.capability"/>
+        </Allow>
+      </Permissions>
+      
+      <RaiseEvent name="manageCapabilities"/>
+    </Action>
+    
+    
+    <!--
+      *
+      *		manageRoles  |  Redirects to the roles management node.
+      *
+    -->
+    <Action name="manageRoles">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/permissions::manage.all"/>
+          <Capability name="framework/permissions::manage.role"/>
+        </Allow>
+      </Permissions>
+      
+      <RaiseEvent name="manageRoles"/>
+    </Action>
+    
+    
+    <!--
+      *
+      *		manageRolesCapabilities  |  Redirects to the roles-capabilities management node.
+      *
+    -->
+    <Action name="manageRolesCapabilities">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/permissions::manage.all"/>
+          <Capability name="framework/permissions::manage.allocation"/>
+        </Allow>
+      </Permissions>
+      
+      <RaiseEvent name="manageRolesCapabilities"/>
+    </Action>
+    
+    
+    <!--
+      *
+      *		manageAllocations  |  Redirects to the allocations management node.
+      *
+    -->
+    <Action name="manageAllocations">
+      <Permissions>
+        <Allow>
+          <Capability name="framework/permissions::manage.all"/>
+          <Capability name="framework/permissions::manage.allocation"/>
+        </Allow>
+      </Permissions>
+      
+      <RaiseEvent name="manageAllocations"/>
+    </Action>
+
+    
+		<!--
+			*
+			*   back  |  Returns to the framework dashboard backoffice.
+			*
+		-->
+    <Action name="back">
+      <!-- Switches to 'backoffice' process -->
+      <RaiseEvent name="back"/>
+    </Action>
+  </Actions>
+</Node>

@@ -3,95 +3,107 @@
 	<Strings>
 		<!--	________________________________________________________________________________________________
 			*
-			*			D A S H B O A R D    ::    Main Page
+			*
+			*			G E N E R A L    ::    
+			*
 			*		________________________________________________________________________________________________
 		-->
-		<String key="framework.dashboard"><![CDATA[ Dashboard ]]></String>
-		<String key="permissions"><![CDATA[Permissões]]></String>
-		<String key="persons"><![CDATA[Utentes]]></String>
-		<String key="capabilities"><![CDATA[Capabilities]]></String>
-		<String key="roles"><![CDATA[Roles]]></String>
-		<String key="roleCapabilities"><![CDATA[Role-Capabilities]]></String>
-		<String key="allocations"><![CDATA[Allocations]]></String>
-		<String key="records"><![CDATA[Records]]></String>
-		<String key="listRecords"><![CDATA[Listar]]></String>
-		<String key="appFiles"><![CDATA[Ficheiros]]></String>
-		<String key="manage"><![CDATA[Gerir]]></String>
-		<String key="main"><![CDATA[Geral]]></String>
-		<String key="general"><![CDATA[ Geral ]]></String> 
+		<String key="framework.dashboard"><![CDATA[ Framework Dashboard ]]></String>
+		<String key="framework"><![CDATA[ Framework ]]></String>
+		<String key="allocations"><![CDATA[ Allocations ]]></String>
+		<String key="appFiles"><![CDATA[ Ficheiros ]]></String>
+		<String key="capabilities"><![CDATA[ Capabilities ]]></String>
+		<String key="companies"><![CDATA[ Empresas ]]></String>
+		<String key="general"><![CDATA[ Geral ]]></String>
+		<String key="manage"><![CDATA[ Gerir ]]></String>
+		<String key="main"><![CDATA[ Geral ]]></String>
+		<String key="people"><![CDATA[ Utentes ]]></String>
+		<String key="permissions"><![CDATA[ Permissões ]]></String>
+		<String key="roles"><![CDATA[ Roles ]]></String>
+		<String key="rolesCapabilities"><![CDATA[ Roles-Capabilities ]]></String>
+		
+		<!--  ::  Headers   -->
+		<String key="allocationsManagement"><![CDATA[ Gestão de Allocations ]]></String>
+		<String key="capabilitiesManagement"><![CDATA[ Gestão de Capabilities ]]></String>
+		<String key="companiesManagement"><![CDATA[ Gestão de Empresas ]]></String>
+		<String key="rolesManagement"><![CDATA[ Gestão de Roles ]]></String>
+		<String key="rolesCapabilitiesManagement"><![CDATA[ Gestão de Roles-Capabilities ]]></String>
+		<String key="break">
+			<![CDATA[ <br/><br/> ]]>
+		</String>
+		
+		
 
-		<String key="id_role"><![CDATA[Papel]]></String>
-		<String key="id_capability"><![CDATA[Capacidade]]></String>
-		<String key="id_person"><![CDATA[ Utente ]]></String>
-
-		<!-- fw_capability -->
-		<String key="is_global"><![CDATA[Global?]]></String>
-
-		<String key="companyConfig"><![CDATA[ Configurações de empresa ]]></String>
 
 		<!--	________________________________________________________________________________________________
+			*
+			*			B A C K O F F I C E    ::    
+			*		________________________________________________________________________________________________
+		-->
+		<String key="basename"><![CDATA[ Nome do ficheiro ]]></String>
+		<String key="comment"><![CDATA[ Comentário ]]></String> 
+		<String key="configs"><![CDATA[ Configurações ]]></String> 
+		<String key="companyConfig"><![CDATA[ Configurações de empresa ]]></String>
+		<String key="currentDirectory"><![CDATA[ Pasta Atual ]]></String>
+		<String key="directory"><![CDATA[ Pasta ]]></String>
+		<String key="files"><![CDATA[ Ficheiros ]]></String>
+		<String key="goTo"><![CDATA[ Ir para ]]></String>
+		<String key="newFile"><![CDATA[ Novo Ficheiro ]]></String>
+		<String key="preview"><![CDATA[ Pré-visualização ]]></String>
+		<String key="size"><![CDATA[ Tamanho ]]></String>
+		<String key="timezone"><![CDATA[ Fuso Horário ]]></String> 
+		<String key="value"><![CDATA[ Valor ]]></String> 
+		
+		
+		
+		
+		<!--	________________________________________________________________________________________________
+			*
 			*
 			*			P E R M I S S I O N S    ::    Roles  |  Capabilities  |  Roles_Capabilities  |  Allocations
+			*
 			*		________________________________________________________________________________________________
 		-->
-		<!--  ::  Headers  -->
-		<String key="rolesManagementHeader">
-			<![CDATA[
-				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Roles</span></p></h3></center>
-			]]>
-		</String>
-		<String key="capabilitiesManagementHeader">
-			<![CDATA[
-				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Capabilities</span></p></h3></center>
-			]]>
-		</String>
-		<String key="rolesCapabilitiesManagementHeader">
-			<![CDATA[
-				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Roles-Capabilities</span></p></h3></center>
-			]]>
-		</String>
-		<String key="allocationsManagementHeader">
-			<![CDATA[
-				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Backoffice&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Atribuição de Roles (Allocations)</span></p></h3></center>
-			]]>
-		</String>
-		<!--  ::  User messages  -->
+		<!--  ::  Fields  -->
+		<String key="details"><![CDATA[ Detalhes ]]></String>
+		<String key="duplicate"><![CDATA[ Duplicar ]]></String>
+		<String key="id_capability"><![CDATA[ Capability ]]></String>
+		<String key="is_global"><![CDATA[ Global ]]></String>
+		<String key="id_person"><![CDATA[ Utente ]]></String>
+		<String key="id_person_group"><![CDATA[ Grupo ]]></String>
+		<String key="id_role"><![CDATA[ Role ]]></String>
+		<String key="_modification"><![CDATA[ Última atualização ]]></String>
+		<String key="searchText"><![CDATA[ Pesquisa ]]></String>
+		<String key="searchCapability"><![CDATA[ Capability ]]></String>
+		
+		<!--  ::  User Messages  -->
+		<String key="allocationDuplicateAssignment"><![CDATA[ Uma função não pode ser atribuída a uma pessoa e a um grupo em simultâneo. ]]></String>
+		<String key="capabilityAlreadyAssignedToRole"><![CDATA[ Capability já atribuída à role selecionada. ]]></String>
+		<String key="capabilityAlreadyExists"><![CDATA[ Já existe uma capability com o código indicado. ]]></String>
+		<String key="companyDoesNotExist"><![CDATA[ A empresa indicada não existe. ]]></String>
+		<String key="globalCapabilityError"><![CDATA[ Uma capability não pode ser global e estar atribuída a uma empresa. ]]></String>
+		<String key="personAlreadyHaveRoleInCompany"><![CDATA[ O utente já tem a função na empresa. ]]></String>
+		<String key="personDoesNotBelongToCompany"><![CDATA[ O utente não pertence à empresa selecionada. ]]></String>
 		<String key="personDoesNotExist"><![CDATA[ O utente indicado não existe. ]]></String>
 		<String key="roleDoesNotExist"><![CDATA[ A função indicada não existe. ]]></String>
-		<String key="companyDoesNotExist"><![CDATA[ A empresa indicada não existe. ]]></String>
-		<String key="personAlreadyHaveRoleInCompany"><![CDATA[ O utente já tem a função na empresa. ]]></String>
-
-		<!--	________________________________________________________________________________________________
-			*
-			*			D A S H B O A R D    ::    Company Configs
-			*		________________________________________________________________________________________________
-		-->
-		<String key="comment"><![CDATA[ Comentário ]]></String> 
-		<String key="value"><![CDATA[ Valor ]]></String> 
-		<String key="configs"><![CDATA[ Configurações ]]></String> 
-		<String key="timezone"><![CDATA[ Fuso Horário ]]></String> 
-
-		<!--	________________________________________________________________________________________________
-			*
-			*			A P P   F I L E S    ::    Main Page
-			*		________________________________________________________________________________________________
-		-->
-		<String key="directory" value="Pasta" />
-		<String key="currentDirectory" value="Pasta atual" />
-		<String key="goTo" value="Ir para" />
-		<String key="files" value="Ficheiros" />
-		<String key="preview" value="Pré-visualização" />
-		<String key="basename" value="Nome do ficheiro" />
-		<String key="size" value="Tamanho" />
-		<String key="newFile" value="Novo ficheiro" />
-
-		<!-- User Messages -->
-		<String key="duplicateAllocation" value="O utilizador já tem a role selecionada." />
 	</Strings>
+	
+
+	
+	
+	<!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  H E L P    S T R I N G S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
 	<HelpStrings>
-		<Help key="is_global"><![CDATA[Uma capacidade global aplica-se a todas as empresas.]]></Help>
 		<Help key="idUserGlobal"><![CDATA[ Id de utilizador no contexto global (considerado por todas as empresas).]]></Help>
 		<Help key="idPersonCompany"><![CDATA[ Número de utente no contexto da empresa em questão.]]></Help>
 		<Help key="isActiveCompany"><![CDATA[ Se este utilizador está ativo no contexto da empresa selecionada.]]></Help>
+		<Help key="is_global"><![CDATA[ Uma capability global aplica-se a todas as empresas. ]]></Help>
+		<Help key="searchCapability"><![CDATA[ Pode pesquisar por uma capability que esteja associada à role. ]]></Help>
+		<Help key="searchText"><![CDATA[ Pode pesquisar pelo id, código ou nome. ]]></Help>
 	</HelpStrings>
 </Lang>
