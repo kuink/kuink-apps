@@ -217,6 +217,7 @@
 						<Param name="_entity">fw_person_group</Param>
             <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
 						<Param name="is_active">1</Param>
+						<Param name="_sort">name</Param>
 					</DataAccess>
 				</Var>
 

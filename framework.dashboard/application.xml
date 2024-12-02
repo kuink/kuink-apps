@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework.dashboard" version="2.000.000">
+<Application name="framework.dashboard" version="2.001.000">
   <!--
-		v2.000.000
+		v2.001.000
 		*	@date:		 2024.12.02
 		*	@author:   catarina.fernandes
-		*	@comment:  Refactor: framework.dashboard | Reviewing all the framework backoffice application, with focus on the permissions management (capabilities, roles, ...). | v2.000.000
+		*	@comment:  Fix: framework.dashboard > permissions | Fixing the roles select on allocations management. | v2.001.000
 	-->
   <Config/>
   <Databases/>
