@@ -180,7 +180,7 @@
     <Action name="delete">
       <!-- Deletes the current allocation -->
       <Call library="framework,allocation,api" function="delete">
-        <Param name="id"><Var name="idAllocation" process="true"/></Param>
+        <Param name="id"><ActionValue/></Param>
       </Call>
       
       <!-- Redirects to the main page -->
