@@ -46,6 +46,7 @@
 		<String key="requiredFiledsNotFilled"><![CDATA[ Tem de preencher todos os campos obrigatórios ]]></String>
 		<String key="invalidEmail"><![CDATA[ O e-mail é inválido ]]></String>
 		<String key="remainingChars"><![CDATA[ Caracteres disponíveis ]]></String>
+		<String key="title"><![CDATA[ Título ]]></String>
 		<!--  ::  Actions  -->
 		<String key="exit"><![CDATA[ Sair ]]></String>
 		<String key="close"><![CDATA[ Fechar ]]></String>
@@ -68,6 +69,7 @@
 		<String key="download"><![CDATA[ Descarregar ]]></String>
 		<String key="proceed"><![CDATA[ Continuar ]]></String>
 		<String key="print"><![CDATA[ Imprimir ]]></String>
+		<String key="printCalendar"><![CDATA[ Imprimir calendário ]]></String>
 		<String key="delete"><![CDATA[ Apagar ]]></String>
 		<String key="remove"><![CDATA[ Remover ]]></String>
 		<!--  ::  Fields  -->
