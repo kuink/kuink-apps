@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
   <Doc>
-    <Description><![CDATA[ Gets the user's person data in a given company. ]]></Description>
+  <![CDATA[ Gets a person's data (including the email contact) in a company. ]]>
   </Doc>
   <Params>
-    <Param name="id_company"/>
-    <Param name="id_person"/>
+    <Param name="id_person" type="int" required="true" doc="Person's id"/>
+    <Param name="id_company" type="int" required="true" doc="Company's id"/>
   </Params>
+  
   <Body>
     <Load>
       <XSql>

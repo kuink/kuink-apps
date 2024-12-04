@@ -120,8 +120,8 @@
 			*		 - (int) id  ::  Capability's id.
       *
 			*		RETURN
-			*    - (int) id_capability  ::  Returns the created 'fw_capability' record's id.
-
+			*    - (int) 0  ::  Returns 0 if the capability was deleted.
+      *
 			*		ERRORS
 			*	   - (code) -1  ::  Returns -1 if the capability doesn't exist.
 		-->
@@ -155,7 +155,6 @@
               <Param name="_entity">fw_capability</Param>
               <Param name="id"><Var name="PARAMS" key="id"/></Param>
             </DataAccess>
-            
             <!-- Logs this action -->
             <Call library="framework,log,api" function="add">
               <Param name="type">framework,capability,api</Param>

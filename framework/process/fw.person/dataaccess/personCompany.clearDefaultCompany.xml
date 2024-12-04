@@ -1,11 +1,12 @@
 <?xml version='1.0'?>
 <Method>
 	<Doc>
-		<![CDATA[ Clears the default company of a given person. ]]>
+		<![CDATA[ Clears a person's default company. ]]>
 	</Doc>
 	<Params>
 		<Param name="id_person" type="int" required="true" doc="Person's id"/>
 	</Params>
+	
 	<Body>
 		<Execute>
     	<![CDATA[        

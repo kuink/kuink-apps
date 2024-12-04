@@ -20,7 +20,7 @@
 	-->
 	<Library>
 		<!--
-			*		add  |  Adds a new person to the system (on the side of framework).
+			*		add  |  Adds a new person to the system.
 			*  
 			*		PARAMS
 			*    - (text) uid      						 ::  Person's unique identifier;
@@ -59,12 +59,12 @@
 			*    - (int) id_marital_status     ::  Person's marital status;
 			*    - (text) obs           			 ::  Public observations about this person;
 			*    - (text) obs_private          ::  Private observations about this person;
-			*    - (int) _is_system_valid      ::  1 if this is a system kind of person.
+			*    - (int) _is_system_valid      ::  1 if this is a service and not a real person.
 			*
 			*		RETURN
 			*		 - (int) id_person  ::  Returns the created 'fw_person' record's id.
 		-->
-		<Function scope="public" name="add" doc="Adds a new person (framework).">
+		<Function scope="public" name="add" doc="Adds a new person to the system.">
 			<Params>
 				<Param name="uid" type="text" required="false" doc="Person's unique identifier"/>
 				<Param name="public_key" type="text" required="false" doc="Person's public key"/>
@@ -74,7 +74,7 @@
 				<Param name="given_name" type="text" required="false" doc="Person's first name(s)"/>
 				<Param name="surname" type="text" required="false" doc="Person's surname(s)"/>
 				<Param name="display_name" type="text" required="false" doc="Person's display name (shown in the system)"/>
-				<Param name="id_sex_code" type="int" required="false" doc="Person's sex (F | M)"/>
+				<Param name="id_sex_code" type="int" required="false" doc="Person's gender"/>
 				<Param name="birthday" type="int" required="false" doc="Person's birthday"/>
 				<Param name="id_iddoc_country" type="int" required="false" doc="Person's identification document country"/>
 				<Param name="id_iddoc_type" type="int" required="false" doc="Person's identification document type"/>
@@ -102,7 +102,7 @@
 				<Param name="id_marital_status" type="int" required="false" doc="Person's marital status"/>
 				<Param name="obs" type="text" required="false" doc="Public observations about this person"/>
 				<Param name="obs_private" type="text" required="false" doc="Private observations about this person"/>
-				<Param name="_is_system" type="int" required="false" doc="1 if this is a system person (eg. services)"/>
+				<Param name="_is_system" type="int" required="false" doc="1 if this is a service and not a real person"/>
 			</Params>
 			<Return type="int" doc="The created 'fw_person' record's id."/>
 			
@@ -184,55 +184,75 @@
 	
 
 		<!--
-			*		delete  |  Deletes a person (framework).
+			*		delete  |  Deletes a person from the system.
 			*  
 			*		PARAMS
 			*		 - (int) id  ::  Person's id.
 			*
 			*		RETURN
+			*    - (int) 0  ::  Returns 0 if the person was deleted.
+			*
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
 		-->
-		<Function scope="public" name="delete" doc="Deletes a person (framework).">
+		<Function scope="public" name="delete" doc="Deletes a person from the system.">
 			<Params>
 				<Param name="id" type="int" required="true" doc="Person's id"/>
 			</Params>
-			<Return/>
+			<Return type="int" doc="0 if the person was deleted."/>
+      <Errors>
+        <Error code="-1" doc="The person doesn't exist."/>
+      </Errors>
 
 			<Begin>
-				<!-- Gets the record -->
+				<Var name="error">0</Var>
+        
+        <!-- Checks if the person exists:
+          . If it doesn't, returns -1;
+          . If it does, proceeds to delete;
+        -->
 				<Var name="person">
 					<Call function="get">
 						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 					</Call>
 				</Var>
-				<!-- Deletes the record -->
-				<DataAccess method="delete">
-					<Param name="_entity">fw_person</Param>
-					<Param name="id"><Var name="PARAMS" key="id"/></Param>
-				</DataAccess>
-				<!-- Logs this action -->
-				<Call library="framework,log,api" function="add">
-					<Param name="type">framework,fw.person,api</Param>
-					<Param name="action">delete</Param>
-					<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
-					<Param name="context_data">
-						<UtilsLib method="jsonEncode">
-							<Param><Var name="person"/></Param>
-						</UtilsLib>
-					</Param>
-					<Param name="message">
-						<Lang key="logPersonDelete">
-							<Param><Var name="PARAMS" key="id"/></Param>
-						</Lang>
-					</Param>
-				</Call>
+				<If condition="$person->id == ''">
+					<Then>
+						<Var name="error">-1</Var>
+					</Then>
+					<Else>
+						<DataAccess method="delete">
+							<Param name="_entity">fw_person</Param>
+							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						</DataAccess>
+						<!-- Logs this action -->
+						<Call library="framework,log,api" function="add">
+							<Param name="type">framework,fw.person,api</Param>
+							<Param name="action">delete</Param>
+							<Param name="log_key"><Var name="PARAMS" key="id"/></Param>
+							<Param name="context_data">
+								<UtilsLib method="jsonEncode">
+									<Param><Var name="person"/></Param>
+								</UtilsLib>
+							</Param>
+							<Param name="message">
+								<Lang key="logPersonDelete">
+									<Param><Var name="PARAMS" key="id"/></Param>
+								</Lang>
+							</Param>
+						</Call>
+					</Else>
+				</If>
 
-				<Return/>
+				<Return>
+					<Var name="error"/>
+				</Return>
 			</Begin>
 		</Function>
 
 
 		<!--
-			*		get  |  Gets a person (framework only) given the id.
+			*		get  |  Gets a person, given its id.
 			*
 			*		PARAMS
 			*    - (int) id  ::  Person's id.
@@ -240,7 +260,7 @@
 			*		RETURN
 			*	   - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
 		-->
-		<Function scope="public" name="get" docs="Gets a person (framework only) given the id.">
+		<Function scope="public" name="get" docs="Gets a person (framework only), given its id.">
 			<Params>
 				<Param name="id" type="int" required="true" doc="Person's id"/>
 			</Params>
@@ -262,19 +282,19 @@
 
 
 		<!--
-			*		getAll  |  Gets a list of all the persons (framework only). Can be filtered by company.
+			*		getAll  |  Gets a list of all the existing people. Can be filtered by company.
 			*
 			*		PARAMS
 			*    - (int) id_company  ::  Company's id.
 			*
 			*		RETURN
-			*	   - (multiple) fw_person  ::  Returns a set/all of 'fw_person' records. 
+			*	   - (multiple) fw_person  ::  Returns a set of 'fw_person' records. 
 		-->
-		<Function scope="public" name="getAll" docs="Gets a list of all persons (framework only).">
+		<Function scope="public" name="getAll" docs="Gets a list of all the existing people. Can be filtered by company.">
 			<Params>
 				<Param name="id_company" type="int" required="false" doc="Company's id"/>
 			</Params>
-			<Return type="multiple" doc="Set/all of 'fw_person' records."/>
+			<Return type="multiple" doc="Set of 'fw_person' records."/>
 
 			<Begin>
 				<If condition="$PARAMS->id_company == ''">
@@ -294,7 +314,6 @@
 					</Else>
 				</If>
 				
-
 				<Return>
 					<Var name="people"/>
 				</Return>
@@ -303,7 +322,7 @@
 
 
 		<!--
-			*		getByUsername  |  Gets a person - framework - given the username (uid).
+			*		getByUsername  |  Gets a person, given its username (uid).
 			*
 			*		PARAMS
 			*    - (text) username  ::  Person's username (uid).
@@ -311,7 +330,7 @@
 			*		RETURN
 			*	   - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
 		-->
-		<Function scope="public" name="getByUsername" docs="Gets a person - framework - given the username (uid).">
+		<Function scope="public" name="getByUsername" docs="Gets a person, given its username (uid).">
 			<Params>
 				<Param name="username" type="int" required="true" doc="Person's username (uid)"/>
 			</Params>
@@ -338,14 +357,14 @@
 			*		PARAMS
 			*    - (int) id  									 ::  Person's id.
 			*    - (text) uid      						 ::  Person's unique identifier;
-			*    - (text) public_key  				 ::  Person's public key
+			*    - (text) public_key  				 ::  Person's public key;
 			*    - (text) private_key  				 ::  Person's private key;
 			*    - (int) id_title    					 ::  Person's title;
 			*    - (text) name         				 ::  Person's full name;
 			*    - (text) given_name           ::  Person's first name(s);
 			*    - (text) surname           	 ::  Person's surname(s);
-			*    - (text) display_name         ::  Person's display name (shown in the system)
-			*    - (char) id_sex_code          ::  Person's sex (F | M)
+			*    - (text) display_name         ::  Person's display name (shown in the system);
+			*    - (text) id_sex_code          ::  Person's gender;
 			*    - (int) birthday           	 ::  Person's birthday;
 			*    - (int) id_iddoc_country      ::  Person's identification document country;
 			*    - (int) id_iddoc_type         ::  Person's identification document type;
@@ -354,7 +373,7 @@
 			*    - (int) id_nationality        ::  Person's nationality;
 			*    - (text) tax_number           ::  Person's tax number;
 			*    - (text) health_number        ::  Person's health number;
-			*    - (text) social_sec_number    ::  Person's  social security number;
+			*    - (text) social_sec_number    ::  Person's social security number;
 			*    - (text) sps_number           ::  Person's social protective service number;
 			*    - (int) id_sps_type           ::  Person's social protective service type;
 			*    - (int) id_place_of_birth		 ::  Person's country of birth;
@@ -373,7 +392,7 @@
 			*    - (int) id_marital_status     ::  Person's marital status;
 			*    - (text) obs           			 ::  Public observations about this person;
 			*    - (text) obs_private          ::  Private observations about this person;
-			*    - (int) _is_system            ::  1 if this is a system kind of person.
+			*    - (int) _is_system            ::  1 if this is a service and not a real person.
 			*
 			*		RETURN
 			*		 - (int) id_person  ::  Returns the updated 'fw_person' record id.
@@ -389,7 +408,7 @@
 				<Param name="given_name" type="text" required="false" doc="Person's first name(s)"/>
 				<Param name="surname" type="text" required="false" doc="Person's surname"/>
 				<Param name="display_name" type="text" required="false" doc="Person's display name (shown in the system)"/>
-				<Param name="id_sex_code" type="int" required="false" doc="Person's sex (F | M)"/>
+				<Param name="id_sex_code" type="int" required="false" doc="Person's gender"/>
 				<Param name="birthday" type="int" required="false" doc="Person's birthday"/>
 				<Param name="id_iddoc_country" type="int" required="false" doc="Person's identification document country"/>
 				<Param name="id_iddoc_type" type="int" required="false" doc="Person's identification document type"/>
@@ -417,7 +436,7 @@
 				<Param name="id_marital_status" type="int" required="false" doc="Person's marital status"/>
 				<Param name="obs" type="text" required="false" doc="Public observations about this person"/>
 				<Param name="obs_private" type="text" required="false" doc="Private observations about this person"/>
-				<Param name="_is_system" type="int" required="false" doc="1 if this is a system kind of person"/>
+				<Param name="_is_system" type="int" required="false" doc="1 if this is a service and not a real person"/>
 			</Params>
 			<Return type="int" doc="The updated 'fw_person' record id."/>
 
@@ -506,37 +525,44 @@
 
 
 		<!--
-			*		searchFullText  |  Searches for persons according to the given criteria.
+			*		searchFullText  |  Gets a list of people that meet the given criteria.
 			*  
 			*		PARAMS
-			*    - (text) text     ::  Search text;
-			*		 - (int) pagesize  ::  Current page's size;
-			*		 - (int) pagenum   ::  Current page's number.
+			*    - (text) text     	 ::  Person's id, uid or name;
+			*    - (int) id_company  ::  Person's company;
+      *		 - (int) pageNum     ::  Page to get;
+      *		 - (int) pageSize    ::  Number of records per page.
 			*
 			*		RETURN
 			*		 - (multiple) person  ::  Returns a set of 'person' records.
 		-->
-		<Function scope="public" name="searchFullText" doc="Searches for persons according to the given criteria.">
+		<Function scope="public" name="searchFullText" doc="Gets a list of people that meet the given criteria.">
 			<Params>
-				<Param name="text" type="text" required="true" doc="Search text"/>
-				<Param name="id_company" type="int" required="false" doc="Company's id"/>
-				<Param name="pagesize" type="int" required="true" doc="Current page's size"/>
-				<Param name="pagenum" type="int" required="true" doc="Current page's number"/>
+				<Param name="text" type="text" required="true" doc="Person's id, uid or name"/>
+				<Param name="id_company" type="int" required="true" doc="Person's company"/>
+				<Param name="pagenum" type="int" required="true" doc="Page to get"/>
+				<Param name="pagesize" type="int" required="true" doc="Number of records per page"/>
 			</Params>
 			<Return type="multiple" doc="Set of 'person' records."/>
 
 			<Begin>
-				<Var name="persons">
+				<!-- If no company is received, sets it to the user's current one -->
+				<If condition="$PARAMS->id_company != ''">
+					<Then><Var name="idCompany"><Var name="PARAMS" key="id_company"/></Var></Then>
+					<Else><Var name="idCompany"><Var name="USER" key="idCompany"/></Var></Else>
+				</If>
+				
+				<Var name="people">
 					<DataAccess method="this,this,search">
 						<Param name="text" wildcard="fullSplit"><Var name="PARAMS" key="text"/></Param>
-						<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+						<Param name="id_company"><Var name="idCompany"/></Param>
 						<Param name="_pageSize"><Var name="PARAMS" key="pagesize"/></Param>
 						<Param name="_pageNum"><Var name="PARAMS" key="pagenum"/></Param>
 					</DataAccess>
 				</Var>
 				
 				<Return>
-					<Var name="persons"/>
+					<Var name="people"/>
 				</Return>
 			</Begin>
 		</Function>
@@ -677,7 +703,7 @@
 			*		PARAMS
 			*    - (int) id_person   ::  Person's id;
 			*    - (int) id_company  ::  Company's id;
-			*    - (int) is_default  ::  1 if this is the default company for this person; 0, otherwise.
+			*    - (int) is_default  ::  1 if this is the person's default company; 0, otherwise.
 			*
 			*		RETURN
 			*		 - (int) id_person_company  ::  Returns the created 'fw_person_company' record's id.
@@ -691,7 +717,7 @@
       <Params>
         <Param name="id_person" type="int" required="true" doc="Person's id"/>
 				<Param name="id_company" type="int" required="true" doc="Company's id"/>
-        <Param name="is_default" type="int" required="true" doc="1 if this is the default company for this person; 0, otherwise"/>
+        <Param name="is_default" type="int" required="true" doc="1 if this is the person's default company; 0, otherwise"/>
       </Params>
       <Return type="int" doc="The created 'fw_person_company' record's id."/>
       <Errors>
@@ -805,20 +831,20 @@
 		
 		
 		<!--
-			*		name  |  description.
+			*		getCompanies  |  Gets a list of all the companies that the person belongs to.
 			*
 			*		PARAMS
-			*    - (type) name  ::  description;
+			*    - (int) id_person  ::  Person's id.
 			*
 			*		RETURN
-			*    - (type) entity  ::  description.
+			*    - (multiple) fw_company | fw_person_company  ::  Returns a set of 'fw_company' and 'fw_person_company' records' specific data.
 		-->
-		<Function scope="public" name="getCompanies" doc="Gets all the companies that the person belongs to.">
+		<Function scope="public" name="getCompanies" doc="Gets a list of all the companies that the person belongs to.">
 			<Params>
         <Param name="id_person" type="int" required="true" doc="Person's id"/>
 			</Params>
-			<Return type="multiple" doc="records."/>
-					
+			<Return type="multiple" doc="Set of 'fw_company' and 'fw_person_company' records' specific data."/>
+			
 			<Begin>
 				<Var name="companies">
           <Execute method="this,this,getCompanies">
@@ -834,7 +860,7 @@
 
 
 		<!--
-			*		getPersonCompany  |  Gets a person_company given its id or given a person and a company.
+			*		getPersonCompany  |  Gets a person_company, given its id or given a person and a company.
 			*
 			*		PARAMS
 			*    - (int) id          ::  Person_company's id;
@@ -844,7 +870,7 @@
 			*		RETURN
 			*	   - (single) fw_person_company  ::  Returns the corresponding 'fw_person_company' record. 
 		-->
-		<Function scope="public" name="getPersonCompany" doc="Gets a person_company given its id or given a person and a company.">
+		<Function scope="public" name="getPersonCompany" doc="Gets a person_company, given its id or given a person and a company.">
 			<Params>
 				<Param name="id" type="int" required="false" doc="Person_company's id"/>
 				<Param name="id_person" type="int" required="false" doc="Person's id"/>
@@ -979,6 +1005,56 @@
 			*		________________________________________________________________________________________________
 		-->
 		<!--
+			*		getRoles  |  Gets a list of all the roles that a person has in a company.
+			*  
+			*		PARAMS
+			*		 - (int) id_person   ::  Person's id;
+			*		 - (int) id_company  ::  Company's id.
+			*
+			*		RETURN
+			*	   - (multiple) fw_role  ::  Returns a set of 'fw_role' records's specific data.
+		-->
+		<Function scope="public" name="getRoles" doc="Gets a list of all the roles that a person has in a company.">
+      <Params>
+        <Param name="id_person" type="int" required="true" doc="Person's id"/>
+				<Param name="id_company" type="int" required="true" doc="Company's id"/>
+      </Params>
+      <Return type="multiple" doc="Set of 'fw_role' records's specific data.">
+				<External name="id" doc="Role's id"/>
+				<External name="code" doc="Role's code"/>
+			</Return>
+      
+      <Begin>
+				<!-- Gets all the roles that the person has (as a person and as a group member) -->
+				<Var name="rolesByPerson">
+					<DataAccess method="this,this,getRoles">
+						<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+						<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+					</DataAccess>
+				</Var>
+				<Var name="rolesByGroup">
+					<DataAccess method="this,this,getRolesByGroups">
+						<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+						<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+					</DataAccess>
+				</Var>
+				
+				<Var name="roles"><Set/></Var>
+				<ForEach var="rolesByPerson" item="role">
+					<Var name="roles" key=""><Var name="role"/></Var>
+				</ForEach>
+				<ForEach var="rolesByGroup" item="role">
+					<Var name="roles" key=""><Var name="role"/></Var>
+				</ForEach>
+
+        <Return>
+          <Var name="roles"/>
+        </Return>
+      </Begin>
+    </Function>
+		
+		
+		<!--
 			*		hasRole  |  Checks if a person has a role in a company, given its code.
 			*  
 			*		PARAMS
@@ -998,25 +1074,29 @@
       <Return type="int" doc="1 if the person has the role; 0, if it doesn't."/>
       
       <Begin>
-				<Var name="result">0</Var>
-
-				<!-- Checks if the person has the role: 
-					. If it does, returns 1;
-					. Otherwise, returns 0.
-				-->
-        <Var name="roles">
-          <Execute method="this,this,hasRole">
-            <Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
+				<!-- Gets all the roles that the person has -->
+				<Var name="roles">
+					<Call function="getRoles">
+						<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
 						<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-            <Param name="code_role"><Var name="PARAMS" key="code_role"/></Param>
-          </Execute>
-        </Var>
-				<If condition="$roles->__length &gt; 0">
-					<Then><Var name="result">1</Var></Then>
-				</If>
+					</Call>
+				</Var>
+				
+				<Var name="codes"><Set/></Var>
+				<ForEach var="roles" item="role">
+					<Var name="codes" key=""><Var name="role" key="code"/></Var>
+				</ForEach>
+				
+				<!-- Checks if the person has the role -->
+				<Var name="hasRole">
+					<SetLib method="ValueIn">
+						<Param><Var name="codes"/></Param>
+						<Param><Var name="PARAMS" key="code_role"/></Param>
+					</SetLib>
+				</Var>
 
         <Return>
-          <Var name="result"/>
+          <Var name="hasRole"/>
         </Return>
       </Begin>
     </Function>

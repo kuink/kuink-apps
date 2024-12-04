@@ -1,12 +1,13 @@
 <?xml version='1.0'?>
 <Method>
 	<Doc>
-		<![CDATA[ Gets the list of roles of a given person in a given company. ]]>
+		<![CDATA[ Gets a list of all the roles that a person have in a company. ]]>
 	</Doc>
 	<Params>
-		<Param name="id_person" type="int" required="true" doc="Person id"/>
-		<Param name="id_company" type="int" required="true" doc="Company id"/>
+		<Param name="id_person" type="int" required="true" doc="Person's id"/>
+		<Param name="id_company" type="int" required="true" doc="Company's id"/>
 	</Params>
+	
 	<Body>
 		<Sql>
 			<XSql>
@@ -24,7 +25,7 @@
 							fw_person p  
 							INNER JOIN fw_person_company pc ON (pc.id_person = p.id)  
 							INNER JOIN fw_allocation a ON (a.id_person = p.id)  
-							INNER JOIN fw_role r ON (r.id = a.id_role AND r.id_company = {param->id_company}) 
+							INNER JOIN fw_role r ON (r.id = a.id_role AND r.id_company = pc.id_company) 
             ]]>
           </XTable>
         </XFrom>

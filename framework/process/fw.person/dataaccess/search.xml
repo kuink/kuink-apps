@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
   <Doc>
-    <![CDATA[ Gets a list of persons that meet the given search criteria. ]]>
+    <![CDATA[ Gets a list of people that meet the given criteria. ]]>
 	</Doc>
   <Params>
-    <Param name="text" type="text" required="false" doc="Search text"/>
-    <Param name="id_company" type="int" required="false" doc="Search text"/>
+		<Param name="text" type="text" required="true" doc="Person's id, uid or name"/>
+		<Param name="id_company" type="int" required="true" doc="Person's company"/>
   </Params>
+  
   <Body>
     <SqlPaginated>
       <XSql>
@@ -21,10 +22,6 @@
           <XTable>
             <![CDATA[ 
               fw_person p
-						]]>
-          </XTable>
-          <XTable optional="id_company">
-            <![CDATA[ 
               INNER JOIN fw_person_company pc ON (pc.id_person = p.id)
 						]]>
           </XTable>
@@ -37,12 +34,8 @@
 								p.name LIKE '{param->text}'
 								OR p.id LIKE '{param->text}'
 								OR p.uid LIKE '{param->text}'
-							)  
-						]]>
-	        </XCondition>
-          <XCondition optional="id_company">
-	          <![CDATA[
-							AND pc.id_company = {param->id_company}
+							)
+              AND pc.id_company = {param->id_company}
 						]]>
 	        </XCondition>
         </XWhere>
