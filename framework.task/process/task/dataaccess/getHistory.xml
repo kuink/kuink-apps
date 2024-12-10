@@ -1,0 +1,34 @@
+<?xml version='1.0'?>
+<Method>
+	<Doc>
+		<![CDATA[ Gets the history of a task. ]]>
+	</Doc>
+	<Params>
+		<Param name="idTask" type="int" required="true" doc="Task's id"/>
+	</Params>
+		
+	<Body>
+		<SqlPaginated>
+			<XSql>
+				<XSelect>
+					<XField>
+						<![CDATA[ th.* ]]>
+					</XField>
+				</XSelect>
+				<XFrom>
+					<XTable>
+						<![CDATA[ 
+							fw_task_history th
+						]]>
+					</XTable>
+				</XFrom>
+				<XWhere>
+					<XCondition><![CDATA[ th.id_task = {param->idTask} ]]></XCondition>
+				</XWhere>
+				<XOrderBy>
+					<XOrder><![CDATA[ th._creation DESC ]]></XOrder>
+				</XOrderBy>
+			</XSql>
+		</SqlPaginated>
+	</Body>
+</Method>

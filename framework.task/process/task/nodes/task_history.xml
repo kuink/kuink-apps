@@ -1,61 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-	<Permissions>
-	</Permissions>
-	<Doc lang="pt-PT">
-	</Doc>
-	<Libraries>
-	</Libraries>
+  <Doc>
+    <![CDATA[ Framework Task Manager  >  History  ::  Allows to view the history of a task. ]]>
+  </Doc>
+  <Permissions/>
+  <Configuration/>
+	<Libraries/>
 	<Params>
 		<Param name="idTask"/>
 	</Params>
-	<Configuration />
+
+  
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *		    S C R E E N S    ::    mainScreen
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
 	<Screens>
-		<Screen name="scTaskHistory">
-			<Grid name="grdTaskHistory" title="taskHistory" pageable="true" pagingaction="init" pagesize="10">
+		<!--
+			*
+			*		mainScreen  |  Shows the history of a task.
+			*
+		-->
+		<Screen name="mainScreen" title="history">
+			<Menu name="back" label="back" icon="arrow-left" action="back"/>
+			
+			<Grid name="historyGrid" title="" pageable="true" pagingaction="init" pagesize="20">
 				<Template>
 					<Columns>
 						<Column name="id"/>
-						<Column name="id_task"/>
+						<Column name="id_task" visible="false"/>
 						<Column name="_creation">
 							<Formatter name="DateTime" method="shortDateTime"/>
 						</Column>
 						<Column name="elapsed_time">
 							<Formatter name="Number" decimals="3"/>
-						</Column>						
+						</Column>
 						<Column name="result"/>
-						<Column name="result_code"/>
+						<Column name="result_code">
+							<Formatter name="Separator" method="space"/>
+							<Formatter name="Separator" method="space"/>
+						</Column>
 						<Column name="result_code" inline="true">
-							<Formatter name="Icon" size="32">
+							<Formatter name="Icon" size="22">
 								<Param name="OK">success.png</Param>
 								<Param name="default">error.png</Param>
 							</Formatter>
 						</Column>
-						<Column name="result_message"/>
+						<Column name="result_message">
+							<Formatter name="Style" method="collapsible">
+								<Param name="collapsed">true</Param>
+							</Formatter>
+						</Column>
 					</Columns>
 				</Template>
 			</Grid>
-			<Form name="frmOptions">
-			 <ButtonGroup>
-			   <Button type="cancel" name="back" label="back" action="back"/>
-			 </ButtonGroup>
-			</Form>
 		</Screen>
 	</Screens>
+
+  
+  
+  
+  
+  <!--	__________________________________________________________________________________________________________________________
+    *
+    *
+    *			  A C T I O N S    ::   
+    *
+    *		__________________________________________________________________________________________________________________________
+  -->
 	<Actions>
-		<Action name="init" screen="scTaskHistory">
+    <!--
+			*
+			*		init  |  Configuration of mainScreen, to show a task's history.
+			*
+		-->		
+		<Action name="init" screen="mainScreen">
 			<Var name="taskHistory">
-				<Execute method="this,this,task.listHistory">
+				<DataAccess method="this,this,getHistory">
 					<Param name="idTask"><Var name="PARAMS" key="idTask"/></Param>
-	                <Param name="pagesize"> <Control method="getPageSize" object="grdTaskHistory"/></Param>
-	                <Param name="pagenum"><Control method="getCurrentPage" object="grdTaskHistory"/></Param>           		
-				</Execute>
+					<Param name="pagesize"> <Control method="getPageSize" object="historyGrid"/></Param>
+					<Param name="pagenum"><Control method="getCurrentPage" object="historyGrid"/></Param> 
+				</DataAccess>
 			</Var>
-			<Control method="bind" object="grdTaskHistory">
+			<Control method="bind" object="historyGrid">
 				<Param><Var name="taskHistory"/></Param>
 			</Control>
 		</Action>
 		
+		
+    <!--
+			*
+			*		back  |  Returns to the previous node.
+			*
+		-->		
 		<Action name="back">
 			<RaiseEvent name="back"/>
 		</Action>

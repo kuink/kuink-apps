@@ -1,12 +1,14 @@
-<?xml version='1.0'?>
-<Application name="framework" version="1.0.0">
-    <Config>
-        <!-- Global configuration... -->
-        <Key name="test" value="1"/>
-    </Config>
-    <Databases>
-        <!-- type=(pgsql, mssql, mysqli, oci) -->
-        <!--Database name="db" type="mysqli" server="x.x.x.x" user="root" passwd="ddd" database="db" prefix="" options=""/-->
-    </Databases>
-    <Menus/>
+<?xml version="1.0"?>
+<Application name="framework.task" version="1.001.000">
+  <!--
+		*	@date:		 2024.12.10
+		*	@author:   catarina.fernandes
+		*	@comment:  Feature: framework.task | Optimizing a task history screen. | v1.001.000
+	-->
+	<Config>
+		<!-- Global configuration... -->
+		<Key name="test" value="1"/>
+	</Config>
+	<Databases/>
+	<Menus/>
 </Application>
