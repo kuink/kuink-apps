@@ -95,7 +95,7 @@
 				</If>
 
 				<!-- Creates the record -->
-				<Var name="contact" key="id">
+				<Var name="newContact" key="id">
 					<DataAccess method="insert">
 						<Param name="_entity">fw_person_contact</Param>
 						<Param name="id_person_company"><Var name="idPersonCompany"/></Param> 
@@ -112,31 +112,31 @@
 					</DataAccess>
 				</Var>
 				<!-- Gets the record just created -->
-				<Var name="contact">
+				<Var name="newContact">
 					<Call function="get">
-						<Param name="id"><Var name="contact" key="id"/></Param>
+						<Param name="id"><Var name="newContact" key="id"/></Param>
 					</Call>
 				</Var>
 				<!-- Logs this action -->
 				<Call library="framework,log,api" function="add">
 					<Param name="type">framework,person.contact,api</Param>
 					<Param name="action">insert</Param>
-					<Param name="log_key"><Var name="contact" key="id"/></Param>
+					<Param name="log_key"><Var name="newContact" key="id"/></Param>
 					<Param name="context_data">
 						<UtilsLib method="jsonEncode">
-							<Param><Var name="contact"/></Param>
+							<Param><Var name="newContact"/></Param>
 						</UtilsLib>
 					</Param>
 					<Param name="message">
 						<Lang key="logPersonContactInsert">
-							<Param><Var name="contact" key="id"/></Param>
-							<Param><Var name="contact" key="id_person_company"/></Param>
+							<Param><Var name="newContact" key="id"/></Param>
+							<Param><Var name="newContact" key="id_person_company"/></Param>
 						</Lang>
 					</Param>
 				</Call>
 
 				<Return>
-					<Var name="contact" key="id"/>
+					<Var name="newContact" key="id"/>
 				</Return>
 			</Begin>
 		</Function>
