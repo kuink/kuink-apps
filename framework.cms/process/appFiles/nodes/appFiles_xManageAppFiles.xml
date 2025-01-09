@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Node reference="framework.dashboard,app.files,main">
-  <Params>
-    <Param name="application">framework.cms</Param>
-  </Params>
+<Node reference="framework.dashboard,backoffice,manageAppFiles">
+  <Params><Param name="application">framework.cms</Param></Params>
 </Node>

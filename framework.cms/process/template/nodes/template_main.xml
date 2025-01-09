@@ -20,11 +20,7 @@
 			*  mainScreen  |  Shows a list of templates.
 			* 
 		-->
-    <Screen name="mainScreen">
-      <Form name="header">
-				<Header name="templatesManagementHeader" label="templatesManagementHeader"/>
-			</Form>
-
+    <Screen name="mainScreen" title="templates">
 			<Form name="searchForm" title="search" persist="true">
         <Text name="name"/>
 
@@ -45,7 +41,7 @@
           </Columns>
 					<Actions separator="true">
 						<Action name="view" icon="chevron-right" actionvalue="id"/>
-						<Action name="edit" icon="pencil" actionvalue="id"/>
+						<Action name="edit" icon="edit" actionvalue="id"/>
 						<Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
 					</Actions>
         </Template>

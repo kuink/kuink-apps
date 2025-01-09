@@ -21,10 +21,7 @@
 			*  mainScreen  |  Shows a list of contents, according to the defined search criteria.
 			* 
 		-->
-    <Screen name="mainScreen">
-      <Form name="header">
-				<Header name="contentsManagementHeader" label="contentsManagementHeader"/>
-			</Form>
+    <Screen name="mainScreen" title="contents">
 
       <Form name="searchForm" title="search" persist="true">
         <Text name="data"/>
@@ -47,7 +44,7 @@
           </Columns>
           <Actions separator="true">
             <Action name="selectContent" label="view" icon="chevron-right" actionvalue="id"/>
-            <Action name="edit" icon="pencil" actionvalue="id"/>
+            <Action name="edit" icon="edit" actionvalue="id"/>
             <Action name="duplicate" icon="clone" actionvalue="id"/>
             <Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
           </Actions>
@@ -124,7 +121,7 @@
             <Column name="rank"/>
           </Columns>
           <Actions separator="true">
-            <Action name="selectPublication" label="editPublication" icon="pencil" actionvalue="id"/>
+            <Action name="selectPublication" label="editPublication" icon="edit" actionvalue="id"/>
             <Action name="removeFromChannel" label="deletePublication" icon="trash-o" actionvalue="id_channel"/>
           </Actions>
         </Template>
@@ -146,7 +143,7 @@
           </Columns>
           <Actions separator="true">
             <Action name="selectContent" label="view" icon="chevron-right" actionvalue="id"/>
-            <Action name="editChild" icon="pencil" actionvalue="id"/>
+            <Action name="editChild" icon="edit" actionvalue="id"/>
             <Action name="deleteChild" icon="trash-o" actionvalue="id" confirm="true"/>
           </Actions>
         </Template>
