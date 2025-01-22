@@ -11,7 +11,7 @@
 		<String key="change" value="Alterar"/>
         <String key="simple" value="Alterar"/>
         <String key="forgotPassword" value="Ooops... Esqueci-me da senha!"/>
-		
+		<String key="userNotFound" value="O nome de utilizador introduzido ou o e-mail não está correto"/>
         <String key="changePasswordUser" value="Alteração de password para o utilizador {0} ."/>
         <String key="passwordChanged" value="Senha alterada"/>
         <String key="validationErrors" value="Existem {0} erro(s)."/>
