@@ -20,11 +20,7 @@
 			*  mainScreen  |  Shows a list of channels.
 			* 
 		-->
-		<Screen name="mainScreen">
-			<Form name="header">
-				<Header name="channelsManagementHeader" label="channelsManagementHeader"/>
-			</Form>
-
+		<Screen name="mainScreen" title="channels">
 			<Form name="searchForm" title="search" persist="true">
 				<Text name="text"/>
 
@@ -47,7 +43,7 @@
 					</Columns>
 					<Actions separator="true">
 						<Action name="view" icon="chevron-right" actionvalue="id"/>
-						<Action name="edit" icon="pencil" actionvalue="id"/>
+						<Action name="edit" icon="edit" actionvalue="id"/>
 						<Action name="delete" icon="trash-o" actionvalue="id" confirm="true"/>
 					</Actions>
 				</Template>

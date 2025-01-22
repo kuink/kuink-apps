@@ -1,111 +1,130 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <Lang>
-  <Strings>
-    <!-- cms -->
-    <String key="framework.cms" value="Gestão de Conteúdos"/>
+	<Strings>
+		<!--	________________________________________________________________________________________________
+			*
+			*
+			*			G E N E R A L    ::    
+			*
+			*		________________________________________________________________________________________________
+		-->
+		<String key="framework.cms"><![CDATA[ Digital Signage ]]></String>
+		<String key="channels"><![CDATA[ Canais ]]></String>
+		<String key="contents"><![CDATA[ Conteúdos ]]></String>
+		<String key="contentTypes"><![CDATA[ Tipos de Conteúdos ]]></String>
+		<String key="devices"><![CDATA[ Dispositivos ]]></String>
+		<String key="templates"><![CDATA[ Templates ]]></String>
+		<String key="templateTypes"><![CDATA[ Tipos de Templates ]]></String>
 
-    <String key="manageContent" value="Conteúdos"/>    
-    <String key="manageTemplates" value="Templates"/>
-    <String key="manageChannels" value="Canais"/>
-    <String key="manageDevices" value="Dispositivos"/>
-    <String key="manageContentTypes" value="Tipos de Conteúdos"/>
-    <String key="manageAppFiles" value="Ficheiros"/>
-    <String key="digitalSignage" value="Digital Signage"/>
-    <String key="manage" value="Gerir"/>
-    <String key="content" value="Conteúdos"/>
+		<!--  ::  Headers  -->
+		<String key="channelsManagement"><![CDATA[ Gestão de Canais ]]></String>
+		<String key="contentsManagement"><![CDATA[ Gestão de Conteúdos ]]></String>
+		<String key="contentTypesManagement"><![CDATA[ Gestão de Tipos de Conteúdos ]]></String>
+		<String key="devicesManagement"><![CDATA[ Gestão de Dispositivos ]]></String>
+		<String key="templatesManagement"><![CDATA[ Gestão de Templates ]]></String>
+		<String key="templateTypesManagement"><![CDATA[ Gestão de Tipos de Templates ]]></String>
+		<String key="break"><![CDATA[ <br/><br/> ]]></String>
 
-    <!-- General -->
-    <String key="duplicate" value="Duplicar"/>
-    <String key="result" value="Resultado"/>
-    <String key="continue" value="Continuar"/>
-    <String key="text" value="Texto"/>
-    <String key="uuid" value="Uuid"/>
-    <String key="code" value="Código"/>
-    <String key="deleteChild" value="Apagar"/>    
-    <String key="editChild" value="Editar"/>    
 
-    <!-- Content -->
-    <String key="id_content" value="Conteúdo"/>    
-    <String key="id_content_before" value="Inserir depois de"/>
-    <String key="contentType" value="Tipo de Conteúdo"/>
-    <String key="id_content_type" value="Tipo de Conteúdo"/>
-    <String key="data" value="Dados"/>
-    <String key="id_template_override" value="Forçar Template"/>
-    <String key="templateOverride" value="Forçar Template"/>
-    <String key="contentItems" value="Conteúdos"/>
-    <String key="is_published" value="Publicado"/>
-    <String key="childs" value="Conteúdos Relacionados"/>
-    <String key="addChild" value="Adicionar Conteúdo Relacionado"/>
-    <String key="publishNewChannel" value="Publicar em Canal"/>
-
-    <!-- Content -->
-    <String key="allow_zero_duration" value="Permitir duração 0s"/>    
-    <String key="zeroDurationNotAllowed" value="O tipo de conteúdo obriga a que a duração da publicação seja superior a 0 segundos."/>
-
-    <!-- Channels -->
-    <String key="channels" value="Canais"/>
-    <String key="id_channel" value="Canal"/>
-    <String key="id_template" value="Template"/>
-    <String key="id_theme" value="Tema"/>
-    <String key="seconds_duration" value="Duração (s)"/>
-    <String key="publish_start" value="Início"/>
-    <String key="publish_end" value="Fim"/>
-    <String key="start_date" value="Início"/>
-    <String key="end_date" value="Fim"/>
-    <String key="change_position" value="Alterar posição"/>
-    <String key="addToChannel" value="Gravar"/>
-    <String key="rank" value="Posição"/>
-    <String key="reorder"><![CDATA[ Reordenar ]]></String>
-    <String key="editPublication"><![CDATA[ Editar publicação ]]></String>
-    <String key="deletePublication"><![CDATA[ Apagar publicação ]]></String>
-
-    <!-- Device -->
-    <String key="devices"><![CDATA[ Dispositivos ]]></String>
-    <String key="ip_address" value="Endereço IP"/>
-
-    <!-- Templates -->
-    <String key="templates"><![CDATA[ Templates ]]></String>
-    <String key="id_template_type" value="Tipo de Template"/>
-    <String key="saveAndStay" value="Gravar e Ficar"/>
-    <String key="saveAndLeave" value="Gravar e Sair"/>
-
-    <!-- Tipos de Conteúdos -->
-    <String key="contentTypes"><![CDATA[ Tipos de Conteúdo ]]></String>
-    <String key="allowed_extensions" value="Extensões permitidas"/>
-    <String key="fields" value="Campos"/>
-    <String key="id_child_type" value="Tipo de conteúdo filhos"/>
-
-    <!--  ::  Headers  -->
+		<!--  ::  Headers  -->
 		<String key="channelsManagementHeader">
 			<![CDATA[
 				<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Canais</span></p></h3></center>
 			]]>
 		</String>
-		<String key="contentsManagementHeader">
+		<String key="contentTypesManagementHeader">
 			<![CDATA[
-      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Conteúdos</span></p></h3></center>
-			]]>
-		</String>
-    <String key="contentTypesManagementHeader">
-			<![CDATA[
-      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Tipos de Conteúdo</span></p></h3></center>
+			<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Tipos de Conteúdo</span></p></h3></center>
 			]]>
 		</String>
 		<String key="devicesManagementHeader">
 			<![CDATA[
-      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Dispositivos</span></p></h3></center>
+			<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Dispositivos</span></p></h3></center>
 			]]>
 		</String>
 		<String key="templatesManagementHeader">
 			<![CDATA[
-      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Templates</span></p></h3></center>
+			<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Templates</span></p></h3></center>
 			]]>
 		</String>
-    <String key="templateTypesManagementHeader">
+		<String key="templateTypesManagementHeader">
 			<![CDATA[
-      <center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Tipos de Template</span></p></h3></center>
+			<center><h3><p style="font-family: Ubuntu; font-weight: 300;">Digital Signage&nbsp;&nbsp; | &nbsp;&nbsp;<span style="font-weight: 400;">Gestão de Tipos de Template</span></p></h3></center>
 			]]>
 		</String>
-  </Strings>
-  <HelpStrings/>
+
+
+
+		<String key="manageContent" value="Conteúdos"/>    
+		<String key="manageTemplates" value="Templates"/>
+		<String key="manageChannels" value="Canais"/>
+		<String key="manageDevices" value="Dispositivos"/>
+		<String key="manageContentTypes" value="Tipos de Conteúdos"/>
+		<String key="manageAppFiles" value="Ficheiros"/>
+		<String key="digitalSignage" value="Digital Signage"/>
+		<String key="manage" value="Gerir"/>
+		<String key="content" value="Conteúdo"/>
+
+		<!-- General -->
+		<String key="duplicate" value="Duplicar"/>
+		<String key="result" value="Resultado"/>
+		<String key="continue" value="Continuar"/>
+		<String key="text" value="Texto"/>
+		<String key="uuid" value="Uuid"/>
+		<String key="code" value="Código"/>
+		<String key="deleteChild" value="Apagar"/>    
+		<String key="editChild" value="Editar"/>    
+
+		<!-- Content -->
+		<String key="id_content" value="Conteúdo"/>    
+		<String key="id_content_before" value="Inserir depois de"/>
+		<String key="contentType" value="Tipo de Conteúdo"/>
+		<String key="id_content_type" value="Tipo de Conteúdo"/>
+		<String key="data" value="Dados"/>
+		<String key="id_template_override" value="Forçar Template"/>
+		<String key="templateOverride" value="Forçar Template"/>
+		<String key="contentItems" value="Conteúdos"/>
+		<String key="is_published" value="Publicado"/>
+		<String key="childs" value="Conteúdos Relacionados"/>
+		<String key="addChild" value="Adicionar Conteúdo Relacionado"/>
+		<String key="publishNewChannel" value="Publicar em Canal"/>
+
+		<!-- Content -->
+		<String key="allow_zero_duration" value="Permitir duração 0s"/>    
+		<String key="zeroDurationNotAllowed" value="O tipo de conteúdo obriga a que a duração da publicação seja superior a 0 segundos."/>
+
+		<!-- Channels -->
+		<String key="channels" value="Canais"/>
+		<String key="id_channel" value="Canal"/>
+		<String key="id_template" value="Template"/>
+		<String key="id_theme" value="Tema"/>
+		<String key="seconds_duration" value="Duração (s)"/>
+		<String key="publish_start" value="Início"/>
+		<String key="publish_end" value="Fim"/>
+		<String key="start_date" value="Início"/>
+		<String key="end_date" value="Fim"/>
+		<String key="change_position" value="Alterar posição"/>
+		<String key="addToChannel" value="Gravar"/>
+		<String key="rank" value="Posição"/>
+		<String key="reorder"><![CDATA[ Reordenar ]]></String>
+		<String key="editPublication"><![CDATA[ Editar publicação ]]></String>
+		<String key="deletePublication"><![CDATA[ Apagar publicação ]]></String>
+
+		<!-- Device -->
+		<String key="devices"><![CDATA[ Dispositivos ]]></String>
+		<String key="ip_address" value="Endereço IP"/>
+
+		<!-- Templates -->
+		<String key="templates"><![CDATA[ Templates ]]></String>
+		<String key="id_template_type" value="Tipo de Template"/>
+		<String key="saveAndStay" value="Gravar e Ficar"/>
+		<String key="saveAndLeave" value="Gravar e Sair"/>
+
+		<!-- Tipos de Conteúdos -->
+		<String key="contentTypes"><![CDATA[ Tipos de Conteúdo ]]></String>
+		<String key="allowed_extensions" value="Extensões permitidas"/>
+		<String key="fields" value="Campos"/>
+		<String key="id_child_type" value="Tipo de conteúdo filhos"/>
+	</Strings>
+	<HelpStrings/>
 </Lang>

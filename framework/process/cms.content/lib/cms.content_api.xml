@@ -1,21 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-  <Permissions>
-  </Permissions>
-  <Doc lang="pt-PT">
+  <Doc>
+    <![CDATA[ CMS Channel Content API  ::  Allows the communication with 'fw_cms_content', 'fw_cms_channel_content' tables and all the related ones. ]]>
   </Doc>
   <Libraries>
-    <Use name="DateTimeLib" type="lib"/>
     <Use name="UtilsLib" type="lib"/>
     <Use name="FormatterLib" type="lib"/>
   </Libraries>
+  <Permissions/>
   <Configuration/>
-  <Screens>
-  </Screens>
-  <Actions>
-  </Actions>
-  <Library forceinterface="true">
-    <Function name="add" doc="Adds a record in table ">
+  
+
+
+
+  <!-- _________________________________________________________________________________________________________________________________
+    *
+    *
+    *		    L I B R A R Y    ::    
+    *
+    *		_________________________________________________________________________________________________________________________________
+  -->
+  <Library>
+    <Function scope="public" name="add" doc="Adds a record in table ">
       <Params>
         <Param name="id_template_override" type="int" required="false"/>
         <Param name="id_content_type" type="int" required="false"/>
@@ -540,106 +546,129 @@
     </Begin>
     </Function>
 
-    <Function scope="public" name="addToChannel" doc="Add this content to a new channel">
-    <Params>
-      <Param name="id_content" type="int" doc=""/>
-      <Param name="id_channel" type="int" doc=""/>
-      <Param name="start_date" type="int" doc=""/>
-      <Param name="end_date" type="int" doc=""/>
-      <Param name="is_published" type="int" doc=""/>
-      <Param name="change_position" type="int" doc=""/>
-      <Param name="id_content_before" type="int" doc="The id of the content previous to this one. Insert after."/>
-    </Params>
-    <Return type=""/>
-    <Begin>
-      <Var name="optionalParams"><Set/></Var>
-      <If condition="$PARAMS->change_position == 1">
-        <Then>
-          <!-- Get the previous content -->
-          <Var name="contentPrevious" dump="true">
-            <If condition="$PARAMS->id_content_before != ''">
-              <Then>
-                <DataAccess method="load">
-                  <Param name="_entity">fw_cms_channel_content</Param>
-                  <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
-                  <Param name="id_content"><Var name="PARAMS" key="id_content_before"/></Param>
-                </DataAccess>
-              </Then>
-              <Else><Set/></Else>
-            </If>
-          </Var>
-                
-          <!-- Get the next content -->
-          <Var name="contentNext" dump="true">
-            <DataAccess method="load">
-              <Param name="_entity">fw_cms_channel_content</Param>
-              <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
-              <Param name="rank" op="gt"><Var name="contentPrevious" key="rank"/></Param>
-              <Param name="_sort">rank ASC</Param>
-            </DataAccess>
-          </Var>
 
-          <!-- Set previous and next -->
-          <Var name="rankPrevious" dump="true"><Var name="contentPrevious" key="rank"/></Var>          
-          <Var name="rankNext" dump="true"><Var name="contentNext" key="rank"/></Var>          
-          <Var name="newRank" dump="true">
-            <Rank>
-              <Param><Var name="rankPrevious"/></Param>
-              <Param><Var name="rankNext"/></Param>
-            </Rank>
-          </Var>
-          <Var name="optionalParams" key="rank"><Var name="newRank"/></Var>
-        </Then>
-      </If>
-      <Var name="content">
-        <Call function="getById">
-          <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
-        </Call>
-      </Var>
-      <Var name="contentType">
-        <Call library="framework,cms.content.type,api" function="getById">
-          <Param name="id"><Var name="content" key="id_content_type"/></Param>
-        </Call>
-      </Var>      
-      <Var name="error"><Int>0</Int></Var>
-      <!-- Validate zero duration -->
-      <If condition="(($contentType->allow_zero_duration == 0) &amp;&amp; ($PARAMS->seconds_duration == 0)) || ($PARAMS->seconds_duration &lt; 0)">
-        <Then>
-          <Var name="error"><Int>-1</Int></Var>
-        </Then>
-      </If>
 
-      <If condition="$error == 0">
-        <Then>
-          <!-- Check if the content is already published in that channel -->
-          <Var name="check">
-            <DataAccess method="load">
-              <Param name="_entity">fw_cms_channel_content</Param>
-              <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
-              <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>
-            </DataAccess>
-          </Var>
-          <If condition="$check->__length != 0">
-            <Then>
-              <!-- update -->
-              <DataAccess method="update" params="optionalParams">
+
+    <!-- _________________________________________________________________________________________________________________________________
+      *
+      *
+      *		    C H A N N E L    C O N T E N T    ::    
+      *
+      *		_________________________________________________________________________________________________________________________________
+    -->
+    <!--
+      *		addToChannel  |  Adds a content to a channel or updates it.
+      *
+      *		PARAMS
+      *		 - (int) id_channel         ::  Channel's id;
+      *		 - (int) id_content         ::  Content's id;
+      *		 - (int) start_date         ::  Date to start publish this content;
+      *		 - (int) end_date           ::  Date to stop publish this content;
+      *    - (int) is_published       ::  If 1, meets the publication dates; 0, otherwise;
+      *    - (int) change_position    ::  If 1, meets the publication dates; 0, otherwise;
+      *    - (int) id_content_before  ::  Previous content's id (this one is inserted after).
+      *
+			*		RETURN
+			*    - (int) id_cms_channel_content  ::  Returns the created 'fw_cms_channel_content' record's id.
+      *
+			*		ERRORS
+			*	   - (code) -1  ::  Returns -1 if the zero seconds duration is not allowed.
+    -->
+    <Function scope="public" name="addToChannel" doc="Adds a content to a channel or updates it.">
+      <Params>
+        <Param name="id_channel" type="int" doc="Channel's id"/>
+        <Param name="id_content" type="int" doc="Content's id"/>
+        <Param name="start_date" type="int" doc="Date to publish the content"/>
+        <Param name="end_date" type="int" doc="Date to unpublish the content"/>
+        <Param name="is_published" type="int" doc="If 1, meets the publication dates; 0, otherwise"/>
+        <Param name="change_position" type="int" doc="1 if the content is put in a different position; 0, otherwise"/>
+        <Param name="id_content_before" type="int" doc="Previous content's id (this one is inserted after)"/>
+      </Params>
+      <Return type="int" doc="The created 'fw_cms_channel_content' record's id."/>
+      <Errors>
+        <Error code="-1" doc="The zero seconds duration is not allowed."/>
+      </Errors>
+
+      <Begin>
+        <!-- Handles the content's publication order (rank) -->
+        <Var name="optionalParams"><Set/></Var>
+        <If condition="$PARAMS->change_position == 1">
+          <Then>
+            <!-- Gets the previous content -->
+            <Var name="contentPrevious" dump="true">
+              <If condition="$PARAMS->id_content_before != ''">
+                <Then>
+                  <DataAccess method="load">
+                    <Param name="_entity">fw_cms_channel_content</Param>
+                    <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+                    <Param name="id_content"><Var name="PARAMS" key="id_content_before"/></Param>
+                  </DataAccess>
+                </Then>
+                <Else><Set/></Else>
+              </If>
+            </Var>
+            <!-- Gets the next content -->
+            <Var name="contentNext" dump="true">
+              <DataAccess method="load">
                 <Param name="_entity">fw_cms_channel_content</Param>
-                <Param name="id"><Var name="check" key="id"/></Param>
-                <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
-                <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
-                <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
-                <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
-                <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
-                <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
-                <Param name="_base">true</Param>
+                <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+                <Param name="rank" op="gt"><Var name="contentPrevious" key="rank"/></Param>
+                <Param name="_sort">rank ASC</Param>
               </DataAccess>
-              <Var name="id"><Var name="check" key="id"/></Var>
-            </Then>
-            <Else>
-              <!-- insert -->
-              <Var name="error">
-                <DataAccess method="insert" params="optionalParams">
+            </Var>
+            <!-- Sets rank, accordingly -->
+            <Var name="rankPrevious"><Var name="contentPrevious" key="rank"/></Var>          
+            <Var name="rankNext"><Var name="contentNext" key="rank"/></Var>          
+            <Var name="newRank" dump="true">
+              <Rank>
+                <Param><Var name="rankPrevious"/></Param>
+                <Param><Var name="rankNext"/></Param>
+              </Rank>
+            </Var>
+            <Var name="optionalParams" key="rank"><Var name="newRank"/></Var>
+          </Then>
+        </If>
+
+        <!-- Gets the content and the content type -->
+        <Var name="content">
+          <Call function="getById">
+            <Param name="id"><Var name="PARAMS" key="id_content"/></Param>
+          </Call>
+        </Var>
+        <Var name="contentType">
+          <Call library="framework,cms.content.type,api" function="getById">
+            <Param name="id"><Var name="content" key="id_content_type"/></Param>
+          </Call>
+        </Var>
+        
+        <!-- Validates zero duration -->
+        <Var name="error"><Int>0</Int></Var>
+        <If condition="(($contentType->allow_zero_duration == 0) &amp;&amp; ($PARAMS->seconds_duration == 0)) || ($PARAMS->seconds_duration &lt; 0)">
+          <Then><Var name="error"><Int>-1</Int></Var></Then>
+        </If>
+        <If condition="$error === 0">
+          <Then>
+            <!-- If 'end_date' isn't received, sets it as NULL, by default -->
+            <If condition="$PARAMS->end_date == ''">
+              <Then><Var name="PARAMS" key="end_date"><Null/></Var></Then>
+            </If>
+
+            <!-- Checks if the content is already published in that channel:
+              . If so, updates it;
+              . If not, adds the content to the channel;
+            -->
+            <Var name="check">
+              <DataAccess method="load">
+                <Param name="_entity">fw_cms_channel_content</Param>
+                <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>
+                <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>
+              </DataAccess>
+            </Var>
+            <If condition="$check->__length != 0">
+              <Then>
+                <DataAccess method="update" params="optionalParams">
                   <Param name="_entity">fw_cms_channel_content</Param>
+                  <Param name="id"><Var name="check" key="id"/></Param>
                   <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
                   <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
                   <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
@@ -648,15 +677,30 @@
                   <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
                   <Param name="_base">true</Param>
                 </DataAccess>
-              </Var>
-            </Else>
-          </If>
-        </Then>
-      </If>
+                <Var name="id"><Var name="check" key="id"/></Var>
+              </Then>
+              <Else>
+                <Var name="error">
+                  <DataAccess method="insert" params="optionalParams">
+                    <Param name="_entity">fw_cms_channel_content</Param>
+                    <Param name="id_content"><Var name="PARAMS" key="id_content"/></Param>            
+                    <Param name="id_channel"><Var name="PARAMS" key="id_channel"/></Param>            
+                    <Param name="start_date"><Var name="PARAMS" key="start_date"/></Param>            
+                    <Param name="end_date"><Var name="PARAMS" key="end_date"/></Param>            
+                    <Param name="is_published"><Var name="PARAMS" key="is_published"/></Param>
+                    <Param name="seconds_duration"><Var name="PARAMS" key="seconds_duration"/></Param>
+                    <Param name="_base">true</Param>
+                  </DataAccess>
+                </Var>
+              </Else>
+            </If>
+          </Then>
+        </If>
 
-      <!-- proceed with the publishment -->
-      <Return><Var name="error"/></Return>
-    </Begin>
+        <Return>
+          <Var name="error"/>
+        </Return>
+      </Begin>
     </Function>
 
     <Function scope="public" name="removeFromChannel" doc="Removes this content from a channel">
@@ -957,6 +1001,5 @@
       <Return><Var name="html"/></Return>
     </Begin>
     </Function>
-
   </Library>
 </Node>
