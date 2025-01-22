@@ -99,11 +99,11 @@
           </Then>
         </If>
       
-        <Var name="person">      
+        <Var name="person" dump="true">      
           <If condition="$PARAMS->uid!=''">
             <Then>
-              <Call library="framework,fw.person,api" function="getByUsername">
-                <Param name="username"><Var name="PARAMS" key="uid"/></Param>
+              <Call library="gecol.core,person,api" function="getByUid">
+                <Param name="uid"><Var name="PARAMS" key="uid"/></Param>
               </Call>
             </Then>
             <Else>
