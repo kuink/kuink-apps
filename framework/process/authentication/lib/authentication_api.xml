@@ -126,7 +126,7 @@
             <Var name="requestGuid" >
               <Call library="framework,request,api" function="addByCode">
                 <Param name="request_category_code">password.reset</Param>
-                <Param name="data"><Var name="person" key="username"/></Param>
+                <Param name="data"><Var name="person" key="uid"/></Param>
                 <Param name="allowDuplicates">1</Param>
 								<Param name="assyncProcess"><Int>0</Int></Param>                
               </Call>      
