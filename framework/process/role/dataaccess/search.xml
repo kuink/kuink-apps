@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of roles that meet the given criteria. ]]>
+    <Description><![CDATA[ Gets a list of roles that meet the given criteria. ]]></Description>
 	</Doc>
 	<Params>
 		<Param name="id_company" type="int" required="true" doc="Role's company"/>
@@ -45,14 +45,10 @@
 						]]>
 	        </XCondition>
 					<XCondition optional="is_active">
-						<![CDATA[ 
-							AND r.is_active = {param->is_active}
-						]]>
+						<![CDATA[ AND r.is_active = {param->is_active} ]]>
 					</XCondition>
 					<XCondition optional="capabilities">
-						<![CDATA[ 
-							AND c.code IN ({param->capabilities})
-						]]>
+						<![CDATA[ AND c.code IN ({param->capabilities}) ]]>
 					</XCondition>
 				</XWhere>
 				<XOrderBy>

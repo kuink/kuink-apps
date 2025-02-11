@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Doc>
-    <![CDATA[ Role_Capability API  ::  Allows the communication with 'fw_role_capability' table and all the related ones. ]]>
+    <Description><![CDATA[ Role_Capability API  ::  Allows the communication with 'fw_role_capability' table and all the related ones. ]]></Description>
   </Doc>
   <Permissions/>
   <Configuration/>
@@ -232,6 +232,36 @@
 
 
     <!--
+			*		get  |  Gets a role_capability assignment, given its id.
+			*
+			*		PARAMS
+			*    - (int) id  ::  Role_capability's id.
+			*  
+			*		RETURN
+			*	   - (single) fw_role_capability  ::  Returns the corresponding 'fw_role_capability' record. 
+		-->
+    <Function scope="public" name="get" doc="Gets a role_capability assignment, given its id.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Role_capability's id"/>
+      </Params>
+      <Return type="single" doc="The corresponding 'fw_role_capability' record."/>
+
+      <Begin>
+        <Var name="roleCapability">
+          <DataAccess method="load">
+            <Param name="_entity">fw_role_capability</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return>
+          <Var name="roleCapability"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+    <!--
 			*		getAll  |  Gets a list of all the existing role_capability assignments. Can be filtered by company.
 			*
 			*		PARAMS
@@ -268,36 +298,6 @@
 				<Return>
 					<Var name="roleCapabilities"/>
 				</Return>
-      </Begin>
-    </Function>
-    
-
-    <!--
-			*		get  |  Gets a role_capability assignment, given its id.
-			*
-			*		PARAMS
-			*    - (int) id  ::  Role_capability's id.
-			*  
-			*		RETURN
-			*	   - (single) fw_role_capability  ::  Returns the corresponding 'fw_role_capability' record. 
-		-->
-    <Function scope="public" name="get" doc="Gets a role_capability assignment, given its id.">
-      <Params>
-        <Param name="id" type="int" required="true" doc="Role_capability's id"/>
-      </Params>
-      <Return type="single" doc="The corresponding 'fw_role_capability' record."/>
-
-      <Begin>
-        <Var name="roleCapability">
-          <DataAccess method="load">
-            <Param name="_entity">fw_role_capability</Param>
-            <Param name="id"><Var name="PARAMS" key="id"/></Param>
-          </DataAccess>
-        </Var>
-
-        <Return>
-          <Var name="roleCapability"/>
-        </Return>
       </Begin>
     </Function>
 
@@ -535,7 +535,7 @@
 
         <!-- According to the params, gets the capabilities by one of the following options:
           . The role's and capability's code and company;
-          . The role's and capability's id;
+          . The role's and capability's id.
         -->
         <If condition="$PARAMS->id_role == '' || $PARAMS->id_capability == ''">
           <Then>
@@ -566,7 +566,10 @@
           </Else>
         </If>
 
-        <!-- Checks for errors -->
+        <!-- Checks for errors:
+          . Returns -1 if the capability was already assigned to the role;
+          . Returns -2 if the capability isn't global OR isn't applicable to the role's company.
+        -->
         <Var name="roleCapability">
           <DataAccess method="load">
             <Param name="_entity">fw_role_capability</Param>
@@ -574,13 +577,9 @@
             <Param name="id_capability"><Var name="capability" key="id"/></Param>
           </DataAccess>
         </Var>
-        <!-- Returns -1 if the capability was already assigned to the role -->
         <If condition="($roleCapability->id != '') &amp;&amp; (($PARAMS->is_insert == 1) || ($PARAMS->is_insert == 0 &amp;&amp; $roleCapability->id != $PARAMS->id))">
-          <Then>
-            <Var name="error">-1</Var>
-          </Then>
+          <Then><Var name="error">-1</Var></Then>
         </If>
-        <!-- Returns -2 if the capability isn't global or isn't applicable to the role's company -->
         <If condition="$capability->is_global != 1 &amp;&amp; ($PARAMS->id_company != ($capability->id_company || $role->id_company)) &amp;&amp; ($capability->id_company != $role->id_company)">
           <Then><Var name="error">-2</Var></Then>
         </If>

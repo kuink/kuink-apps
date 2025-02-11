@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Doc>
-    <![CDATA[ Capability API  ::  Allows the communication with 'fw_capability' table and all the related ones. ]]>
+    <Description><![CDATA[ Capability API  ::  Allows the communication with 'fw_capability' table and all the related ones. ]]></Description>
   </Doc>
   <Permissions/>
   <Configuration/>
@@ -21,7 +21,7 @@
 	-->  
   <Library>
     <!--
-			*		add  |  Creates a new capability.
+			*		add  |  Creates a new capability (global or in a company).
 			*
 			*		PARAMS
 			*		 - (text) name			   ::  Capability's name;
@@ -38,7 +38,7 @@
 			*	   - (code) -1  ::  Returns -1 if a capability is set to global and applicable to a company, simultaneously.
 			*	   - (code) -2  ::  Returns -2 if there's already a capability with the given code.
 		-->
-    <Function scope="public" name="add" doc="Creates a new capability.">
+    <Function scope="public" name="add" doc="Creates a new capability (global or in a company).">
       <Params>
         <Param name="name" type="text" required="true" doc="Capability's name"/>
         <Param name="code" type="text" required="true" doc="Capability's code"/>
@@ -97,6 +97,7 @@
               <Param name="message">
                 <Lang key="logCapabilityInsert">
                   <Param><Var name="PARAMS" key="code"/></Param>
+                  <Param><Var name="capability" key="id"/></Param>
                 </Lang>
               </Param>
             </Call>
@@ -179,7 +180,92 @@
         </Return>
       </Begin>
     </Function>
+    
 
+		<!--
+			*		getById  |  Gets a capability, given its id.
+			*
+			*		PARAMS
+			*    - (int) id  ::  Capability's id.
+			*
+			*		RETURN
+			*	   - (single) fw_capability  ::  Returns the corresponding 'fw_capability' record. 
+		-->
+    <Function scope="public" name="getById" doc="Gets a capability, given its id.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Capability's id"/>
+      </Params>
+      <Return type="single" doc="The corresponding 'fw_capability' record."/>
+
+      <Begin>
+        <Var name="capability">
+          <DataAccess method="load">
+            <Param name="_entity">fw_capability</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+
+        <Return>
+          <Var name="capability"/>
+        </Return>
+      </Begin>
+    </Function>
+
+
+		<!--
+			*		getByCode  |  Gets a capability, given its code.
+			*
+			*		PARAMS
+			*    - (text) code       ::  Capability's code;
+      *    - (int) id_company  ::  Company where this capability is applicable;
+			*		 - (int) is_global   ::  1 if it's a global capability; 0, otherwise.
+			*
+			*		RETURN
+			*	   - (single) fw_capability  ::  Returns the corresponding 'fw_capability' record.
+		-->
+    <Function scope="public" name="getByCode" doc="Gets a capability, given its code.">
+      <Params>
+        <Param name="code" type="text" required="true" doc="Capability's code"/>
+        <Param name="id_company" type="int" required="false" doc="Company where this capability is applicable"/>
+        <Param name="is_global" type="int" required="false" doc="1 if it's a global capability; 0, otherwise"/>
+      </Params>
+      <Return type="single" doc="The corresponding 'fw_capability' record."/>
+
+      <Begin>
+        <!-- Checks what type of capability is -->
+        <If condition="$PARAMS->is_global == 1 &amp;&amp; $PARAMS->id_company == ''">
+          <Then>
+            <!-- Global -->
+            <Var name="capability">
+              <DataAccess method="load">
+                <Param name="_entity">fw_capability</Param>
+                <Param name="code"><Var name="PARAMS" key="code"/></Param>
+                <Param name="is_global"><Var name="PARAMS" key="is_global"/></Param>
+              </DataAccess>
+            </Var>
+          </Then>
+          <Else>
+            <If condition="$PARAMS->id_company != '' &amp;&amp; ($PARAMS->is_global == '' || $PARAMS->is_global == 0)">
+              <Then>
+                <!-- Company -->
+                <Var name="capability">
+                  <DataAccess method="load">
+                    <Param name="_entity">fw_capability</Param>
+                    <Param name="code"><Var name="PARAMS" key="code"/></Param>
+                    <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+                  </DataAccess>
+                </Var>
+              </Then>
+            </If>
+          </Else>
+        </If>
+        
+        <Return>
+          <Var name="capability"/>
+        </Return>
+      </Begin>
+    </Function>
+    
 
     <!--
 			*		getAll  |  Gets a list of all the existing capabilities. Can be filtered by company, global and/or active.
@@ -340,93 +426,8 @@
 				</Return>
       </Begin>
     </Function>
-    
-    
-		<!--
-			*		getByCode  |  Gets a capability, given its code.
-			*
-			*		PARAMS
-			*    - (text) code       ::  Capability's code;
-      *    - (int) id_company  ::  Company where this capability is applicable;
-			*		 - (int) is_global   ::  1 if it's a global capability; 0, otherwise.
-			*
-			*		RETURN
-			*	   - (single) fw_capability  ::  Returns the corresponding 'fw_capability' record.
-		-->
-    <Function scope="public" name="getByCode" doc="Gets a capability, given its code.">
-      <Params>
-        <Param name="code" type="text" required="true" doc="Capability's code"/>
-        <Param name="id_company" type="int" required="false" doc="Company where this capability is applicable"/>
-        <Param name="is_global" type="int" required="false" doc="1 if it's a global capability; 0, otherwise"/>
-      </Params>
-      <Return type="single" doc="The corresponding 'fw_capability' record."/>
-
-      <Begin>
-        <!-- Checks what type of capability is -->
-        <If condition="$PARAMS->is_global == 1 &amp;&amp; $PARAMS->id_company == ''">
-          <Then>
-            <!-- Global -->
-            <Var name="capability">
-              <DataAccess method="load">
-                <Param name="_entity">fw_capability</Param>
-                <Param name="code"><Var name="PARAMS" key="code"/></Param>
-                <Param name="is_global"><Var name="PARAMS" key="is_global"/></Param>
-              </DataAccess>
-            </Var>
-          </Then>
-          <Else>
-            <If condition="$PARAMS->id_company != '' &amp;&amp; ($PARAMS->is_global == '' || $PARAMS->is_global == 0)">
-              <Then>
-                <!-- Company -->
-                <Var name="capability">
-                  <DataAccess method="load">
-                    <Param name="_entity">fw_capability</Param>
-                    <Param name="code"><Var name="PARAMS" key="code"/></Param>
-                    <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-                  </DataAccess>
-                </Var>
-              </Then>
-            </If>
-          </Else>
-        </If>
-        
-        <Return>
-          <Var name="capability"/>
-        </Return>
-      </Begin>
-    </Function>
 
 
-		<!--
-			*		getById  |  Gets a capability, given its id.
-			*
-			*		PARAMS
-			*    - (int) id  ::  Capability's id.
-			*
-			*		RETURN
-			*	   - (single) fw_capability  ::  Returns the corresponding 'fw_capability' record. 
-		-->
-    <Function scope="public" name="getById" doc="Gets a capability, given its id.">
-      <Params>
-        <Param name="id" type="int" required="true" doc="Capability's id"/>
-      </Params>
-      <Return type="single" doc="The corresponding 'fw_capability' record."/>
-
-      <Begin>
-        <Var name="capability">
-          <DataAccess method="load">
-            <Param name="_entity">fw_capability</Param>
-            <Param name="id"><Var name="PARAMS" key="id"/></Param>
-          </DataAccess>
-        </Var>
-
-        <Return>
-          <Var name="capability"/>
-        </Return>
-      </Begin>
-    </Function>
-    
-    
     <!--
       *		getRoles  |  Gets a list of all the roles that a capability is assigned to.
       *
@@ -727,10 +728,10 @@
                 </Var>
               </Else>
             </If>
-            <!-- Returns -2 if:
+            
+            <!-- Returns -2 if one of the following options is verified:
               . It's a new capability and it already exists;
-              OR
-              . It's an update and it exists another one with the given code;
+              . It's an update and it exists another one with the given code.
             -->
             <If condition="($capability->id != '') &amp;&amp; (($PARAMS->is_insert == 1) || ($PARAMS->is_insert == 0 &amp;&amp; $capability->id != $PARAMS->id))">
               <Then><Var name="error">-2</Var></Then>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of allocations that meet the given criteria. ]]>
+    <Description><![CDATA[ Gets a list of allocations that meet the given criteria. ]]></Description>
   </Doc>
 	<Params>
 		<Param name="text" type="text" required="false" doc="Allocation's id or role's id, name or code"/>
@@ -18,9 +18,9 @@
 					<XField>
 						<![CDATA[ 
 							a.*,
-							IF(a.id_person = 0, '-', a.id_person) AS "id_person",
-							IF(a.id_person = 0, '-', p.display_name) AS "person_display_name",
-							IF(a.id_person_group = 0, '-', a.id_person_group) AS "id_person_group",
+							IF((a.id_person = 0 OR a.id_person IS NULL), '-', a.id_person) AS "id_person",
+							IF((a.id_person = 0 OR a.id_person IS NULL), '-', p.display_name) AS "person_display_name",
+							IF((a.id_person_group = 0 OR a.id_person_group IS NULL), '-', a.id_person_group) AS "id_person_group",
 							r.code
 						]]>
 					</XField>
@@ -48,19 +48,13 @@
 						]]>
 	        </XCondition>
 					<XCondition optional="id_person">
-						<![CDATA[ 
-							AND a.id_person = {param->id_person}
-						]]>
+						<![CDATA[ AND a.id_person = {param->id_person} ]]>
 					</XCondition>
 					<XCondition optional="id_person_group">
-						<![CDATA[ 
-							AND a.id_person_group = {param->id_person_group}
-						]]>
+						<![CDATA[ AND a.id_person_group = {param->id_person_group} ]]>
 					</XCondition>
 					<XCondition optional="id_role">
-						<![CDATA[ 
-							AND a.id_role = {param->id_role}
-						]]>
+						<![CDATA[ AND a.id_role = {param->id_role} ]]>
 					</XCondition>
 				</XWhere>
 				<XOrderBy>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of all the role_capability assignments of a company. ]]>
+    <Description><![CDATA[ Gets a list of all the role_capability assignments of a company. ]]></Description>
 	</Doc>
 	<Params>
 		<Param name="id_company" type="int" required="true" doc="Company's id"/>

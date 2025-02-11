@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Doc>
-    <![CDATA[ Permissions Management  >  Roles Management  ::  Allows to view, edit and delete roles. ]]>
+    <Description><![CDATA[ Permissions Management  >  Roles Management  ::  Allows to view, edit and delete roles. ]]></Description>
   </Doc>
   <Permissions/>
   <Configuration/>
@@ -21,11 +21,10 @@
   <Screens>
     <!--
 			*
-			*   mainScreen  |  Main page of roles management. Shows a list of roles, according to the defined search criteria.
+			*   mainScreen  |  Main page of Roles Management. Shows a list of roles, according to the defined search criteria.
 			* 
 		-->
     <Screen name="mainScreen" title="roles">
-      <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       <Menu name="add" label="add" icon="plus" action="add"/>
 
@@ -70,11 +69,10 @@
 
     <!--
 			*
-			*   detailsScreen  |  Allows to edit a role's details.
+			*   detailsScreen  |  Allows to view/edit a role's details.
 			* 
 		-->
     <Screen name="detailsScreen" title="details">
-      <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="search"/>
 
       <!-- Details -->
@@ -115,7 +113,7 @@
 
     <!--
 			*
-			*   search  |  Configuration of mainScreen, according to the defined search criteria.
+			*   search  |  Configuration of 'mainScreen', according to the defined search criteria.
 			*
 		-->
     <Action name="search" screen="mainScreen">
@@ -129,7 +127,7 @@
       <!-- Gets current search criteria -->
       <Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
       
-      <!-- Gets roles' search results -->
+      <!-- Gets roles's search results -->
       <Var name="roles">
         <Call library="framework,role,api" function="search">
           <Param name="text"><Var name="currentData" key="text"/></Param>
@@ -151,7 +149,7 @@
   
     <!--
 			*
-			*   add  |  Configuration of detailsScreen, to create a new role.
+			*   add  |  Configuration of 'detailsScreen', to create a new role.
 			*
 		-->
     <Action name="add" screen="detailsScreen">
@@ -208,7 +206,7 @@
 
     <!--
 			*
-			*   edit  |  Configuration of detailsScreen, to edit a role.
+			*   edit  |  Configuration of 'detailsScreen', to edit a role.
 			*
 		-->
     <Action name="edit" screen="detailsScreen">
@@ -269,7 +267,7 @@
       
       <!-- Checks if there were errors:
         . If so, redirects to the edit page again;
-        . If not, redirects to main page;
+        . If not, redirects to main page.
       -->
       <If condition="$result == -1">
         <Then>
@@ -289,6 +287,7 @@
 			*
 		-->
     <Action name="back">
+      <!-- Redirects to 'main' node -->
       <RaiseEvent name="back"/>
     </Action>
   </Actions>

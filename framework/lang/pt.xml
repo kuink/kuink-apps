@@ -271,9 +271,9 @@
 		<String key="logJobUpdate"><![CDATA[ fw_job | Atualizada profissão '{0}'. ]]></String>
 		<String key="logJobDelete"><![CDATA[ fw_job | Eliminada profissão '{0}'. ]]></String>
 		<!--  ::  Permissions  >  Allocation  -->
-		<String key="logAllocationInsert"><![CDATA[ fw_allocation | Adicionado registo '{0}'. ]]></String>
-		<String key="logAllocationUpdate"><![CDATA[ fw_allocation | Atualizado registo '{0}'.  ]]></String>
-		<String key="logAllocationDelete"><![CDATA[ fw_allocation | Eliminado registo '{0}'. ]]></String>
+		<String key="logAllocationInsert"><![CDATA[ fw_allocation | Adicionada allocation '{0}'. ]]></String>
+		<String key="logAllocationUpdate"><![CDATA[ fw_allocation | Atualizada allocation '{0}'. ]]></String>
+		<String key="logAllocationDelete"><![CDATA[ fw_allocation | Eliminada allocation '{0}'. ]]></String>
 		<!--  ::  Permissions  >  Capability  -->
 		<String key="logCapabilityInsert"><![CDATA[ fw_capability | Adicionada capability '{0}'. ]]></String>
 		<String key="logCapabilityUpdate"><![CDATA[ fw_capability | Atualizada capability '{0}'. ]]></String>
@@ -285,7 +285,7 @@
 		<!--  ::  Permissions  >  Role_Capability  -->
 		<String key="logRoleCapabilityInsert"><![CDATA[ fw_role_capability | Adicionada role-capability '{0}'. ]]></String>
 		<String key="logRoleCapabilityUpdate"><![CDATA[ fw_role_capability | Atualizada role-capability '{0}' ]]></String>
-		<String key="logRoleCapabilityDelete"><![CDATA[ fw_role_capability | Removida role-capability '{0}'. ]]></String>
+		<String key="logRoleCapabilityDelete"><![CDATA[ fw_role_capability | Eliminada role-capability '{0}'. ]]></String>
 		<!--  ::  Person  -->
 		<String key="logPersonInsert"><![CDATA[ fw_person | Adicionado novo utente '{0}'. ]]></String>
 		<String key="logPersonUpdate"><![CDATA[ fw_person | Atualizado utente '{0}'. ]]></String>
@@ -312,8 +312,8 @@
 		<String key="logPersonGroupTypeDelete"><![CDATA[ fw_person_group_type | Eliminado registo '{0}'.  ]]></String>
 		<!--  ::  Person Group  >  Person Rel Group  -->
 		<String key="logPersonRelGroupInsert"><![CDATA[ fw_person_rel_group | Adicionado novo registo '{0}'. ]]></String>
-		<String key="logPersonRelGroupUpdate"><![CDATA[ fw_person_rel_group | Atualizado registo '{0}'.  ]]></String>
-		<String key="logPersonRelGroupDelete"><![CDATA[ fw_person_rel_group | Eliminado registo '{0}'.  ]]></String>
+		<String key="logPersonRelGroupUpdate"><![CDATA[ fw_person_rel_group | Atualizado registo '{0}'.z ]]></String>
+		<String key="logPersonRelGroupDelete"><![CDATA[ fw_person_rel_group | Eliminado registo '{0}'. ]]></String>
 		
 		
 		

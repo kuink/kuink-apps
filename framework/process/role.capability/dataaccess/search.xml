@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
   <Doc>
-    <![CDATA[ Gets a list of role_capability assignments that meet the given criteria. ]]>
+    <Description><![CDATA[ Gets a list of role_capability assignments that meet the given criteria. ]]></Description>
 	</Doc>
   <Params>
-    <Param name="id_company" type="int" required="true" doc="Company's id"/>
     <Param name="text" type="text" required="false" doc="Role/Capability's id, name or code"/>
     <Param name="id_role" type="int" required="false" doc="Role's id"/>
     <Param name="id_capability" type="int" required="false" doc="Capability's id"/>
+    <Param name="id_company" type="int" required="true" doc="Company's id"/>
   </Params>
   
   <Body>
@@ -48,14 +48,10 @@
 						]]>
 	        </XCondition>
           <XCondition optional="id_role">
-						<![CDATA[
-							AND rc.id_role = {param->id_role}
-						]]>
+						<![CDATA[ AND rc.id_role = {param->id_role} ]]>
 					</XCondition>
           <XCondition optional="id_capability">
-						<![CDATA[
-							AND rc.id_capability = {param->id_capability}
-						]]>
+						<![CDATA[ AND rc.id_capability = {param->id_capability} ]]>
 					</XCondition>
         </XWhere>
         <XOrderBy>

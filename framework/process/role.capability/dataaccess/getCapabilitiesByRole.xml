@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of all the capabilities that a role have (always in the context of a company). ]]>
+    <Description><![CDATA[ Gets a list of all the capabilities that a role have (always in the context of a company). ]]></Description>
 	</Doc>
 	<Params>
 		<Param name="code" type="text" required="true" doc="Role's code"/>

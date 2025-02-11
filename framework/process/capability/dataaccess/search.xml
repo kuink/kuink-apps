@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of capabilities that meet the given criteria. Can be filtered by company, global and/or active. ]]>
+    <Description><![CDATA[ Gets a list of capabilities that meet the given criteria. Can be filtered by company, global and/or active. ]]></Description>
   </Doc>
 	<Params>
 		<Param name="filter" type="text" required="true" doc="The filter to apply (all, company or global)"/>

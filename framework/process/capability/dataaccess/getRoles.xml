@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Method>
 	<Doc>
-    <![CDATA[ Gets a list of all the roles that a capability is assigned to. ]]>
+    <Description><![CDATA[ Gets a list of all the roles that a capability is assigned to. ]]></Description>
   </Doc>
 	<Params>
 		<Param name="filter" type="text" required="true" doc="The filter to apply (company or global)"/>

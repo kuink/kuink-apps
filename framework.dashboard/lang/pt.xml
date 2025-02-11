@@ -68,22 +68,22 @@
 		<String key="details"><![CDATA[ Detalhes ]]></String>
 		<String key="duplicate"><![CDATA[ Duplicar ]]></String>
 		<String key="id_capability"><![CDATA[ Capability ]]></String>
-		<String key="is_global"><![CDATA[ Global ]]></String>
 		<String key="id_person"><![CDATA[ Utente ]]></String>
 		<String key="id_person_group"><![CDATA[ Grupo ]]></String>
 		<String key="id_role"><![CDATA[ Role ]]></String>
+		<String key="is_global"><![CDATA[ Global ]]></String>
 		<String key="_modification"><![CDATA[ Última atualização ]]></String>
 		<String key="searchText"><![CDATA[ Pesquisa ]]></String>
 		<String key="searchCapability"><![CDATA[ Capability ]]></String>
 		
 		<!--  ::  User Messages  -->
 		<String key="allocationDuplicateAssignment"><![CDATA[ Uma função não pode ser atribuída a uma pessoa e a um grupo em simultâneo. ]]></String>
-		<String key="capabilityAlreadyAssignedToRole"><![CDATA[ Capability já atribuída à role selecionada. ]]></String>
+		<String key="allocationAlreadyExists"><![CDATA[ O utente/grupo já tem a função na empresa. ]]></String>
+		<String key="capabilityAlreadyAssignedToRole"><![CDATA[ Capability já atribuída à role. ]]></String>
 		<String key="capabilityAlreadyExists"><![CDATA[ Já existe uma capability com o código indicado. ]]></String>
 		<String key="companyDoesNotExist"><![CDATA[ A empresa indicada não existe. ]]></String>
 		<String key="globalCapabilityError"><![CDATA[ Uma capability não pode ser global e estar atribuída a uma empresa. ]]></String>
-		<String key="personAlreadyHaveRoleInCompany"><![CDATA[ O utente já tem a função na empresa. ]]></String>
-		<String key="personDoesNotBelongToCompany"><![CDATA[ O utente não pertence à empresa selecionada. ]]></String>
+		<String key="personDoesNotBelongToCompany"><![CDATA[ O utente/grupo não pertence à empresa. ]]></String>
 		<String key="personDoesNotExist"><![CDATA[ O utente indicado não existe. ]]></String>
 		<String key="roleDoesNotExist"><![CDATA[ A função indicada não existe. ]]></String>
 	</Strings>
@@ -101,7 +101,7 @@
 	<HelpStrings>
 		<Help key="idUserGlobal"><![CDATA[ Id de utilizador no contexto global (considerado por todas as empresas).]]></Help>
 		<Help key="idPersonCompany"><![CDATA[ Número de utente no contexto da empresa em questão.]]></Help>
-		<Help key="isActiveCompany"><![CDATA[ Se este utilizador está ativo no contexto da empresa selecionada.]]></Help>
+		<Help key="isActiveCompany"><![CDATA[ Se este utilizador está ativo no contexto da empresa.]]></Help>
 		<Help key="is_global"><![CDATA[ Uma capability global aplica-se a todas as empresas. ]]></Help>
 		<Help key="searchCapability"><![CDATA[ Pode pesquisar por uma capability que esteja associada à role. ]]></Help>
 		<Help key="searchText"><![CDATA[ Pode pesquisar pelo id, código ou nome. ]]></Help>

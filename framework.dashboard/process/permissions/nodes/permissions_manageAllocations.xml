@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Doc>
-    <![CDATA[ Main page of Role's Allocation Management  ::  Shows and allows to edit the allocations of a role to a user. ]]>
+    <Description><![CDATA[ Permissions Management  >  Allocations Management  ::  Allows to view, edit and delete allocations. ]]></Description>
   </Doc>
   <Permissions/>
   <Configuration/>
@@ -21,11 +21,10 @@
   <Screens>
     <!--
 			*
-			*   mainScreen  |  Main page of allocations management. Shows a list of allocations, according to the defined search criteria.
+			*   mainScreen  |  Main page of Allocations Management. Shows a list of allocations, according to the defined search criteria.
 			* 
 		-->
     <Screen name="mainScreen" title="allocations">
-      <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       <Menu name="add" label="add" icon="plus" action="add"/>
 
@@ -79,7 +78,6 @@
 			* 
 		-->
     <Screen name="detailsScreen" title="details">
-      <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="search"/>
       
       <!-- Details -->
@@ -120,7 +118,7 @@
     
     <!--
 			*
-			*   search  |  Configuration of mainScreen, according to the defined search criteria.
+			*   search  |  Configuration of 'mainScreen', according to the defined search criteria.
 			*
 		-->
     <Action name="search" screen="mainScreen">
@@ -135,7 +133,7 @@
         <Control method="getCurrentData" object="searchForm"/>
       </Var>
 
-      <!-- Gets allocations' search results -->
+      <!-- Gets allocations's search results -->
       <Var name="allocations">
         <Call library="framework,allocation,api" function="search">
           <Param name="id"><Var name="currentData" key="id"/></Param>
@@ -157,7 +155,7 @@
   
     <!--
 			*
-			*   add  |  Configuration of detailsScreen, to create a new allocation.
+			*   add  |  Configuration of 'detailsScreen', to create a new allocation.
 			*
 		-->
     <Action name="add" screen="detailsScreen">
@@ -183,14 +181,14 @@
         <Param name="id"><ActionValue/></Param>
       </Call>
       
-      <!-- Redirects to the main page -->
+      <!-- Redirects to main page -->
       <Action name="search"/>
     </Action>
 
 
     <!--
 			*
-			*   edit  |  Configuration of detailsScreen, to edit an allocation.
+			*   edit  |  Configuration of 'detailsScreen', to edit an allocation.
 			*
 		-->
     <Action name="edit" screen="detailsScreen">
@@ -251,7 +249,7 @@
       
       <!-- Checks if there were errors:
         . If so, redirects to the edit page again;
-        . If not, redirects to main page;
+        . If not, redirects to main page.
       -->
       <If condition="$result == -1">
         <Then>

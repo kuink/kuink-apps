@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Doc>
-    <![CDATA[ Framework Dashboard  >  Permissions Management  >  Main Page  ::  Allows to manage capabilities, roles, roles-capabilities relations and allocations for a company. ]]>
+    <Description><![CDATA[ Framework Dashboard  >  Permissions Management  >  Main Page  ::  Allows to manage capabilities, roles, roles-capabilities relations and allocations for a company. ]]></Description>
   </Doc>
   <Permissions/>
   <Configuration/>
@@ -21,7 +21,7 @@
   <Screens>  
     <!--
 			*
-			*		mainScreen  |  Main page of the permissions management. Shows the menu: capabilities, roles, roles-capabilities and allocations.
+			*		mainScreen  |  Main page of Permissions Management. Shows the menu: capabilities, roles, roles-capabilities and allocations.
 			* 
 		-->
     <Screen name="mainScreen" title="permissions">

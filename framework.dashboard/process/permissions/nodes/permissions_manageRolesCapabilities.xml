@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
   <Doc>
-    <![CDATA[ Permissions Management  >  Roles_Capabilities Management  ::  Allows to view, edit and delete the assignment of capabilities to roles. ]]>
+    <Description><![CDATA[ Permissions Management  >  Roles_Capabilities Management  ::  Allows to view, edit and delete the assignment of capabilities to roles. ]]></Description>
   </Doc>
   <Permissions/>
   <Configuration/>
@@ -21,11 +21,10 @@
   <Screens>
     <!--
 			*
-			*   mainScreen  |  Main page of roles_capabilities management. Shows a list of assignments, according to the defined search criteria.
+			*   mainScreen  |  Main page of Roles_Capabilities Management. Shows a list of assignments, according to the defined search criteria.
 			* 
 		-->
     <Screen name="mainScreen" title="rolesCapabilities">
-      <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="back"/>
       <Menu name="add" label="add" icon="plus" action="add"/>
 
@@ -73,7 +72,6 @@
 			* 
 		-->
     <Screen name="detailsScreen" title="details">
-      <!-- Menu -->
       <Menu name="back" label="back" icon="arrow-left" action="search"/>
 
       <!-- Details -->
@@ -113,7 +111,7 @@
 
     <!--
 			*
-			*   search  |  Configuration of mainScreen, according to the defined search criteria.
+			*   search  |  Configuration of 'mainScreen', according to the defined search criteria.
 			*
 		-->
     <Action name="search" screen="mainScreen">
@@ -126,7 +124,7 @@
       <!-- Gets current search criteria -->
       <Var name="currentData"><Control method="getCurrentData" object="searchForm"/></Var>
 
-      <!-- Gets roles_capabilities' search results -->
+      <!-- Gets roles_capabilities's search results -->
       <Var name="rolesCapabilities">
         <Call library="framework,role.capability,api" function="search">
           <Param name="id"><Var name="currentData" key="id"/></Param>
@@ -149,7 +147,7 @@
   
     <!--
 			*
-			*   add  |  Configuration of detailsScreen, to create a new assignment.
+			*   add  |  Configuration of 'detailsScreen', to create a new assignment.
 			*
 		-->
     <Action name="add" screen="detailsScreen"> 
@@ -182,7 +180,7 @@
 
     <!--
 			*
-			*   edit  |  Configuration of detailsScreen, to edit a role_capability.
+			*   edit  |  Configuration of 'detailsScreen', to edit a role_capability.
 			*
 		-->
     <Action name="edit" screen="detailsScreen">
@@ -243,7 +241,7 @@
       
       <!-- Checks if there were errors:
         . If so, redirects to the edit page again;
-        . If not, redirects to main page;
+        . If not, redirects to main page.
       -->
       <If condition="$result == -1">
         <Then>
