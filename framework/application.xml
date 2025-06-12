@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.020.007">
+<Application name="framework" version="2.021.000">
 	<!-- 
-		*	@date:		2025.02.11
+		*	@date:		2025.06.12
 		*	@author:	catarina.fernandes
-		*	@comment:	Fix: framework > allocation | Fixing null params when creating a new allocation. | v2.020.007
+		*	@comment:	Feature: framework > fw.person | Adding 'getDisplayName' function. | v2.021.000
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework" />

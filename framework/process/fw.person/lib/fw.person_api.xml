@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
 	<Doc>
-		<![CDATA[ Person (Framework) API  ::  Allows the communication with 'fw_person' and 'fw_person_company' tables. ]]>
+		<![CDATA[ Person (Framework) API  ::  Allows the communication with 'fw_person' and 'fw_person_company' tables and all the related ones. ]]>
 	</Doc>
 	<Permissions/>
 	<Configuration/>
@@ -10,58 +10,60 @@
 		<Use name="StringLib" type="lib"/>
 	</Libraries>
 
+
+
   
-  <!--	__________________________________________________________________________________________________________________________
+  <!--	_________________________________________________________________________________________________________________________________
 		*
 		*
 		*			  L I B R A R Y
 		*
-    *		__________________________________________________________________________________________________________________________
+    *		_________________________________________________________________________________________________________________________________
 	-->
 	<Library>
 		<!--
-			*		add  |  Adds a new person to the system.
+			*    add  |  Adds a new person to the system.
 			*  
-			*		PARAMS
-			*    - (text) uid      						 ::  Person's unique identifier;
-			*    - (text) public_key  				 ::  Person's public key
-			*    - (text) private_key  				 ::  Person's private key;
-			*    - (int) id_title    					 ::  Person's title;
-			*    - (text) name         				 ::  Person's full name;
-			*    - (text) given_name           ::  Person's first name(s);
-			*    - (text) surname           	 ::  Person's surname(s);
-			*    - (text) display_name         ::  Person's display name (shown in the system);
-			*    - (text) id_sex_code          ::  Person's gender;
-			*    - (int) birthday           	 ::  Person's birthday;
-			*    - (int) id_iddoc_country      ::  Person's identification document country;
-			*    - (int) id_iddoc_type         ::  Person's identification document type;
-			*    - (text) iddoc_number         ::  Person's identification document number;
-			*    - (text) iddoc_expiry_date    ::  Person's identification document expiry date;
-			*    - (int) id_nationality        ::  Person's nationality;
-			*    - (text) tax_number           ::  Person's tax number;
-			*    - (text) health_number        ::  Person's health number;
-			*    - (text) social_sec_number    ::  Person's  social security number;
-			*    - (text) sps_number           ::  Person's social protective service number;
-			*    - (int) id_sps_type           ::  Person's social protective service type;
-			*    - (int) id_place_of_birth		 ::  Person's country of birth;
-			*    - (int) id_district           ::  Person's district of birth;
-			*    - (int) id_county           	 ::  Person's county of birth;
-			*    - (int) id_civil_parish       ::  Person's civil parish of birth;
-			*    - (int) id_residence_country  ::  Person's residence country;
-			*    - (text) street_address       ::  Person's street address;
-			*    - (text) postal_code          ::  Person's postal code;
-			*    - (text) uri				           ::  Person's URI;
-			*    - (int) id_qualification      ::  Person's qualifications;
-			*    - (int) id_job_sector         ::  Person's job sector;
-			*    - (int) id_job_class          ::  Person's job class;
-			*    - (int) id_job           		 ::  Person's job;
-			*    - (text) job_employer				 ::  Person's job employer;
-			*    - (int) id_marital_status     ::  Person's marital status;
-			*    - (text) obs           			 ::  Public observations about this person;
-			*    - (text) obs_private          ::  Private observations about this person;
-			*    - (int) _is_system_valid      ::  1 if this is a service and not a real person.
+			*    PARAMS
+			*      - (text) uid      						 ::  Person's unique identifier;
+			*      - (text) public_key  				 ::  Person's public key
+			*      - (text) private_key  				 ::  Person's private key;
+			*      - (int) id_title    					 ::  Person's title;
+			*      - (text) name         				 ::  Person's full name;
+			*      - (text) given_name           ::  Person's first name(s);
+			*      - (text) surname           	 ::  Person's surname(s);
+			*      - (text) display_name         ::  Person's display name (shown in the system);
+			*      - (text) id_sex_code          ::  Person's gender;
+			*      - (int) birthday           	 ::  Person's birthday;
+			*      - (int) id_iddoc_country      ::  Person's identification document country;
+			*      - (int) id_iddoc_type         ::  Person's identification document type;
+			*      - (text) iddoc_number         ::  Person's identification document number;
+			*      - (text) iddoc_expiry_date    ::  Person's identification document expiry date;
+			*      - (int) id_nationality        ::  Person's nationality;
+			*      - (text) tax_number           ::  Person's tax number;
+			*      - (text) health_number        ::  Person's health number;
+			*      - (text) social_sec_number    ::  Person's  social security number;
+			*      - (text) sps_number           ::  Person's social protective service number;
+			*      - (int) id_sps_type           ::  Person's social protective service type;
+			*      - (int) id_place_of_birth		 ::  Person's country of birth;
+			*      - (int) id_district           ::  Person's district of birth;
+			*      - (int) id_county           	 ::  Person's county of birth;
+			*      - (int) id_civil_parish       ::  Person's civil parish of birth;
+			*      - (int) id_residence_country  ::  Person's residence country;
+			*      - (text) street_address       ::  Person's street address;
+			*      - (text) postal_code          ::  Person's postal code;
+			*      - (text) uri				           ::  Person's URI;
+			*      - (int) id_qualification      ::  Person's qualifications;
+			*      - (int) id_job_sector         ::  Person's job sector;
+			*      - (int) id_job_class          ::  Person's job class;
+			*      - (int) id_job           		 ::  Person's job;
+			*      - (text) job_employer				 ::  Person's job employer;
+			*      - (int) id_marital_status     ::  Person's marital status;
+			*      - (text) obs           			 ::  Public observations about this person;
+			*      - (text) obs_private          ::  Private observations about this person;
+			*      - (int) _is_system_valid      ::  1 if this is a service and not a real person.
 			*
-			*		RETURN
+			*    RETURN
 			*		 - (int) id_person  ::  Returns the created 'fw_person' record's id.
 		-->
 		<Function scope="public" name="add" doc="Adds a new person to the system.">
@@ -184,15 +186,15 @@
 	
 
 		<!--
-			*		delete  |  Deletes a person from the system.
+			*    delete  |  Deletes a person from the system.
 			*  
-			*		PARAMS
+			*    PARAMS
 			*		 - (int) id  ::  Person's id.
 			*
-			*		RETURN
-			*    - (int) 0  ::  Returns 0 if the person was deleted.
+			*    RETURN
+			*      - (int) 0  ::  Returns 0 if the person was deleted.
 			*
-			*		ERRORS
+			*    ERRORS
 			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
 		-->
 		<Function scope="public" name="delete" doc="Deletes a person from the system.">
@@ -252,45 +254,15 @@
 
 
 		<!--
-			*		get  |  Gets a person, given its id.
+			*    getAll  |  Gets all the existing people. Can be filtered by company.
 			*
-			*		PARAMS
-			*    - (int) id  ::  Person's id.
+			*    PARAMS
+			*      - (int) id_company  ::  Company's id.
 			*
-			*		RETURN
-			*	   - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
-		-->
-		<Function scope="public" name="get" docs="Gets a person (framework only), given its id.">
-			<Params>
-				<Param name="id" type="int" required="true" doc="Person's id"/>
-			</Params>
-			<Return type="single" doc="The corresponding 'fw_person' record."/>
-
-			<Begin>
-				<Var name="person">
-					<DataAccess method="load">
-						<Param name="_entity">fw_person</Param>
-						<Param name="id"><Var name="PARAMS" key="id"/></Param>
-					</DataAccess>
-				</Var>
-
-				<Return>
-					<Var name="person"/>
-				</Return>
-			</Begin>
-		</Function>
-
-
-		<!--
-			*		getAll  |  Gets a list of all the existing people. Can be filtered by company.
-			*
-			*		PARAMS
-			*    - (int) id_company  ::  Company's id.
-			*
-			*		RETURN
+			*    RETURN
 			*	   - (multiple) fw_person  ::  Returns a set of 'fw_person' records. 
 		-->
-		<Function scope="public" name="getAll" docs="Gets a list of all the existing people. Can be filtered by company.">
+		<Function scope="public" name="getAll" docs="Gets all the existing people. Can be filtered by company.">
 			<Params>
 				<Param name="id_company" type="int" required="false" doc="Company's id"/>
 			</Params>
@@ -322,13 +294,43 @@
 
 
 		<!--
-			*		getByUsername  |  Gets a person, given its username (uid).
+			*		get  |  Gets a person, given its id.
 			*
 			*		PARAMS
-			*    - (text) username  ::  Person's username (uid).
+			*     - (int) id  ::  Person's id.
 			*
 			*		RETURN
-			*	   - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
+			*	    - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
+		-->
+		<Function scope="public" name="get" docs="Gets a person (framework only), given its id.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Person's id"/>
+			</Params>
+			<Return type="single" doc="The corresponding 'fw_person' record."/>
+
+			<Begin>
+				<Var name="person">
+					<DataAccess method="load">
+						<Param name="_entity">fw_person</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="person"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*    getByUsername  |  Gets a person, given its username (uid).
+			*
+			*    PARAMS
+			*      - (text) username  ::  Person's username (uid).
+			*
+			*    RETURN
+			*	     - (single) fw_person  ::  Returns the corresponding 'fw_person' record. 
 		-->
 		<Function scope="public" name="getByUsername" docs="Gets a person, given its username (uid).">
 			<Params>
@@ -352,50 +354,80 @@
 
 
 		<!--
-			*		update  |  Updates a person (framework).
-			*  
-			*		PARAMS
-			*    - (int) id  									 ::  Person's id.
-			*    - (text) uid      						 ::  Person's unique identifier;
-			*    - (text) public_key  				 ::  Person's public key;
-			*    - (text) private_key  				 ::  Person's private key;
-			*    - (int) id_title    					 ::  Person's title;
-			*    - (text) name         				 ::  Person's full name;
-			*    - (text) given_name           ::  Person's first name(s);
-			*    - (text) surname           	 ::  Person's surname(s);
-			*    - (text) display_name         ::  Person's display name (shown in the system);
-			*    - (text) id_sex_code          ::  Person's gender;
-			*    - (int) birthday           	 ::  Person's birthday;
-			*    - (int) id_iddoc_country      ::  Person's identification document country;
-			*    - (int) id_iddoc_type         ::  Person's identification document type;
-			*    - (text) iddoc_number         ::  Person's identification document number;
-			*    - (text) iddoc_expiry_date    ::  Person's identification document expiry date;
-			*    - (int) id_nationality        ::  Person's nationality;
-			*    - (text) tax_number           ::  Person's tax number;
-			*    - (text) health_number        ::  Person's health number;
-			*    - (text) social_sec_number    ::  Person's social security number;
-			*    - (text) sps_number           ::  Person's social protective service number;
-			*    - (int) id_sps_type           ::  Person's social protective service type;
-			*    - (int) id_place_of_birth		 ::  Person's country of birth;
-			*    - (int) id_district           ::  Person's district of birth;
-			*    - (int) id_county           	 ::  Person's county of birth;
-			*    - (int) id_civil_parish       ::  Person's civil parish of birth;
-			*    - (int) id_residence_country  ::  Person's residence country;
-			*    - (text) street_address       ::  Person's street address;
-			*    - (text) postal_code          ::  Person's postal code;
-			*    - (text) uri				           ::  Person's URI;
-			*    - (int) id_qualification      ::  Person's qualifications;
-			*    - (int) id_job_sector         ::  Person's job sector;
-			*    - (int) id_job_class          ::  Person's job class;
-			*    - (int) id_job           		 ::  Person's job;
-			*    - (text) job_employer				 ::  Person's job employer;
-			*    - (int) id_marital_status     ::  Person's marital status;
-			*    - (text) obs           			 ::  Public observations about this person;
-			*    - (text) obs_private          ::  Private observations about this person;
-			*    - (int) _is_system            ::  1 if this is a service and not a real person.
+			*    getDisplayName  |  Gets a person's display name.
 			*
-			*		RETURN
-			*		 - (int) id_person  ::  Returns the updated 'fw_person' record id.
+			*    PARAMS
+			*      - (int) id  ::  Person's id.
+			*
+			*    RETURN
+			*	     - (text) display_name  ::  Returns the display name of the corresponding 'fw_person' record. 
+		-->
+		<Function scope="public" name="getDisplayName" docs="Gets a person's display name.">
+			<Params>
+				<Param name="id" type="int" required="true" doc="Person's id"/>
+			</Params>
+			<Return type="text" doc="The display name of the corresponding 'fw_person' record."/>
+
+			<Begin>
+				<Var name="person">
+					<DataAccess method="load">
+						<Param name="_entity">fw_person</Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="person" key="display_name"/>
+				</Return>
+			</Begin>
+		</Function>
+
+
+		<!--
+			*    update  |  Updates a person (framework).
+			*  
+			*    PARAMS
+			*      - (int) id  									 ::  Person's id.
+			*      - (text) uid      						 ::  Person's unique identifier;
+			*      - (text) public_key  				 ::  Person's public key;
+			*      - (text) private_key  				 ::  Person's private key;
+			*      - (int) id_title    					 ::  Person's title;
+			*      - (text) name         				 ::  Person's full name;
+			*      - (text) given_name           ::  Person's first name(s);
+			*      - (text) surname           	 ::  Person's surname(s);
+			*      - (text) display_name         ::  Person's display name (shown in the system);
+			*      - (text) id_sex_code          ::  Person's gender;
+			*      - (int) birthday           	 ::  Person's birthday;
+			*      - (int) id_iddoc_country      ::  Person's identification document country;
+			*      - (int) id_iddoc_type         ::  Person's identification document type;
+			*      - (text) iddoc_number         ::  Person's identification document number;
+			*      - (text) iddoc_expiry_date    ::  Person's identification document expiry date;
+			*      - (int) id_nationality        ::  Person's nationality;
+			*      - (text) tax_number           ::  Person's tax number;
+			*      - (text) health_number        ::  Person's health number;
+			*      - (text) social_sec_number    ::  Person's social security number;
+			*      - (text) sps_number           ::  Person's social protective service number;
+			*      - (int) id_sps_type           ::  Person's social protective service type;
+			*      - (int) id_place_of_birth		 ::  Person's country of birth;
+			*      - (int) id_district           ::  Person's district of birth;
+			*      - (int) id_county           	 ::  Person's county of birth;
+			*      - (int) id_civil_parish       ::  Person's civil parish of birth;
+			*      - (int) id_residence_country  ::  Person's residence country;
+			*      - (text) street_address       ::  Person's street address;
+			*      - (text) postal_code          ::  Person's postal code;
+			*      - (text) uri				           ::  Person's URI;
+			*      - (int) id_qualification      ::  Person's qualifications;
+			*      - (int) id_job_sector         ::  Person's job sector;
+			*      - (int) id_job_class          ::  Person's job class;
+			*      - (int) id_job           		 ::  Person's job;
+			*      - (text) job_employer				 ::  Person's job employer;
+			*      - (int) id_marital_status     ::  Person's marital status;
+			*      - (text) obs           			 ::  Public observations about this person;
+			*      - (text) obs_private          ::  Private observations about this person;
+			*      - (int) _is_system            ::  1 if this is a service and not a real person.
+			*
+			*    RETURN
+			*		   - (int) id_person  ::  Returns the updated 'fw_person' record id.
 		-->
 		<Function scope="public" name="update" doc="Updates a person (framework).">
 			<Params>
@@ -525,16 +557,16 @@
 
 
 		<!--
-			*		searchFullText  |  Gets a list of people that meet the given criteria.
+			*    searchFullText  |  Gets a list of people that meet the given criteria.
 			*  
-			*		PARAMS
-			*    - (text) text     	 ::  Person's id, uid or name;
-			*    - (int) id_company  ::  Person's company;
-      *		 - (int) pageNum     ::  Page to get;
-      *		 - (int) pageSize    ::  Number of records per page.
+			*    PARAMS
+			*      - (text) text     	 ::  Person's id, uid or name;
+			*      - (int) id_company  ::  Person's company;
+      *		   - (int) pageNum     ::  Page to get;
+      *		   - (int) pageSize    ::  Number of records per page.
 			*
-			*		RETURN
-			*		 - (multiple) person  ::  Returns a set of 'person' records.
+			*    RETURN
+			*		   - (multiple) person  ::  Returns a set of 'person' records.
 		-->
 		<Function scope="public" name="searchFullText" doc="Gets a list of people that meet the given criteria.">
 			<Params>
@@ -569,11 +601,13 @@
 
 
 		<!--
-			*		setUid  |  Updates a person's unique identifier.
+			*    setUid  |  Updates a person's unique identifier.
 			*  
-			*		PARAMS
-			*    - (int) id    ::  Person's id;
-			*		 - (text) uid  ::  Person's unique identifier.
+			*    PARAMS
+			*      - (int) id    ::  Person's id;
+			*		   - (text) uid  ::  Person's unique identifier.
+			*
+			*    RETURN
 		-->
 		<Function scope="public" name="setUid" doc="Updates a person's unique identifier.">
 			<Params>
@@ -630,11 +664,13 @@
 
 
 		<!--
-			*		setTaxNumber  |  Updates a person's tax number.
+			*    setTaxNumber  |  Updates a person's tax number.
 			*  
-			*		PARAMS
-			*    - (int) id    			 ::  Person's id;
-			*		 - (text) tax_number ::  Person's tax number.
+			*    PARAMS
+			*      - (int) id    			  ::  Person's id;
+			*		   - (text) tax_number  ::  Person's tax number.
+			*
+			*    RETURN
 		-->
 		<Function scope="public" name="setTaxNumber" doc="Updates a person's tax number.">
 			<Params>
@@ -692,26 +728,29 @@
 
 
 
-		<!--	________________________________________________________________________________________________
+
+		<!--	__________________________________________________________________________________________________________________________
 			*
-			*			P E R S O N   C O M P A N Y
-			*		________________________________________________________________________________________________
+      *
+			*			  P E R S O N   C O M P A N Y
+      *
+			*		__________________________________________________________________________________________________________________________
 		-->
 		<!--
-			*		addToCompany  |  Adds a person to a company.
+			*    addToCompany  |  Adds a person to a company.
 			*
-			*		PARAMS
-			*    - (int) id_person   ::  Person's id;
-			*    - (int) id_company  ::  Company's id;
-			*    - (int) is_default  ::  1 if this is the person's default company; 0, otherwise.
+			*    PARAMS
+			*      - (int) id_person   ::  Person's id;
+			*      - (int) id_company  ::  Company's id;
+			*      - (int) is_default  ::  1 if this is the person's default company; 0, otherwise.
 			*
-			*		RETURN
-			*		 - (int) id_person_company  ::  Returns the created 'fw_person_company' record's id.
+			*    RETURN
+			*		   - (int) id_person_company  ::  Returns the created 'fw_person_company' record's id.
       *
-			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
-      *    - (code) -2  ::  Returns -2 if the company doesn't exist.
-      *    - (code) -3  ::  Returns -3 if the person already belongs to the company.
+			*    ERRORS
+			*	     - (code) -1  ::  Returns -1 if the person doesn't exist.
+      *      - (code) -2  ::  Returns -2 if the company doesn't exist.
+      *      - (code) -3  ::  Returns -3 if the person already belongs to the company.
 		-->
     <Function scope="public" name="addToCompany" doc="Adds a person to a company.">
       <Params>
@@ -831,21 +870,21 @@
 
 
 		<!--
-			*		existsInCompany  |  Checks if a person belongs to a company.
+			*    existsInCompany  |  Checks if a person belongs to a company.
 			*
-			*		PARAMS
-			*    - (int) id_person   ::  Person's id;
-			*    - (int) id_company  ::  Company's id.
+			*    PARAMS
+			*      - (int) id_person   ::  Person's id;
+			*      - (int) id_company  ::  Company's id.
 			*
-			*		RETURN
-			*    - (int) 1 | 0  ::  Returns 1 if the person belongs to the company; 0, if it doesn't.
+			*    RETURN
+			*      - (int) 1 | 0  ::  Returns 1 if the person belongs to the company. Otherwise, returns 0.
 		-->
 		<Function scope="public" name="existsInCompany" doc="Checks if a person belongs to a company.">
 			<Params>
 				<Param name="id_person" type="int" required="true" doc="Person's id"/>
 				<Param name="id_company" type="int" required="true" doc="Company's id"/>
 			</Params>
-			<Return type="int" doc="Returns 1 if the person belongs to the company; 0, if it doesn't."/>
+			<Return type="int" doc="Returns 1 if the person belongs to the company; 0, otherwise."/>
 		
 			<Begin>
 				<!-- Checks if the person belongs to the company:
@@ -872,15 +911,15 @@
 		
 		
 		<!--
-			*		getCompanies  |  Gets a list of all the companies that the person belongs to.
+			*    getCompanies  |  Gets all the companies that the person belongs to.
 			*
-			*		PARAMS
-			*    - (int) id_person  ::  Person's id.
+			*    PARAMS
+			*      - (int) id_person  ::  Person's id.
 			*
-			*		RETURN
-			*    - (multiple) fw_company | fw_person_company  ::  Returns a set of 'fw_company' and 'fw_person_company' records' specific data.
+			*    RETURN
+			*      - (multiple) fw_company | fw_person_company  ::  Returns a set of 'fw_company' and 'fw_person_company' records' specific data.
 		-->
-		<Function scope="public" name="getCompanies" doc="Gets a list of all the companies that the person belongs to.">
+		<Function scope="public" name="getCompanies" doc="Gets all the companies that the person belongs to.">
 			<Params>
         <Param name="id_person" type="int" required="true" doc="Person's id"/>
 			</Params>
@@ -901,15 +940,15 @@
 
 
 		<!--
-			*		getPersonCompany  |  Gets a person_company, given its id or given a person and a company.
+			*    getPersonCompany  |  Gets a person_company, given its id or given a person and a company.
 			*
-			*		PARAMS
-			*    - (int) id          ::  Person_company's id;
-			*    - (int) id_person   ::  Person's id;
-			*    - (int) id_company  ::  Company's id.
+			*    PARAMS
+			*      - (int) id          ::  Person_company's id;
+			*      - (int) id_person   ::  Person's id;
+			*      - (int) id_company  ::  Company's id.
 			*
-			*		RETURN
-			*	   - (single) fw_person_company  ::  Returns the corresponding 'fw_person_company' record. 
+			*    RETURN
+			*	     - (single) fw_person_company  ::  Returns the corresponding 'fw_person_company' record. 
 		-->
 		<Function scope="public" name="getPersonCompany" doc="Gets a person_company, given its id or given a person and a company.">
 			<Params>
@@ -949,18 +988,18 @@
 
 
 		<!--
-			*		setDefaultCompany  |  Sets a person's default company.
+			*    setDefaultCompany  |  Sets a person's default company.
 			*
-			*		PARAMS
-			*    - (int) id_person   ::  Person's id;
-			*    - (int) id_company  ::  Company's id.
+			*    PARAMS
+			*      - (int) id_person   ::  Person's id;
+			*      - (int) id_company  ::  Company's id.
 			*
-			*		RETURN
-			*		 - (int) 0  ::  Returns 0 if the person_company was updated.
+			*    RETURN
+			*		   - (int) 0  ::  Returns 0 if the person_company was updated.
 			*
-			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the person doesn't exist.
-			*	   - (code) -2  ::  Returns -2 if the company doesn't exist.
+			*    ERRORS
+			*	     - (code) -1  ::  Returns -1 if the person doesn't exist.
+			*	     - (code) -2  ::  Returns -2 if the company doesn't exist.
 		-->
 		<Function scope="public" name="setDefaultCompany" doc="Sets a person's default company.">
 			<Params>
@@ -1040,22 +1079,25 @@
 
 
 
-		<!--	________________________________________________________________________________________________
+
+		<!--	__________________________________________________________________________________________________________________________
 			*
-			*			R O L E S
-			*		________________________________________________________________________________________________
+      *
+			*			  R O L E S
+      *
+			*		__________________________________________________________________________________________________________________________
 		-->
 		<!--
-			*		getRoles  |  Gets a list of all the roles that a person has in a company.
+			*    getRoles  |  Gets all the roles that a person has in a company.
 			*  
-			*		PARAMS
-			*		 - (int) id_person   ::  Person's id;
-			*		 - (int) id_company  ::  Company's id.
+			*    PARAMS
+			*		   - (int) id_person   ::  Person's id;
+			*		   - (int) id_company  ::  Company's id.
 			*
-			*		RETURN
-			*	   - (multiple) fw_role  ::  Returns a set of 'fw_role' records's specific data.
+			*    RETURN
+			*	     - (multiple) fw_role  ::  Returns a set of 'fw_role' records's specific data.
 		-->
-		<Function scope="public" name="getRoles" doc="Gets a list of all the roles that a person has in a company.">
+		<Function scope="public" name="getRoles" doc="Gets all the roles that a person has in a company.">
       <Params>
         <Param name="id_person" type="int" required="true" doc="Person's id"/>
 				<Param name="id_company" type="int" required="true" doc="Company's id"/>
@@ -1096,23 +1138,23 @@
 		
 		
 		<!--
-			*		hasRole  |  Checks if a person has a role in a company, given its code.
+			*    hasRole  |  Checks if a person has a role in a company, given its code.
 			*  
-			*		PARAMS
-			*		 - (int) id_person   ::  Person's id;
-			*		 - (int) id_company  ::  Company's id;
-			*		 - (text) code_role  ::  Role's code.
+			*    PARAMS
+			*		   - (int) id_person   ::  Person's id;
+			*		   - (int) id_company  ::  Company's id;
+			*		   - (text) code_role  ::  Role's code.
 			*
-			*		RETURN
-			*	   - (int) 1 | 0  ::  Returns 1 if the person has the role; 0, if it doesn't.
+			*    RETURN
+			*	     - (int) 1 | 0  ::  Returns 1 if the person has the role. Otherwise, returns 0.
 		-->
-		<Function scope="public" name="hasRole" doc="Checks if a person has a role, given its code.">
+		<Function scope="public" name="hasRole" doc="Checks if a person has a role in a company, given its code.">
       <Params>
         <Param name="id_person" type="int" required="true" doc="Person's id"/>
 				<Param name="id_company" type="int" required="true" doc="Company's id"/>
-        <Param name="code_role" type="String" required="true" doc="Role's code"/>
+        <Param name="code_role" type="text" required="true" doc="Role's code"/>
       </Params>
-      <Return type="int" doc="1 if the person has the role; 0, if it doesn't."/>
+      <Return type="int" doc="1 if the person has the role; 0, otherwise."/>
       
       <Begin>
 				<!-- Gets all the roles that the person has -->
@@ -1146,20 +1188,22 @@
 
 
 
-		<!--	________________________________________________________________________________________________
+		<!--	__________________________________________________________________________________________________________________________
 			*
-			*			T I T L E   |   S P S _ T Y P E
-			*		________________________________________________________________________________________________
+      *
+			*			  T I T L E   |   S P S _ T Y P E
+      *
+			*		__________________________________________________________________________________________________________________________
 		-->
 		<!--
-			*		getAllTitles  |  Gets a list of all the existing titles for a person.
+			*    getAllTitles  |  Gets all the existing titles for a person.
 			*
-			*		PARAMS
+			*    PARAMS
 			*		
-			*		RETURN
-			*	   - (multiple) fw_title  ::  Returns all the 'fw_title' records.
+			*    RETURN
+			*	     - (multiple) fw_title  ::  Returns all the 'fw_title' records.
 		-->
-		<Function scope="public" name="getAllTitles" doc="Gets a list of all the existing titles for a person.">
+		<Function scope="public" name="getAllTitles" doc="Gets all the existing titles for a person.">
 			<Params/>
 			<Return type="multiple" doc="All the 'fw_title' records."/>
 			
@@ -1178,14 +1222,14 @@
 
 
 		<!--
-			*		getAllSpsTypes  |  Gets a list of all the existing social protective services types.
+			*    getAllSpsTypes  |  Gets all the existing social protective services types.
 			*
-			*		PARAMS
+			*    PARAMS
 			*
-			*		RETURN
-			*	   - (multiple) fw_sps_type  ::  Returns all the 'fw_sps_type' records.
+			*    RETURN
+			*	     - (multiple) fw_sps_type  ::  Returns all the 'fw_sps_type' records.
 		-->
-		<Function scope="public" name="getAllSpsTypes" doc="Gets a list of all the existing social protective services types.">
+		<Function scope="public" name="getAllSpsTypes" doc="Gets all the existing social protective services types.">
 			<Params/>
 			<Return type="multiple" doc="All the 'fw_sps_type' records."/>
 			
