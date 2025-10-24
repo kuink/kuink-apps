@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Template>
   <Subject><![CDATA[SGI | Novas Versões de Documentos]]></Subject>
-  <Content><![CDATA[
-		Caros colegas, <br/>
-		foram aprovadas e estão disponíveis as novas versões dos seguintes documentos:<br/><br/>
-		$message
-		<br/>
-		Relembramos que devem sempre ir ao sistema buscar a última versão de qualquer documento. Só assim se consegue garantir que não estamos a utilizar versões obsoletas.<br/><br/>
+  <Content>
+    <![CDATA[
+      Caros colegas,<br/><br/>
+      
+      foram aprovadas e estão disponíveis as novas versões dos seguintes documentos:<br/><br/>
+      $message
+      
+      <br/>
+      Relembramos que devem sempre criar um novo documento a partir da própria aplicação (Ficheiro > Novo > Modelos CSCM-Lx) e não através do sistema AQS.<br/>
+      Só assim se consegue garantir que os modelos funcionam corretamente e que não são utilizadas versões obsoletas.<br/><br/>
 
-		Com os melhores cumprimentos,<br/>
-		Equipa AQS
-   ]]></Content>
+      Com os melhores cumprimentos,<br/>
+      Equipa AQS
+    ]]>
+  </Content>
 </Template>
