@@ -1,173 +1,264 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-  <Permissions>
-  </Permissions>
-  <Doc lang="pt-PT">
+  <Doc>
+    <Description>Framework Configuration API  ::  Allows the communication with 'fw_config' table and all the related ones.</Description>
   </Doc>
+  <Permissions/>
+  <Configuration/>
   <Libraries>
-    <Use name="DateTimeLib" type="lib"/>
     <Use name="UtilsLib" type="lib"/>
   </Libraries>
-  <Configuration/>
-  <Screens>
-  </Screens>
-  <Actions>
-  </Actions>
-  <Library forceinterface="true">
-    <!-- Needs to be reviewd -->
-    <Function name="add" doc="Adds a record in table ">
+  
+  
+  
+  
+  
+  <!-- __________________________________________________________________________________________________________________________
+    *
+    *
+    *	      L I B R A R Y    ::    
+    *
+    *	 __________________________________________________________________________________________________________________________
+  -->
+  <Library>
+    <!--
+      *    add  |  Creates a new configuration.
+      *
+      *    PARAMS
+      *      - (text) code       ::  Configuration's code;
+      *      - (text) value      ::  Configuration's value;
+      *      - (text) comment    ::  Configuration's description;
+      *      - (int) id_company  ::  Company where this configuration applies.
+      *
+      *    RETURN
+    -->
+    <Function scope="public" name="add" doc="Creates a new configuration.">
       <Params>
-        <Param name="id_company" type="int" required="true"/>
-        <Param name="code" type="text" required="false"/>
-        <Param name="value" type="text" required="false"/>
-        <Param name="comment" type="text" required="false"/>
+        <Param name="code" type="text" required="true" doc="Configuration's code"/>
+        <Param name="value" type="text" required="true" doc="Configuration's value"/>
+        <Param name="comment" type="text" required="false" doc="Configuration's description"/>
+        <Param name="id_company" type="int" required="false" doc="Company where this configuration applies"/>
       </Params>
-      <Return type="int" doc="The inserted record id"/>
+      <Return/>
+      
       <Begin>
-        <Return>
-          <Execute method="framework,generic,insert">
-            <Param name="table">fw_config</Param>
-            <Param name="id_company">
-              <Var name="PARAMS" key="id_company"/>
-            </Param>
-            <Param name="code">
-              <Var name="PARAMS" key="code"/>
-            </Param>
-            <Param name="value">
-              <Var name="PARAMS" key="value"/>
-            </Param>
-            <Param name="comment">
-              <Var name="PARAMS" key="comment"/>
-            </Param>
-          </Execute>
-        </Return>
-      </Begin>
-    </Function>
-    <Function name="delete" doc="Delete a record by id from table fw_config">
-      <Params>
-        <Param name="id" type="int" required="true"/>
-      </Params>
-      <Return type="int" doc=""/>
-      <Begin>
-        <Return>
-          <Execute method="framework,generic,delete">
-            <Param name="table">fw_config</Param>
-            <Param name="id">
-              <Var name="PARAMS" key="id"/>
-            </Param>
-          </Execute>
-        </Return>
-      </Begin>
-    </Function>
-    <Function name="update" doc="Updates a record in table fw_config">
-      <Params>
-        <Param name="id" type="int" required="true"/>
-        <Param name="id_company" type="int" required="true"/>
-        <Param name="code" type="text" required="false"/>
-        <Param name="value" type="text" required="false"/>
-        <Param name="comment" type="text" required="false"/>
-      </Params>
-      <Begin>
-        <Var name="paramData">
-          <UtilsLib method="filterNotNull">
-            <Param>
-              <Var name="PARAMS"/>
-            </Param>
-          </UtilsLib>
+        <!-- If no id_company is given, sets it to the user's -->
+        <Var name="idCompany">
+          <IsNull>
+            <Param><Var name="PARAMS" key="id_company"/></Param>
+            <Param><Var name="USER" key="idCompany"/></Param>
+          </IsNull>
         </Var>
-        <Execute method="framework,generic,update" params="paramData">
-          <Param name="table">fw_config</Param>
-        </Execute>
+        
+        <DataAccess method="insert">
+          <Param name="_entity">fw_config</Param>
+          <Param name="code"><Var name="PARAMS" key="code"/></Param>
+          <Param name="value"><Var name="PARAMS" key="value"/></Param>
+          <Param name="comment"><Var name="PARAMS" key="comment"/></Param>
+          <Param name="id_company"><Var name="idCompany"/></Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
       </Begin>
     </Function>
-    <Function name="search" doc="Search records from table fw_config">
+    
+    
+    <!--
+      *    delete  |  Deletes a configuration.
+      *
+      *    PARAMS
+      *      - (int) id  ::  Configuration's id.
+      *
+      *    RETURN
+    -->    
+    <Function scope="public" name="delete" doc="Deletes a configuration.">
       <Params>
-        <Param name="id_company" type="int"/>
-        <Param name="code" type="text"/>
-        <Param name="pagenum" type="int"/>
-        <Param name="pagesize" type="int"/>
+        <Param name="id" type="int" required="true" doc="Configuration's id"/>
       </Params>
-      <Return type="multiple" doc="">
-        <External name="id" type="int" doc=""/>
-        <External name="id_company" type="int" doc=""/>
-        <External name="code" type="text" doc=""/>
-        <External name="value" type="text" doc=""/>
-        <External name="comment" type="text" doc=""/>
-      </Return>
+      <Return/>
+      
       <Begin>
-        <Return>
-          <Execute method="this,this,search">
-            <Param name="id_company">
-              <Var name="PARAMS" key="id_company"/>
-            </Param>
-            <Param name="code" wildcard="full">
-              <Var name="PARAMS" key="code"/>
-            </Param>
-            <Param name="pagenum">
-              <Var name="PARAMS" key="pagenum"/>
-            </Param>
-            <Param name="pagesize">
-              <Var name="PARAMS" key="pagesize"/>
-            </Param>
-          </Execute>
-        </Return>
+        <DataAccess method="delete">
+          <Param name="_entity">fw_config</Param>
+          <Param name="id"><Var name="PARAMS" key="id"/></Param>
+        </DataAccess>
       </Begin>
     </Function>
-    <Function name="getAll" doc="Get all records from table fw_config">
+    
+    
+    <!--
+      *    getAll  |  Gets all the existing configurations.
+      *
+      *    PARAMS
+      *
+      *    RETURN
+      *      - (multiple) fw_config  ::  Returns all the 'fw_config' records.
+    -->    
+    <Function scope="public" name="getAll" doc="Gets all the existing configurations.">
       <Params/>
-      <Return type="multiple" doc="">
-        <External name="id" type="int" doc=""/>
-        <External name="id_company" type="int" doc=""/>
-        <External name="code" type="text" doc=""/>
-        <External name="value" type="text" doc=""/>
-        <External name="comment" type="text" doc=""/>
-      </Return>
+      <Return type="multiple" doc="All the 'fw_config' records."/>
       <Begin>
-        <Return>
-          <Execute method="framework,generic,getAll">
-            <Param name="table">fw_config</Param>
-            <Param name="fields">*</Param>
-          </Execute>
-        </Return>
-      </Begin>
-    </Function>
-    <Function name="getById" doc="Get a record by id from table fw_config">
-      <Params>
-        <Param name="id" type="int" required="true"/>
-      </Params>
-      <Return type="single" doc="">
-        <External name="id" type="int" doc=""/>
-        <External name="id_company" type="int" doc=""/>
-        <External name="code" type="text" doc=""/>
-        <External name="value" type="text" doc=""/>
-        <External name="comment" type="text" doc=""/>
-      </Return>
-      <Begin>
-        <Return>
-          <Execute method="framework,generic,load">
-            <Param name="table">fw_config</Param>
-            <Param name="id">
-              <Var name="PARAMS" key="id"/>
-            </Param>
-          </Execute>
-        </Return>
-      </Begin>
-    </Function>
-    <!-- / Needs to be reviewd -->
-    <Function name="getByCompany" doc="Gets records by id_company from table fw_config">
-      <Params>
-        <Param name="id_company" type="int" required="true"/>
-      </Params>
-      <Return type="multiple" doc=""/>
-      <Begin>
-        <Return>
+        <Var name="configs">
           <DataAccess method="getAll">
             <Param name="_entity">fw_config</Param>
-            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="_sort">code ASC</Param>
           </DataAccess>
+        </Var>
+        
+        <Return>
+          <Var name="configs"/>
         </Return>
       </Begin>
     </Function>
+    
+    
+    <!--
+      *    getByCompany  |  Gets all the configurations of a given company.
+      *
+      *    PARAMS
+      *      - (int) id_company  ::  Company's id.
+      *
+      *    RETURN
+      *      - (multiple) fw_config  ::  Returns a set of 'fw_config' records.
+    -->
+    <Function scope="public" name="getByCompany" doc="Gets all the configurations of a given company.">
+      <Params>
+        <Param name="id_company" type="int" required="false" doc="Company's id"/>
+      </Params>
+      <Return type="multiple" doc="Set of 'fw_config' records."/>
+      
+      <Begin>
+         <!-- If no id is given, sets it to the user's -->
+        <Var name="idCompany">
+          <IsNull>
+            <Param><Var name="PARAMS" key="id_company"/></Param>
+            <Param><Var name="USER" key="idCompany"/></Param>
+          </IsNull>
+        </Var>
+        
+        <Var name="configs">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_config</Param>
+            <Param name="id_company"><Var name="idCompany"/></Param>
+            <Param name="_sort">code ASC</Param>
+          </DataAccess>
+        </Var>
+        
+        <Return>
+          <Var name="configs"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    
+    <!--
+      *    getById  |  Gets a configuration, given its id.
+      *
+      *    PARAMS
+      *      - (int) id  ::  Configuration's id.
+      *
+      *    RETURN
+      *      - (single) fw_config  ::  Returns the corresponding 'fw_config' record.
+    -->    
+    <Function scope="public" name="getById" doc="Gets a configuration, given its id.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Configuration's id"/>
+      </Params>
+      <Return type="single" doc="The corresponding 'fw_config' record."/>
+      
+      <Begin>
+        <Var name="config">
+          <DataAccess method="load">
+            <Param name="_entity">fw_config</Param>
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Return>
+          <Var name="config"/>
+        </Return>
+      </Begin>
+    </Function>  
 
+    
+    <!--
+      *    update  |  Updates a configuration's details.
+      *
+      *		 PARAMS
+      *      - (int) id          ::  Configuration's id;
+      *      - (text) code       ::  Configuration's code;
+      *      - (text) value      ::  Configuration's value;
+      *      - (text) comment    ::  Configuration's description;
+      *      - (int) id_company  ::  Company where this configuration applies.
+      *
+      *		 RETURN
+    -->  
+    <Function scope="public" name="update" doc="Updates a configuration's details.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Configuration's id"/>
+        <Param name="code" type="text" required="true" doc="Configuration's code"/>
+        <Param name="value" type="text" required="true" doc="Configuration's value"/>
+        <Param name="comment" type="text" required="false" doc="Configuration's description"/>
+        <Param name="id_company" type="int" required="false" doc="Company where this configuration applies"/>
+      </Params>
+      <Begin>
+        <Var name="updateParams">
+          <UtilsLib method="filterNotNull">
+            <Param><Var name="PARAMS"/></Param>
+          </UtilsLib>
+        </Var>
+        
+        <DataAccess method="update" params="updateParams">
+          <Param name="_entity">fw_config</Param>
+          <Param name="_base">true</Param>
+        </DataAccess>
+      </Begin>
+    </Function>
+    
+    
+    <!--
+      *    search  |  Gets a list of configurations that meet the given criteria.
+      *
+      *		 PARAMS
+      *      - (int) id          ::  Configuration's id;
+      *      - (text) code       ::  Configuration's code;
+      *      - (text) value      ::  Configuration's value;
+      *      - (text) comment    ::  Configuration's description;
+      *      - (int) id_company  ::  Company where this configuration applies;
+      *      - (int) pagenum     ::  Current page;
+      *      - (int) pagesize    ::  Number of records per page.
+      *
+      *		 RETURN
+      *      - (multiple) fw_config  ::  Returns a set of 'fw_config' records.
+    -->    
+    <Function scope="public" name="search" doc="Gets a list of configurations that meet the given criteria.">
+      <Params>
+        <Param name="id" type="int" required="false" doc="Configuration's id"/>
+        <Param name="code" type="text" required="false" doc="Configuration's code"/>
+        <Param name="value" type="text" required="false" doc="Configuration's value"/>
+        <Param name="comment" type="text" required="false" doc="Configuration's description"/>
+        <Param name="id_company" type="int" required="false" doc="Company where this configuration applies"/>
+        <Param name="pagenum" type="int" required="true" doc="Current page"/>
+        <Param name="pagesize" type="int" required="true" doc="Number of records per page"/>
+      </Params>
+      <Return type="multiple" doc="Set of 'fw_config' records."/>
+      
+      <Begin>
+        <Var name="configs">
+          <DataAccess method="this,this,search">
+            <Param name="id"><Var name="PARAMS" key="id"/></Param>
+            <Param name="code" wildcard="full"><Var name="PARAMS" key="code"/></Param>
+            <Param name="value" wildcard="full"><Var name="PARAMS" key="value"/></Param>
+            <Param name="comment" wildcard="full"><Var name="PARAMS" key="comment"/></Param>
+            <Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
+            <Param name="pagenum"><Var name="PARAMS" key="pagenum"/></Param>
+            <Param name="pagesize"><Var name="PARAMS" key="pagesize"/></Param>
+          </DataAccess>
+        </Var>
+        
+        <Return>
+          <Var name="configs"/>
+        </Return>
+      </Begin>
+    </Function>
   </Library>
 </Node>

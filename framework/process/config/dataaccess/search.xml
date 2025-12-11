@@ -1,30 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?><Method>
-    <Doc>
-        Search all fw_config
-    </Doc>
-    <Params>
-                              <Param name="id_company"/>
-                  <Param name="code"/>
-                            </Params>
-    <Body>
-        <SqlPaginated>
-            <XSql>
-                <XSelect>
-                    <XField >
-                        *
-                    </XField>
-                </XSelect>
-                <XFrom>
-                    <XTable>
-                        fw_config t
-                    </XTable>
-                </XFrom>
-                <XWhere>
-                  <XCondition>1 = 1</XCondition>
-                                                                                                                                                                                                                                                                                                  <XCondition optional="id_company">AND t.id_company = {param->id_company}</XCondition>
-                                                                                                                                                                                          <XCondition optional="code">AND t.code like '{param->code}'</XCondition>
-                                                                                                                                                                                                                                                                                                                                                            </XWhere>
-            </XSql>
-        </SqlPaginated>
-    </Body>
+<?xml version="1.0" encoding="UTF-8"?>
+<Method>
+  <Doc>
+    <Description>Gets all the configurations that meet the given criteria, for a given company.</Description>
+  </Doc>
+  <Params>
+    <Param name="id" type="int" required="false" doc="Configuration's id"/>
+    <Param name="id_company" type="int" required="false" doc="Company where this configuration applies"/>
+    <Param name="code" type="text" required="false" doc="Configuration's code"/>
+    <Param name="value" type="text" required="false" doc="Configuration's value"/>
+    <Param name="comment" type="text" required="false" doc="Configuration's description"/>
+  </Params>
+  
+  <Body>
+    <SqlPaginated>
+      <XSql>
+        <XSelect>
+          <XField>
+            <![CDATA[
+              c.*
+            ]]>
+          </XField>
+        </XSelect>
+        <XFrom>
+          <XTable>
+            <![CDATA[
+              fw_config c
+            ]]>
+          </XTable>
+        </XFrom>
+        <XWhere>
+          <XCondition>
+            <![CDATA[ 1 = 1 ]]>
+          </XCondition>
+          <XCondition optional="id">
+            <![CDATA[ AND c.id = {param->id} ]]>
+          </XCondition>
+          <XCondition optional="id_company">
+            <![CDATA[ AND c.id_company = {param->id_company} ]]>
+          </XCondition>
+          <XCondition optional="code">
+            <![CDATA[ AND c.code LIKE '{param->code}' ]]>
+          </XCondition>
+          <XCondition optional="value">
+            <![CDATA[ AND c.value LIKE '{param->value}' ]]>
+          </XCondition>
+          <XCondition optional="comment">
+            <![CDATA[ AND c.comment LIKE '{param->comment}' ]]>
+          </XCondition>
+        </XWhere>
+        <XOrderBy>
+          <XOrder><![CDATA[ c.code ASC ]]></XOrder>
+        </XOrderBy>
+      </XSql>
+    </SqlPaginated>
+  </Body>
 </Method>

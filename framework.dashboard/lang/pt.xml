@@ -1,109 +1,101 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Lang>
 	<Strings>
-		<!--	________________________________________________________________________________________________
-			*
-			*
-			*			G E N E R A L    ::    
-			*
-			*		________________________________________________________________________________________________
+    <!-- ___________________________________________________________________________________________________________________________________________________
+      *
+      *
+      *	      G E N E R A L    ::    .
+      *
+      *	 ___________________________________________________________________________________________________________________________________________________
+    -->
+		<String key="framework">Framework</String>
+		<String key="framework.dashboard">Framework Dashboard</String>
+		<String key="general">Geral</String>
+		<String key="main">Geral</String>
+		<String key="people">Utentes</String>
+		<String key="permissions">Permissões</String>
+		<String key="break"><![CDATA[ <br/><br/> ]]></String>
+    
+    
+    
+    
+    
+		<!--	___________________________________________________________________________________________________________________________________________________
+      *
+      *
+      *	      B A C K O F F I C E    |    P E R M I S S I O N S    ::     App Files | Companies | Allocations | Roles | Capabilities | Roles-Capabilities
+      *
+      *	 ___________________________________________________________________________________________________________________________________________________
 		-->
-		<String key="framework.dashboard"><![CDATA[ Framework Dashboard ]]></String>
-		<String key="framework"><![CDATA[ Framework ]]></String>
-		<String key="allocations"><![CDATA[ Allocations ]]></String>
-		<String key="appFiles"><![CDATA[ Ficheiros ]]></String>
-		<String key="capabilities"><![CDATA[ Capabilities ]]></String>
-		<String key="companies"><![CDATA[ Empresas ]]></String>
-		<String key="general"><![CDATA[ Geral ]]></String>
-		<String key="manage"><![CDATA[ Gerir ]]></String>
-		<String key="main"><![CDATA[ Geral ]]></String>
-		<String key="people"><![CDATA[ Utentes ]]></String>
-		<String key="permissions"><![CDATA[ Permissões ]]></String>
-		<String key="roles"><![CDATA[ Roles ]]></String>
-		<String key="rolesCapabilities"><![CDATA[ Roles-Capabilities ]]></String>
-		
-		<!--  ::  Headers   -->
-		<String key="allocationsManagement"><![CDATA[ Gestão de Allocations ]]></String>
-		<String key="capabilitiesManagement"><![CDATA[ Gestão de Capabilities ]]></String>
-		<String key="companiesManagement"><![CDATA[ Gestão de Empresas ]]></String>
-		<String key="rolesManagement"><![CDATA[ Gestão de Roles ]]></String>
-		<String key="rolesCapabilitiesManagement"><![CDATA[ Gestão de Roles-Capabilities ]]></String>
-		<String key="break">
-			<![CDATA[ <br/><br/> ]]>
-		</String>
-		
-		
-
-
-		<!--	________________________________________________________________________________________________
-			*
-			*			B A C K O F F I C E    ::    
-			*		________________________________________________________________________________________________
-		-->
-		<String key="basename"><![CDATA[ Nome do ficheiro ]]></String>
-		<String key="comment"><![CDATA[ Comentário ]]></String> 
-		<String key="configs"><![CDATA[ Configurações ]]></String> 
-		<String key="companyConfig"><![CDATA[ Configurações de empresa ]]></String>
-		<String key="currentDirectory"><![CDATA[ Pasta Atual ]]></String>
-		<String key="directory"><![CDATA[ Pasta ]]></String>
-		<String key="files"><![CDATA[ Ficheiros ]]></String>
-		<String key="goTo"><![CDATA[ Ir para ]]></String>
-		<String key="newFile"><![CDATA[ Novo Ficheiro ]]></String>
-		<String key="preview"><![CDATA[ Pré-visualização ]]></String>
-		<String key="size"><![CDATA[ Tamanho ]]></String>
-		<String key="timezone"><![CDATA[ Fuso Horário ]]></String> 
-		<String key="value"><![CDATA[ Valor ]]></String> 
-		
-		
-		
-		
-		<!--	________________________________________________________________________________________________
-			*
-			*
-			*			P E R M I S S I O N S    ::    Roles  |  Capabilities  |  Roles_Capabilities  |  Allocations
-			*
-			*		________________________________________________________________________________________________
-		-->
-		<!--  ::  Fields  -->
-		<String key="details"><![CDATA[ Detalhes ]]></String>
-		<String key="duplicate"><![CDATA[ Duplicar ]]></String>
-		<String key="id_capability"><![CDATA[ Capability ]]></String>
-		<String key="id_person"><![CDATA[ Utente ]]></String>
-		<String key="id_person_group"><![CDATA[ Grupo ]]></String>
-		<String key="id_role"><![CDATA[ Role ]]></String>
-		<String key="is_global"><![CDATA[ Global ]]></String>
-		<String key="_modification"><![CDATA[ Última atualização ]]></String>
-		<String key="searchText"><![CDATA[ Pesquisa ]]></String>
-		<String key="searchCapability"><![CDATA[ Capability ]]></String>
-		
-		<!--  ::  User Messages  -->
-		<String key="allocationDuplicateAssignment"><![CDATA[ Uma função não pode ser atribuída a uma pessoa e a um grupo em simultâneo. ]]></String>
-		<String key="allocationAlreadyExists"><![CDATA[ O utente/grupo já tem a função na empresa. ]]></String>
-		<String key="capabilityAlreadyAssignedToRole"><![CDATA[ Capability já atribuída à role. ]]></String>
-		<String key="capabilityAlreadyExists"><![CDATA[ Já existe uma capability com o código indicado. ]]></String>
-		<String key="companyDoesNotExist"><![CDATA[ A empresa indicada não existe. ]]></String>
-		<String key="globalCapabilityError"><![CDATA[ Uma capability não pode ser global e estar atribuída a uma empresa. ]]></String>
-		<String key="personDoesNotBelongToCompany"><![CDATA[ O utente/grupo não pertence à empresa. ]]></String>
-		<String key="personDoesNotExist"><![CDATA[ O utente indicado não existe. ]]></String>
-		<String key="roleDoesNotExist"><![CDATA[ A função indicada não existe. ]]></String>
+		<!--    ::  Headers  ::    -->
+		<String key="allocations">Allocations</String>
+		<String key="allocationsManagement">Gestão de Allocations</String>
+    <String key="appFiles">Ficheiros</String>
+		<String key="capabilities">Capabilities</String>
+		<String key="capabilitiesManagement">Gestão de Capabilities</String>
+		<String key="companies">Empresas</String>
+		<String key="companiesManagement">Gestão de Empresas</String>
+		<String key="companyConfig">Configurações de Empresa</String>
+		<String key="roles">Roles</String>
+		<String key="rolesCapabilities">Roles-Capabilities</String>
+		<String key="rolesManagement">Gestão de Roles</String>
+		<String key="rolesCapabilitiesManagement">Gestão de Roles-Capabilities</String>
+    
+    
+		<!--    ::  Fields  ::    -->
+		<String key="basename">Nome do ficheiro</String>
+		<String key="comment">Comentário</String> 
+		<String key="configs">Configurações</String> 
+		<String key="currentDirectory">Pasta Atual</String>
+		<String key="details">Detalhes</String>
+		<String key="directory">Pasta</String>
+		<String key="duplicate">Duplicar</String>
+		<String key="files">Ficheiros</String>
+		<String key="goTo">Ir para</String>
+		<String key="id_capability">Capability</String>
+		<String key="id_person">Utente</String>
+		<String key="id_person_group">Grupo</String>
+		<String key="id_role">Role</String>
+		<String key="is_global">Global</String>
+		<String key="location">Localização</String>
+		<String key="_modification">Última atualização</String>
+		<String key="newFile">Novo Ficheiro</String>
+		<String key="preview">Pré-visualização</String>
+		<String key="searchText">Pesquisa</String>
+		<String key="searchCapability">Capability</String>
+		<String key="size">Tamanho</String>
+		<String key="timezone">Fuso Horário</String> 
+		<String key="value">Valor</String> 
+    
+    
+    <!--    ::  User Messages  ::    -->
+		<String key="allocationDuplicateAssignment">Uma função não pode ser atribuída a uma pessoa e a um grupo em simultâneo.</String>
+		<String key="allocationAlreadyExists">O utente/grupo já tem a função na empresa.</String>
+		<String key="capabilityAlreadyAssignedToRole">Capability já atribuída à role.</String>
+		<String key="capabilityAlreadyExists">Já existe uma capability com o código indicado.</String>
+		<String key="companyDoesNotExist">A empresa indicada não existe.</String>
+		<String key="globalCapabilityError">Uma capability não pode ser global e estar atribuída a uma empresa.</String>
+		<String key="personDoesNotBelongToCompany">O utente/grupo não pertence à empresa.</String>
+		<String key="personDoesNotExist">O utente indicado não existe.</String>
+		<String key="roleDoesNotExist">A função indicada não existe.</String>
 	</Strings>
 	
 
 	
 	
-	<!--	__________________________________________________________________________________________________________________________
+	<!--	___________________________________________________________________________________________________________________________________________________
     *
     *
-    *			  H E L P    S T R I N G S    ::   
+    *	      H E L P    S T R I N G S    ::   
     *
-    *		__________________________________________________________________________________________________________________________
+    *	 ___________________________________________________________________________________________________________________________________________________
   -->
 	<HelpStrings>
-		<Help key="idUserGlobal"><![CDATA[ Id de utilizador no contexto global (considerado por todas as empresas).]]></Help>
-		<Help key="idPersonCompany"><![CDATA[ Número de utente no contexto da empresa em questão.]]></Help>
-		<Help key="isActiveCompany"><![CDATA[ Se este utilizador está ativo no contexto da empresa.]]></Help>
-		<Help key="is_global"><![CDATA[ Uma capability global aplica-se a todas as empresas. ]]></Help>
-		<Help key="searchCapability"><![CDATA[ Pode pesquisar por uma capability que esteja associada à role. ]]></Help>
-		<Help key="searchText"><![CDATA[ Pode pesquisar pelo id, código ou nome. ]]></Help>
+		<Help key="idUserGlobal">Id de utilizador no contexto global (considerado por todas as empresas).</Help>
+		<Help key="idPersonCompany">Número de utente no contexto da empresa em questão.</Help>
+		<Help key="isActiveCompany">Se este utilizador está ativo no contexto da empresa.</Help>
+		<Help key="is_global">Uma capability global aplica-se a todas as empresas.</Help>
+		<Help key="searchCapability">Pode pesquisar por uma capability que esteja associada à role.</Help>
+		<Help key="searchText">Pode pesquisar pelo id, código ou nome.</Help>
 	</HelpStrings>
 </Lang>

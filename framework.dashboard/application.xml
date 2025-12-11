@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<Application name="framework.dashboard" version="2.002.002">
+<Application name="framework.dashboard" version="2.003.000">
   <!--
-		*	@date:		 2025.02.11
+		* @date:		 2025.12.11
 		*	@author:   catarina.fernandes
-		*	@comment:  Fix: framework.dashboard > allocation | Fixing null params when creating a new allocation. | v2.002.002
+		*	@comment:  Feature: framework.dashboard > backoffice | Updating the companie's configurations management. | v2.003.000
 	-->
   <Config/>
   <Databases/>
