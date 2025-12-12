@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<Application name="framework" version="2.022.000">
+
+<Application name="framework" version="2.022.001">
 	<!-- 
-		*	@date:		2025.10.24
+		*	@date:		2025.12.12
 		*	@author:	catarina.fernandes
-		*	@comment:	Feature: framework > rm.controlledDocument | Updating the notification sent to the collaborators, when a new document's version is available. | v2.022.000
+		*	@comment:	Fix: framework | Updating the calls to 'sys_config', according to the new codes. | v2.022.001
 	-->
 	<Configuration>
 		<Key name="message_id_context" value="neon.framework"/>

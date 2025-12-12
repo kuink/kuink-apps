@@ -1,1423 +1,2294 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
-    <Permissions/>
-    <Doc lang="pt-PT">
-    </Doc>
-    <Libraries>
-        <Use name="UtilsLib" type="lib"/>
-        <Use name="MathLib" type="lib"/>
-        <Use name="DateTimeLib" type="lib"/>
-        <Use name="StringLib" type="lib"/>
-        <Use name="TemplateLib" type="lib"/>
-				<Use name="FormatterLib" type="lib"/>
-    </Libraries>
-    <Configuration/>
-    <Screens>
-    </Screens>
-    <Actions>
-        <Action name="init">
-        </Action>
-    </Actions>
-    <Library>
+	<Doc/>
+	<Permissions/>
+	<Configuration/>
+	<Libraries>
+		<Use name="UtilsLib" type="lib"/>
+		<Use name="MathLib" type="lib"/>
+		<Use name="DateTimeLib" type="lib"/>
+		<Use name="StringLib" type="lib"/>
+		<Use name="TemplateLib" type="lib"/>
+		<Use name="FormatterLib" type="lib"/>
+	</Libraries>
+	<Screens/>
+	
+	
+	
+	
+	
+	<!-- __________________________________________________________________________________________________________________________
+		*
+		*
+		*	      L I B R A R Y    ::    
+		*
+		*  __________________________________________________________________________________________________________________________
+	-->
+	<Library>
+		<Function name="create" doc="Create an instance for this state machine" scope="protected">
+			<Params>
+				<Param name="code" doc="State machine code"/>
+			</Params>
+			<Return type="int" doc="The instance id"/>
+			<Begin>
+				<Var name="stateMachine">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine</Param>
+						<Param name="code">
+							<Var name="PARAMS" key="code"/>
+						</Param>
+					</DataAccess>
+				</Var>
 
-        <Function name="create" doc="Create an instance for this state machine" scope="protected">
-          <Params>
-              <Param name="code" doc="State machine code"/>
-          </Params>
-          <Return type="int" doc="The instance id"/>
-          <Begin>
-          		<Var name="stateMachine">
-          			<DataAccess method="load">
-									<Param name="_entity">fw_state_machine</Param>
-									<Param name="code"><Var name="PARAMS" key="code"></Var></Param>
-								</DataAccess>
-          		</Var>
+				<Var name="startState">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_state</Param>
+						<Param name="id_state_machine">
+							<Var name="stateMachine" key="id"/>
+						</Param>
+						<Param name="is_start_state">
+							<Int>1</Int>
+						</Param>
+					</DataAccess>
+				</Var>
 
-          		<Var name="startState">
-          			<DataAccess method="load">
-									<Param name="_entity">fw_state_machine_state</Param>
-									<Param name="id_state_machine"><Var name="stateMachine" key="id"/></Param>
-									<Param name="is_start_state"><Int>1</Int></Param>
-								</DataAccess>
-          		</Var>
+				<If condition="$stateMachine->code != ''">
+					<Then>
+						<Var name="instanceId">
+							<DataAccess method="insert">
+								<Param name="_entity">fw_state_machine_instance</Param>
+								<Param name="id_state_machine">
+									<Var name="stateMachine" key="id"/>
+								</Param>
+								<Param name="id_current_state">
+									<Var name="startState" key="id"/>
+								</Param>
+								<Param name="is_finished">
+									<Int>0</Int>
+								</Param>
+								<Param name="_base">true</Param>
+							</DataAccess>
+						</Var>
+					</Then>
+				</If>
+				<Return>
+					<Var name="instanceId"/>
+				</Return>
+			</Begin>
+		</Function>
 
-          		<If condition="$stateMachine->code != ''">
+		<Function name="processEvent" doc="Processes an event on a state machine" scope="protected">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to be processed"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="personData" type="array" doc="The data needed to automatically process emails. For each person we must have the id_person, role, display_name, email "/>
+				<Param name="eventData" type="array" doc="The data to associate to the instance "/>
+			</Params>
+			<Exceptions>
+				<Exception name="framework/stateMachine.instance::invalid" doc="Instance not found"/>
+				<Exception name="framework/stateMachine.instance::invalidTransition" doc="The instance is not waiting for this event at this time"/>
+				<Exception name="framework/stateMachine.instance::noPermission" doc="The role has no permission to execute this event"/>
+			</Exceptions>
+			<Return type="int" doc="The instance id"/>
+			>
+			<Begin>
+				<Transaction>
+					<Var name="instance">
+						<DataAccess method="load">
+							<Param name="_entity">fw_state_machine_instance</Param>
+							<Param name="id">
+								<Var name="PARAMS" key="id"/>
+							</Param>
+						</DataAccess>
+					</Var>
+					<If condition="$instance->__length == 0">
+						<Then>
+							<Exception>
+								<String>framework/stateMachine.instance::invalid</String>
+							</Exception>
+						</Then>
+					</If>
+
+					<!-- Check if this transition is valid else throw framework/stateMachine.instance::invalidTransition or if the user role can execute throw framework/stateMachine.instance::noPermission if not-->
+					<Var name="transitions">
+						<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
+							<Param name="id_start_state">
+								<Var name="instance" key="id_current_state"/>
+							</Param>
+							<Param name="event">
+								<Var name="PARAMS" key="event"/>
+							</Param>
+							<Param name="is_active">1</Param>
+						</DataAccess>
+					</Var>
+					<If condition="$transitions->__length == 0">
+						<Then>
+							<Exception>
+								<String>framework/stateMachine.instance::invalidTransition</String>
+							</Exception>
+						</Then>
+					</If>
+
+					<!-- Check Permissions - get the first-->
+					<Var name="endStateId">
+						<Int>-1</Int>
+					</Var>
+					<Var name="eventDescription">
+						<String/>
+					</Var>
+					<Var name="found">
+						<Int>0</Int>
+					</Var>
+					<ForEach var="transitions" item="transition">
+						<Var name="transitionRoles">
+							<Set/>
+						</Var>
+						<Var name="transitionRoles">
+							<ListToSet>
+								<Var name="transition" key="role_list"/>
+							</ListToSet>
+						</Var>
+						<ForEach var="transitionRoles" item="transitionRole">
+							<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
+								<Then>
+									<Var name="endStateId">
+										<Var name="transition" key="id_end_state"/>
+									</Var>
+									<Var name="eventDescription">
+										<Var name="transition" key="event_description"/>
+									</Var>
+									<Var name="found">
+										<Int>1</Int>
+									</Var>
+								</Then>
+							</If>
+						</ForEach>
+					</ForEach>
+					<If condition="$found == 0">
+						<Then>
+							<Exception>
+								<String>framework/stateMachine.instance::noPermission</String>
+							</Exception>
+						</Then>
+					</If>
+
+					<!-- Update the current state with the one from the transition -->
+					<DataAccess method="update">
+						<Param name="_entity">fw_state_machine_instance</Param>
+						<Param name="id" pk="true">
+							<Var name="instance" key="id"/>
+						</Param>
+						<Param name="id_current_state">
+							<Var name="endStateId"/>
+						</Param>
+					</DataAccess>
+
+					<Var name="dataJson">
+						<SetToJson escape="false">
+							<Var name="PARAMS" key="eventData"/>
+						</SetToJson>
+					</Var>
+
+					<!-- Add the new state to the instance history -->
+					<DataAccess method="insert">
+						<Param name="_entity">fw_state_machine_instance_history</Param>
+						<Param name="id_state_machine_instance">
+							<Var name="instance" key="id"/>
+						</Param>
+						<Param name="id_start_state">
+							<Var name="instance" key="id_current_state"/>
+						</Param>
+						<Param name="id_end_state">
+							<Var name="endStateId"/>
+						</Param>
+						<Param name="event">
+							<Var name="PARAMS" key="event"/>
+						</Param>
+						<Param name="event_description">
+							<Var name="eventDescription"/>
+						</Param>
+						<Param name="role">
+							<Var name="PARAMS" key="role"/>
+						</Param>
+						<Param name="event_data">
+							<Var name="dataJson"/>
+						</Param>
+						<Param name="_base">true</Param>
+					</DataAccess>
+
+					<!-- Automatically process the emails on the end state-->
+					<Var name="endState">
+						<DataAccess method="load">
+							<Param name="_entity">fw_state_machine_state</Param>
+							<Param name="id">
+								<Var name="endStateId"/>
+							</Param>
+							<Param name="is_active">
+								<Int>1</Int>
+							</Param>
+						</DataAccess>
+					</Var>
+				</Transaction>
+				<Return>
+					<Int>1</Int> <!--Var name="instanceId"/-->
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="protected" name="getNextEvents" doc="get the events that the user can use">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="instance">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_instance</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<If condition="$instance->__length == 0">
+					<Then>
+						<Exception>
+							<String>framework/stateMachine.instance::invalid</String>
+						</Exception>
+					</Then>
+				</If>
+				<Var name="transitions">
+					<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
+						<Param name="id_start_state">
+							<Var name="instance" key="id_current_state"/>
+						</Param>
+						<Param name="is_active">1</Param>
+						<Param name="_sort">event_description ASC</Param>
+					</DataAccess>
+				</Var>
+				<Var name="validTransitions">
+					<Set/>
+				</Var>
+				<ForEach var="transitions" item="transition">
+					<Var name="transitionRoles">
+						<Set/>
+					</Var>
+					<Var name="transitionRoles">
+						<ListToSet>
+							<Var name="transition" key="role_list"/>
+						</ListToSet>
+					</Var>
+					<ForEach var="transitionRoles" item="transitionRole">
+						<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
 							<Then>
-								<Var name="instanceId">
-									<DataAccess method="insert">
-										<Param name="_entity">fw_state_machine_instance</Param>
-										<Param name="id_state_machine"><Var name="stateMachine" key="id"/></Param>
-										<Param name="id_current_state"><Var name="startState" key="id"/></Param>
-										<Param name="is_finished"><Int>0</Int></Param>
-										<Param name="_base">true</Param>
-									</DataAccess>
+								<Var name="event">
+									<Set/>
+								</Var>
+								<Var name="event" key="event">
+									<Var name="transition" key="event"/>
+								</Var>
+								<Var name="event" key="description">
+									<Var name="transition" key="event_description"/>
+								</Var>
+								<Var name="event" key="field_list">
+									<Var name="transition" key="field_list"/>
+								</Var>
+								<Var name="validTransitions" key="">
+									<Var name="event"/>
 								</Var>
 							</Then>
 						</If>
-            <Return>
-                <Var name="instanceId"/>
-            </Return>
-          </Begin>
-        </Function>
+					</ForEach>
+				</ForEach>
+				<Return>
+					<Var name="validTransitions"/>
+				</Return>
+			</Begin>
+		</Function>
 
-        <Function name="processEvent" doc="Processes an event on a state machine" scope="protected">
-            <Params>
-                <Param name="id" doc="The state machine instance id"/>
-                <Param name="event" type="string" doc="The event to be processed"/>
-                <Param name="role" type="string" doc="The role of the user to process the event"/>
-                <Param name="personData" type="array" doc="The data needed to automatically process emails. For each person we must have the id_person, role, display_name, email "/>
-                <Param name="eventData" type="array" doc="The data to associate to the instance "/>
-            </Params>
-            <Exceptions>
-            	<Exception name="framework/stateMachine.instance::invalid" doc="Instance not found"/>
-            	<Exception name="framework/stateMachine.instance::invalidTransition" doc="The instance is not waiting for this event at this time"/>
-            	<Exception name="framework/stateMachine.instance::noPermission" doc="The role has no permission to execute this event"/>
-            </Exceptions>
-            <Return type="int" doc="The instance id"/>>
-            <Begin>
-            	<Transaction>
-            		<Var name="instance" >
-            			<DataAccess method="load">
-										<Param name="_entity">fw_state_machine_instance</Param>
-										<Param name="id"><Var name="PARAMS" key="id"/></Param>
-									</DataAccess>
-            		</Var>
-            		<If condition="$instance->__length == 0">
-									<Then>
-										<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
-									</Then>
-								</If>
+		<Function scope="protected" name="getNextEventsInCommon" doc="get the events that the user can use that are in common of a list">
+			<Params>
+				<Param name="ids" doc="The state machine instance id list comma separated"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="idsArray">
+					<ListToSet>
+						<Var name="PARAMS" key="ids"/>
+					</ListToSet>
+				</Var>
+				<Var name="count" value="$idsArray->__length"/>
+				<Var name="transitions">
+					<DataAccess method="this,this,stateMachineInstance.getEventsInCommon">
+						<Param name="_entity">fw_state_machine_transition</Param>
+						<Param name="ids">
+							<Var name="PARAMS" key="ids"/>
+						</Param>
+						<Param name="role">
+							<Var name="PARAMS" key="role"/>
+						</Param>
+						<Param name="numOfInstances">
+							<Var name="count"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<Return>
+					<Var name="transitions"/>
+				</Return>
+			</Begin>
+		</Function>
 
-            		<!-- Check if this transition is valid else throw framework/stateMachine.instance::invalidTransition or if the user role can execute throw framework/stateMachine.instance::noPermission if not-->
-            		<Var name="transitions">
-									<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
-										<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
-										<Param name="event"><Var name="PARAMS" key="event"/></Param>
-										<Param name="is_active">1</Param>
-									</DataAccess>
-            		</Var>
-            		<If condition="$transitions->__length == 0">
-									<Then>
-										<Exception><String>framework/stateMachine.instance::invalidTransition</String></Exception>
-									</Then>
-								</If>
-
-            		<!-- Check Permissions - get the first-->
-            		<Var name="endStateId"><Int>-1</Int></Var>
-            		<Var name="eventDescription"><String/></Var>
-            		<Var name="found"><Int>0</Int></Var>
-            		<ForEach var="transitions" item="transition">
-            			<Var name="transitionRoles"><Set/></Var>
-            			<Var name="transitionRoles" ><ListToSet><Var name="transition" key="role_list"/></ListToSet></Var>
-            			<ForEach var="transitionRoles" item="transitionRole">
-            				<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
-											<Then>
-												<Var name="endStateId"><Var name="transition" key="id_end_state"/></Var>
-												<Var name="eventDescription"><Var name="transition" key="event_description"/></Var>
-												<Var name="found"><Int>1</Int></Var>
-											</Then>
-										</If>
-									</ForEach>
-								</ForEach>
-								<If condition="$found == 0">
-									<Then>
-										<Exception><String>framework/stateMachine.instance::noPermission</String></Exception>
-									</Then>
-								</If>
-
-            		<!-- Update the current state with the one from the transition -->
-            		<DataAccess method="update">
-									<Param name="_entity">fw_state_machine_instance</Param>
-									<Param name="id" pk="true"><Var name="instance" key="id"/></Param>
-									<Param name="id_current_state"><Var name="endStateId"/></Param>
-								</DataAccess>
-
-								<Var name="dataJson"><SetToJson escape="false"><Var name="PARAMS" key="eventData"/></SetToJson></Var>
-
-            		<!-- Add the new state to the instance history -->
-            		<DataAccess method="insert">
-									<Param name="_entity">fw_state_machine_instance_history</Param>
-									<Param name="id_state_machine_instance"><Var name="instance" key="id"/></Param>
-									<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
-									<Param name="id_end_state"><Var name="endStateId"/></Param>
-									<Param name="event"><Var name="PARAMS" key="event"/></Param>
-									<Param name="event_description"><Var name="eventDescription"/></Param>
-									<Param name="role"><Var name="PARAMS" key="role"/></Param>
-									<Param name="event_data"><Var name="dataJson"/></Param>
-									<Param name="_base">true</Param>
-								</DataAccess>
-
-            		<!-- Automatically process the emails on the end state-->
-            		<Var name="endState">
-            			<DataAccess method="load">
-										<Param name="_entity">fw_state_machine_state</Param>
-										<Param name="id"><Var name="endStateId"/></Param>
-										<Param name="is_active"><Int>1</Int></Param>
-									</DataAccess>
-            		</Var>
-							</Transaction>
-              <Return>
-               	<Int>1</Int><!--Var name="instanceId"/-->
-              </Return>
-            </Begin>
-        </Function>
-
-        <Function scope="protected" name="getNextEvents" doc="get the events that the user can use">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-         		<Var name="instance" >
-         			<DataAccess method="load">
-							<Param name="_entity">fw_state_machine_instance</Param>
-							<Param name="id"><Var name="PARAMS" key="id"/></Param>
-						</DataAccess>
-         		</Var>
-         		<If condition="$instance->__length == 0">
+		<Function scope="protected" name="getBulkEvents" doc="get the events that the user can use and can be used in bulk mode">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="instance">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_instance</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<If condition="$instance->__length == 0">
+					<Then>
+						<Exception>
+							<String>framework/stateMachine.instance::invalid</String>
+						</Exception>
+					</Then>
+				</If>
+				<Var name="transitions">
+					<DataAccess method="this,this,stateMachineInstance.getBulkEvents"/>
+				</Var>
+				<Var name="validTransitions">
+					<Set/>
+				</Var>
+				<ForEach var="transitions" item="transition">
+					<Var name="transitionRoles">
+						<Set/>
+					</Var>
+					<Var name="transitionRoles">
+						<ListToSet>
+							<Var name="transition" key="role_list"/>
+						</ListToSet>
+					</Var>
+					<ForEach var="transitionRoles" item="transitionRole">
+						<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
 							<Then>
-								<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
+								<Var name="event">
+									<Set/>
+								</Var>
+								<Var name="event" key="event">
+									<Var name="transition" key="event"/>
+								</Var>
+								<Var name="event" key="description">
+									<Var name="transition" key="event_description"/>
+								</Var>
+								<Var name="validTransitions" key="">
+									<Var name="event"/>
+								</Var>
 							</Then>
 						</If>
-         		<Var name="transitions" >
-							<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
-								<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
-								<Param name="is_active">1</Param>
-								<Param name="_sort">event_description ASC</Param>
-							</DataAccess>
-         		</Var>
-         		<Var name="validTransitions"><Set/></Var>
-         		<ForEach var="transitions" item="transition">
-         			<Var name="transitionRoles"><Set/></Var>
-         			<Var name="transitionRoles" ><ListToSet><Var name="transition" key="role_list"/></ListToSet></Var>
-         			<ForEach var="transitionRoles" item="transitionRole">
-         				<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
-									<Then>
-										<Var name="event"><Set/></Var>
-										<Var name="event" key="event"><Var name="transition" key="event"/></Var>
-										<Var name="event" key="description"><Var name="transition" key="event_description"/></Var>
-										<Var name="event" key="field_list"><Var name="transition" key="field_list"/></Var>
-										<Var name="validTransitions" key=""><Var name="event"/></Var>
-									</Then>
-								</If>
-							</ForEach>
-						</ForEach>
-						<Return>
-							<Var name="validTransitions"/>
-						</Return>
-					</Begin>
-				</Function>
+					</ForEach>
+				</ForEach>
+				<Return>
+					<Var name="validTransitions"/>
+				</Return>
+			</Begin>
+		</Function>
 
-        <Function scope="protected" name="getNextEventsInCommon" doc="get the events that the user can use that are in common of a list">
-					<Params>
-	          <Param name="ids" doc="The state machine instance id list comma separated"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-						<Var name="idsArray"><ListToSet><Var name="PARAMS" key="ids"/></ListToSet></Var>
-						<Var name="count" value="$idsArray->__length"/>
-         		<Var name="transitions" >
-         			<DataAccess method="this,this,stateMachineInstance.getEventsInCommon">
-								<Param name="_entity">fw_state_machine_transition</Param>
-								<Param name="ids"><Var name="PARAMS" key="ids"/></Param>
-								<Param name="role"><Var name="PARAMS" key="role"/></Param>
-								<Param name="numOfInstances"><Var name="count"/></Param>
-							</DataAccess>
-         		</Var>
-						<Return>
-							<Var name="transitions"/>
-						</Return>
-					</Begin>
-				</Function>
+		<Function scope="protected" name="getHistory" doc="Get all history of this instance">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="useStateMachineTransitions" doc="temporary maintain old stuff"/>
+				<Param name="id_person" doc="Filter by this person" required="false"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="PARAMS"/>
+				<Var name="instance">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_instance</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<If condition="$instance->__length == 0">
+					<Then>
+						<Exception>
+							<String>framework/stateMachine.instance::invalid</String>
+						</Exception>
+					</Then>
+				</If>
+				<Var name="history">
+					<DataAccess method="this,this,stateMachineInstance.getHistory">
+						<Param name="id_state_machine_instance">
+							<Var name="instance" key="id"/>
+						</Param>
+						<Param name="id_person">
+							<Var name="PARAMS" key="id_person"/>
+						</Param>
+					</DataAccess>
+				</Var>
 
-        <Function scope="protected" name="getBulkEvents" doc="get the events that the user can use and can be used in bulk mode">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-         		<Var name="instance" >
-         			<DataAccess method="load">
-							<Param name="_entity">fw_state_machine_instance</Param>
-							<Param name="id"><Var name="PARAMS" key="id"/></Param>
-						</DataAccess>
-         		</Var>
-         		<If condition="$instance->__length == 0">
+				<Var name="completeHistory">
+					<Set/>
+				</Var>
+				<ForEach var="history" item="histItem">
+					<Var name="dataJson">
+						<JsonToSet>
+							<Var name="histItem" key="event_data"/>
+						</JsonToSet>
+					</Var>
+					<ForEach var="dataJson" item="dataJsonItem" key="dataJsonKey">
+						<If condition="$PARAMS->useStateMachineTransitions == 1">
 							<Then>
-								<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
+								<Var name="histItem" key="$dataJsonKey">
+									<Var name="dataJsonItem"/>
+								</Var>
+							</Then>
+							<Else>
+								<Var name="histItem" key="$dataJsonItem->type">
+									<Var name="dataJsonItem" key="value"/>
+								</Var>
+							</Else>
+						</If>
+						<Var name="dataJsonItem"/>
+						<Var name="dataJsonKey"/>
+						<Var name="histItem"/>
+					</ForEach>
+					<Var name="completeHistory" key="">
+						<Var name="histItem"/>
+					</Var>
+				</ForEach>
+				<Var name="completeHistory"/>
+				<Return>
+					<Var name="completeHistory"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function name="deleteHistoryFile">
+			<Params>
+				<Param name="id_state_machine_instance_history"/>
+				<Param name="file_delete_history"/>
+				<Param name="file_delete_authorizer"/>
+			</Params>
+			<Return/>
+			<Begin>
+				<Var name="sMIH">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_instance_history</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id_state_machine_instance_history"/>
+						</Param>
+					</DataAccess>
+				</Var>
+
+				<Var name="jsonData">
+					<JsonToSet>
+						<Var name="sMIH" key="event_data"/>
+					</JsonToSet>
+				</Var>
+
+				<Var name="jsonData" key="id_file" clear="true"/>
+				<Var name="jsonData" key="id_file_formatted" clear="true"/>
+
+				<Var name="jsonData" key="file_delete_history">
+					<Var name="PARAMS" key="file_delete_history"/>
+				</Var>
+				<Var name="jsonData" key="file_delete_authorizer">
+					<Var name="PARAMS" key="file_delete_authorizer"/>
+				</Var>
+
+				<Var name="jsonData">
+					<SetToJson>
+						<Var name="jsonData"/>
+					</SetToJson>
+				</Var>
+
+				<DataAccess method="update">
+					<Param name="_entity">fw_state_machine_instance_history</Param>
+					<Param name="id">
+						<Var name="PARAMS" key="id_state_machine_instance_history"/>
+					</Param>
+					<Param name="event_data">
+						<Var name="jsonData"/>
+					</Param>
+					<Param name="_modification">
+						<Now/>
+					</Param>
+					<Param name="_modification_ip">
+						<Var name="USER" key="id"/>
+					</Param>
+				</DataAccess>
+				<Return/>
+			</Begin>
+		</Function>
+
+		<Function scope="protected" name="getCurrentState" doc="Get the current state data">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+			</Params>
+			<Return type="single"/>
+			<Begin>
+				<Var name="instance">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_instance</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<If condition="$instance->__length == 0">
+					<Then>
+						<Exception>
+							<String>framework/stateMachine.instance::invalid</String>
+						</Exception>
+					</Then>
+				</If>
+
+				<Var name="state">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_state</Param>
+						<Param name="id">
+							<Var name="instance" key="id_current_state"/>
+						</Param>
+					</DataAccess>
+				</Var>
+
+				<Return>
+					<Var name="state"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="protected" name="getFieldList" doc="Get all the fields for an event">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="instance">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_instance</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<If condition="$instance->__length == 0">
+					<Then>
+						<Exception>
+							<String>framework/stateMachine.instance::invalid</String>
+						</Exception>
+					</Then>
+				</If>
+				<Var name="transitions">
+					<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
+						<Param name="id_start_state">
+							<Var name="instance" key="id_current_state"/>
+						</Param>
+						<Param name="event">
+							<Var name="PARAMS" key="event"/>
+						</Param>
+						<Param name="is_active">1</Param>
+					</DataAccess>
+				</Var>
+				<Var name="validTransitions">
+					<Set/>
+				</Var>
+				<ForEach var="transitions" item="transition">
+					<Var name="transitionRoles">
+						<Set/>
+					</Var>
+					<Var name="transitionRoles">
+						<ListToSet>
+							<Var name="transition" key="role_list"/>
+						</ListToSet>
+					</Var>
+					<ForEach var="transitionRoles" item="transitionRole">
+						<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
+							<Then>
+								<Var name="event">
+									<Set/>
+								</Var>
+								<Var name="event" key="event">
+									<Var name="transition" key="event"/>
+								</Var>
+								<Var name="event" key="description">
+									<Var name="transition" key="event_description"/>
+								</Var>
+								<Var name="validTransitions" key="">
+									<Var name="event"/>
+								</Var>
 							</Then>
 						</If>
-         		<Var name="transitions" >
-         			<DataAccess method="this,this,stateMachineInstance.getBulkEvents"/>
-         		</Var>
-         		<Var name="validTransitions"><Set/></Var>
-         		<ForEach var="transitions" item="transition">
-         			<Var name="transitionRoles"><Set/></Var>
-         			<Var name="transitionRoles" ><ListToSet><Var name="transition" key="role_list"/></ListToSet></Var>
-         			<ForEach var="transitionRoles" item="transitionRole">
-         				<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
-									<Then>
-										<Var name="event"><Set/></Var>
-										<Var name="event" key="event"><Var name="transition" key="event"/></Var>
-										<Var name="event" key="description"><Var name="transition" key="event_description"/></Var>
-										<Var name="validTransitions" key=""><Var name="event"/></Var>
-									</Then>
-								</If>
-							</ForEach>
-						</ForEach>
-						<Return>
-							<Var name="validTransitions"/>
-						</Return>
-					</Begin>
-				</Function>
+					</ForEach>
+				</ForEach>
+				<Return>
+					<Var name="validTransitions"/>
+				</Return>
+			</Begin>
+		</Function>
 
-        <Function scope="protected" name="getHistory" doc="Get all history of this instance">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="useStateMachineTransitions" doc="temporary maintain old stuff"/>
-	          <Param name="id_person" doc="Filter by this person" required="false"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
+		<Function scope="protected" name="getEventVisibleFieldList" doc="Get all the visible fields for an event">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="instance">
+					<DataAccess method="load">
+						<Param name="_entity">fw_state_machine_instance</Param>
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+					</DataAccess>
+				</Var>
+				<If condition="$instance->__length == 0">
+					<Then>
+						<Exception>
+							<String>framework/stateMachine.instance::invalid</String>
+						</Exception>
+					</Then>
+				</If>
+				<Var name="transitions">
+					<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
+						<Param name="id_start_state">
+							<Var name="instance" key="id_current_state"/>
+						</Param>
+						<Param name="event">
+							<Var name="PARAMS" key="event"/>
+						</Param>
+						<Param name="is_active">1</Param>
+					</DataAccess>
+				</Var>
+				<Var name="visibleFieldList">
+					<String/>
+				</Var>
+				<ForEach var="transitions" item="transition">
+					<Var name="transitionRoles">
+						<Set/>
+					</Var>
+					<Var name="transitionRoles">
+						<ListToSet>
+							<Var name="transition" key="role_list"/>
+						</ListToSet>
+					</Var>
+					<ForEach var="transitionRoles" item="transitionRole">
+						<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
+							<Then>
+								<Var name="transition"/>
+								<Var name="visibleFieldList">
+									<Var name="transition" key="field_list"/>
+								</Var>
+							</Then>
+						</If>
+					</ForEach>
+				</ForEach>
+				<Return>
+					<Var name="visibleFieldList"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function name="getTransitionData" doc="From an event, get the transition data" scope="private">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to be processed"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+			</Params>
+			<Exceptions>
+				<Exception name="framework/stateMachine.instance::invalid" doc="Instance not found"/>
+				<Exception name="framework/stateMachine.instance::invalidTransition" doc="The instance is not waiting for this event at this time"/>
+				<Exception name="framework/stateMachine.instance::noPermission" doc="The role has no permission to execute this event"/>
+			</Exceptions>
+			<Return type="multiple" doc="The instance id"/>
+			>
+			<Begin>
+				<Transaction>
 					<Var name="PARAMS"/>
-         		<Var name="instance" >
-         			<DataAccess method="load">
+					<Var name="instance">
+						<DataAccess method="load">
 							<Param name="_entity">fw_state_machine_instance</Param>
-							<Param name="id"><Var name="PARAMS" key="id"/></Param>
+							<Param name="id">
+								<Var name="PARAMS" key="id"/>
+							</Param>
 						</DataAccess>
-         		</Var>
-         		<If condition="$instance->__length == 0">
-							<Then>
-								<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
-							</Then>
-						</If>
-						<Var name="history">
-							<DataAccess method="this,this,stateMachineInstance.getHistory">
-								<Param name="id_state_machine_instance"><Var name="instance" key="id"/></Param>
-								<Param name="id_person"><Var name="PARAMS" key="id_person"/></Param>
-							</DataAccess>
+					</Var>
+					<If condition="$instance->__length == 0">
+						<Then>
+							<Exception>
+								<String>framework/stateMachine.instance::invalid</String>
+							</Exception>
+						</Then>
+					</If>
+
+					<!-- Check if this transition is valid else throw framework/stateMachine.instance::invalidTransition or if the user role can execute throw framework/stateMachine.instance::noPermission if not-->
+					<Var name="transitions">
+						<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
+							<Param name="id_start_state">
+								<Var name="instance" key="id_current_state"/>
+							</Param>
+							<Param name="event">
+								<Var name="PARAMS" key="event"/>
+							</Param>
+							<Param name="is_active">1</Param>
+						</DataAccess>
+					</Var>
+					<If condition="$transitions->__length == 0">
+						<Then>
+							<Exception>
+								<String>framework/stateMachine.instance::invalidTransition</String>
+							</Exception>
+						</Then>
+					</If>
+
+					<!-- Check Permissions - get the first-->
+					<Var name="endStateId">
+						<Int>-1</Int>
+					</Var>
+					<Var name="eventDescription">
+						<String/>
+					</Var>
+					<Var name="transitionToGetData">
+						<Set/>
+					</Var>
+					<Var name="found">
+						<Int>0</Int>
+					</Var>
+					<ForEach var="transitions" item="transition">
+						<Var name="transitionRoles">
+							<Set/>
 						</Var>
-
-						<Var name="completeHistory"><Set/></Var>
-						<ForEach var="history" item="histItem">
-							<Var name="dataJson" ><JsonToSet><Var name="histItem" key="event_data"/></JsonToSet></Var>
-							<ForEach var="dataJson" item="dataJsonItem" key="dataJsonKey">
-								<If condition="$PARAMS->useStateMachineTransitions == 1">
-									<Then>
-										<Var name="histItem" key="$dataJsonKey"><Var name="dataJsonItem"/></Var>
-									</Then>
-									<Else>
-										<Var name="histItem" key="$dataJsonItem->type"><Var name="dataJsonItem" key="value"/></Var>
-									</Else>
-								</If>
-								<Var name="dataJsonItem" />
-								<Var name="dataJsonKey" />
-								<Var name="histItem" />
-							</ForEach>
-							<Var name="completeHistory" key=""><Var name="histItem" /></Var>
-						</ForEach>
-						<Var name="completeHistory" />
-						<Return>
-							<Var name="completeHistory"/>
-						</Return>
-					</Begin>
-				</Function>
-
-				<Function name="deleteHistoryFile">
-					<Params>
-						<Param name="id_state_machine_instance_history"/>
-						<Param name="file_delete_history"/>
-						<Param name="file_delete_authorizer"/>
-					</Params>
-					<Return/>
-					<Begin>
-						<Var name="sMIH">
-							<DataAccess method="load">
-								<Param name="_entity">fw_state_machine_instance_history</Param>
-								<Param name="id"><Var name="PARAMS" key="id_state_machine_instance_history"/></Param>
-							</DataAccess>
+						<Var name="transitionRoles">
+							<ListToSet>
+								<Var name="transition" key="role_list"/>
+							</ListToSet>
 						</Var>
-
-						<Var name="jsonData">
-							<JsonToSet><Var name="sMIH" key="event_data"/></JsonToSet>
-						</Var>
-
-						<Var name="jsonData" key="id_file" clear="true"/>
-						<Var name="jsonData" key="id_file_formatted" clear="true"/>
-
-						<Var name="jsonData" key="file_delete_history"><Var name="PARAMS" key="file_delete_history"/></Var>
-						<Var name="jsonData" key="file_delete_authorizer"><Var name="PARAMS" key="file_delete_authorizer"/></Var>
-
-						<Var name="jsonData"><SetToJson><Var name="jsonData"/></SetToJson></Var>
-
-						<DataAccess method="update">
-							<Param name="_entity">fw_state_machine_instance_history</Param>
-							<Param name="id"><Var name="PARAMS" key="id_state_machine_instance_history"/></Param>
-							<Param name="event_data"><Var name="jsonData"/></Param>
-							<Param name="_modification"><Now/></Param>
-							<Param name="_modification_ip"><Var name="USER" key="id"/></Param>
-						</DataAccess>
-						<Return/>
-					</Begin>
-				</Function>
-
-        <Function scope="protected" name="getCurrentState" doc="Get the current state data">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-					</Params>
-					<Return type="single"/>
-					<Begin>
-         		<Var name="instance" >
-         			<DataAccess method="load">
-								<Param name="_entity">fw_state_machine_instance</Param>
-								<Param name="id"><Var name="PARAMS" key="id"/></Param>
-							</DataAccess>
-         		</Var>
-         		<If condition="$instance->__length == 0">
-							<Then>
-								<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
-							</Then>
-						</If>
-
-         		<Var name="state" >
-         			<DataAccess method="load">
-								<Param name="_entity">fw_state_machine_state</Param>
-								<Param name="id"><Var name="instance" key="id_current_state"/></Param>
-							</DataAccess>
-         		</Var>
-
-						<Return>
-							<Var name="state"/>
-						</Return>
-					</Begin>
-				</Function>
-
-        <Function scope="protected" name="getFieldList" doc="Get all the fields for an event">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-         		<Var name="instance" >
-         			<DataAccess method="load">
-							<Param name="_entity">fw_state_machine_instance</Param>
-							<Param name="id"><Var name="PARAMS" key="id"/></Param>
-						</DataAccess>
-         		</Var>
-         		<If condition="$instance->__length == 0">
-							<Then>
-								<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
-							</Then>
-						</If>
-         		<Var name="transitions" >
-							<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
-								<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
-								<Param name="event"><Var name="PARAMS" key="event"/></Param>
-								<Param name="is_active">1</Param>
-							</DataAccess>
-         		</Var>
-         		<Var name="validTransitions"><Set/></Var>
-         		<ForEach var="transitions" item="transition">
-         			<Var name="transitionRoles"><Set/></Var>
-         			<Var name="transitionRoles" ><ListToSet><Var name="transition" key="role_list"/></ListToSet></Var>
-         			<ForEach var="transitionRoles" item="transitionRole">
-         				<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
-									<Then>
-										<Var name="event"><Set/></Var>
-										<Var name="event" key="event"><Var name="transition" key="event"/></Var>
-										<Var name="event" key="description"><Var name="transition" key="event_description"/></Var>
-										<Var name="validTransitions" key=""><Var name="event"/></Var>
-									</Then>
-								</If>
-							</ForEach>
-						</ForEach>
-						<Return>
-							<Var name="validTransitions"/>
-						</Return>
-					</Begin>
-				</Function>
-
-        <Function scope="protected" name="getEventVisibleFieldList" doc="Get all the visible fields for an event">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-         		<Var name="instance" >
-         			<DataAccess method="load">
-							<Param name="_entity">fw_state_machine_instance</Param>
-							<Param name="id"><Var name="PARAMS" key="id"/></Param>
-						</DataAccess>
-         		</Var>
-         		<If condition="$instance->__length == 0">
-							<Then>
-								<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
-							</Then>
-						</If>
-         		<Var name="transitions" >
-         			<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
-								<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
-								<Param name="event"><Var name="PARAMS" key="event"/></Param>
-								<Param name="is_active">1</Param>
-							</DataAccess>
-         		</Var>
-         		<Var name="visibleFieldList"><String/></Var>
-         		<ForEach var="transitions" item="transition">
-         			<Var name="transitionRoles"><Set/></Var>
-         			<Var name="transitionRoles"><ListToSet><Var name="transition" key="role_list"/></ListToSet></Var>
-         			<ForEach var="transitionRoles" item="transitionRole">
-         				<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
-									<Then>
+						<ForEach var="transitionRoles" item="transitionRole">
+							<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
+								<Then>
+									<Var name="endStateId">
+										<Var name="transition" key="id_end_state"/>
+									</Var>
+									<Var name="eventDescription">
+										<Var name="transition" key="event_description"/>
+									</Var>
+									<Var name="transitionToGetData">
 										<Var name="transition"/>
-										<Var name="visibleFieldList"><Var name="transition" key="field_list"/></Var>
-									</Then>
-								</If>
+									</Var>
+									<Var name="found">
+										<Int>1</Int>
+									</Var>
+								</Then>
+							</If>
+						</ForEach>
+					</ForEach>
+					<If condition="$found == 0">
+						<Then>
+							<Exception>
+								<String>framework/stateMachine.instance::noPermission</String>
+							</Exception>
+						</Then>
+					</If>
+				</Transaction>
+				<Return>
+					<Var name="transitionToGetData"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="protected" name="getTransitionActions" doc="Get all actions,which condition is true, to do in a transition">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="data" type="array" doc="Data to check if the action is to be executed or not by the condition"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="transitionToGetData">
+					<Call function="getTransitionData">
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+						<Param name="event">
+							<Var name="PARAMS" key="event"/>
+						</Param>
+						<Param name="role">
+							<Var name="PARAMS" key="role"/>
+						</Param>
+					</Call>
+				</Var>
+				<Var name="actions">
+					<JsonToSet>
+						<Var name="transitionToGetData" key="actions"/>
+					</JsonToSet>
+				</Var>
+				<!-- Expand the data variables so the evalCondition can use them -->
+				<ForEach var="data" item="dataItem" key="dataKey">
+					<Var name="$dataKey">
+						<Var name="dataItem"/>
+					</Var>
+					<Var name="$dataKey"/>
+				</ForEach>
+				<Var name="validActions">
+					<Set/>
+				</Var>
+				<ForEach var="actions" item="action">
+					<Var name="action" key="condition" dump="true"/>
+					<Var name="action" key="condition" dump="true">
+						<String.stripslashes>
+							<Param>
+								<Var name="action" key="condition"/>
+							</Param>
+						</String.stripslashes>
+					</Var>
+					<Var name="evalCondition">
+						<Int>1</Int>
+					</Var>
+					<If condition="$action->condition != ''">
+						<Then>
+							<Var name="evalCondition" dump="true">
+								<EvalCondition>
+									<Var name="action" key="condition"/>
+								</EvalCondition>
+							</Var>
+						</Then>
+					</If>
+					<If condition="$evalCondition">
+						<Then>
+							<Var name="validActions" key="">
+								<Var name="action"/>
+							</Var>
+						</Then>
+					</If>
+				</ForEach>
+				<Return>
+					<Var name="validActions"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="protected" name="getTransitionActionsPreview" doc="Get all actions preview">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="data" type="array" doc="Data to expand to the templates"/>
+				<Param name="messageData" type="array" doc="User edited data"/>
+				<Param name="expandTemplate" type="int" doc="Expand the content tags in the template or not"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="actions">
+					<Call function="getTransitionActions" params="PARAMS"/>
+				</Var>
+				<Var name="preview">
+					<Set/>
+				</Var>
+				<Var name="count">
+					<Int>1</Int>
+				</Var>
+				<ForEach var="actions" item="action">
+					<Var name="key">
+						<String.parse>message_$count</String.parse>
+					</Var>
+					<Var name="data" key="message">
+						<Var name="messageData" key="$key"/>
+					</Var>
+					<If condition="$data->message == null">
+						<Then>
+							<Var name="data" key="message">
+								<String/>
+							</Var>
+						</Then>
+					</If>
+					<Var name="functionName">
+						<String.concatenate>
+							<Param>
+								<Var name="action" key="type"/>
+							</Param>
+							<Param>Preview</Param>
+						</String.concatenate>
+					</Var>
+					<Var name="actionPreview">
+						<Call function="$functionName">
+							<Param name="id">
+								<Var name="id"/>
+							</Param>
+							<Param name="event">
+								<Var name="event"/>
+							</Param>
+							<Param name="role">
+								<Var name="role"/>
+							</Param>
+							<Param name="data">
+								<Var name="data"/>
+							</Param>
+							<Param name="action">
+								<Var name="action"/>
+							</Param>
+							<Param name="expandTemplate">
+								<Var name="expandTemplate"/>
+							</Param>
+						</Call>
+					</Var>
+					<Var name="key">
+						<String.parse>msg_$count</String.parse>
+					</Var>
+					<Var name="preview" key="$key">
+						<Var name="actionPreview"/>
+					</Var>
+					<Var name="count" sum="1"/>
+				</ForEach>
+
+				<Return>
+					<Var name="preview"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="protected" name="getTransitionNotificationRoles" doc="Get all notification roles in a transition">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+			</Params>
+			<Return type="multiple"/>
+			<Begin>
+				<Var name="transitionToGetData">
+					<Call function="getTransitionData">
+						<Param name="id">
+							<Var name="PARAMS" key="id"/>
+						</Param>
+						<Param name="event">
+							<Var name="PARAMS" key="event"/>
+						</Param>
+						<Param name="role">
+							<Var name="PARAMS" key="role"/>
+						</Param>
+					</Call>
+				</Var>
+				<Var name="notifyRoles">
+					<ListToSet>
+						<Var name="transitionToGetData" key="notify_role_list"/>
+					</ListToSet>
+				</Var>
+				<Return>
+					<Var name="notifyRoles" dump="true"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="protected" name="executeTransitionActions" doc="Execute all actions preview">
+			<Params>
+				<Param name="bulk" type="array" doc="The bulk data"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="context" type="string" doc="The message context"/>
+			</Params>
+			<Return type="multiple" doc="log of the actions executed"/>
+			<Begin>
+				<Var name="PARAMS"/>
+				<!-- Assuming that all bulk share the same actions -->
+				<Var name="first">
+					<Var name="bulk" key="__first"/>
+				</Var>
+				<Var name="actions">
+					<Call function="getTransitionActions">
+						<Param name="id">
+							<Var name="first" key="id"/>
+						</Param>
+						<Param name="event">
+							<Var name="PARAMS" key="event"/>
+						</Param>
+						<Param name="role">
+							<Var name="PARAMS" key="role"/>
+						</Param>
+						<Param name="data">
+							<Var name="first" key="data"/>
+						</Param>
+					</Call>
+				</Var>
+				<Var name="bulk" key="__first" clear="true"/>
+				<Var name="data">
+					<Var name="first" key="data"/>
+				</Var>
+				<Var name="logs">
+					<Set/>
+				</Var>
+				<Var name="executionData">
+					<Set/>
+				</Var> <!-- Stores the execution data in this set and pass it to the next actions -->
+				<Var name="count">1</Var>
+				<ForEach var="actions" item="action">
+					<Var name="data" key="executionData">
+						<Var name="executionData"/>
+					</Var>
+					<Var name="doFunctionName">
+						<String.concatenate>
+							<Param>
+								<Var name="action" key="type"/>
+							</Param>
+							<Param>Do</Param>
+						</String.concatenate>
+					</Var>
+					<Var name="previewFunctionName">
+						<String.concatenate>
+							<Param>
+								<Var name="action" key="type"/>
+							</Param>
+							<Param>Preview</Param>
+						</String.concatenate>
+					</Var>
+
+					<If condition="$action->is_bulk == 1">
+						<Then>
+							<!-- Handle the bulk action execution -->
+							<Var name="actionResult">
+								<Call function="$doFunctionName">
+									<Param name="id">
+										<Var name="bulkData" key="id"/>
+									</Param>
+									<Param name="event">
+										<Var name="event"/>
+									</Param>
+									<Param name="role">
+										<Var name="role"/>
+									</Param>
+									<Param name="data">
+										<Var name="data"/>
+									</Param>
+									<Param name="action">
+										<Var name="action"/>
+									</Param>
+									<Param name="guidObject">
+										<Var name="idGuidObject"/>
+									</Param>
+									<Param name="context">
+										<Var name="context"/>
+									</Param>
+									<Param name="preview">
+										<Var name="preview"/>
+									</Param>
+									<Param name="is_bulk">
+										<Int>1</Int>
+									</Param>
+									<Param name="bulk">
+										<Var name="bulk"/>
+									</Param>
+								</Call>
+							</Var>
+						</Then>
+						<Else>
+							<ForEach var="bulk" item="bulkData">
+								<Var name="idData">
+									<Var name="bulkData" key="data"/>
+								</Var>
+								<Var name="idGuidObject">
+									<Var name="bulkData" key="guidObject"/>
+								</Var>
+								<Var name="idData" key="executionData">
+									<Var name="executionData"/>
+								</Var>
+								<Var name="preview">
+									<Call function="$previewFunctionName">
+										<Param name="id">
+											<Var name="bulkData" key="id"/>
+										</Param>
+										<Param name="event">
+											<Var name="event"/>
+										</Param>
+										<Param name="role">
+											<Var name="role"/>
+										</Param>
+										<Param name="data">
+											<Var name="idData"/>
+										</Param>
+										<Param name="action">
+											<Var name="action"/>
+										</Param>
+										<Param name="expandTemplate">
+											<Int>1</Int>
+										</Param>
+										<Param name="is_bulk">
+											<Int>0</Int>
+										</Param>
+										<Param name="bulk">
+											<Null/>
+										</Param>
+									</Call>
+								</Var>
+								<Var name="actionResult">
+									<Call function="$doFunctionName">
+										<Param name="id">
+											<Var name="bulkData" key="id"/>
+										</Param>
+										<Param name="event">
+											<Var name="event"/>
+										</Param>
+										<Param name="role">
+											<Var name="role"/>
+										</Param>
+										<Param name="data">
+											<Var name="idData"/>
+										</Param>
+										<Param name="action">
+											<Var name="action"/>
+										</Param>
+										<Param name="guidObject">
+											<Var name="idGuidObject"/>
+										</Param>
+										<Param name="context">
+											<Var name="context"/>
+										</Param>
+										<Param name="preview">
+											<Var name="preview"/>
+										</Param>
+										<Param name="is_bulk">
+											<Int>0</Int>
+										</Param>
+										<Param name="bulk">
+											<Null/>
+										</Param>
+									</Call>
+								</Var>
+								<Var name="logs" key="">
+									<Var name="actionLog"/>
+								</Var>
+								S
 							</ForEach>
-						</ForEach>
-						<Return>
-							<Var name="visibleFieldList"/>
-						</Return>
-					</Begin>
-				</Function>
+						</Else>
+					</If>
+					<!-- Update the executionData to pass to the new action data -->
+					<Var name="resultVarName">
+						<If condition="$action->result != ''">
+							<Then>
+								<Var name="action" key="result"/>
+							</Then>
+							<Else>
+								<String.parse>action_$count</String.parse>
+							</Else>
+						</If>
+					</Var>
+					<Var name="executionData" key="$resultVarName">
+						<Var name="actionResult" key="data"/>
+					</Var>
+					<Var name="count" sum="1"/>
+				</ForEach>
 
-        <Function name="getTransitionData" doc="From an event, get the transition data" scope="private">
-            <Params>
-                <Param name="id" doc="The state machine instance id"/>
-                <Param name="event" type="string" doc="The event to be processed"/>
-                <Param name="role" type="string" doc="The role of the user to process the event"/>
-            </Params>
-            <Exceptions>
-            	<Exception name="framework/stateMachine.instance::invalid" doc="Instance not found"/>
-            	<Exception name="framework/stateMachine.instance::invalidTransition" doc="The instance is not waiting for this event at this time"/>
-            	<Exception name="framework/stateMachine.instance::noPermission" doc="The role has no permission to execute this event"/>
-            </Exceptions>
-            <Return type="multiple" doc="The instance id"/>>
-            <Begin>
-            	<Transaction>
-            		<Var name="PARAMS" />
-            		<Var name="instance" >
-            			<DataAccess method="load">
-										<Param name="_entity">fw_state_machine_instance</Param>
-										<Param name="id"><Var name="PARAMS" key="id"/></Param>
-									</DataAccess>
-            		</Var>
-            		<If condition="$instance->__length == 0">
-									<Then>
-										<Exception><String>framework/stateMachine.instance::invalid</String></Exception>
-									</Then>
-								</If>
+				<Return>
+					<Var name="logs"/>
+				</Return>
+			</Begin>
+		</Function>
 
-            		<!-- Check if this transition is valid else throw framework/stateMachine.instance::invalidTransition or if the user role can execute throw framework/stateMachine.instance::noPermission if not-->
-            		<Var name="transitions" >
-            			<DataAccess method="framework,stateMachine,stateMachine.getTransitions">
-										<Param name="id_start_state"><Var name="instance" key="id_current_state"/></Param>
-										<Param name="event"><Var name="PARAMS" key="event"/></Param>
-										<Param name="is_active">1</Param>
-									</DataAccess>
-            		</Var>
-            		<If condition="$transitions->__length == 0">
-									<Then>
-										<Exception><String>framework/stateMachine.instance::invalidTransition</String></Exception>
-									</Then>
-								</If>
+		<Function scope="protected" name="executeTransitionActionsAndProcessEvent" doc="Execute all actions and updates the state. This should replace the single function executeTransitionActions">
+			<Params>
+				<Param name="bulk" type="array" doc="The bulk data"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="context" type="string" doc="The message context"/>
+			</Params>
+			<Return type="multiple" doc="log of the actions executed"/>
+			<Begin>
+				<!-- Assuming that all bulk share the same actions -->
+				<Var name="first">
+					<Var name="bulk" key="__first"/>
+				</Var>
+				<Var name="actions">
+					<Call function="getTransitionActions">
+						<Param name="id">
+							<Var name="first" key="id"/>
+						</Param>
+						<Param name="event">
+							<Var name="PARAMS" key="event"/>
+						</Param>
+						<Param name="role">
+							<Var name="PARAMS" key="role"/>
+						</Param>
+						<Param name="data">
+							<Var name="first" key="data"/>
+						</Param>
+					</Call>
+				</Var>
+				<Var name="logs">
+					<Set/>
+				</Var>
+				<ForEach var="bulk" item="bulkData">
+					<Var name="idData">
+						<Var name="bulkData" key="data"/>
+					</Var>
+					<Var name="executionData">
+						<Set/>
+					</Var> <!-- Clears the execution data in this set and pass it to the next actions -->
+					<Var name="idGuidObject">
+						<Var name="bulkData" key="guidObject"/>
+					</Var>
+					<Var name="count">
+						<Int>1</Int>
+					</Var>
+					<ForEach var="actions" item="action">
+						<Var name="idData" key="executionData">
+							<Var name="executionData"/>
+						</Var>
+						<Var name="doFunctionName">
+							<String.parse>$action['type']Do</String.parse>
+						</Var>
+						<Var name="previewFunctionName">
+							<String.parse>$action['type']Preview</String.parse>
+						</Var>
 
-            		<!-- Check Permissions - get the first-->
-            		<Var name="endStateId"><Int>-1</Int></Var>
-            		<Var name="eventDescription"><String/></Var>
-            		<Var name="transitionToGetData"><Set/></Var>
-            		<Var name="found"><Int>0</Int></Var>
-            		<ForEach var="transitions" item="transition">
-            			<Var name="transitionRoles"><Set/></Var>
-            			<Var name="transitionRoles"><ListToSet><Var name="transition" key="role_list"/></ListToSet></Var>
-            			<ForEach var="transitionRoles" item="transitionRole">
-            				<If condition="$transitionRole == $PARAMS->role &amp;&amp; $found == 0">
-											<Then>
-												<Var name="endStateId"><Var name="transition" key="id_end_state"/></Var>
-												<Var name="eventDescription"><Var name="transition" key="event_description"/></Var>
-												<Var name="transitionToGetData"><Var name="transition"/></Var>
-												<Var name="found"><Int>1</Int></Var>
-											</Then>
-										</If>
-									</ForEach>
-								</ForEach>
-								<If condition="$found == 0">
-									<Then>
-										<Exception><String>framework/stateMachine.instance::noPermission</String></Exception>
-									</Then>
-								</If>
-							</Transaction>
-              <Return><Var name="transitionToGetData"/></Return>
-            </Begin>
-        </Function>
-
-        <Function scope="protected" name="getTransitionActions" doc="Get all actions,which condition is true, to do in a transition">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="data" type="array" doc="Data to check if the action is to be executed or not by the condition"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-         		<Var name="transitionToGetData">
-         			<Call function="getTransitionData">
-         				<Param name="id"><Var name="PARAMS" key="id"/></Param>
-         				<Param name="event"><Var name="PARAMS" key="event"/></Param>
-         				<Param name="role"><Var name="PARAMS" key="role"/></Param>
-         			</Call>
-         		</Var>
-         		<Var name="actions">
-         			<JsonToSet><Var name="transitionToGetData" key="actions"/></JsonToSet>
-         		</Var>
-         		<!-- Expand the data variables so the evalCondition can use them -->
-         		<ForEach var="data" item="dataItem" key="dataKey">
-         			<Var name="$dataKey"><Var name="dataItem"/></Var>
-         			<Var name="$dataKey"/>
-						</ForEach>
-         		<Var name="validActions"><Set/></Var>
-         		<ForEach var="actions" item="action">
-							 <Var name="action" key="condition" dump="true"/>
-							<Var name="action" key="condition" dump="true"><String.stripslashes><Param><Var name="action" key="condition"/></Param></String.stripslashes></Var>
-         			<Var name="evalCondition"><Int>1</Int></Var>
-         			<If condition="$action->condition != ''">
+						<Var name="preview">
+							<Call function="$previewFunctionName">
+								<Param name="id">
+									<Var name="bulkData" key="id"/>
+								</Param>
+								<Param name="event">
+									<Var name="event"/>
+								</Param>
+								<Param name="role">
+									<Var name="role"/>
+								</Param>
+								<Param name="data">
+									<Var name="idData"/>
+								</Param>
+								<Param name="action">
+									<Var name="action"/>
+								</Param>
+								<Param name="expandTemplate">
+									<Int>1</Int>
+								</Param>
+								<Param name="is_bulk">
+									<Int>0</Int>
+								</Param>
+								<Param name="bulk">
+									<Null/>
+								</Param>
+							</Call>
+						</Var>
+						<Var name="actionResult">
+							<Call function="$doFunctionName">
+								<Param name="id">
+									<Var name="bulkData" key="id"/>
+								</Param>
+								<Param name="event">
+									<Var name="event"/>
+								</Param>
+								<Param name="role">
+									<Var name="role"/>
+								</Param>
+								<Param name="data">
+									<Var name="idData"/>
+								</Param>
+								<Param name="action">
+									<Var name="action"/>
+								</Param>
+								<Param name="guidObject">
+									<Var name="idGuidObject"/>
+								</Param>
+								<Param name="context">
+									<Var name="context"/>
+								</Param>
+								<Param name="preview">
+									<Var name="preview"/>
+								</Param>
+								<Param name="is_bulk">
+									<Int>0</Int>
+								</Param>
+								<Param name="bulk">
+									<Null/>
+								</Param>
+							</Call>
+						</Var>
+						<!-- Update execution data -->
+						<Var name="resultVarName">
+							<If condition="$action->result != ''">
 								<Then>
-									<Var name="evalCondition" dump="true"><EvalCondition><Var name="action" key="condition"/></EvalCondition></Var>
-								</Then>
-							</If>
-							<If condition="$evalCondition">
-								<Then>
-									<Var name="validActions" key=""><Var name="action"/></Var>
-								</Then>
-							</If>
-						</ForEach>
-            <Return><Var name="validActions"/></Return>
-					</Begin>
-				</Function>
-
-				<Function scope="protected" name="getTransitionActionsPreview" doc="Get all actions preview">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="data" type="array" doc="Data to expand to the templates"/>
-	          <Param name="messageData" type="array" doc="User edited data"/>
-	          <Param name="expandTemplate" type="int" doc="Expand the content tags in the template or not"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-         		<Var name="actions">
-         			<Call function="getTransitionActions" params="PARAMS"/>
-         		</Var>
-         		<Var name="preview"><Set/></Var>
-         		<Var name="count"><Int>1</Int></Var>
-         		<ForEach var="actions" item="action">
-							<Var name="key"><String.parse>message_$count</String.parse></Var>
-         			<Var name="data" key="message"><Var name="messageData" key="$key"/></Var>
-         			<If condition="$data->message == null">
-								<Then>
-									<Var name="data" key="message"><String/></Var>
-								</Then>
-							</If>
-							<Var name="functionName">
-								<String.concatenate>
-									<Param><Var name="action" key="type"/></Param>
-									<Param>Preview</Param>
-								</String.concatenate>
-							</Var>
-         			<Var name="actionPreview">
-         				<Call function="$functionName">
-				          <Param name="id"><Var name="id"/></Param>
-				          <Param name="event"><Var name="event"/></Param>
-				          <Param name="role"><Var name="role"/></Param>
-				          <Param name="data"><Var name="data"/></Param>
-         					<Param name="action"><Var name="action"/></Param>
-         					<Param name="expandTemplate"><Var name="expandTemplate"/></Param>
-         				</Call>
-         			</Var>
-         			<Var name="key"><String.parse>msg_$count</String.parse></Var>
-         			<Var name="preview" key="$key"><Var name="actionPreview"/></Var>
-         			<Var name="count" sum="1"/>
-						</ForEach>
-
-            <Return><Var name="preview"/></Return>
-					</Begin>
-				</Function>
-
-        <Function scope="protected" name="getTransitionNotificationRoles" doc="Get all notification roles in a transition">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-					</Params>
-					<Return type="multiple"/>
-					<Begin>
-         		<Var name="transitionToGetData">
-         			<Call function="getTransitionData">
-         				<Param name="id"><Var name="PARAMS" key="id"/></Param>
-         				<Param name="event"><Var name="PARAMS" key="event"/></Param>
-         				<Param name="role"><Var name="PARAMS" key="role"/></Param>
-         			</Call>
-         		</Var>
-         		<Var name="notifyRoles"><ListToSet><Var name="transitionToGetData" key="notify_role_list"/></ListToSet></Var>
-            <Return><Var name="notifyRoles" dump="true"/></Return>
-					</Begin>
-				</Function>
-
-				<Function scope="protected" name="executeTransitionActions" doc="Execute all actions preview">
-					<Params>
-						<Param name="bulk" type="array" doc="The bulk data"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="context" type="string" doc="The message context"/>
-					</Params>
-					<Return type="multiple" doc="log of the actions executed"/>
-					<Begin>
-						<Var name="PARAMS"/>
-						<!-- Assuming that all bulk share the same actions -->
-						<Var name="first"><Var name="bulk" key="__first"/></Var>
-         		<Var name="actions">
-         			<Call function="getTransitionActions">
-			          <Param name="id"><Var name="first" key="id"/></Param>
-			          <Param name="event"><Var name="PARAMS" key="event"/></Param>
-			          <Param name="role"><Var name="PARAMS" key="role"/></Param>
-			          <Param name="data"><Var name="first" key="data"/></Param>
-         			</Call>
-         		</Var>
-         		<Var name="bulk" key="__first" clear="true"/>
-         		<Var name="data"><Var name="first" key="data"/></Var>
-         		<Var name="logs"><Set/></Var>
-         		<Var name="executionData"><Set/></Var><!-- Stores the execution data in this set and pass it to the next actions -->
-         		<Var name="count">1</Var>
-         		<ForEach var="actions" item="action">
-							<Var name="data" key="executionData"><Var name="executionData"/></Var>
-							<Var name="doFunctionName">
-								<String.concatenate>
-									<Param><Var name="action" key="type"/></Param>
-									<Param>Do</Param>
-								</String.concatenate>
-							</Var>
-							<Var name="previewFunctionName">
-								<String.concatenate>
-									<Param><Var name="action" key="type"/></Param>
-									<Param>Preview</Param>
-								</String.concatenate>
-							</Var>
-
-							<If condition="$action->is_bulk == 1">
-								<Then>
-									<!-- Handle the bulk action execution -->
-		         			<Var name="actionResult">
-		         				<Call function="$doFunctionName">
-						          <Param name="id"><Var name="bulkData" key="id"/></Param>
-						          <Param name="event"><Var name="event"/></Param>
-						          <Param name="role"><Var name="role"/></Param>
-						          <Param name="data"><Var name="data"/></Param>
-		         					<Param name="action"><Var name="action"/></Param>
-		         					<Param name="guidObject"><Var name="idGuidObject"/></Param>
-		         					<Param name="context"><Var name="context"/></Param>
-		         					<Param name="preview"><Var name="preview"/></Param>
-		         					<Param name="is_bulk"><Int>1</Int></Param>
-		         					<Param name="bulk"><Var name="bulk"/></Param>
-		         				</Call>
-		         			</Var>
+									<Var name="action" key="result"/>
 								</Then>
 								<Else>
-									<ForEach var="bulk" item="bulkData">
-										<Var name="idData"><Var name="bulkData" key="data"/></Var>
-										<Var name="idGuidObject"><Var name="bulkData" key="guidObject"/></Var>
-										<Var name="idData" key="executionData"><Var name="executionData"/></Var>
-										<Var name="preview">
-				       				<Call function="$previewFunctionName">
-							          <Param name="id"><Var name="bulkData" key="id"/></Param>
-							          <Param name="event"><Var name="event"/></Param>
-							          <Param name="role"><Var name="role"/></Param>
-							          <Param name="data"><Var name="idData"/></Param>
-				        				<Param name="action"><Var name="action"/></Param>
-				        				<Param name="expandTemplate"><Int>1</Int></Param>
-				        				<Param name="is_bulk"><Int>0</Int></Param>
-				        				<Param name="bulk"><Null/></Param>
-				       				</Call>
-										</Var>
-			         			<Var name="actionResult">
-			         				<Call function="$doFunctionName">
-							          <Param name="id"><Var name="bulkData" key="id"/></Param>
-							          <Param name="event"><Var name="event"/></Param>
-							          <Param name="role"><Var name="role"/></Param>
-							          <Param name="data"><Var name="idData"/></Param>
-			         					<Param name="action"><Var name="action"/></Param>
-			         					<Param name="guidObject"><Var name="idGuidObject"/></Param>
-			         					<Param name="context"><Var name="context"/></Param>
-			         					<Param name="preview"><Var name="preview"/></Param>
-			         					<Param name="is_bulk"><Int>0</Int></Param>
-			         					<Param name="bulk"><Null/></Param>
-			         				</Call>
-			         			</Var>
-			         			<Var name="logs" key=""><Var name="actionLog"/></Var>S
-									</ForEach>
+									<String.parse>action_$count</String.parse>
 								</Else>
 							</If>
-							<!-- Update the executionData to pass to the new action data -->
-							<Var name="resultVarName">
-								<If condition="$action->result != ''">
-									<Then>
-										<Var name="action" key="result"/>
-									</Then>
-									<Else>
-										<String.parse>action_$count</String.parse>
-									</Else>
-								</If>
-							</Var>
-							<Var name="executionData" key="$resultVarName"><Var name="actionResult" key="data"/></Var>
-							<Var name="count" sum="1"/>
-						</ForEach>
+						</Var>
+						<Var name="executionData" key="$resultVarName">
+							<Var name="actionResult" key="data"/>
+						</Var>
+						<Var name="count" sum="1"/>
+					</ForEach>
+					<!-- After the actions execution -->
+					<!-- Process the event -->
+					<Var name="record">
+						<Var name="idData" key="record"/>
+					</Var>
+					<Var name="result">
+						<Call library="framework,stateMachine.instance,api" function="processEvent">
+							<Param name="id">
+								<Var name="record" key="id_state_machine_instance"/>
+							</Param>
+							<Param name="event">
+								<Var name="PARAMS" key="event"/>
+							</Param>
+							<Param name="role">
+								<Var name="PARAMS" key="role"/>
+							</Param>
+							<Param name="personData">
+								<Var name="idData" key="personData"/>
+							</Param>
+							<Param name="eventData">
+								<Var name="idData" key="eventData"/>
+							</Param>
+						</Call>
+					</Var>
+				</ForEach>
 
-            <Return><Var name="logs"/></Return>
-					</Begin>
-				</Function>
+				<Return>
+					<Var name="logs"/>
+				</Return>
+			</Begin>
+		</Function>
 
-				<Function scope="protected" name="executeTransitionActionsAndProcessEvent" doc="Execute all actions and updates the state. This should replace the single function executeTransitionActions">
-					<Params>
-						<Param name="bulk" type="array" doc="The bulk data"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="context" type="string" doc="The message context"/>
-					</Params>
-					<Return type="multiple" doc="log of the actions executed"/>
-					<Begin>
-						<!-- Assuming that all bulk share the same actions -->
-						<Var name="first"><Var name="bulk" key="__first"/></Var>
-         		<Var name="actions">
-         			<Call function="getTransitionActions">
-			          <Param name="id"><Var name="first" key="id"/></Param>
-			          <Param name="event"><Var name="PARAMS" key="event"/></Param>
-			          <Param name="role"><Var name="PARAMS" key="role"/></Param>
-			          <Param name="data"><Var name="first" key="data"/></Param>
-         			</Call>
-         		</Var>
-         		<Var name="logs"><Set/></Var>
-						<ForEach var="bulk" item="bulkData">
-							<Var name="idData"><Var name="bulkData" key="data"/></Var>
-							<Var name="executionData"><Set/></Var><!-- Clears the execution data in this set and pass it to the next actions -->							
-							<Var name="idGuidObject"><Var name="bulkData" key="guidObject"/></Var>
-							<Var name="count"><Int>1</Int></Var>
-							<ForEach var="actions" item="action">
-								<Var name="idData" key="executionData"><Var name="executionData"/></Var>								
-								<Var name="doFunctionName"><String.parse>$action['type']Do</String.parse></Var>
-								<Var name="previewFunctionName"><String.parse>$action['type']Preview</String.parse></Var>
+		<!-- Hooks for action previews -->
+		<Function scope="public" name="emailPreview" doc="Hook preview function for action type email">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="action" type="array" doc="The action data"/>
+				<Param name="data" type="array" doc="Data to expand to the templates"/>
+				<Param name="expandTemplate" type="int" doc="Expand the data to the template?"/>
+			</Params>
+			<Return type="string"/>
+			
+			<Begin>
+				<If condition="$expandTemplate == 0">
+					<Then>
+						<Var name="data" key="message">
+							<![CDATA[<strong>$Message</strong>]]>
+						</Var>
+					</Then>
+				</If>
+				
+				<!-- Adds all the system configurations to the data -->
+				<Var name="sysConfigAux"><Call library="gecol.core,system.config,api" function="getAll"/></Var>
+				<Var name="sysConfig"><Null/></Var>
+				<ForEach var="sysConfigAux" item="config">
+					<Var name="codeAux">
+						<String.explode>
+							<Param>.</Param>
+							<Param><Var name="config" key="code"/></Param>
+						</String.explode>
+					</Var>
+					<Var name="code">
+						<String.implode>
+							<Param>_</Param>
+							<Param><Var name="codeAux"/></Param>
+						</String.implode>
+					</Var>
+					<Var name="sysConfig" key="$code"><Var name="config" key="value"/></Var>
+				</ForEach>
+				<Var name="data" key="sysConfig"><Var name="sysConfig"/></Var>
+				
+				<!-- Adds all the framework configurations to the data -->
+				<Var name="fwConfigAux"><Call library="framework,config,api" function="getByCompany"/></Var>
+				<Var name="fwConfig"><Null/></Var>
+				<ForEach var="fwConfigAux" item="config">
+					<Var name="codeAux">
+						<String.explode>
+							<Param>.</Param>
+							<Param><Var name="config" key="code"/></Param>
+						</String.explode>
+					</Var>
+					<Var name="code">
+						<String.implode>
+							<Param>_</Param>
+							<Param><Var name="codeAux"/></Param>
+						</String.implode>
+					</Var>
+					<Var name="fwConfig" key="$code"><Var name="config" key="value"/></Var>
+				</ForEach>
+				<Var name="data" key="fwConfig"><Var name="fwConfig"/></Var>
 
-								<Var name="preview">
-									 <Call function="$previewFunctionName">
-										<Param name="id"><Var name="bulkData" key="id"/></Param>
-										<Param name="event"><Var name="event"/></Param>
-										<Param name="role"><Var name="role"/></Param>
-										<Param name="data"><Var name="idData"/></Param>
-										<Param name="action"><Var name="action"/></Param>
-										<Param name="expandTemplate"><Int>1</Int></Param>
-										<Param name="is_bulk"><Int>0</Int></Param>
-										<Param name="bulk"><Null/></Param>
-									 </Call>
+				<Var name="actionPreview">
+					<TemplateLib method="ExecuteStandardTemplate">
+						<Param>
+							<Var name="action" key="template"/>
+						</Param>
+						<Param>
+							<Var name="USER" key="lang"/>
+						</Param>
+						<Param>
+							<Var name="data"/>
+						</Param>
+					</TemplateLib>
+				</Var>
+				<Var name="personData">
+					<Var name="data" key="personData"/>
+				</Var>
+
+				<Var name="fromRole">
+					<Var name="action" key="from"/>
+				</Var>
+				<Var name="fromData">
+					<Var name="personData" key="$fromRole"/>
+				</Var>
+				<If condition="$fromData->id_person !== '' &amp;&amp; $fromData->id_person !== NULL  &amp;&amp; $fromData->id_person !== 0">
+					<Then>
+						<Var name="msgParams" key="id_from">
+							<Var name="fromData" key="id_person"/>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="msgParams" key="email_from">
+							<Var name="fromData" key="email"/>
+						</Var>
+					</Else>
+				</If>
+
+				<Var name="toRole">
+					<Var name="action" key="to"/>
+				</Var>
+				<Var name="toData">
+					<Var name="personData" key="$toRole"/>
+				</Var>
+				<If condition="$toData->id_person !== '' &amp;&amp; $toData->id_person !== NULL &amp;&amp; $toData->id_person !== 0">
+					<Then>
+						<Var name="msgParams" key="id_to">
+							<Var name="toData" key="id_person"/>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="msgParams" key="email_to">
+							<Var name="toData" key="email"/>
+						</Var>
+					</Else>
+				</If>
+
+				<Var name="replyRole">
+					<Var name="action" key="reply_to"/>
+				</Var>
+				<Var name="replyData">
+					<Var name="personData" key="$replyRole"/>
+				</Var>
+				<If condition="$replyData->id_person !== '' &amp;&amp; $replyData->id_person !== NULL  &amp;&amp; $replyData->id_person !== 0">
+					<Then>
+						<Var name="msgParams" key="reply_to">
+							<Var name="replyData" key="id_person"/>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="reply" key="">
+							<Var name="replyData" key="email"/>
+						</Var>
+						<Var name="msgParams" key="email_reply_to">
+							<Var name="reply"/>
+						</Var>
+					</Else>
+				</If>
+
+				<If condition="$action->cc != ''">
+					<Then>
+						<Var name="ccRole">
+							<Var name="action" key="cc"/>
+						</Var>
+						<Var name="ccData">
+							<Var name="personData" key="$ccRole"/>
+						</Var>
+						<If condition="$ccData->id_person !== '' &amp;&amp; $ccData->id_person !== NULL &amp;&amp; $ccData->id_person !== 0">
+							<Then>
+								<Var name="cc" key="">
+									<Var name="ccData" key="id_person"/>
 								</Var>
-								 <Var name="actionResult">
-									 <Call function="$doFunctionName">
-										<Param name="id"><Var name="bulkData" key="id"/></Param>
-										<Param name="event"><Var name="event"/></Param>
-										<Param name="role"><Var name="role"/></Param>
-										<Param name="data"><Var name="idData"/></Param>
-										 <Param name="action"><Var name="action"/></Param>
-										 <Param name="guidObject"><Var name="idGuidObject"/></Param>
-										 <Param name="context"><Var name="context"/></Param>
-										 <Param name="preview"><Var name="preview"/></Param>
-										 <Param name="is_bulk"><Int>0</Int></Param>
-										 <Param name="bulk"><Null/></Param>
-									 </Call>
-								 </Var>
-								 <!-- Update execution data -->
-								 <Var name="resultVarName">
-									<If condition="$action->result != ''">
-										<Then>
-											<Var name="action" key="result"/>
-										</Then>
-										<Else>
-											<String.parse>action_$count</String.parse>
-										</Else>
-									</If>
+								<Var name="msgParams" key="cc">
+									<Var name="cc"/>
 								</Var>
-								<Var name="executionData" key="$resultVarName"><Var name="actionResult" key="data"/></Var>
-								<Var name="count" sum="1"/>
-							</ForEach>
-							<!-- After the actions execution -->
-							<!-- Process the event -->
-							<Var name="record"><Var name="idData" key="record"/></Var>
-							<Var name="result">
-								<Call library="framework,stateMachine.instance,api" function="processEvent">
-									<Param name="id"><Var name="record" key="id_state_machine_instance"/></Param>
-									<Param name="event"><Var name="PARAMS" key="event"/></Param>
-									<Param name="role"><Var name="PARAMS" key="role"/></Param>
-									<Param name="personData"><Var name="idData" key="personData"/></Param>
-									<Param name="eventData"><Var name="idData" key="eventData"/></Param>
-								</Call>
+							</Then>
+							<Else>
+								<Var name="cc" key="">
+									<Var name="ccData" key="email"/>
+								</Var>
+								<Var name="msgParams" key="email_cc">
+									<Var name="cc"/>
+								</Var>
+							</Else>
+						</If>
+					</Then>
+				</If>
+
+				<If condition="$action->bcc != ''">
+					<Then>
+						<Var name="bccRole">
+							<Var name="action" key="bcc"/>
+						</Var>
+						<Var name="bccData">
+							<Var name="personData" key="$bccRole"/>
+						</Var>
+						<If condition="$bccData->id_person !== '' &amp;&amp; $bccData->id_person !== NULL &amp;&amp; $bccData->id_person !== 0">
+							<Then>
+								<Var name="bcc" key="">
+									<Var name="bccData" key="id_person"/>
+								</Var>
+								<Var name="msgParams" key="bcc">
+									<Var name="bcc"/>
+								</Var>
+							</Then>
+							<Else>
+								<Var name="bcc" key="">
+									<Var name="bccData" key="email"/>
+								</Var>
+								<Var name="msgParams" key="email_bcc">
+									<Var name="bcc"/>
+								</Var>
+							</Else>
+						</If>
+					</Then>
+				</If>
+				<!--Var name="header"><String.parse><![CDATA[<i>De: ($msgParams->id_from $msgParams->email_from) Para: ($msgParams->id_to $msgParams->email_to)</i>]]></String.parse></Var-->
+				<Var name="preview">
+					<Set/>
+				</Var>
+				<Var name="preview" key="name">
+					<Var name="actionPreview" key="Subject"/>
+				</Var>
+				<Var name="preview" key="message">
+					<Var name="actionPreview" key="Content"/>
+				</Var>
+				<!--Var name="preview" key="message">
+			 				<String.concatenate>
+			 					<Param><Var name="header"/></Param>
+			 					<Param><![CDATA[<br/>]]></Param>
+			 					<Param><Var name="actionPreview" key="Content"/></Param>
+			 				</String.concatenate>
+			 			</Var-->
+				<Return>
+					<Var name="preview"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="callPreview" doc="Hook preview function for action type call">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="action" type="array" doc="The action data"/>
+				<Param name="data" type="array" doc="Data to expand to the templates"/>
+				<Param name="guidObject" type="string" doc="The object guid"/>
+			</Params>
+			<Return type="string"/>
+			<Begin>
+				<Var name="actionParams">
+					<Var name="action" key="params"/>
+				</Var>
+				<Var name="actionParams">
+					<Var name="action" key="params"/>
+				</Var>
+				<Var name="fxParams">
+					<String/>
+				</Var>
+				<Var name="actionParams">
+					<Var name="action" key="params"/>
+				</Var>
+				<ForEach var="data" item="dataItem" key="dataKey">
+					<Var name="$dataKey">
+						<Var name="dataItem"/>
+					</Var>
+				</ForEach>
+				<Var name="callParams">
+					<Set/>
+				</Var>
+				<ForEach var="actionParams" item="item" key="key">
+					<Var name="parsedItem">
+						<String.parse>
+							<Var name="item"/>
+						</String.parse>
+					</Var>
+					<Var name="fxParams">
+						<String.parse>$fxParams $key=$parsedItem |</String.parse>
+					</Var>
+				</ForEach>
+
+				<Var name="actionPreview" key="name">
+					<Var name="action" key="name"/>
+				</Var>
+				<Var name="actionPreview" key="message">
+					<String.parse>Call library:$action->library function:$action->function ($fxParams)</String.parse>
+				</Var>
+				<Return>
+					<Var name="actionPreview"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="eventPreview" doc="Hook preview function for action type event">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="action" type="array" doc="The action data"/>
+				<Param name="data" type="array" doc="Data to expand to the templates"/>
+				<Param name="guidObject" type="string" doc="The object guid"/>
+				<Param name="context" type="string" doc="The message context"/>
+				<Param name="preview" type="array" doc="The message preview"/>
+				<Param name="is_bulk" type="int" doc="Do this event in bulk mode"/>
+				<Param name="bulk" type="array" doc="The bulk data bulk[array(id, data, guidObject)])"/>
+			</Params>
+			<Return type="string"/>
+			<Begin>
+				<ForEach var="data" item="dataItem" key="dataKey">
+					<Var name="$dataKey">
+						<Var name="dataItem"/>
+					</Var>
+				</ForEach>
+				<Var name="eventParams">
+					<Set/>
+				</Var>
+				<Var name="actionParams">
+					<Var name="action" key="params"/>
+				</Var>
+				<ForEach var="actionParams" item="actionParam" key="actionParamKey">
+					<Var name="eventParams" key="$actionParamKey">
+						<String.parse>
+							<Var name="actionParam"/>
+						</String.parse>
+					</Var>
+				</ForEach>
+				<Var name="eventData">
+					<Var name="data" key="eventData"/>
+				</Var>
+
+				<Var name="eventParams" key="start_date">
+					<FormatterLib method="format">
+						<Param>DateTimeFormatter</Param>
+						<Param>shortDateTime</Param>
+						<Param>
+							<Var name="eventParams" key="start_date"/>
+						</Param>
+					</FormatterLib>
+				</Var>
+				<Var name="eventParams" key="end_date">
+					<FormatterLib method="format">
+						<Param>DateTimeFormatter</Param>
+						<Param>shortDateTime</Param>
+						<Param>
+							<Var name="eventParams" key="end_date"/>
+						</Param>
+					</FormatterLib>
+				</Var>
+
+				<Var name="actionPreview" key="name">
+					<Var name="action" key="name"/>
+				</Var>
+				<Var name="participants" dump="true">
+					<StringLib method="explode">
+						<Param>,</Param>
+						<Param>
+							<Var name="action" key="participants"/>
+						</Param>
+					</StringLib>
+				</Var>
+
+				<Var name="eventParams" key="participants">
+					<String/>
+				</Var>
+
+				<ForEach var="participants" item="participant">
+					<Var name="person">
+						<String/>
+					</Var>
+					<Var name="person">
+						<Var name="personData" key="$participant"/>
+					</Var>
+
+					<If condition="$person->name == ''">
+						<Then>
+							<Var name="person" clear="true"/>
+							<Var name="person" key="name">
+								<String.parse>
+									<Var name="participant"/>
+								</String.parse>
 							</Var>
-						</ForEach>
-
-            <Return><Var name="logs"/></Return>
-					</Begin>
-				</Function>
-
-				<!-- Hooks for action previews -->
-				<Function scope="public" name="emailPreview" doc="Hook preview function for action type email">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="action" type="array" doc="The action data"/>
-	          <Param name="data" type="array" doc="Data to expand to the templates"/>
-	          <Param name="expandTemplate" type="int" doc="Expand the data to the template?"/>
-					</Params>
-					<Return type="string"/>
-					<Begin>
-
-						<If condition="$expandTemplate == 0">
-							<Then>
-								<Var name="data" key="message"><![CDATA[<strong>$Message</strong>]]></Var>
-							</Then>
-						</If>
-						<Var name="allSysConfig">
-							<Call library="gecol.core,system.config,api" function="getAll"/>
-						</Var>
-						<Var name="sysConfig"><Null/></Var>
-						<ForEach var="allSysConfig" item="sysConfigItem">
-							<Var name="sysConfig" key="$sysConfigItem->code"><Var name="sysConfigItem" key="value"/></Var>
-						</ForEach>
-						<Var name="data" key="sysConfig"><Var name="sysConfig"/></Var>
-
-       			<Var name="actionPreview">
-       				<TemplateLib method="ExecuteStandardTemplate">
-       					<Param><Var name="action" key="template"/></Param>
-       					<Param><Var name="USER" key="lang"/></Param>
-       					<Param><Var name="data"/></Param>
-       				</TemplateLib>
-       			</Var>
-						<Var name="personData"><Var name="data" key="personData"/></Var>
-
-						<Var name="fromRole"><Var name="action" key="from"/></Var>
-						<Var name="fromData"><Var name="personData" key="$fromRole"/></Var>
-						<If condition="$fromData->id_person !== '' &amp;&amp; $fromData->id_person !== NULL  &amp;&amp; $fromData->id_person !== 0">
-							<Then>
-								<Var name="msgParams" key="id_from"><Var name="fromData" key="id_person"/></Var>
-							</Then>
-							<Else>
-								<Var name="msgParams" key="email_from"><Var name="fromData" key="email"/></Var>
-							</Else>
-						</If>
-
-						<Var name="toRole"><Var name="action" key="to"/></Var>
-						<Var name="toData"><Var name="personData" key="$toRole"/></Var>
-						<If condition="$toData->id_person !== '' &amp;&amp; $toData->id_person !== NULL &amp;&amp; $toData->id_person !== 0">
-							<Then>
-								<Var name="msgParams" key="id_to"><Var name="toData" key="id_person"/></Var>
-							</Then>
-							<Else>
-								<Var name="msgParams" key="email_to"><Var name="toData" key="email"/></Var>
-							</Else>
-						</If>
-
-						<Var name="replyRole"><Var name="action" key="reply_to"/></Var>
-						<Var name="replyData"><Var name="personData" key="$replyRole"/></Var>
-						<If condition="$replyData->id_person !== '' &amp;&amp; $replyData->id_person !== NULL  &amp;&amp; $replyData->id_person !== 0">
-							<Then>
-								<Var name="msgParams" key="reply_to"><Var name="replyData" key="id_person"/></Var>
-							</Then>
-							<Else>
-								<Var name="reply" key=""><Var name="replyData" key="email"/></Var>
-								<Var name="msgParams" key="email_reply_to"><Var name="reply"/></Var>
-							</Else>
-						</If>
-
-						<If condition="$action->cc != ''">
-							<Then>
-								<Var name="ccRole"><Var name="action" key="cc"/></Var>
-								<Var name="ccData"><Var name="personData" key="$ccRole"/></Var>
-								<If condition="$ccData->id_person !== '' &amp;&amp; $ccData->id_person !== NULL &amp;&amp; $ccData->id_person !== 0">
-									<Then>
-										<Var name="cc" key=""><Var name="ccData" key="id_person"/></Var>
-										<Var name="msgParams" key="cc"><Var name="cc"/></Var>
-									</Then>
-									<Else>
-										<Var name="cc" key=""><Var name="ccData" key="email"/></Var>
-										<Var name="msgParams" key="email_cc"><Var name="cc"/></Var>
-									</Else>
-								</If>
-							</Then>
-						</If>
-
-						<If condition="$action->bcc != ''">
-							<Then>
-								<Var name="bccRole"><Var name="action" key="bcc"/></Var>
-								<Var name="bccData"><Var name="personData" key="$bccRole"/></Var>
-								<If condition="$bccData->id_person !== '' &amp;&amp; $bccData->id_person !== NULL &amp;&amp; $bccData->id_person !== 0">
-									<Then>
-										<Var name="bcc" key=""><Var name="bccData" key="id_person"/></Var>
-										<Var name="msgParams" key="bcc"><Var name="bcc"/></Var>
-									</Then>
-									<Else>
-										<Var name="bcc" key=""><Var name="bccData" key="email"/></Var>
-										<Var name="msgParams" key="email_bcc"><Var name="bcc"/></Var>
-									</Else>
-								</If>
-							</Then>
-						</If>
-       			<!--Var name="header"><String.parse><![CDATA[<i>De: ($msgParams->id_from $msgParams->email_from) Para: ($msgParams->id_to $msgParams->email_to)</i>]]></String.parse></Var-->
-       			<Var name="preview"><Set/></Var>
-       			<Var name="preview" key="name"><Var name="actionPreview" key="Subject"/></Var>
-       			<Var name="preview" key="message"><Var name="actionPreview" key="Content"/></Var>
-       			<!--Var name="preview" key="message">
-       				<String.concatenate>
-       					<Param><Var name="header"/></Param>
-       					<Param><![CDATA[<br/>]]></Param>
-       					<Param><Var name="actionPreview" key="Content"/></Param>
-       				</String.concatenate>
-       			</Var-->
-						<Return>
-							<Var name="preview"/>
-						</Return>
-					</Begin>
-				</Function>
-
-				<Function scope="public" name="callPreview" doc="Hook preview function for action type call">
-					<Params>
-						<Param name="id" doc="The state machine instance id"/>
-						<Param name="event" type="string" doc="The event to get the list"/>
-						<Param name="role" type="string" doc="The role of the user to process the event"/>
-						<Param name="action" type="array" doc="The action data"/>
-						<Param name="data" type="array" doc="Data to expand to the templates"/>
-						<Param name="guidObject" type="string" doc="The object guid"/>
-					</Params>
-					<Return type="string"/>
-					<Begin>
-						<Var name="actionParams"><Var name="action" key="params"/></Var>
-						<Var name="actionParams"><Var name="action" key="params"/></Var>
-						<Var name="fxParams"><String/></Var>
-						<Var name="actionParams"><Var name="action" key="params"/></Var>
-						<ForEach var="data" item="dataItem" key="dataKey">
-							<Var name="$dataKey"><Var name="dataItem"/></Var>
-						</ForEach>
-						<Var name="callParams"><Set/></Var>
-						<ForEach var="actionParams" item="item" key="key">
-							<Var name="parsedItem"><String.parse><Var name="item"/></String.parse></Var>
-							<Var name="fxParams"><String.parse>$fxParams $key=$parsedItem |</String.parse></Var>
-						</ForEach>
-
-						<Var name="actionPreview" key="name"><Var name="action" key="name"/></Var>
-						<Var name="actionPreview" key="message"><String.parse>Call library:$action->library function:$action->function ($fxParams)</String.parse></Var>
-						<Return>
-							<Var name="actionPreview"/>
-						</Return>
-					</Begin>
-				</Function>
-
-				<Function scope="public" name="eventPreview" doc="Hook preview function for action type event">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="action" type="array" doc="The action data"/>
-	          <Param name="data" type="array" doc="Data to expand to the templates"/>
-	          <Param name="guidObject" type="string" doc="The object guid"/>
-	          <Param name="context" type="string" doc="The message context"/>
-	          <Param name="preview" type="array" doc="The message preview"/>
-						<Param name="is_bulk" type="int" doc="Do this event in bulk mode"/>
-						<Param name="bulk" type="array" doc="The bulk data bulk[array(id, data, guidObject)])"/>
-					</Params>
-					<Return type="string"/>
-					<Begin>
-						<ForEach var="data" item="dataItem" key="dataKey">
-							<Var name="$dataKey"><Var name="dataItem"/></Var>
-						</ForEach>
-						<Var name="eventParams"><Set/></Var>
-						<Var name="actionParams"><Var name="action" key="params"/></Var>
-						<ForEach var="actionParams" item="actionParam" key="actionParamKey">
-							<Var name="eventParams" key="$actionParamKey"><String.parse><Var name="actionParam"/></String.parse></Var>
-						</ForEach>
-						<Var name="eventData"><Var name="data" key="eventData"/></Var>
-
-						<Var name="eventParams" key="start_date">
-							<FormatterLib method="format">
-								<Param>DateTimeFormatter</Param>
-								<Param>shortDateTime</Param>
-								<Param><Var name="eventParams" key="start_date"/></Param>
-							</FormatterLib>
-						</Var>
-						<Var name="eventParams" key="end_date">
-							<FormatterLib method="format">
-								<Param>DateTimeFormatter</Param>
-								<Param>shortDateTime</Param>
-								<Param><Var name="eventParams" key="end_date"/></Param>
-							</FormatterLib>
-						</Var>
-
-						<Var name="actionPreview" key="name"><Var name="action" key="name"/></Var>
-						<Var name="participants" dump="true">
-							<StringLib method="explode">
-		            <Param>,</Param>
-		            <Param>
-		              <Var name="action" key="participants"/>
-		            </Param>
-		          </StringLib>
-						</Var>
-						
-						<Var name="eventParams" key="participants"><String/></Var>
-						
-						<ForEach var="participants" item="participant">
-							<Var name="person"><String/></Var>
-							<Var name="person"><Var name="personData" key="$participant"/></Var>
-							
-							<If condition="$person->name == ''">
+							<Var name="parsedIdPerson">
+								<Int.parse>$person->name</Int.parse>
+							</Var>
+							<If condition="$parsedIdPerson != 0">
 								<Then>
-									<Var name="person" clear="true"/>
-									<Var name="person" key="name"><String.parse><Var name="participant"/></String.parse></Var>
-									<Var name="parsedIdPerson"><Int.parse>$person->name</Int.parse></Var>
-									<If condition="$parsedIdPerson != 0">
-										<Then>
-											<Var name="person">
-												<DataAccess method="load">
-													<Param name="_entity">person</Param>
-													<Param name="id"><Var name="parsedIdPerson"/></Param>
-												</DataAccess>
-											</Var>
-										</Then>
-									</If>
-									
+									<Var name="person">
+										<DataAccess method="load">
+											<Param name="_entity">person</Param>
+											<Param name="id">
+												<Var name="parsedIdPerson"/>
+											</Param>
+										</DataAccess>
+									</Var>
 								</Then>
 							</If>
-							<Var name="eventParams" key="participants">
-								<String.concatenate>
-									<Param><Var name="eventParams" key="participants"/></Param>
-									<Param><Var name="person" key="name"/></Param>
-									<Param><String><![CDATA[<br/>]]></String></Param>
-								</String.concatenate>
+
+						</Then>
+					</If>
+					<Var name="eventParams" key="participants">
+						<String.concatenate>
+							<Param>
+								<Var name="eventParams" key="participants"/>
+							</Param>
+							<Param>
+								<Var name="person" key="name"/>
+							</Param>
+							<Param>
+								<String>
+									<![CDATA[<br/>]]>
+								</String>
+							</Param>
+						</String.concatenate>
+					</Var>
+				</ForEach>
+
+				<Var name="templateContent" dump="true">
+					<TemplateLib method="ExecuteStandardTemplate">
+						<Param>
+							<String>gecol.core,preEnroll,pe.events</String>
+						</Param>
+						<Param>
+							<Var name="USER" key="lang"/>
+						</Param>
+						<Param>
+							<Var name="eventParams"/>
+						</Param>
+					</TemplateLib>
+				</Var>
+				<Var name="templateContent">
+					<Var name="templateContent" key="Content"/>
+				</Var>
+
+				<Var name="actionPreview" key="message">
+					<Var name="templateContent"/>
+				</Var>
+				<Return>
+					<Var name="actionPreview"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<!-- Hooks for getting the action done -->
+		<Function scope="public" name="emailDo" doc="Hook preview function for action type email">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="action" type="array" doc="The action data"/>
+				<Param name="data" type="array" doc="Data to expand to the templates"/>
+				<Param name="guidObject" type="string" doc="The object guid"/>
+				<Param name="context" type="string" doc="The message context"/>
+				<Param name="preview" type="array" doc="The message preview"/>
+			</Params>
+			<Return type="string"/>
+			<Begin>
+				<Var name="data" dump="true"/>
+
+				<Var name="personData">
+					<Var name="data" key="personData"/>
+				</Var>
+				<Var name="action"/>
+
+				<Var name="msgParams">
+					<Set/>
+				</Var>
+				<Var name="msgParams" key="guid_object">
+					<Var name="guidObject"/>
+				</Var>
+
+				<Var name="messageData" key="message_html">
+					<Var name="preview" key="message"/>
+				</Var>
+				<Var name="messageData" key="message_plain">
+					<Var name="preview" key="message"/>
+				</Var> <!-- TODO remove tags from html -->
+				<Var name="msgParams" key="data">
+					<Var name="messageData"/>
+				</Var>
+				<Var name="msgParams" key="subject">
+					<Var name="preview" key="name"/>
+				</Var>
+				<Var name="msgParams" key="send_date">
+					<Now/>
+				</Var>
+				<Var name="msgParams" key="is_cancellable">
+					<Int>0</Int>
+				</Var>
+				<Var name="msgParams" key="template">
+					<String>generic</String>
+				</Var>
+				<Var name="msgParams" key="context">
+					<Var name="PARAMS" key="context"/>
+				</Var>
+				<Var name="msgParams" key="confirm_reading">
+					<Int>1</Int>
+				</Var>
+				<Var name="msgParams" key="send_now">
+					<Int>1</Int>
+				</Var>
+
+				<Var name="fromRole">
+					<Var name="action" key="from"/>
+				</Var>
+				<Var name="fromData">
+					<Var name="personData" key="$fromRole"/>
+				</Var>
+				<If condition="$fromData->id_person !== '' &amp;&amp; $fromData->id_person !== NULL  &amp;&amp; $fromData->id_person !== 0">
+					<Then>
+						<Var name="msgParams" key="id_from">
+							<Var name="fromData" key="id_person"/>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="msgParams" key="email_from">
+							<Var name="fromData" key="email"/>
+						</Var>
+					</Else>
+				</If>
+
+				<Var name="toRole">
+					<Var name="action" key="to"/>
+				</Var>
+				<Var name="toData">
+					<Var name="personData" key="$toRole"/>
+				</Var>
+				<If condition="$toData->id_person !== '' &amp;&amp; $toData->id_person !== NULL &amp;&amp; $toData->id_person !== 0">
+					<Then>
+						<Var name="msgParams" key="id_to">
+							<Var name="toData" key="id_person"/>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="msgParams" key="email_to">
+							<Var name="toData" key="email"/>
+						</Var>
+					</Else>
+				</If>
+
+				<Var name="replyRole">
+					<Var name="action" key="reply_to"/>
+				</Var>
+				<Var name="replyData">
+					<Var name="personData" key="$replyRole"/>
+				</Var>
+				<If condition="$replyData->id_person !== '' &amp;&amp; $replyData->id_person !== NULL  &amp;&amp; $replyData->id_person !== 0">
+					<Then>
+						<Var name="msgParams" key="reply_to">
+							<Var name="replyData" key="id_person"/>
+						</Var>
+					</Then>
+					<Else>
+						<Var name="reply" key="">
+							<Var name="replyData" key="email"/>
+						</Var>
+						<Var name="msgParams" key="email_reply_to">
+							<Var name="reply"/>
+						</Var>
+					</Else>
+				</If>
+
+				<If condition="$action->cc != ''">
+					<Then>
+						<Var name="ccRole">
+							<Var name="action" key="cc"/>
+						</Var>
+						<Var name="ccData">
+							<Var name="personData" key="$ccRole"/>
+						</Var>
+						<If condition="$ccData->id_person !== '' &amp;&amp; $ccData->id_person !== NULL &amp;&amp; $ccData->id_person !== 0">
+							<Then>
+								<Var name="cc" key="">
+									<Var name="ccData" key="id_person"/>
+								</Var>
+								<Var name="msgParams" key="cc">
+									<Var name="cc"/>
+								</Var>
+							</Then>
+							<Else>
+								<Var name="cc" key="">
+									<Var name="ccData" key="email"/>
+								</Var>
+								<Var name="msgParams" key="email_cc">
+									<Var name="cc"/>
+								</Var>
+							</Else>
+						</If>
+					</Then>
+				</If>
+
+				<If condition="$action->bcc != ''">
+					<Then>
+						<Var name="bccRole">
+							<Var name="action" key="bcc"/>
+						</Var>
+						<Var name="bccData">
+							<Var name="personData" key="$bccRole"/>
+						</Var>
+						<If condition="$bccData->id_person !== '' &amp;&amp; $bccData->id_person !== NULL &amp;&amp; $bccData->id_person !== 0">
+							<Then>
+								<Var name="bcc" key="">
+									<Var name="bccData" key="id_person"/>
+								</Var>
+								<Var name="msgParams" key="bcc">
+									<Var name="bcc"/>
+								</Var>
+							</Then>
+							<Else>
+								<Var name="bcc" key="">
+									<Var name="bccData" key="email"/>
+								</Var>
+								<Var name="msgParams" key="email_bcc">
+									<Var name="bcc"/>
+								</Var>
+							</Else>
+						</If>
+					</Then>
+				</If>
+				<Var name="msgParams" dump="true"/>
+				<Call library="gecol.core,message,api" function="create" params="msgParams"/>
+
+				<Return/>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="callDo" doc="Hook preview function for action type email">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="action" type="array" doc="The action data"/>
+				<Param name="data" type="array" doc="Data to expand to the templates"/>
+				<Param name="guidObject" type="string" doc="The object guid"/>
+				<Param name="context" type="string" doc="The message context"/>
+				<Param name="preview" type="array" doc="The message preview"/>
+			</Params>
+			<Return type="string"/>
+			<Begin>
+				<Var name="library">
+					<Var name="action" key="library"/>
+				</Var>
+				<Var name="function">
+					<Var name="action" key="function"/>
+				</Var>
+				<Var name="actionParams">
+					<Var name="action" key="params"/>
+				</Var>
+				<ForEach var="data" item="dataItem" key="dataKey">
+					<Var name="$dataKey">
+						<Var name="dataItem"/>
+					</Var>
+				</ForEach>
+				<Var name="callParams">
+					<Set/>
+				</Var>
+				<ForEach var="actionParams" item="item" key="key">
+					<Var name="callParams" key="$key">
+						<String.parse>
+							<Var name="item"/>
+						</String.parse>
+					</Var>
+				</ForEach>
+				<Var name="callParams" key="_data">
+					<Var name="PARAMS" key="data"/>
+				</Var>
+				<Var name="result">
+					<Set/>
+				</Var>
+				<Var name="result" key="data">
+					<Call library="$library" function="$function" params="callParams"/>
+				</Var>
+
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+
+		<Function scope="public" name="eventDo" doc="Hook preview function for action type event">
+			<Params>
+				<Param name="id" doc="The state machine instance id"/>
+				<Param name="event" type="string" doc="The event to get the list"/>
+				<Param name="role" type="string" doc="The role of the user to process the event"/>
+				<Param name="action" type="array" doc="The action data"/>
+				<Param name="data" type="array" doc="Data to expand to the templates"/>
+				<Param name="guidObject" type="string" doc="The object guid"/>
+				<Param name="context" type="string" doc="The message context"/>
+				<Param name="preview" type="array" doc="The message preview"/>
+				<Param name="is_bulk" type="int" doc="Do this event in bulk mode"/>
+				<Param name="bulk" type="array" doc="The bulk data bulk[array(id, data, guidObject)])"/>
+			</Params>
+			<Return type="single"/>
+			<Begin>
+				<Var name="createVideoCall">
+					<Int>0</Int>
+				</Var>
+				<If condition="$PARAMS->is_bulk == 1">
+					<Then>
+						<!-- Get the fisrt event data to create the event -->
+						<Var name="first">
+							<Var name="bulk" key="__first"/>
+						</Var>
+						<Var name="bulk" key="__first" clear="true"/>
+						<Var name="bulkData">
+							<Var name="first" key="data"/>
+						</Var>
+
+						<ForEach var="bulkData" item="dataItem" key="dataKey">
+							<Var name="$dataKey">
+								<Var name="dataItem"/>
 							</Var>
 						</ForEach>
-						
-						<Var name="templateContent" dump="true">
-							<TemplateLib method="ExecuteStandardTemplate">
-       					<Param><String>gecol.core,preEnroll,pe.events</String></Param>
-       					<Param><Var name="USER" key="lang"/></Param>
-       					<Param><Var name="eventParams"/></Param>
-       				</TemplateLib>
-						</Var><Var name="templateContent"><Var name="templateContent" key="Content"/></Var>
-						
-       			<Var name="actionPreview" key="message">
-							<Var name="templateContent"/>
+						<Var name="eventParams">
+							<Set/>
 						</Var>
-						<Return>
-							<Var name="actionPreview"/>
-						</Return>
-					</Begin>
-				</Function>
+						<Var name="actionParams">
+							<Var name="action" key="params"/>
+						</Var>
+						<ForEach var="actionParams" item="actionParam" key="actionParamKey">
+							<If condition="($actionParamKey != 'video_call') &amp;&amp; ($actionParamKey != 'id_person_organizer') &amp;&amp; ($actionParamKey != 'uid_person_organizer')">
+								<Then>
+									<Var name="eventParams" key="$actionParamKey">
+										<String.parse>
+											<Var name="actionParam"/>
+										</String.parse>
+									</Var>
+								</Then>
+							</If>
+						</ForEach>
+						<Var name="eventParams" key="context">
+							<Var name="PARAMS" key="context"/>
+						</Var>
+						<Var name="eventParams" key="id_school_year">
+							<Var name="preEnroll" key="id_school_year"/>
+						</Var>
+						<Var name="eventParams" key="status">
+							<String>confirmed</String>
+						</Var>
+						<Var name="eventParams" key="id_place">
+							<Null/>
+						</Var>
+						<Var name="id_event">
+							<Call library="gecol.core,event,api" function="add" params="eventParams"/>
+						</Var>
 
-				<!-- Hooks for getting the action done -->
-				<Function scope="public" name="emailDo" doc="Hook preview function for action type email">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="action" type="array" doc="The action data"/>
-	          <Param name="data" type="array" doc="Data to expand to the templates"/>
-	          <Param name="guidObject" type="string" doc="The object guid"/>
-	          <Param name="context" type="string" doc="The message context"/>
-	          <Param name="preview" type="array" doc="The message preview"/>
-					</Params>
-					<Return type="string"/>
-					<Begin>
-						<Var name="data" dump="true"/>
-
-						<Var name="personData"><Var name="data" key="personData"/></Var>
-						<Var name="action"/>
-
-						<Var name="msgParams"><Set/></Var>
-						<Var name="msgParams" key="guid_object"><Var name="guidObject"/></Var>
-
-						<Var name="messageData" key="message_html"><Var name="preview" key="message"/></Var>
-						<Var name="messageData" key="message_plain"><Var name="preview" key="message"/></Var> <!-- TODO remove tags from html -->
-						<Var name="msgParams" key="data"><Var name="messageData"/></Var>
-						<Var name="msgParams" key="subject"><Var name="preview" key="name"/></Var>
-						<Var name="msgParams" key="send_date"><Now/></Var>
-						<Var name="msgParams" key="is_cancellable"><Int>0</Int></Var>
-						<Var name="msgParams" key="template"><String>generic</String></Var>
-						<Var name="msgParams" key="context"><Var name="PARAMS" key="context"/></Var>
-						<Var name="msgParams" key="confirm_reading"><Int>1</Int></Var>
-						<Var name="msgParams" key="send_now"><Int>1</Int></Var>
-
-						<Var name="fromRole"><Var name="action" key="from"/></Var>
-						<Var name="fromData"><Var name="personData" key="$fromRole"/></Var>
-						<If condition="$fromData->id_person !== '' &amp;&amp; $fromData->id_person !== NULL  &amp;&amp; $fromData->id_person !== 0">
-							<Then>
-								<Var name="msgParams" key="id_from"><Var name="fromData" key="id_person"/></Var>
-							</Then>
-							<Else>
-								<Var name="msgParams" key="email_from"><Var name="fromData" key="email"/></Var>
-							</Else>
-						</If>
-
-						<Var name="toRole"><Var name="action" key="to"/></Var>
-						<Var name="toData"><Var name="personData" key="$toRole"/></Var>
-						<If condition="$toData->id_person !== '' &amp;&amp; $toData->id_person !== NULL &amp;&amp; $toData->id_person !== 0">
-							<Then>
-								<Var name="msgParams" key="id_to"><Var name="toData" key="id_person"/></Var>
-							</Then>
-							<Else>
-								<Var name="msgParams" key="email_to"><Var name="toData" key="email"/></Var>
-							</Else>
-						</If>
-
-						<Var name="replyRole"><Var name="action" key="reply_to"/></Var>
-						<Var name="replyData"><Var name="personData" key="$replyRole"/></Var>
-						<If condition="$replyData->id_person !== '' &amp;&amp; $replyData->id_person !== NULL  &amp;&amp; $replyData->id_person !== 0">
-							<Then>
-								<Var name="msgParams" key="reply_to"><Var name="replyData" key="id_person"/></Var>
-							</Then>
-							<Else>
-								<Var name="reply" key=""><Var name="replyData" key="email"/></Var>
-								<Var name="msgParams" key="email_reply_to"><Var name="reply"/></Var>
-							</Else>
-						</If>
-
-						<If condition="$action->cc != ''">
-							<Then>
-								<Var name="ccRole"><Var name="action" key="cc"/></Var>
-								<Var name="ccData"><Var name="personData" key="$ccRole"/></Var>
-								<If condition="$ccData->id_person !== '' &amp;&amp; $ccData->id_person !== NULL &amp;&amp; $ccData->id_person !== 0">
-									<Then>
-										<Var name="cc" key=""><Var name="ccData" key="id_person"/></Var>
-										<Var name="msgParams" key="cc"><Var name="cc"/></Var>
-									</Then>
-									<Else>
-										<Var name="cc" key=""><Var name="ccData" key="email"/></Var>
-										<Var name="msgParams" key="email_cc"><Var name="cc"/></Var>
-									</Else>
-								</If>
-							</Then>
-						</If>
-						
-						<If condition="$action->bcc != ''">
-							<Then>
-								<Var name="bccRole"><Var name="action" key="bcc"/></Var>
-								<Var name="bccData"><Var name="personData" key="$bccRole"/></Var>
-								<If condition="$bccData->id_person !== '' &amp;&amp; $bccData->id_person !== NULL &amp;&amp; $bccData->id_person !== 0">
-									<Then>
-										<Var name="bcc" key=""><Var name="bccData" key="id_person"/></Var>
-										<Var name="msgParams" key="bcc"><Var name="bcc"/></Var>
-									</Then>
-									<Else>
-										<Var name="bcc" key=""><Var name="bccData" key="email"/></Var>
-										<Var name="msgParams" key="email_bcc"><Var name="bcc"/></Var>
-									</Else>
-								</If>
-							</Then>
-						</If>
-						<Var name="msgParams" dump="true"/>						
-						<Call library="gecol.core,message,api" function="create" params="msgParams"/>
-
-						<Return>
-						</Return>
-					</Begin>
-				</Function>
-
-				<Function scope="public" name="callDo" doc="Hook preview function for action type email">
-					<Params>
-	          <Param name="id" doc="The state machine instance id"/>
-	          <Param name="event" type="string" doc="The event to get the list"/>
-	          <Param name="role" type="string" doc="The role of the user to process the event"/>
-	          <Param name="action" type="array" doc="The action data"/>
-	          <Param name="data" type="array" doc="Data to expand to the templates"/>
-	          <Param name="guidObject" type="string" doc="The object guid"/>
-	          <Param name="context" type="string" doc="The message context"/>
-	          <Param name="preview" type="array" doc="The message preview"/>
-					</Params>
-					<Return type="string"/>
-					<Begin>
-						<Var name="library"><Var name="action" key="library"/></Var>
-						<Var name="function"><Var name="action" key="function"/></Var>
-						<Var name="actionParams"><Var name="action" key="params"/></Var>
+						<!-- Handle the participants -->
+						<ForEach var="bulk" item="bulkItem">
+							<Var name="guidObject">
+								<Var name="bulkItem" key="guidObject"/>
+							</Var>
+							<Call library="gecol.core,preEnroll,api" function="eventAddParticipant">
+								<Param name="idEvent">
+									<Var name="id_event" key="id"/>
+								</Param>
+								<Param name="action">
+									<Var name="action"/>
+								</Param>
+								<Param name="data">
+									<Var name="bulkItem" key="data"/>
+								</Param>
+								<Param name="guidObject">
+									<Var name="guidObject"/>
+								</Param>
+							</Call>
+						</ForEach>
+					</Then>
+					<Else>
+						<!-- Not bulk -->
 						<ForEach var="data" item="dataItem" key="dataKey">
-							<Var name="$dataKey"><Var name="dataItem"/></Var>
-						</ForEach>
-						<Var name="callParams"><Set/></Var>
-						<ForEach var="actionParams" item="item" key="key">
-							<Var name="callParams" key="$key">
-								<String.parse><Var name="item"/></String.parse>
+							<Var name="$dataKey">
+								<Var name="dataItem"/>
 							</Var>
 						</ForEach>
-						<Var name="callParams" key="_data"><Var name="PARAMS" key="data"/></Var>
-						<Var name="result"><Set/></Var>
-						<Var name="result" key="data">
-							<Call library="$library" function="$function" params="callParams"/>
+						<Var name="eventParams">
+							<Set/>
+						</Var>
+						<Var name="actionParams">
+							<Var name="action" key="params"/>
+						</Var>
+						<ForEach var="actionParams" item="actionParam" key="actionParamKey">
+							<If condition="($actionParamKey != 'video_call') &amp;&amp; ($actionParamKey != 'id_person_organizer') &amp;&amp; ($actionParamKey != 'uid_person_organizer')">
+								<Then>
+									<Var name="eventParams" key="$actionParamKey">
+										<String.parse>
+											<Var name="actionParam"/>
+										</String.parse>
+									</Var>
+								</Then>
+							</If>
+						</ForEach>
+						<Var name="eventParams" key="context">
+							<Var name="PARAMS" key="context"/>
+						</Var>
+						<Var name="eventParams" key="id_school_year">
+							<Var name="preEnroll" key="id_school_year"/>
 						</Var>
 
-						<Return>
-							<Var name="result"/>
-						</Return>
-					</Begin>
-				</Function>
-
-				<Function scope="public" name="eventDo" doc="Hook preview function for action type event">
-					<Params>
-						<Param name="id" doc="The state machine instance id"/>
-						<Param name="event" type="string" doc="The event to get the list"/>
-						<Param name="role" type="string" doc="The role of the user to process the event"/>
-						<Param name="action" type="array" doc="The action data"/>
-						<Param name="data" type="array" doc="Data to expand to the templates"/>
-						<Param name="guidObject" type="string" doc="The object guid"/>
-						<Param name="context" type="string" doc="The message context"/>
-						<Param name="preview" type="array" doc="The message preview"/>
-						<Param name="is_bulk" type="int" doc="Do this event in bulk mode"/>
-						<Param name="bulk" type="array" doc="The bulk data bulk[array(id, data, guidObject)])"/>
-					</Params>
-					<Return type="single"/>
-					<Begin>
-						<Var name="createVideoCall"><Int>0</Int></Var>
-						<If condition="$PARAMS->is_bulk == 1">
+						<Var name="id_event">
+							<Call library="gecol.core,event,api" function="add" params="eventParams"/>
+						</Var>
+						<Call library="gecol.core,preEnroll,api" function="eventAddParticipant">
+							<Param name="idEvent">
+								<Var name="id_event" key="id"/>
+							</Param>
+							<Param name="action">
+								<Var name="action"/>
+							</Param>
+							<Param name="data">
+								<Var name="data"/>
+							</Param>
+							<Param name="guidObject">
+								<Var name="guidObject"/>
+							</Param>
+						</Call>
+					</Else>
+				</If>
+				<Var name="createVideoCall">
+					<String.parse>
+						<String.parse>$actionParams->video_call</String.parse>
+					</String.parse>
+				</Var>
+				<!-- create the video call if we have to -->
+				<If condition="$createVideoCall == 1">
+					<Then>
+						<!-- Get the organizer data -->
+						<Var name="id_person_organizer">
+							<String.parse>
+								<String.parse>$actionParams->id_person_organizer</String.parse>
+							</String.parse>
+						</Var>
+						<Var name="uid_person_organizer">
+							<String.parse>
+								<String.parse>$actionParams->uid_person_organizer</String.parse>
+							</String.parse>
+						</Var>
+						<If condition="($id_person_organizer != '') &amp;&amp; ($id_person_organizer != 'null')">
 							<Then>
-								<!-- Get the fisrt event data to create the event -->
-								<Var name="first"><Var name="bulk" key="__first"/></Var>
-								<Var name="bulk" key="__first" clear="true"/>
-								<Var name="bulkData"><Var name="first" key="data"/></Var>
-
-								<ForEach var="bulkData" item="dataItem" key="dataKey">
-									<Var name="$dataKey"><Var name="dataItem"/></Var>
-								</ForEach>
-								<Var name="eventParams"><Set/></Var>
-								<Var name="actionParams"><Var name="action" key="params"/></Var>
-								<ForEach var="actionParams" item="actionParam" key="actionParamKey">
-									<If condition="($actionParamKey != 'video_call') &amp;&amp; ($actionParamKey != 'id_person_organizer') &amp;&amp; ($actionParamKey != 'uid_person_organizer')">
-										<Then>
-											<Var name="eventParams" key="$actionParamKey"><String.parse><Var name="actionParam"/></String.parse></Var>											
-										</Then>
-									</If>
-								</ForEach>
-								<Var name="eventParams" key="context"><Var name="PARAMS" key="context"/></Var>
-								<Var name="eventParams" key="id_school_year"><Var name="preEnroll" key="id_school_year"/></Var>
-								<Var name="eventParams" key="status"><String>confirmed</String></Var>
-								<Var name="eventParams" key="id_place"><Null/></Var>
-								<Var name="id_event">
-									<Call library="gecol.core,event,api" function="add" params="eventParams"/>
-								</Var>
-
-								<!-- Handle the participants -->
-								<ForEach var="bulk" item="bulkItem">
-									<Var name="guidObject"><Var name="bulkItem" key="guidObject"/></Var>
-									<Call library="gecol.core,preEnroll,api" function="eventAddParticipant">
-										<Param name="idEvent"><Var name="id_event" key="id"/></Param>
-										<Param name="action"><Var name="action"/></Param>
-										<Param name="data"><Var name="bulkItem" key="data"/></Param>
-										<Param name="guidObject"><Var name="guidObject"/></Param>
-									</Call>
-								</ForEach>
-							</Then>
-							<Else>
-								<!-- Not bulk -->
-								<ForEach var="data" item="dataItem" key="dataKey">
-									<Var name="$dataKey"><Var name="dataItem"/></Var>
-								</ForEach>
-								<Var name="eventParams"><Set/></Var>
-								<Var name="actionParams"><Var name="action" key="params"/></Var>
-								<ForEach var="actionParams" item="actionParam" key="actionParamKey">
-									<If condition="($actionParamKey != 'video_call') &amp;&amp; ($actionParamKey != 'id_person_organizer') &amp;&amp; ($actionParamKey != 'uid_person_organizer')">
-										<Then>
-											<Var name="eventParams" key="$actionParamKey"><String.parse><Var name="actionParam"/></String.parse></Var>											
-										</Then>
-									</If>
-								</ForEach>
-								<Var name="eventParams" key="context"><Var name="PARAMS" key="context"/></Var>
-								<Var name="eventParams" key="id_school_year"><Var name="preEnroll" key="id_school_year"/></Var>
-
-								<Var name="id_event">
-									<Call library="gecol.core,event,api" function="add" params="eventParams"/>
-								</Var>
-								<Call library="gecol.core,preEnroll,api" function="eventAddParticipant">
-									<Param name="idEvent"><Var name="id_event" key="id"/></Param>
-									<Param name="action"><Var name="action"/></Param>
-									<Param name="data"><Var name="data"/></Param>
-									<Param name="guidObject"><Var name="guidObject"/></Param>
-								</Call>
-							</Else>
-						</If>
-						<Var name="createVideoCall"><String.parse><String.parse>$actionParams->video_call</String.parse></String.parse></Var>
-						<!-- create the video call if we have to -->
-						<If condition="$createVideoCall == 1">
-							<Then>
-								<!-- Get the organizer data -->
-								<Var name="id_person_organizer"><String.parse><String.parse>$actionParams->id_person_organizer</String.parse></String.parse></Var>
-								<Var name="uid_person_organizer"><String.parse><String.parse>$actionParams->uid_person_organizer</String.parse></String.parse></Var>
-								<If condition="($id_person_organizer != '') &amp;&amp; ($id_person_organizer != 'null')">
-									<Then>
-										<Var name="organizer">
-											<Call library="gecol.core,person,api" function="get">
-												<Param name="id"><String.parse><String.parse>$actionParams->id_person_organizer</String.parse></String.parse></Param>
-											</Call>
-										</Var>
-										<Exception name="framework/eventResource::invalidOrganizer" condition="$organizer->__length == 0"/>
-										<Var name="uid_person_organizer"><Var name="organizer" key="uid"/></Var>
-									</Then>
-								</If>
-								
-								<!-- Attendees-->
-								<Var name="eventPersons">
-									<Call library="gecol.core,event,api" function="getAllPersonsDetailed">
-										<Param name="id_event"><Var name="id_event" key="id"/></Param>
+								<Var name="organizer">
+									<Call library="gecol.core,person,api" function="get">
+										<Param name="id">
+											<String.parse>
+												<String.parse>$actionParams->id_person_organizer</String.parse>
+											</String.parse>
+										</Param>
 									</Call>
 								</Var>
-								<Var name="attendees"><Set/></Var>
-								<ForEach var="eventPersons" item="eventPerson">
-									<If condition="$eventPerson->uid != ''">
-										<Then>
-											<Var name="attendees" key=""><Var name="eventPerson" key="uid"/></Var>
-										</Then>
-									</If>
-								</ForEach>
-
-								<!-- Collect context data to send to the resource manager-->
-								<Var name="_context" key="summary"><String.parse><String.parse>$actionParams->subject</String.parse></String.parse></Var>
-								<Var name="_context" key="summary"><String.parse>$_context->summary | Videoconferência</String.parse></Var>
-								<Var name="_context" key="description"><String.parse><String.parse>$actionParams->description</String.parse></String.parse></Var>
-								<Var name="_context" key="description"><String.parse>$_context->description | Videoconferência</String.parse></Var>
-								<Var name="_context" key="start"><String.parse><String.parse>$actionParams->start_date</String.parse></String.parse></Var>
-								<Var name="_context" key="end"><String.parse><String.parse>$actionParams->end_date</String.parse></String.parse></Var>
-								<Var name="_context" key="organizer"><Var name="uid_person_organizer"/></Var>
-								<Var name="_context" key="attendees"><Var name="attendees"/></Var>
-								<Var name="videoCallData" key="_context"><Var name="_context"/></Var>
-
-								<!-- Add the resource -->
-								<Var name="id_resource">
-									<Call library="gecol.core,resource,api" function="add">
-										<Param name="resource_type_code">meet</Param>
-										<Param name="data"><Var name="videoCallData"/></Param>
-									</Call>
-								</Var>								
-								<!-- Add the resource to the event -->
-								<DataAccess method="insert">
-									<Param name="_entity">event_resource</Param>
-									<Param name="id_event"><Var name="id_event" key="id"/></Param>
-									<Param name="id_resource"><Var name="id_resource"/></Param>
-									<Param name="_base">true</Param>
-								</DataAccess>
+								<Exception name="framework/eventResource::invalidOrganizer" condition="$organizer->__length == 0"/>
+								<Var name="uid_person_organizer">
+									<Var name="organizer" key="uid"/>
+								</Var>
 							</Then>
 						</If>
 
-						<Var name="result" key="data"><Var name="id_event" key="id"/></Var>
-						<Var name="result" key="result"><String>OK</String></Var>
-						<Var name="result" key="log"><Set/></Var>
+						<!-- Attendees-->
+						<Var name="eventPersons">
+							<Call library="gecol.core,event,api" function="getAllPersonsDetailed">
+								<Param name="id_event">
+									<Var name="id_event" key="id"/>
+								</Param>
+							</Call>
+						</Var>
+						<Var name="attendees">
+							<Set/>
+						</Var>
+						<ForEach var="eventPersons" item="eventPerson">
+							<If condition="$eventPerson->uid != ''">
+								<Then>
+									<Var name="attendees" key="">
+										<Var name="eventPerson" key="uid"/>
+									</Var>
+								</Then>
+							</If>
+						</ForEach>
 
-						<Return><Var name="result"/></Return>
-					</Begin>
-				</Function>
+						<!-- Collect context data to send to the resource manager-->
+						<Var name="_context" key="summary">
+							<String.parse>
+								<String.parse>$actionParams->subject</String.parse>
+							</String.parse>
+						</Var>
+						<Var name="_context" key="summary">
+							<String.parse>$_context->summary | Videoconferência</String.parse>
+						</Var>
+						<Var name="_context" key="description">
+							<String.parse>
+								<String.parse>$actionParams->description</String.parse>
+							</String.parse>
+						</Var>
+						<Var name="_context" key="description">
+							<String.parse>$_context->description | Videoconferência</String.parse>
+						</Var>
+						<Var name="_context" key="start">
+							<String.parse>
+								<String.parse>$actionParams->start_date</String.parse>
+							</String.parse>
+						</Var>
+						<Var name="_context" key="end">
+							<String.parse>
+								<String.parse>$actionParams->end_date</String.parse>
+							</String.parse>
+						</Var>
+						<Var name="_context" key="organizer">
+							<Var name="uid_person_organizer"/>
+						</Var>
+						<Var name="_context" key="attendees">
+							<Var name="attendees"/>
+						</Var>
+						<Var name="videoCallData" key="_context">
+							<Var name="_context"/>
+						</Var>
 
-    </Library>
+						<!-- Add the resource -->
+						<Var name="id_resource">
+							<Call library="gecol.core,resource,api" function="add">
+								<Param name="resource_type_code">meet</Param>
+								<Param name="data">
+									<Var name="videoCallData"/>
+								</Param>
+							</Call>
+						</Var>
+						<!-- Add the resource to the event -->
+						<DataAccess method="insert">
+							<Param name="_entity">event_resource</Param>
+							<Param name="id_event">
+								<Var name="id_event" key="id"/>
+							</Param>
+							<Param name="id_resource">
+								<Var name="id_resource"/>
+							</Param>
+							<Param name="_base">true</Param>
+						</DataAccess>
+					</Then>
+				</If>
+
+				<Var name="result" key="data">
+					<Var name="id_event" key="id"/>
+				</Var>
+				<Var name="result" key="result">
+					<String>OK</String>
+				</Var>
+				<Var name="result" key="log">
+					<Set/>
+				</Var>
+
+				<Return>
+					<Var name="result"/>
+				</Return>
+			</Begin>
+		</Function>
+	</Library>
 </Node>

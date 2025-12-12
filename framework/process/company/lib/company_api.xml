@@ -1,37 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Node>
 	<Doc>
-		<![CDATA[ Company API  ::  Allows the communication with 'fw_company' table and all the related ones. ]]>
+		<Description>Company API  ::  Allows the communication with 'fw_company' table and all the related ones.</Description>
 	</Doc>
 	<Permissions/>
 	<Configuration/>
 	<Libraries>
 		<Use name="UtilsLib" type="lib"/>
 	</Libraries>
-	<Library forceinterface="true">
+  
+  
+  
+  
+  
+  <!-- __________________________________________________________________________________________________________________________
+    *
+    *
+    *	      L I B R A R Y    ::    
+    *
+    *  __________________________________________________________________________________________________________________________
+  -->
+	<Library>
 		<!--
-			*		add  |  Adds a new company to the system.
+			*    add  |  Adds a new company to the system.
 			*  
-			*		PARAMS
-			*		 - (string) uuid         ::  Company's uuid;
-			*		 - (string) name				 ::  Company's name;
-			*		 - (string) code				 ::  Company's code;
-			*		 - (string) description  ::  Company's description;
-			*		 - (string) timezone		 ::  Company's default timezone;
-			*		 - (int) is_active		 ::  1 if this company is active; 0, otherwise.
+			*    PARAMS
+			*      - (text) uuid         ::  Company's uuid;
+			*      - (text) name				  ::  Company's name;
+			*      - (text) code				  ::  Company's code;
+			*      - (text) description  ::  Company's description;
+			*      - (text) location     ::  Company's default location;
+			*      - (int) timezone		  ::  Company's default timezone;
+			*      - (int) is_active		  ::  1 if this company is active; 0, otherwise.
 			*
-			*		RETURN
-			*		 - (int) id_company  ::  Returns the created 'fw_company' record's id.
+			*    RETURN
+			*      - (int) id_company  ::  Returns the created 'fw_company' record's id.
 			*
-			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the company already exists.
+			*    ERRORS
+			*	     - (code) -1  ::  Returns -1 if the company already exists.
 		-->
 		<Function scope="public" name="add" doc="Adds a new company to the system.">
 			<Params>
-				<Param name="name" type="string" required="true" doc="Company's name"/>
-				<Param name="code" type="string" required="true" doc="Company's code"/>
-				<Param name="description" type="string" required="false" doc="Company's description"/>
-				<Param name="id_timezone" type="string" required="false" doc="Company's default timezone"/>
+				<Param name="uuid" type="text" required="true" doc="Company's name"/>
+				<Param name="name" type="text" required="true" doc="Company's name"/>
+				<Param name="code" type="text" required="true" doc="Company's code"/>
+				<Param name="description" type="text" required="false" doc="Company's description"/>
+				<Param name="location" type="text" required="false" doc="Company's default location"/>
+				<Param name="id_timezone" type="int" required="false" doc="Company's default timezone"/>
 				<Param name="is_active" type="int" required="true" doc="1 if this company is active; 0, otherwise"/>
 			</Params>
 			<Return type="int" doc="The created 'fw_company' record's id."/>
@@ -47,7 +62,9 @@
 					</Call>
 				</Var>
 
-				<Var name="PARAMS" key="uuid"><Uuid/></Var>
+				<If condition="$PARAMS->uuid == ''">
+          <Then><Var name="PARAMS" key="uuid"><Uuid/></Var></Then>
+        </If>
 				<!-- If it does, returns -1. Otherwise, proceeds to insert -->
 				<If condition="$companyExists == 1">
 					<Then>
@@ -58,12 +75,7 @@
 						<Var name="company" key="id">
 							<DataAccess method="insert" params="PARAMS">
 								<Param name="_entity">fw_company</Param>
-								<Param name="_id_updater"><Var name="USER" key="id"/></Param>
-								<Param name="_modification"><Now/></Param>
-								<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
-								<Param name="_id_creator"><Var name="USER" key="id"/></Param>
-								<Param name="_creation"><Now/></Param>
-								<Param name="_creation_ip"><Var name="USER" key="ip"/></Param>
+                <Param name="_base">true</Param>
 							</DataAccess>
 						</Var>
 						<!-- Gets the record just created -->
@@ -102,16 +114,16 @@
 
 
 		<!--
-			*		delete  |  Deletes a company from the system.
+			*    delete  |  Deletes a company from the system.
 			*  
-			*		PARAMS
-			*		 - (int) id  ::  Company's id.
+			*    PARAMS
+			*      - (int) id  ::  Company's id.
 			*
-			*		RETURN
-			*    - (int) 0  ::  Returns 0 if the company was removed.
+			*    RETURN
+			*      - (int) 0  ::  Returns 0 if the company was removed.
       *
-			*		ERRORS
-			*	   - (code) -1  ::  Returns -1 if the company doesn't exist.
+			*    ERRORS
+			*	     - (code) -1  ::  Returns -1 if the company doesn't exist.
 		-->
 		<Function scope="public" name="delete" doc="Deletes a company from the system.">
 			<Params>
@@ -126,14 +138,12 @@
 				<!-- Sets default value -->
         <Var name="error">0</Var>
 
-				<!-- Gets the record -->
+				<!-- Checks if the company exists: if not, returns -1 -->
 				<Var name="company">
 					<Call function="getById">
 						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 					</Call>
 				</Var>
-
-				<!-- Checks if the company exists: if not, returns -1 -->
         <If condition="$company->__length == 0">
           <Then>
             <Var name="error">-1</Var>
@@ -172,37 +182,34 @@
 
 
 		<!--
-			*		existsByCode  |  Checks if a company exists, given its code.
+			*    existsByCode  |  Checks if a company exists, given its code.
 			*  
-			*		PARAMS
-			*		 - (string) code  ::  Company's code.
+			*    PARAMS
+			*     - (text) code  ::  Company's code.
 			*
-			*		RETURN
-			*	   - (int) 1 | 0  ::  Returns 1 if the company exists; 0, if it doesn't.
+			*    RETURN
+			*	   - (int) 1 | 0  ::  Returns 1 if the company exists. Otherwise, returns 0.
 		-->
 		<Function scope="public" name="existsByCode" doc="Checks if a company exists, given its code.">
 			<Params>
-				<Param name="code" type="string" required="true" doc="Company's code"/>
+				<Param name="code" type="text" required="true" doc="Company's code"/>
 			</Params>
-			<Return type="int" doc="1 if the company exists; 0, if it doesn't."/>
+			<Return type="int" doc="1 if the company exists; 0, otherwise."/>
 
 			<Begin>
-				<!-- Checks if the company exists -->
-				<Var name="company">
+        <!-- Checks if the company exists:
+          . If it does, returns 1;
+          . If it doesn't, returns 0.
+        -->
+        <Var name="company">
 					<DataAccess method="load">
 						<Param name="_entity">fw_company</Param>
 						<Param name="code"><Var name="PARAMS" key="code"/></Param>
 					</DataAccess>
 				</Var>
-
-				<!-- If it does, returns 1. If it doesn't, returns 0 -->
 				<If condition="$company->__length != 0">
-					<Then>
-						<Var name="exists">1</Var>
-					</Then>
-					<Else>
-						<Var name="exists">0</Var>
-					</Else>
+					<Then><Var name="exists">1</Var></Then>
+					<Else><Var name="exists">0</Var></Else>
 				</If>
 
 				<Return>
@@ -213,37 +220,34 @@
 
 
 		<!--
-			*		existsById  |  Checks if a company exists, given its id.
+			*    existsById  |  Checks if a company exists, given its id.
 			*  
-			*		PARAMS
-			*		 - (int) id  ::  Company's id.
+			*    PARAMS
+			*      - (int) id  ::  Company's id.
 			*
-			*		RETURN
-			*	   - (int) 1 | 0  ::  Returns 1 if the company exists; 0, if it doesn't. 
+			*    RETURN
+			*	     - (int) 1 | 0  ::  Returns 1 if the company exists. Otherwise, returns 0. 
 		-->
 		<Function scope="public" name="existsById" doc="Checks if a company exists, given its id.">
 			<Params>
 				<Param name="id" type="int" required="true" doc="Company's id."/>
 			</Params>
-			<Return type="int" doc="1 if the company exists; 0, if it doesn't."/>
+			<Return type="int" doc="1 if the company exists; 0, otherwise."/>
 
 			<Begin>			
-				<!-- Checks if the company exists -->
+        <!-- Checks if the company exists:
+          . If it does, returns 1;
+          . If it doesn't, returns 0.
+        -->
 				<Var name="company">
 					<DataAccess method="load">
 						<Param name="_entity">fw_company</Param>
 						<Param name="id"><Var name="PARAMS" key="id"/></Param>
 					</DataAccess>
 				</Var>
-
-				<!-- If it does, returns 1. If it doesn't, returns 0 -->
-				<If condition="$company->__length != 0">
-					<Then>
-						<Var name="exists">1</Var>
-					</Then>
-					<Else>
-						<Var name="exists">0</Var>
-					</Else>
+        <If condition="$company->__length != 0">
+					<Then><Var name="exists">1</Var></Then>
+					<Else><Var name="exists">0</Var></Else>
 				</If>
 
 				<Return>
@@ -254,27 +258,27 @@
 
 
 		<!--
-			*		getAll  |  Gets a list of all the existing companies (whether they are active or not).
+			*    getAll  |  Gets a list of all the existing companies (whether they are active or not).
 			*  
-			*		RETURN
-			*	   - (multiple) fw_company  ::  Returns all the 'fw_company' records.
+			*    RETURN
+			*	     - (multiple) fw_company  ::  Returns all the 'fw_company' records.
 		-->
 		<Function scope="public" name="getAll" doc="Gets a list of all the existing companies (whether they are active or not).">
 			<Params/>
 			<Return type="multiple" doc="All the 'fw_company' records."/>
 
 			<Begin>
-				<Var name="_companies">
+        <!-- Gets all the companies and, for each one, gets its logo -->
+        <Var name="companiesAux">
 					<DataAccess method="getAll">
 						<Param name="_entity">fw_company</Param>
 					</DataAccess>
 				</Var>
-				
-				<Var name="companies"><Set/></Var>
-				<ForEach var="_companies" item="company">
+        <Var name="companies"><Set/></Var>
+				<ForEach var="companiesAux" item="company">
 					<Var name="company" key="logo">
 						<Call function="getLogo">
-							<Param name="id_company"><Var name="company" key="id"/></Param>
+							<Param name="id"><Var name="company" key="id"/></Param>
 						</Call>
 					</Var>
 					<Var name="companies" key=""><Var name="company"/></Var>
@@ -288,22 +292,32 @@
 
 
 		<!--
-			*		getActiveCompanies  |  Gets a list of all the active companies.
+			*    getActiveCompanies  |  Gets a list of all the active companies.
 			*  
-			*		RETURN
-			*	   - (multiple) fw_company  ::  Returns a set of 'fw_company' records.
+			*    RETURN
+			*	     - (multiple) fw_company  ::  Returns a set of 'fw_company' records.
 		-->
 		<Function scope="public" name="getActiveCompanies" doc="Gets a list of all the active companies.">
 			<Params/>
 			<Return type="multiple" doc="Set of 'fw_company' records."/>
 
 			<Begin>
-				<Var name="companies">
-					<DataAccess method="getAll">
-						<Param name="_entity">fw_company</Param>
-						<Param name="is_active"><Int>1</Int></Param>
+        <!-- Gets the active companies and, for each one, gets its logo -->
+        <Var name="companiesAux">
+          <DataAccess method="getAll">
+            <Param name="_entity">fw_company</Param>
+            <Param name="is_active"><Int>1</Int></Param>
 					</DataAccess>
 				</Var>
+        <Var name="companies"><Set/></Var>
+				<ForEach var="companiesAux" item="company">
+					<Var name="company" key="logo">
+						<Call function="getLogo">
+							<Param name="id"><Var name="company" key="id"/></Param>
+						</Call>
+					</Var>
+					<Var name="companies" key=""><Var name="company"/></Var>
+				</ForEach>
 
 				<Return>
 					<Var name="companies"/>
@@ -313,63 +327,65 @@
 
 
 		<!--
-			*		getByCode  |  Gets a company, given the code.
+			*    getByCode  |  Gets a company, given the code.
 			*  
-			*		PARAMS
-			*		 - (string) code  ::  Company code.
+			*    PARAMS
+			*      - (text) code       ::  Company's code.
+      *      - (text) logo_type  ::  Company logo's type (default | color | extension | ...).
 			*
-			*		RETURN
-			*	   - (single) fw_company  ::  Returns the corresponding 'fw_company' record with additional data. 
+			*    RETURN
+			*	     - (single) fw_company  ::  Returns the corresponding 'fw_company' record with additional data. 
 		-->
 		<Function scope="public" name="getByCode" doc="Gets a company, given the code.">
 			<Params>
-				<Param name="code" type="string" doc="Company code"/>
-			</Params>
+        <Param name="code" type="text" required="true" doc="Company's code"/>
+        <Param name="logo_type" type="text" required="false" doc="Company logo's type (default | color | extension | ...)"/>
+      </Params>
 			<Return type="single" doc="The corresponding 'fw_company' record with some additional data.">
-				<External name="logo" type="string" doc="Company default logo"/>
+        <External name="logo" type="text" doc="Company's default logo"/>
 			</Return>
-
+      
 			<Begin>
-				<!-- Gets the company's data -->
+        <!-- Gets the company's data -->
 				<Var name="company">
-					<DataAccess method="load">
-						<Param name="_entity">fw_company</Param>
+          <DataAccess method="load">
+            <Param name="_entity">fw_company</Param>
 						<Param name="code"><Var name="PARAMS" key="code"/></Param>
 					</DataAccess>
 				</Var>
 				
 				<!-- Gets the company's default logo -->
-				<Var name="config">
-					<DataAccess method="load">
-						<Param name="_entity">fw_config</Param>
-						<Param name="id_company"><Var name="company" key="id"/></Param>
-						<Param name="code">logo.default.svg</Param>
-					</DataAccess>
-				</Var>
-				<Var name="company" key="logo"><Var name="config" key="value"/></Var>
-
+				<Var name="company" key="logo">
+          <Call function="getLogo">
+            <Param name="id"><Var name="company" key="id"/></Param>
+            <Param name="type"><Var name="PARAMS" key="logo_type"/></Param>
+          </Call>
+        </Var>
+        
 				<Return>
-					<Var name="company"/>
+          <Var name="company"/>
 				</Return>
 			</Begin>
 		</Function>
-
-
+    
+    
 		<!--
-			*		getById  |  Gets a company, given the id.
+			*    getById  |  Gets a company, given the id.
 			*  
-			*		PARAMS
-			*		 - (int) id  ::  Company id.
+			*    PARAMS
+			*      - (int) id          ::  Company's id;
+			*      - (text) logo_type  ::  Company logo's type (default | color | extension | ...).
 			*
-			*		RETURN
-			*	   - (single) fw_company  ::  Returns the corresponding 'fw_company' record with additional data. 
-		-->
-		<Function scope="public" name="getById" doc="Gets a company, given the id.">
-			<Params>
-				<Param name="id" type="int" doc="Company id"/>
-			</Params>
+			*    RETURN
+			*	     - (single) fw_company  ::  Returns the corresponding 'fw_company' record with additional data. 
+    -->
+    <Function scope="public" name="getById" doc="Gets a company, given the id.">
+      <Params>
+        <Param name="id" type="int" required="true" doc="Company's id"/>
+        <Param name="logo_type" type="text" required="false" doc="Company logo's type (default | color | extension | ...)"/>
+      </Params>
 			<Return type="single" doc="The corresponding 'fw_company' record with additional data.">
-				<External name="logo" type="string" doc="Company default logo"/>
+				<External name="logo" type="text" doc="Company's default logo"/>
 			</Return>
 
 			<Begin>
@@ -384,7 +400,8 @@
 				<!-- Gets the company's default logo -->
 				<Var name="company" key="logo">
 					<Call function="getLogo">
-						<Param name="id_company"><Var name="PARAMS" key="id"/></Param>
+						<Param name="id"><Var name="PARAMS" key="id"/></Param>
+						<Param name="type"><Var name="PARAMS" key="logo_type"/></Param>
 					</Call>
 				</Var>
 				
@@ -393,50 +410,97 @@
 				</Return>
 			</Begin>
 		</Function>
-		
-			
+    
+    
+    <!--
+      *    getCode  |  Gets a company's code.
+      *
+      *    PARAMS
+      *      - (int) id  ::  Company's id.
+      *
+      *    RETURN
+      *      - (text) code_company  ::  Returns the code of the corresponding 'fw_company' record.
+    -->
+    <Function scope="public" name="getCode" doc="Gets a company's code.">
+      <Params>
+        <Param name="id" type="int" required="false" doc="Company's id"/>
+      </Params>
+      <Return type="text" doc="The code of the corresponding company."/>
+    
+      <Begin>
+        <!-- If no id is given, sets to the user's -->
+        <Var name="idCompany">
+          <IsNull>
+            <Param><Var name="PARAMS" key="id"/></Param>
+            <Param><Var name="USER" key="idCompany"/></Param>
+          </IsNull>
+        </Var>
+        
+        <!-- Gets the company and returns its code -->
+        <Var name="company">
+          <DataAccess method="load">
+            <Param name="_entity">fw_company</Param>
+            <Param name="id"><Var name="idCompany"/></Param>
+          </DataAccess>
+        </Var>
+    
+        <Return>
+          <Var name="company" key="code"/>
+        </Return>
+      </Begin>
+    </Function>
+
+    
+    
+    <!--
+      *    getName  |  Gets a company's name
+      *
+      *    PARAMS
+      *      - (int) id  ::  Company's id.
+      *
+      *    RETURN
+      *      - (text) name_company  ::  Returns the name of the corresponding 'fw_company' record.
+    -->
+    <Function scope="public" name="getName" doc="Gets a company's name.">
+      <Params>
+        <Param name="id" type="int" required="false" doc="Company's id"/>
+      </Params>
+      <Return type="text" doc="The name of the corresponding company."/>
+    
+      <Begin>
+        <!-- If no id is given, sets to the user's -->
+        <Var name="idCompany">
+          <IsNull>
+            <Param><Var name="PARAMS" key="id"/></Param>
+            <Param><Var name="USER" key="idCompany"/></Param>
+          </IsNull>
+        </Var>
+        
+        <!-- Gets the company and returns its code -->
+        <Var name="company">
+          <DataAccess method="load">
+            <Param name="_entity">fw_company</Param>
+            <Param name="id"><Var name="idCompany"/></Param>
+          </DataAccess>
+        </Var>
+    
+        <Return>
+          <Var name="company" key="name"/>
+        </Return>
+      </Begin>
+    </Function>
+    
+    
 		<!--
-			*		getDefaultLocation  |  Gets a company's default location.
+			*    getTimezone  |  Gets a company's default timezone.
 			*  
-			*		PARAMS
-			*		 - (int) id_company  ::  Company id.
+			*    PARAMS
+			*      - (int) id  ::  Company's id.
 			*
-			*		RETURN
-			*	   - (string) location  ::  Returns the company's default location (set in 'fw_config'). 
+			*    RETURN
+			*	     - (int) id_timezone  ::  Returns the corresponding 'fw_company' record's timezone id. 
 		-->
-		<Function scope="public" name="getDefaultLocation" doc="Gets a company's default location.">
-			<Params>
-				<Param name="id_company" type="int" doc="Company id"/>
-			</Params>
-			<Return type="string" doc="The corresponding company's default location."/>
-
-			<Begin>
-				<!-- Gets the location and returns it -->
-				<Var name="location">
-					<DataAccess method="load">
-						<Param name="_entity">fw_config</Param>
-						<Param name="id_company"><Var name="PARAMS" key="id_company"/></Param>
-						<Param name="code">location.default</Param>
-					</DataAccess>
-				</Var>
-				
-				<Return>
-					<Var name="location" key="value"/>
-				</Return>
-			</Begin>
-		</Function>
-
-
-		<!--
-			*		getDefaultTimezone  |  Gets a company's default timezone.
-			*  
-			*		PARAMS
-			*		 - (int) id  ::  Company's id.
-			*
-			*		RETURN
-			*	   - (int) id_timezone  ::  Returns the corresponding 'fw_company' record's timezone id. 
-		-->
-		<Function scope="public" name="getDefaultTimezone" doc="Gets a company given the id.">
+		<Function scope="public" name="getTimezone" doc="Gets a company's default timezone.">
 			<Params>
 				<Param name="id" type="int" required="true" doc="Company's id"/>
 			</Params>
@@ -458,21 +522,21 @@
 	
 		
 		<!--
-			*		getLogo  |  Gets a company's logo (if none in particular is requested, returns the default one).
+			*    getLogo  |  Gets a company's logo (returns the default one, if none in particular is requested).
 			*  
-			*		PARAMS
-			*		 - (int) id_company  ::  Company id;
-			*		 - (string) type     ::  Logo type (default | color | extension | ...).
+			*    PARAMS
+			*      - (int) id     ::  Company's id;
+			*      - (text) type  ::  Logo type (default | color | extension | ...).
 			*
-			*		RETURN
-			*	   - (string) logo  ::  Returns the company's logo value (in 'fw_config'). 
+			*    RETURN
+			*	     - (text) logo  ::  Returns the company's logo value (in 'fw_config'). 
 		-->
-		<Function scope="public" name="getLogo" doc="Gets a company's logo (if none in particular is requested, returns the default one).">
+		<Function scope="public" name="getLogo" doc="Gets a company's logo (returns the default one, if none in particular is requested).">
 			<Params>
-				<Param name="id_company" type="int" doc="Company id"/>
-				<Param name="type" type="string" doc="Logo type (default | color | extension | ...)"/>
+				<Param name="id" type="int" required="true" doc="Company id"/>
+				<Param name="type" type="text" required="false" doc="Logo type (default | color | extension | ...)"/>
 			</Params>
-			<Return type="string" doc="The corresponding company's logo."/>
+			<Return type="text" doc="The corresponding company's logo."/>
 
 			<Begin>
 				<!-- If no specific logo were requested, gets the default one -->
@@ -507,32 +571,42 @@
 		
 
 		<!--
-			*		search  |  Gets a list of companies that meet the given search criteria.
+			*    search  |  Gets a list of companies that meet the given search criteria.
 			*
-			*		PARAMS
-			*		 - (string) name  		::  Company's name;		
-			*		 - (string) code      ::  Company's code;		
-			*		 - (int) is_active    ::  1 to filter by just the active companies.
+			*    PARAMS
+			*      - (text) name  		::  Company's name;		
+			*      - (text) code      ::  Company's code;		
+			*      - (int) is_active  ::  1 to filter by the active companies.
 			*
-			*		RETURN
-			*	   - (multiple) fw_company  ::  Returns a set of 'fw_company' records.
+			*    RETURN
+			*	     - (multiple) fw_company  ::  Returns a set of 'fw_company' records.
 		-->
 		<Function scope="public" name="search" doc="Gets a list of companies that meet the given search criteria.">
 			<Params>
-				<Param name="name" type="string" required="false" doc="Company's name"/>
-				<Param name="code" type="string" required="false" doc="Company's code"/>
-				<Param name="is_active" type="int" required="false" doc="1 to filter by just the active companies"/>
+				<Param name="name" type="text" required="false" doc="Company's name"/>
+				<Param name="code" type="text" required="false" doc="Company's code"/>
+				<Param name="is_active" type="int" required="false" doc="1 to filter by the active companies"/>
 			</Params>
 			<Return type="multiple" doc="Set of 'fw_company' records."/>
 		
 			<Begin>
-				<Var name="companies">
+        <!-- Gets the companies and, for each one, its default logo -->
+				<Var name="companiesAux">
 					<DataAccess method="this,this,search">
 						<Param name="name" wildcard="full"><Var name="PARAMS" key="name"/></Param>
 						<Param name="code" wildcard="full"><Var name="PARAMS" key="code"/></Param>
 						<Param name="is_active"><Var name="PARAMS" key="is_active"/></Param>
 					</DataAccess>
 				</Var>
+        <Var name="companies"><Set/></Var>
+				<ForEach var="companiesAux" item="company">
+					<Var name="company" key="logo">
+						<Call function="getLogo">
+							<Param name="id"><Var name="company" key="id"/></Param>
+						</Call>
+					</Var>
+					<Var name="companies" key=""><Var name="company"/></Var>
+				</ForEach>
 
 				<Return>
 					<Var name="companies"/>
@@ -542,31 +616,33 @@
 
 
 		<!--
-			*		update  |  Updates a company.
+			*    update  |  Updates a company's details.
 			*  
-			*		PARAMS
-			*		 - (int) id    				   ::  Company's id;
-			*		 - (string) uuid         ::  Company's uuid;
-			*		 - (string) name				 ::  Company's name;
-			*		 - (string) code				 ::  Company's code;
-			*		 - (string) description  ::  Company's description;
-			*		 - (string) timezone     ::  Company's default timezone;
-			*		 - (int) is_active		   ::  1 if this company is active; 0, otherwise.
+			*    PARAMS
+			*      - (int) id    			 ::  Company's id;
+			*      - (text) uuid         ::  Company's uuid;
+			*      - (text) name				 ::  Company's name;
+			*      - (text) code				 ::  Company's code;
+			*      - (text) description  ::  Company's description;
+			*      - (text) location     ::  Company's default location;
+			*      - (text) timezone     ::  Company's default timezone;
+			*      - (int) is_active		 ::  1 if this company is active; 0, otherwise.
 			*
-			*		RETURN
-			*		 - (int) 0  ::  Returns 0 if the company was updated.
+			*    RETURN
+			*     - (int) 0  ::  Returns 0 if the company was updated.
 			*
-			*		ERRORS
+			*    ERRORS
 			*	   - (code) -1  ::  Returns -1 if the company doesn't exist.
 		-->
-		<Function scope="public" name="update" doc="Updates a company.">
+		<Function scope="public" name="update" doc="Updates a company's details.">
 			<Params>
 				<Param name="id" type="int" required="true" doc="Company's id"/>
-				<Param name="uuid" type="string" required="false" doc="Company's uuid"/>
-				<Param name="name" type="string" required="false" doc="Company's name"/>
-				<Param name="code" type="string" required="false" doc="Company's code"/>
-				<Param name="description" type="string" required="false" doc="Company's description"/>
-				<Param name="id_timezone" type="string" required="false" doc="Company's default timezone"/>
+				<Param name="uuid" type="text" required="false" doc="Company's uuid"/>
+				<Param name="name" type="text" required="false" doc="Company's name"/>
+				<Param name="code" type="text" required="false" doc="Company's code"/>
+				<Param name="description" type="text" required="false" doc="Company's description"/>
+				<Param name="location" type="text" required="false" doc="Company's default location"/>
+				<Param name="id_timezone" type="text" required="false" doc="Company's default timezone"/>
 				<Param name="is_active" type="int" required="false" doc="1 if this company is active; 0, otherwise"/>
 			</Params>
       <Return type="int" doc="0 if the company was updated."/>
@@ -603,9 +679,7 @@
 						<DataAccess method="update" params="paramData">
 							<Param name="_entity">fw_company</Param>
 							<Param name="id"><Var name="PARAMS" key="id"/></Param>
-							<Param name="_id_updater"><Var name="USER" key="id"/></Param>
-							<Param name="_modification"><Now/></Param>
-							<Param name="_modification_ip"><Var name="USER" key="ip"/></Param>
+              <Param name="_base">true</Param>
 						</DataAccess>
 						<!-- Gets the updated record -->
 						<Var name="updatedCompany">
